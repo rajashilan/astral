@@ -45,8 +45,9 @@ export default class SideMenu extends React.Component {
   callParentScreenFunction = () => this.props.callParentScreenFunction();
 
   handleMenuNavigation = (name) => {
+    this.callParentScreenFunction();
     const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
-    this.props.navigation.navigate(menuItem.trim());
+    this.props.navigation.replace(menuItem.trim());
   };
 
   render() {

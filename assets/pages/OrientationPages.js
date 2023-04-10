@@ -1,7 +1,19 @@
-import { StyleSheet, Text, View, FlatList, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Pressable,
+  Dimensions,
+} from "react-native";
 import img1 from "../../assets/example-img-1.png";
 import React, { useState } from "react";
 import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+
+import hamburgerIcon from "../../assets/hamburger_icon.png";
+import SideMenu from "./SideMenu";
+import Modal from "react-native-modal";
 
 import {
   fontPixel,
@@ -11,7 +23,11 @@ import {
   pixelSizeHorizontal,
 } from "../../utils/responsive-font";
 
+const { width } = Dimensions.get("window");
+
 export default function OrientationPages({ navigation }) {
+  const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+
   const [data, setData] = useState([
     {
       header: "first day",
@@ -46,8 +62,22 @@ export default function OrientationPages({ navigation }) {
     },
   ]);
 
+  const toggleSideMenu = () => {
+    setIsSideMenuVisible(!isSideMenuVisible);
+  };
+
   return (
     <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Pressable onPress={toggleSideMenu}>
+          <Image
+            style={styles.hamburgerIcon}
+            source={hamburgerIcon}
+            contentFit="contain"
+          />
+        </Pressable>
+      </View>
+
       <FlatList
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
@@ -115,6 +145,27 @@ export default function OrientationPages({ navigation }) {
           </>
         )}
       />
+      <Modal
+        isVisible={isSideMenuVisible}
+        onBackdropPress={toggleSideMenu} // Android back press
+        onSwipeComplete={toggleSideMenu} // Swipe to discard
+        animationIn="slideInRight" // Has others, we want slide in from the left
+        animationOut="slideOutRight" // When discarding the drawer
+        swipeDirection="left" // Discard the drawer with swipe to left
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
+      >
+        {" "}
+        <SideMenu
+          callParentScreenFunction={toggleSideMenu}
+          currentPage={page}
+          navigation={navigation}
+        />
+      </Modal>
+
+      <StatusBar style="light" />
     </View>
   );
 }
@@ -171,5 +222,19 @@ const styles = StyleSheet.create({
     flex: 1,
     height: pixelSizeVertical(32),
     backgroundColor: "#0C111F",
+  },
+  sideMenuStyle: {
+    margin: 0,
+    width: width * 0.85, // SideMenu width
+    alignSelf: "flex-end",
+  },
+  headerContainer: {
+    marginTop: pixelSizeVertical(26),
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  hamburgerIcon: {
+    height: pixelSizeVertical(20),
+    width: pixelSizeHorizontal(40),
   },
 });
