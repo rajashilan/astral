@@ -6,13 +6,13 @@ import {
   Pressable,
   ImageBackground,
 } from "react-native";
-import club4 from "../../assets/club4.png";
-import member1 from "../../assets/member1.png";
-import member2 from "../../assets/member2.png";
+import club4 from "../assets/club4.png";
+import member1 from "../assets/member1.png";
+import member2 from "../assets/member2.png";
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 
-import hamburgerIcon from "../../assets/hamburger_icon.png";
+import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "./SideMenu";
 import Modal from "react-native-modal";
 import { Image } from "expo-image";
@@ -25,15 +25,13 @@ import {
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
-} from "../../utils/responsive-font";
+} from "../utils/responsive-font";
 
 import ClubsGallery from "./ClubsGallery";
 import ClubsEvents from "./ClubsEvents";
 import ClubsDetails from "./ClubsDetails";
 import ClubsMembers from "./ClubsMembers";
-import Test from "./Test";
 
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function ClubsPages({ navigation }) {
@@ -72,22 +70,28 @@ export default function ClubsPages({ navigation }) {
         </Pressable>
       </View>
 
-      <ImageBackground source={data[0].image} style={styles.headerContainer}>
+      <ImageBackground
+        source={data[0].image}
+        style={styles.imageHeaderContainer}
+      >
         <View style={styles.overlayContainer}>
           <Text style={styles.header}>{data[0].header}</Text>
         </View>
       </ImageBackground>
+
       <ScrollView
-        style={StyleSheet.create({ flex: 1, marginTop: pixelSizeVertical(10) })}
+        style={StyleSheet.create({
+          flex: 1,
+          marginTop: pixelSizeVertical(10),
+          paddingRight: pixelSizeHorizontal(16),
+          paddingLeft: pixelSizeHorizontal(16),
+        })}
       >
-        <Pressable style={styles.button} onPress={handleJoin}>
-          <View style={styles.onlySpan}>
-            <Text style={styles.loginButtonNoUnderline}>j</Text>
-            <Text style={styles.loginButton}>oin</Text>
-          </View>
+        <Pressable style={styles.loginButton}>
+          <Text style={styles.loginButtonText}>join</Text>
         </Pressable>
 
-        <View style={styles.spanMultiline}>
+        <View style={styles.navigationContainer}>
           {data[0].navigations.length > 0 &&
             data[0].navigations.map((link) => {
               return (
@@ -101,10 +105,17 @@ export default function ClubsPages({ navigation }) {
                   >
                     {link.name}
                   </Text>
+                  <View
+                    style={
+                      link.name === tab ? styles.navigationBorderActive : null
+                    }
+                  />
                 </Pressable>
               );
             })}
         </View>
+        <View style={styles.navigationBorderInactive} />
+
         {tab === "members" ? (
           <ClubsMembers club={data[0].header} />
         ) : tab === "gallery" ? (
@@ -128,10 +139,9 @@ export default function ClubsPages({ navigation }) {
         propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
         style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
       >
-        {" "}
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={page}
+          currentPage={"clubs"}
           navigation={navigation}
         />
       </Modal>
@@ -145,9 +155,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    paddingTop: pixelSizeVertical(82),
+    paddingTop: pixelSizeVertical(26),
   },
-  headerContainer: {
+  imageHeaderContainer: {
     height: pixelSizeVertical(120),
     width: "100%",
   },
@@ -164,60 +174,59 @@ const styles = StyleSheet.create({
   header: {
     fontSize: fontPixel(34),
     fontWeight: 500,
-    color: "#F5F5F5",
+    color: "#DFE5F8",
+  },
+  loginButton: {
+    backgroundColor: "#C4FFF9",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(18),
+    paddingBottom: pixelSizeVertical(18),
+    marginTop: pixelSizeVertical(16),
+    marginBottom: pixelSizeVertical(30),
+    width: "100%",
+    borderRadius: 5,
+  },
+  loginButtonText: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#0C111F",
+    textAlign: "center",
+  },
+  navigationContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  navigationLinkActive: {
+    color: "#DFE5F8",
+    fontSize: fontPixel(16),
+    fontWeight: "500",
+    width: width / 4,
+    textAlign: "center",
+  },
+  navigationLinkInactive: {
+    color: "#DFE5F8",
+    fontSize: fontPixel(16),
+    fontWeight: "400",
+    opacity: 0.5,
+  },
+  navigationBorderActive: {
+    borderBottomColor: "#DFE5F8",
+    borderBottomWidth: 1,
+    width: "100%",
+    marginTop: pixelSizeVertical(10),
+  },
+  navigationBorderInactive: {
+    borderBottomColor: "#DFE5F8",
+    borderBottomWidth: 1,
+    width: "100%",
+    opacity: 0.5,
+    marginTop: pixelSizeVertical(-1),
   },
   emptyView: {
     flex: 1,
     height: pixelSizeVertical(32),
     backgroundColor: "#0C111F",
-  },
-  loginButton: {
-    color: "#C4FFF9",
-    fontSize: fontPixel(78),
-    marginTop: pixelSizeVertical(14),
-    textTransform: "lowercase",
-    fontWeight: 700,
-    textDecorationLine: "underline",
-  },
-  loginButtonNoUnderline: {
-    color: "#C4FFF9",
-    fontSize: fontPixel(78),
-    marginTop: pixelSizeVertical(14),
-    textTransform: "lowercase",
-    fontWeight: 700,
-  },
-  button: {
-    marginBottom: pixelSizeVertical(26),
-  },
-  onlySpan: {
-    flexDirection: "row",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-  },
-  spanMultiline: {
-    flexDirection: "row",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    flexWrap: "wrap",
-  },
-  navigationLinkActive: {
-    color: "#07BEB8",
-    fontSize: fontPixel(34),
-    marginTop: pixelSizeVertical(6),
-    marginRight: pixelSizeHorizontal(26),
-    textTransform: "lowercase",
-    fontWeight: 700,
-    textDecorationLine: "underline",
-  },
-  navigationLinkInactive: {
-    color: "#07BEB8",
-    fontSize: fontPixel(34),
-    marginTop: pixelSizeVertical(6),
-    marginRight: pixelSizeHorizontal(26),
-    textTransform: "lowercase",
-    fontWeight: 700,
-    textDecorationLine: "underline",
-    opacity: 0.5,
   },
   sideMenuStyle: {
     margin: 0,
@@ -226,8 +235,11 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     marginTop: pixelSizeVertical(26),
+    marginBottom: pixelSizeVertical(16),
     flexDirection: "row",
     justifyContent: "flex-end",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),

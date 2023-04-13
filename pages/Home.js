@@ -13,7 +13,7 @@ import {
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
-} from "../../utils/responsive-font";
+} from "../utils/responsive-font";
 import { StatusBar } from "expo-status-bar";
 
 export default function Home({ navigation }) {
@@ -27,7 +27,8 @@ export default function Home({ navigation }) {
 
   const handleMenuNavigation = (name) => {
     const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
-    navigation.replace(menuItem.trim());
+    if (name === "staff list") navigation.replace("Stafflist");
+    else navigation.replace(menuItem.trim());
   };
 
   return (

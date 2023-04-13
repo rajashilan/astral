@@ -7,7 +7,7 @@ import {
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
-} from "../../utils/responsive-font";
+} from "../utils/responsive-font";
 
 export default function ClubsDetails() {
   const [data, setData] = useState([
@@ -40,7 +40,7 @@ export default function ClubsDetails() {
                 return <Text style={styles.content}>{fee.entry}</Text>;
               })}
 
-            <View style={styles.emptyView}></View>
+            <View style={styles.emptyView} />
           </>
         )}
       />
@@ -52,27 +52,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(30),
+    paddingTop: pixelSizeVertical(20),
   },
   title: {
-    fontSize: fontPixel(26),
-    fontWeight: 500,
-    color: "#F5F5F5",
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#DFE5F8",
     marginBottom: pixelSizeVertical(10),
   },
   titleMarginTop: {
-    fontSize: fontPixel(26),
-    fontWeight: 500,
-    color: "#F5F5F5",
     marginTop: pixelSizeVertical(16),
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#DFE5F8",
     marginBottom: pixelSizeVertical(10),
   },
   content: {
-    fontSize: fontPixel(18),
-    fontWeight: 300,
-    color: "#EFEFEF",
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#C6CDE2",
   },
   emptyView: {
     flex: 1,

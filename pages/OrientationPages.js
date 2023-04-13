@@ -6,12 +6,12 @@ import {
   Pressable,
   Dimensions,
 } from "react-native";
-import img1 from "../../assets/example-img-1.png";
+import img1 from "../assets/example-img-1.png";
 import React, { useState } from "react";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 
-import hamburgerIcon from "../../assets/hamburger_icon.png";
+import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "./SideMenu";
 import Modal from "react-native-modal";
 
@@ -21,7 +21,7 @@ import {
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
-} from "../../utils/responsive-font";
+} from "../utils/responsive-font";
 
 const { width } = Dimensions.get("window");
 
@@ -157,10 +157,9 @@ export default function OrientationPages({ navigation }) {
         propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
         style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
       >
-        {" "}
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={page}
+          currentPage={"orientation"}
           navigation={navigation}
         />
       </Modal>
@@ -176,44 +175,47 @@ const styles = StyleSheet.create({
     backgroundColor: "#0C111F",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(82),
+    paddingTop: pixelSizeVertical(26),
   },
   header: {
     fontSize: fontPixel(34),
-    fontWeight: 500,
-    color: "#F5F5F5",
-    marginTop: pixelSizeVertical(30),
-    marginBottom: pixelSizeVertical(28),
+    fontWeight: "700",
+    color: "#DFE5F8",
+    marginTop: pixelSizeVertical(4),
+    marginBottom: pixelSizeVertical(26),
   },
   title: {
-    fontSize: fontPixel(26),
-    fontWeight: 500,
-    color: "#F5F5F5",
-    marginBottom: pixelSizeVertical(16),
+    fontSize: fontPixel(28),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginBottom: pixelSizeVertical(12),
   },
   content: {
-    fontSize: fontPixel(18),
-    fontWeight: 300,
-    color: "#EFEFEF",
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#C6CDE2",
+    lineHeight: 26,
     marginBottom: pixelSizeVertical(10),
   },
   subtitle: {
     fontSize: fontPixel(22),
-    fontWeight: 300,
-    color: "#F5F5F5",
-    marginTop: pixelSizeVertical(18),
-    marginBottom: pixelSizeVertical(16),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(12),
   },
   image: {
     width: "100%",
     height: heightPixel(150),
     marginBottom: pixelSizeVertical(10),
+    borderRadius: 5,
   },
   file: {
-    fontSize: fontPixel(18),
-    fontWeight: 700,
+    fontSize: fontPixel(22),
+    fontWeight: "500",
     color: "#BE5007",
     marginBottom: pixelSizeVertical(10),
+    textDecorationLine: "underline",
   },
   list: {
     paddingBottom: 0,

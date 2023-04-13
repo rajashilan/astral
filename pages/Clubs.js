@@ -10,13 +10,15 @@ import React, { useState } from "react";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 
-import club1 from "../../assets/club1.png";
-import club2 from "../../assets/club2.png";
-import club3 from "../../assets/club3.png";
-import club4 from "../../assets/club4.png";
-import club5 from "../../assets/club5.png";
+import Header from "../components/Header";
 
-import hamburgerIcon from "../../assets/hamburger_icon.png";
+import club1 from "../assets/club1.png";
+import club2 from "../assets/club2.png";
+import club3 from "../assets/club3.png";
+import club4 from "../assets/club4.png";
+import club5 from "../assets/club5.png";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
 
 import SideMenu from "./SideMenu";
 import Modal from "react-native-modal";
@@ -29,7 +31,7 @@ import {
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
-} from "../../utils/responsive-font";
+} from "../utils/responsive-font";
 
 export default function Clubs({ navigation }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -77,9 +79,9 @@ export default function Clubs({ navigation }) {
             />
           </Pressable>
         </View>
-        <Text style={styles.header}>clubs</Text>
+        <Header header={"clubs"} />
+
         <FlatList
-          style={styles.list}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
@@ -132,21 +134,24 @@ const styles = StyleSheet.create({
     paddingTop: pixelSizeVertical(26),
   },
   header: {
-    fontSize: fontPixel(56),
-    fontWeight: 500,
-    color: "#F5F5F5",
-    marginBottom: pixelSizeVertical(4),
-  },
-  pageItems: {
-    fontSize: fontPixel(34),
-    fontWeight: 500,
-    color: "#07BEB8",
-    textDecorationLine: "underline",
+    fontSize: fontPixel(42),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    marginBottom: pixelSizeVertical(10),
   },
   image: {
     width: "100%",
     height: heightPixel(150),
     marginBottom: pixelSizeVertical(10),
+    borderRadius: 5,
+  },
+  pageItems: {
+    fontSize: fontPixel(28),
+    fontWeight: "500",
+    color: "#07BEB8",
+    lineHeight: 36,
+    marginLeft: pixelSizeVertical(2),
+    marginRight: pixelSizeVertical(2),
   },
   emptyView: {
     flex: 1,
@@ -166,11 +171,5 @@ const styles = StyleSheet.create({
   hamburgerIcon: {
     height: pixelSizeVertical(20),
     width: pixelSizeHorizontal(40),
-  },
-  navDrawerContainer: {
-    height: pixelSizeVertical(30),
-    width: pixelSizeHorizontal(40),
-    backgroundColor: "#fff",
-    justifyContent: "center",
   },
 });

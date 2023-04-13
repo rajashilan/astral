@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 
@@ -8,16 +8,16 @@ import {
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
-} from "../../utils/responsive-font";
+} from "../utils/responsive-font";
 
-import hamburgerIcon from "../../assets/hamburger_icon.png";
+import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "./SideMenu";
 import Modal from "react-native-modal";
 import { Image } from "expo-image";
 
 const { width } = Dimensions.get("window");
 
-export default function Profile() {
+export default function Profile({ navigation }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
   const toggleSideMenu = () => {
@@ -49,10 +49,9 @@ export default function Profile() {
         propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
         style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
       >
-        {" "}
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={page}
+          currentPage={"profile"}
           navigation={navigation}
         />
       </Modal>

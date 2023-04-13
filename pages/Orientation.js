@@ -13,15 +13,17 @@ import {
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
-} from "../../utils/responsive-font";
+} from "../utils/responsive-font";
 import { StatusBar } from "expo-status-bar";
 import { ResizeMode } from "expo-av";
 import VideoPlayer from "expo-video-player";
 
-import hamburgerIcon from "../../assets/hamburger_icon.png";
+import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "./SideMenu";
 import Modal from "react-native-modal";
 import { Image } from "expo-image";
+
+import Header from "../components/Header";
 
 const { width } = Dimensions.get("window");
 
@@ -54,7 +56,8 @@ export default function Orientation({ navigation }) {
         </Pressable>
       </View>
 
-      <Text style={styles.header}>orientation</Text>
+      <Header header={"orientation"} />
+
       <VideoPlayer
         style={styles.video}
         videoProps={{
@@ -113,18 +116,12 @@ const styles = StyleSheet.create({
     paddingTop: pixelSizeVertical(26),
     paddingBottom: pixelSizeVertical(16),
   },
-  header: {
-    fontSize: fontPixel(56),
-    fontWeight: 500,
-    color: "#F5F5F5",
-    marginBottom: pixelSizeVertical(28),
-  },
   title: {
-    fontSize: fontPixel(26),
-    fontWeight: 500,
-    color: "#F5F5F5",
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
     marginTop: pixelSizeVertical(18),
-    marginBottom: pixelSizeVertical(30),
+    marginBottom: pixelSizeVertical(26),
   },
   video: {
     alignSelf: "center",
@@ -137,11 +134,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   pageItems: {
-    fontSize: fontPixel(34),
-    fontWeight: 500,
+    fontSize: fontPixel(28),
+    fontWeight: "500",
     color: "#07BEB8",
-    marginBottom: pixelSizeVertical(20),
-    textDecorationLine: "underline",
+    marginBottom: pixelSizeVertical(16),
   },
   emptyView: {
     flex: 1,

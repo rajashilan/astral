@@ -10,12 +10,12 @@ import {
 } from "react-native";
 import { Image } from "expo-image";
 
-import closeIcon from "../../assets/close_icon.png";
+import closeIcon from "../assets/close_icon.png";
 import {
   pixelSizeVertical,
   pixelSizeHorizontal,
   fontPixel,
-} from "../../utils/responsive-font";
+} from "../utils/responsive-font";
 
 export default class SideMenu extends React.Component {
   state = {
@@ -47,7 +47,8 @@ export default class SideMenu extends React.Component {
   handleMenuNavigation = (name) => {
     this.callParentScreenFunction();
     const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
-    this.props.navigation.replace(menuItem.trim());
+    if (name === "staff list") this.props.navigation.replace("Stafflist");
+    else this.props.navigation.replace(menuItem.trim());
   };
 
   render() {

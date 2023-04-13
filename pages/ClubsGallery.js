@@ -9,11 +9,11 @@ import {
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
-} from "../../utils/responsive-font";
+} from "../utils/responsive-font";
 
-import club1 from "../../assets/club1.png";
-import club2 from "../../assets/club2.png";
-import club3 from "../../assets/club3.png";
+import club1 from "../assets/club1.png";
+import club2 from "../assets/club2.png";
+import club3 from "../assets/club3.png";
 
 const { width } = Dimensions.get("window");
 
@@ -45,6 +45,20 @@ export default function ClubsGallery() {
 
   return (
     <View style={styles.container}>
+      <Pagination
+        inactiveDotColor="#546593"
+        dotColor={"#07BEB8"}
+        activeDotIndex={indexSelected}
+        containerStyle={{
+          paddingTop: 0,
+          paddingRight: pixelSizeHorizontal(16),
+          paddingLeft: pixelSizeHorizontal(16),
+          paddingBottom: 0,
+          marginBottom: pixelSizeVertical(12),
+        }}
+        dotsLength={data.length}
+        inactiveDotScale={1}
+      />
       <Carousel
         layout="default"
         data={data}
@@ -64,19 +78,7 @@ export default function ClubsGallery() {
           </>
         )}
       />
-      <Pagination
-        inactiveDotColor="#546593"
-        dotColor={"#07BEB8"}
-        activeDotIndex={indexSelected}
-        dotsLength={data.length}
-        inactiveDotScale={1}
-      />
-      <Pressable style={styles.button}>
-        <View style={styles.onlySpan}>
-          <Text style={styles.loginButtonNoUnderline}>j</Text>
-          <Text style={styles.loginButton}>oin</Text>
-        </View>
-      </Pressable>
+      <View style={styles.emptyView} />
     </View>
   );
 }
@@ -85,50 +87,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(30),
-  },
-  header: {
-    fontSize: fontPixel(26),
-    fontWeight: 500,
-    color: "#F5F5F5",
-    marginBottom: pixelSizeVertical(16),
+    paddingTop: pixelSizeVertical(20),
   },
   image: {
     width: "100%",
     height: 170,
-    marginBottom: pixelSizeVertical(26),
+    marginBottom: pixelSizeVertical(12),
+    borderRadius: 5,
   },
   title: {
-    fontSize: fontPixel(18),
-    fontWeight: 500,
-    color: "#F5F5F5",
-    marginBottom: pixelSizeVertical(16),
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    marginBottom: pixelSizeVertical(4),
   },
   content: {
-    fontSize: fontPixel(16),
-    fontWeight: 300,
-    color: "#EFEFEF",
-  },
-  loginButton: {
-    color: "#C4FFF9",
-    fontSize: fontPixel(78),
-    textTransform: "lowercase",
-    fontWeight: 700,
-    textDecorationLine: "underline",
-  },
-  loginButtonNoUnderline: {
-    color: "#C4FFF9",
-    fontSize: fontPixel(78),
-    textTransform: "lowercase",
-    fontWeight: 700,
-  },
-  button: {
-    marginTop: pixelSizeVertical(-16),
-    marginBottom: pixelSizeVertical(40),
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#C6CDE2",
+    lineHeight: 22,
   },
   onlySpan: {
     flexDirection: "row",
+  },
+  emptyView: {
+    flex: 1,
+    height: pixelSizeVertical(30),
+    backgroundColor: "#0C111F",
   },
 });

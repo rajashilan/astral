@@ -5,20 +5,21 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { TransitionPresets } from "@react-navigation/stack";
-import Login from "./assets/pages/Login";
-import Home from "./assets/pages/Home";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
+import Test from "./pages/Test";
 
-import Orientation from "./assets/pages/Orientation";
-import OrientationPages from "./assets/pages/OrientationPages";
+import Orientation from "./pages/Orientation";
+import OrientationPages from "./pages/OrientationPages";
 
-import Clubs from "./assets/pages/Clubs";
-import ClubsPages from "./assets/pages/ClubsPages";
+import Clubs from "./pages/Clubs";
+import ClubsPages from "./pages/ClubsPages";
 
-import Department from "./assets/pages/Department";
+import Department from "./pages/Department";
 
-import Profile from "./assets/pages/Profile";
+import Profile from "./pages/Profile";
 
-import Stafflist from "./assets/pages/Stafflist";
+import Stafflist from "./pages/Stafflist";
 
 const Stack = createStackNavigator();
 
@@ -98,6 +99,14 @@ export default function App() {
         <Stack.Screen
           name="Stafflist"
           component={Stafflist}
+          options={{
+            headerShown: false,
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
+        />
+        <Stack.Screen
+          name="Test"
+          component={Test}
           options={{
             headerShown: false,
             ...TransitionPresets.SlideFromRightIOS,
