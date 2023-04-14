@@ -2,11 +2,18 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList,
-  Pressable,
   Dimensions,
+  Pressable,
+  FlatList,
 } from "react-native";
 import React, { useState } from "react";
+import { StatusBar } from "expo-status-bar";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import SideMenu from "../components/SideMenu";
+import Modal from "react-native-modal";
+import { Image } from "expo-image";
+
 import {
   fontPixel,
   widthPixel,
@@ -14,39 +21,27 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { StatusBar } from "expo-status-bar";
-import { ResizeMode } from "expo-av";
-import VideoPlayer from "expo-video-player";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-import { Image } from "expo-image";
-
-import Header from "../components/Header";
 
 const { width } = Dimensions.get("window");
+export default function Stafflistpage({ navigation, route }) {
+  const { name, department, contact } = route.params;
 
-export default function Orientation({ navigation }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
-
-  const [pages, setPages] = useState([
-    { page: "first day", id: 1 },
-    { page: "second day", id: 2 },
-    { page: "campus tour", id: 3 },
-  ]);
-
-  const handlePageItemPress = () => {
-    navigation.navigate("OrientationPages");
-  };
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
+  const handleNavigateBack = () => {
+    navigation.navigate("Stafflist");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
+        <Pressable onPress={handleNavigateBack}>
+          <Text style={styles.backButton}>back</Text>
+        </Pressable>
         <Pressable onPress={toggleSideMenu}>
           <Image
             style={styles.hamburgerIcon}
@@ -56,32 +51,28 @@ export default function Orientation({ navigation }) {
         </Pressable>
       </View>
 
-      <Header header={"orientation"} />
-
-      <VideoPlayer
-        style={styles.video}
-        videoProps={{
-          resizeMode: ResizeMode.CONTAIN,
-          source: {
-            uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-          },
-        }}
-      />
-
-      <Text style={styles.title}>
-        welcome to inti international college penang!
-      </Text>
+      <Text style={styles.header}>{name}</Text>
+      <Text style={styles.department}>{department}</Text>
 
       <FlatList
-        style={styles.list}
         keyExtractor={(item, index) => index.toString()}
-        data={pages}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        data={contact}
         renderItem={({ item }) => (
           <>
-            <Pressable onPress={handlePageItemPress}>
-              <Text style={styles.pageItems}>{item.page}</Text>
-            </Pressable>
-            <View style={styles.divider} />
+            <Text style={styles.title}>email</Text>
+            <Text style={styles.contentMarginBottom}>{item.email}</Text>
+            <Text style={styles.title}>contact</Text>
+            <Text style={styles.contentMarginBottom}>{item.contact}</Text>
+            <Text style={styles.title}>available hours</Text>
+            {item.availableHours.length > 0 ? (
+              item.availableHours.map((hours) => {
+                return <Text style={styles.content}>{hours.item}</Text>;
+              })
+            ) : (
+              <Text style={styles.content}>Not available</Text>
+            )}
           </>
         )}
       />
@@ -100,7 +91,7 @@ export default function Orientation({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"orientation"}
+          currentPage={"staff list"}
           navigation={navigation}
         />
       </Modal>
@@ -117,36 +108,42 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
     paddingTop: pixelSizeVertical(26),
-    paddingBottom: pixelSizeVertical(16),
   },
-  title: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#DFE5F8",
-    marginTop: pixelSizeVertical(18),
-    marginBottom: pixelSizeVertical(26),
-  },
-  video: {
-    alignSelf: "center",
-    width: 320,
-    height: 200,
-  },
-  buttons: {
+  headerContainer: {
+    marginTop: pixelSizeVertical(26),
+    marginBottom: pixelSizeVertical(16),
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
   },
-  pageItems: {
+  header: {
+    fontSize: fontPixel(34),
+    fontWeight: "700",
+    color: "#DFE5F8",
+    marginBottom: pixelSizeVertical(8),
+  },
+  department: {
+    fontSize: fontPixel(12),
+    fontWeight: "400",
+    color: "#A7AFC7",
+    marginBottom: pixelSizeVertical(26),
+  },
+  title: {
     fontSize: fontPixel(28),
     fontWeight: "500",
-    color: "#07BEB8",
-    marginBottom: pixelSizeVertical(12),
+    color: "#DFE5F8",
+    marginBottom: pixelSizeVertical(10),
   },
-  divider: {
-    borderBottomColor: "#283350",
-    borderBottomWidth: 1,
-    width: "100%",
-    marginBottom: pixelSizeVertical(12),
+  contentMarginBottom: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#C6CDE2",
+    marginBottom: pixelSizeVertical(16),
+  },
+  content: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#C6CDE2",
   },
   emptyView: {
     flex: 1,
@@ -158,13 +155,13 @@ const styles = StyleSheet.create({
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
   },
-  headerContainer: {
-    marginTop: pixelSizeVertical(26),
-    flexDirection: "row",
-    justifyContent: "flex-end",
-  },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
     width: pixelSizeHorizontal(40),
+  },
+  backButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#07BEB8",
   },
 });

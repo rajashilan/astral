@@ -13,7 +13,7 @@ import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "./SideMenu";
+import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 import { Image } from "expo-image";
 

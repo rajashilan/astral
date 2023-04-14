@@ -11,15 +11,12 @@ import Test from "./pages/Test";
 
 import Orientation from "./pages/Orientation";
 import OrientationPages from "./pages/OrientationPages";
-
 import Clubs from "./pages/Clubs";
 import ClubsPages from "./pages/ClubsPages";
-
 import Department from "./pages/Department";
-
 import Profile from "./pages/Profile";
-
 import Stafflist from "./pages/Stafflist";
+import Stafflistpage from "./pages/Stafflistpage";
 
 const Stack = createStackNavigator();
 
@@ -99,6 +96,14 @@ export default function App() {
         <Stack.Screen
           name="Stafflist"
           component={Stafflist}
+          options={{
+            headerShown: false,
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
+        />
+        <Stack.Screen
+          name="Stafflistpage"
+          component={Stafflistpage}
           options={{
             headerShown: false,
             ...TransitionPresets.SlideFromRightIOS,

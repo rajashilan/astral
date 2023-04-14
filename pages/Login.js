@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
     marginTop: pixelSizeVertical(10),
     fontSize: fontPixel(16),
     fontWeight: "400",
-    placeholderTextColor: "#A7AFC7",
     color: "#DFE5F8",
     width: "100%",
     borderRadius: 5,

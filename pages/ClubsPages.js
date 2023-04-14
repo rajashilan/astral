@@ -13,7 +13,7 @@ import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "./SideMenu";
+import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 import { Image } from "expo-image";
 
@@ -56,11 +56,18 @@ export default function ClubsPages({ navigation }) {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
+  const handleNavigateBack = () => {
+    navigation.navigate("Clubs");
+  };
+
   const handleJoin = () => {};
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
+        <Pressable onPress={handleNavigateBack}>
+          <Text style={styles.backButton}>back</Text>
+        </Pressable>
         <Pressable onPress={toggleSideMenu}>
           <Image
             style={styles.hamburgerIcon}
@@ -173,7 +180,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: fontPixel(34),
-    fontWeight: 500,
+    fontWeight: "500",
     color: "#DFE5F8",
   },
   loginButton: {
@@ -237,12 +244,18 @@ const styles = StyleSheet.create({
     marginTop: pixelSizeVertical(26),
     marginBottom: pixelSizeVertical(16),
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
+    alignItems: "center",
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
     width: pixelSizeHorizontal(40),
+  },
+  backButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#07BEB8",
   },
 });

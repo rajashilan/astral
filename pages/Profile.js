@@ -11,7 +11,7 @@ import {
 } from "../utils/responsive-font";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "./SideMenu";
+import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 import { Image } from "expo-image";
 

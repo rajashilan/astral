@@ -19,8 +19,7 @@ import club4 from "../assets/club4.png";
 import club5 from "../assets/club5.png";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
-
-import SideMenu from "./SideMenu";
+import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 
 const { width } = Dimensions.get("window");
