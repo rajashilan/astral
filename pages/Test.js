@@ -1,242 +1,107 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Pressable,
-  ImageBackground,
-} from "react-native";
-import club4 from "../assets/club4.png";
-import member1 from "../assets/member1.png";
-import member2 from "../assets/member2.png";
-import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
+import React, { useRef } from "react";
+import { View, ScrollView, Image, Animated, Text } from "react-native";
+import img1 from "../assets/club1.png";
 
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-import { Image } from "expo-image";
+const BANNER_H = 350;
 
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { NavigationContainer } from "@react-navigation/native";
-const Tab = createMaterialTopTabNavigator();
-
-const { width } = Dimensions.get("window");
-
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-
-import ClubsGallery from "./ClubsGallery";
-import ClubsEvents from "./ClubsEvents";
-import ClubsDetails from "./ClubsDetails";
-import ClubsMembers from "./ClubsMembers";
-
-import { ScrollView } from "react-native-gesture-handler";
-
-export default function Test({ navigation }) {
-  const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
-
-  const [data, setData] = useState([
-    {
-      header: "Computer Science Club",
-      image: club4,
-      navigations: [
-        { name: "members" },
-        { name: "gallery" },
-        { name: "events" },
-        { name: "details" },
-      ],
-    },
-  ]);
-
-  const [tab, setTab] = useState("members");
-
-  const toggleSideMenu = () => {
-    setIsSideMenuVisible(!isSideMenuVisible);
-  };
-
-  const handleJoin = () => {};
-
+const Test = () => {
+  const scrollA = useRef(new Animated.Value(0)).current;
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Pressable onPress={toggleSideMenu}>
-          <Image
-            style={styles.hamburgerIcon}
-            source={hamburgerIcon}
-            contentFit="contain"
-          />
-        </Pressable>
-      </View>
-
-      <ImageBackground
-        source={data[0].image}
-        style={styles.imageHeaderContainer}
+    <View>
+      <Animated.ScrollView
+        // onScroll={e => console.log(e.nativeEvent.contentOffset.y)}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollA } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
       >
-        <View style={styles.overlayContainer}>
-          <Text style={styles.header}>{data[0].header}</Text>
+        <View style={styles.bannerContainer}>
+          <Animated.Image style={styles.banner(scrollA)} source={img1} />
         </View>
-      </ImageBackground>
-
-      <ScrollView
-        style={StyleSheet.create({
-          flex: 1,
-          backgroundColor: "#fff",
-          marginTop: pixelSizeVertical(10),
-          paddingRight: pixelSizeHorizontal(16),
-          paddingLeft: pixelSizeHorizontal(16),
-        })}
-      >
-        <Pressable style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>login</Text>
-        </Pressable>
-
-        <NavigationContainer independent={true}>
-          <Tab.Navigator
-            style={StyleSheet.create({
-              flexGrow: 1,
-              backgroundColor: "#000",
-            })}
-            tabBarOptions={{
-              activeTintColor: "#f0f",
-              inactiveTintColor: "#555",
-              activeBackgroundColor: "#fff",
-              inactiveBackgroundColor: "#999",
-              showLabel: true,
-              labelStyle: { fontSize: 14 },
-              showIcon: true,
-            }}
-            activeColor="#f0edf6"
-            inactiveColor="#3e2465"
-            barStyle={{ backgroundColor: "#694fad" }}
-          >
-            <Tab.Screen name="ClubsEvents" component={ClubsEvents} />
-            <Tab.Screen name="ClubsGallery" component={ClubsGallery} />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </ScrollView>
-
-      <Modal
-        isVisible={isSideMenuVisible}
-        onBackdropPress={toggleSideMenu} // Android back press
-        onSwipeComplete={toggleSideMenu} // Swipe to discard
-        animationIn="slideInRight" // Has others, we want slide in from the left
-        animationOut="slideOutRight" // When discarding the drawer
-        swipeDirection="left" // Discard the drawer with swipe to left
-        useNativeDriver // Faster animation
-        hideModalContentWhileAnimating // Better performance, try with/without
-        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
-        style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
-      >
-        <SideMenu
-          callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
-          navigation={navigation}
-        />
-      </Modal>
-
-      <StatusBar style="light" />
+        <Text style={styles.text}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
+          semper turpis. Ut in fringilla nisl, sit amet aliquet urna. Donec
+          sollicitudin libero sapien, ut accumsan justo venenatis et. Proin
+          iaculis ac dolor eget malesuada. Cras commodo, diam id semper sodales,
+          tortor leo suscipit leo, vitae dignissim velit turpis et diam. Proin
+          tincidunt euismod elit, at porttitor justo maximus vel. Proin viverra,
+          nibh non accumsan sollicitudin, arcu metus sagittis nunc, et tempor
+          tellus ligula et justo. Pellentesque ultrices fermentum efficitur.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nec
+          convallis nisl, et rhoncus mauris. Morbi consequat sem tellus, in
+          scelerisque lorem vehicula ut.
+          {"\n\n"}Nam vel imperdiet massa. Donec aliquet turpis quis orci
+          fermentum, eget egestas tellus suscipit. Sed commodo lectus ac augue
+          mattis, a pulvinar metus venenatis. Vestibulum cursus rhoncus mauris,
+          fringilla luctus risus eleifend ut. Vestibulum efficitur imperdiet
+          scelerisque. Pellentesque sit amet lorem bibendum, congue dolor
+          suscipit, bibendum est. Aenean leo nibh, varius vel felis nec,
+          sagittis posuere nunc. Vestibulum ante ipsum primis in faucibus orci
+          luctus et ultrices posuere cubilia curae; Duis ullamcorper laoreet
+          orci, ac tempus dui aliquet et. Morbi porta nisi sed augue vestibulum
+          tristique. Donec nisi ligula, efficitur at arcu et, sagittis imperdiet
+          urna. Sed sollicitudin nisi eget pulvinar ultricies. Ut sit amet dolor
+          luctus massa dapibus tincidunt non posuere odio. Aliquam sit amet
+          vehicula nisi. Lorem ipsum dolor sit amet, consectetur adipiscing
+          elit. Phasellus nec semper turpis. Ut in fringilla nisl, sit amet
+          aliquet urna. Donec sollicitudin libero sapien, ut accumsan justo
+          venenatis et. Proin iaculis ac dolor eget malesuada. Cras commodo,
+          diam id semper sodales, tortor leo suscipit leo, vitae dignissim velit
+          turpis et diam. Proin tincidunt euismod elit, at porttitor justo
+          maximus vel. Proin viverra, nibh non accumsan sollicitudin, arcu metus
+          sagittis nunc, et tempor tellus ligula et justo. Pellentesque ultrices
+          fermentum efficitur. Lorem ipsum dolor sit amet, consectetur
+          adipiscing elit. Praesent nec convallis nisl, et rhoncus mauris. Morbi
+          consequat sem tellus, in scelerisque lorem vehicula ut.
+          {"\n\n"}Nam vel imperdiet massa. Donec aliquet turpis quis orci
+          fermentum, eget egestas tellus suscipit. Sed commodo lectus ac augue
+          mattis, a pulvinar metus venenatis. Vestibulum cursus rhoncus mauris,
+          fringilla luctus risus eleifend ut. Vestibulum efficitur imperdiet
+          scelerisque. Pellentesque sit amet lorem bibendum, congue dolor
+          suscipit, bibendum est. Aenean leo nibh, varius vel felis nec,
+          sagittis posuere nunc. Vestibulum ante ipsum primis in faucibus orci
+          luctus et ultrices posuere cubilia curae; Duis ullamcorper laoreet
+          orci, ac tempus dui aliquet et. Morbi porta nisi sed augue vestibulum
+          tristique. Donec nisi ligula, efficitur at arcu et, sagittis imperdiet
+          urna. Sed sollicitudin nisi eget pulvinar ultricies. Ut sit amet dolor
+          luctus massa dapibus tincidunt non posuere odio. Aliquam sit amet
+          vehicula nisi.
+        </Text>
+      </Animated.ScrollView>
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#0C111F",
-    paddingTop: pixelSizeVertical(26),
+const styles = {
+  text: {
+    margin: 24,
+    fontSize: 16,
   },
-  imageHeaderContainer: {
-    height: pixelSizeVertical(120),
-    width: "100%",
+  bannerContainer: {
+    marginTop: -1000,
+    paddingTop: 1000,
+    alignItems: "center",
+    overflow: "hidden",
   },
-  overlayContainer: {
-    justifyContent: "center",
-    height: pixelSizeVertical(120),
-    width: "100%",
-    backgroundColor: "rgba(12, 17, 31, 0.7)",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-  },
-  header: {
-    fontSize: fontPixel(34),
-    fontWeight: 500,
-    color: "#DFE5F8",
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
-  },
-  loginButton: {
-    backgroundColor: "#C4FFF9",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  onlySpan: {
-    flexDirection: "row",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-  },
-  spanMultiline: {
-    flexDirection: "row",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    flexWrap: "wrap",
-  },
-  navigationLinkActive: {
-    color: "#07BEB8",
-    fontSize: fontPixel(34),
-    marginTop: pixelSizeVertical(6),
-    marginRight: pixelSizeHorizontal(26),
-    textTransform: "lowercase",
-    fontWeight: 700,
-    textDecorationLine: "underline",
-  },
-  navigationLinkInactive: {
-    color: "#07BEB8",
-    fontSize: fontPixel(34),
-    marginTop: pixelSizeVertical(6),
-    marginRight: pixelSizeHorizontal(26),
-    textTransform: "lowercase",
-    fontWeight: 700,
-    textDecorationLine: "underline",
-    opacity: 0.5,
-  },
-  sideMenuStyle: {
-    margin: 0,
-    width: width * 0.85, // SideMenu width
-    alignSelf: "flex-end",
-  },
-  headerContainer: {
-    marginTop: pixelSizeVertical(26),
-    marginBottom: pixelSizeVertical(16),
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-  },
-  hamburgerIcon: {
-    height: pixelSizeVertical(20),
-    width: pixelSizeHorizontal(40),
-  },
-});
+  banner: (scrollA) => ({
+    height: BANNER_H,
+    width: "200%",
+    transform: [
+      {
+        translateY: scrollA.interpolate({
+          inputRange: [-BANNER_H, 0, BANNER_H, BANNER_H + 1],
+          outputRange: [-BANNER_H / 2, 0, BANNER_H * 0.75, BANNER_H * 0.75],
+        }),
+      },
+      {
+        scale: scrollA.interpolate({
+          inputRange: [-BANNER_H, 0, BANNER_H, BANNER_H + 1],
+          outputRange: [2, 1, 0.5, 0.5],
+        }),
+      },
+    ],
+  }),
+};
+
+export default Test;

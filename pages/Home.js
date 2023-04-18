@@ -20,7 +20,8 @@ export default function Home({ navigation }) {
   const [menuItems] = useState([
     { name: "orientation" },
     { name: "clubs" },
-    { name: "map" },
+    { name: "department" },
+    { name: "test" },
     { name: "profile" },
     { name: "staff list" },
   ]);
