@@ -105,6 +105,7 @@ export default function Department({ navigation }) {
       </View>
       <ScrollView
         scrollEventThrottle={16}
+        stickyHeaderIndices={[1]}
         onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
         style={StyleSheet.create({
           marginTop: pixelSizeVertical(10),
@@ -116,35 +117,37 @@ export default function Department({ navigation }) {
           <Text style={styles.title}>{data[0].department}</Text>
         </View>
 
-        <View style={styles.navigationContainer}>
-          {data[0].navigations.length > 0 &&
-            data[0].navigations.map((link) => {
-              return (
-                <Pressable onPress={() => setTab(link.name)}>
-                  <Text
-                    style={
-                      link.name === tab
-                        ? styles.navigationLinkActive
-                        : styles.navigationLinkInactive
-                    }
-                  >
-                    {link.name}
-                  </Text>
-                  <View
-                    style={
-                      link.name === tab ? styles.navigationBorderActive : null
-                    }
-                  />
-                </Pressable>
-              );
-            })}
-        </View>
         <View
           style={{
-            marginRight: pixelSizeHorizontal(16),
-            marginLeft: pixelSizeHorizontal(16),
+            paddingRight: pixelSizeHorizontal(16),
+            paddingLeft: pixelSizeHorizontal(16),
+            backgroundColor: "#0C111F",
+            paddingBottom: pixelSizeVertical(12),
           }}
         >
+          <View style={styles.navigationContainer}>
+            {data[0].navigations.length > 0 &&
+              data[0].navigations.map((link) => {
+                return (
+                  <Pressable onPress={() => setTab(link.name)}>
+                    <Text
+                      style={
+                        link.name === tab
+                          ? styles.navigationLinkActive
+                          : styles.navigationLinkInactive
+                      }
+                    >
+                      {link.name}
+                    </Text>
+                    <View
+                      style={
+                        link.name === tab ? styles.navigationBorderActive : null
+                      }
+                    />
+                  </Pressable>
+                );
+              })}
+          </View>
           <View style={styles.navigationBorderInactive} />
         </View>
 
@@ -205,7 +208,6 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(28),
     fontWeight: "500",
     color: "#DFE5F8",
-    marginTop: pixelSizeVertical(16),
     marginBottom: pixelSizeVertical(30),
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
@@ -301,6 +303,7 @@ const styles = StyleSheet.create({
     marginTop: pixelSizeVertical(20),
     marginRight: pixelSizeHorizontal(16),
     marginLeft: pixelSizeHorizontal(16),
+    marginBottom: pixelSizeVertical(8),
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -309,6 +312,7 @@ const styles = StyleSheet.create({
     marginTop: pixelSizeVertical(20),
     marginRight: pixelSizeHorizontal(16),
     marginLeft: pixelSizeHorizontal(16),
+    marginBottom: pixelSizeVertical(8),
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
