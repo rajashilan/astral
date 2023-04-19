@@ -81,12 +81,12 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   headerContainer: {
-    marginTop: pixelSizeVertical(26),
+    marginTop: pixelSizeVertical(20),
     flexDirection: "row",
     justifyContent: "flex-end",
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
-    width: pixelSizeHorizontal(40),
+    width: pixelSizeHorizontal(30),
   },
 });

@@ -1,107 +1,110 @@
-import React, { useRef } from "react";
-import { View, ScrollView, Image, Animated, Text } from "react-native";
-import img1 from "../assets/club1.png";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+  useAnimatedScrollHandler,
+} from "react-native-reanimated";
 
-const BANNER_H = 350;
+export default function App() {
+  const lastContentOffset = useSharedValue(0);
+  const isScrolling = useSharedValue(false);
+  const translateY = useSharedValue(100);
 
-const Test = () => {
-  const scrollA = useRef(new Animated.Value(0)).current;
+  const actionBarStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: withTiming(translateY.value, {
+            duration: 300,
+            easing: Easing.inOut(Easing.ease),
+          }),
+        },
+      ],
+    };
+  });
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      if (
+        lastContentOffset.value > event.contentOffset.y &&
+        isScrolling.value
+      ) {
+        translateY.value = 100;
+        console.log("scrolling up");
+      } else if (
+        lastContentOffset.value < event.contentOffset.y &&
+        isScrolling.value
+      ) {
+        translateY.value = -100;
+        console.log("scrolling down");
+      }
+      lastContentOffset.value = event.contentOffset.y;
+    },
+    onBeginDrag: (e) => {
+      isScrolling.value = true;
+    },
+    onEndDrag: (e) => {
+      isScrolling.value = false;
+    },
+  });
+
   return (
-    <View>
+    <View style={styles.container}>
       <Animated.ScrollView
-        // onScroll={e => console.log(e.nativeEvent.contentOffset.y)}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollA } } }],
-          { useNativeDriver: true }
-        )}
         scrollEventThrottle={16}
+        onScroll={scrollHandler}
+        style={styles.scrollView}
       >
-        <View style={styles.bannerContainer}>
-          <Animated.Image style={styles.banner(scrollA)} source={img1} />
-        </View>
         <Text style={styles.text}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
-          semper turpis. Ut in fringilla nisl, sit amet aliquet urna. Donec
-          sollicitudin libero sapien, ut accumsan justo venenatis et. Proin
-          iaculis ac dolor eget malesuada. Cras commodo, diam id semper sodales,
-          tortor leo suscipit leo, vitae dignissim velit turpis et diam. Proin
-          tincidunt euismod elit, at porttitor justo maximus vel. Proin viverra,
-          nibh non accumsan sollicitudin, arcu metus sagittis nunc, et tempor
-          tellus ligula et justo. Pellentesque ultrices fermentum efficitur.
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nec
-          convallis nisl, et rhoncus mauris. Morbi consequat sem tellus, in
-          scelerisque lorem vehicula ut.
-          {"\n\n"}Nam vel imperdiet massa. Donec aliquet turpis quis orci
-          fermentum, eget egestas tellus suscipit. Sed commodo lectus ac augue
-          mattis, a pulvinar metus venenatis. Vestibulum cursus rhoncus mauris,
-          fringilla luctus risus eleifend ut. Vestibulum efficitur imperdiet
-          scelerisque. Pellentesque sit amet lorem bibendum, congue dolor
-          suscipit, bibendum est. Aenean leo nibh, varius vel felis nec,
-          sagittis posuere nunc. Vestibulum ante ipsum primis in faucibus orci
-          luctus et ultrices posuere cubilia curae; Duis ullamcorper laoreet
-          orci, ac tempus dui aliquet et. Morbi porta nisi sed augue vestibulum
-          tristique. Donec nisi ligula, efficitur at arcu et, sagittis imperdiet
-          urna. Sed sollicitudin nisi eget pulvinar ultricies. Ut sit amet dolor
-          luctus massa dapibus tincidunt non posuere odio. Aliquam sit amet
-          vehicula nisi. Lorem ipsum dolor sit amet, consectetur adipiscing
-          elit. Phasellus nec semper turpis. Ut in fringilla nisl, sit amet
-          aliquet urna. Donec sollicitudin libero sapien, ut accumsan justo
-          venenatis et. Proin iaculis ac dolor eget malesuada. Cras commodo,
-          diam id semper sodales, tortor leo suscipit leo, vitae dignissim velit
-          turpis et diam. Proin tincidunt euismod elit, at porttitor justo
-          maximus vel. Proin viverra, nibh non accumsan sollicitudin, arcu metus
-          sagittis nunc, et tempor tellus ligula et justo. Pellentesque ultrices
-          fermentum efficitur. Lorem ipsum dolor sit amet, consectetur
-          adipiscing elit. Praesent nec convallis nisl, et rhoncus mauris. Morbi
-          consequat sem tellus, in scelerisque lorem vehicula ut.
-          {"\n\n"}Nam vel imperdiet massa. Donec aliquet turpis quis orci
-          fermentum, eget egestas tellus suscipit. Sed commodo lectus ac augue
-          mattis, a pulvinar metus venenatis. Vestibulum cursus rhoncus mauris,
-          fringilla luctus risus eleifend ut. Vestibulum efficitur imperdiet
-          scelerisque. Pellentesque sit amet lorem bibendum, congue dolor
-          suscipit, bibendum est. Aenean leo nibh, varius vel felis nec,
-          sagittis posuere nunc. Vestibulum ante ipsum primis in faucibus orci
-          luctus et ultrices posuere cubilia curae; Duis ullamcorper laoreet
-          orci, ac tempus dui aliquet et. Morbi porta nisi sed augue vestibulum
-          tristique. Donec nisi ligula, efficitur at arcu et, sagittis imperdiet
-          urna. Sed sollicitudin nisi eget pulvinar ultricies. Ut sit amet dolor
-          luctus massa dapibus tincidunt non posuere odio. Aliquam sit amet
-          vehicula nisi.
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptas
+          dolor officiis, odit obcaecati dolorem autem, perspiciatis corrupti,
+          impedit veritatis quod harum error similique. Nesciunt vel molestiae
+          natus corrupti unde dolores. Enim officia nihil pariatur molestiae
+          ipsum tenetur soluta facere sequi optio praesentium. Et minima
+          cupiditate porro corrupti perferendis laborum deleniti autem
+          laboriosam eligendi impedit accusantium voluptas, perspiciatis, atque
+          sapiente. Fugit, delectus molestiae laborum minus eum amet nesciunt
+          autem, vitae excepturi blanditiis sunt deleniti. Fugiat beatae laborum
+          provident consectetur quod nobis officia deleniti amet omnis ullam
+          nisi commodi eius, cumque laboriosam corrupti impedit et perspiciatis
+          sequi quo itaque animi! Nesciunt, quo!
         </Text>
       </Animated.ScrollView>
+      <Animated.View style={[styles.action, actionBarStyle]}>
+        <Text style={styles.actionItem}>Comment</Text>
+        <Text style={styles.actionItem}>Like</Text>
+        <Text style={styles.actionItem}>Dislike</Text>
+      </Animated.View>
     </View>
   );
-};
+}
 
-const styles = {
-  text: {
-    margin: 24,
-    fontSize: 16,
-  },
-  bannerContainer: {
-    marginTop: -1000,
-    paddingTop: 1000,
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
     alignItems: "center",
-    overflow: "hidden",
+    justifyContent: "center",
   },
-  banner: (scrollA) => ({
-    height: BANNER_H,
-    width: "200%",
-    transform: [
-      {
-        translateY: scrollA.interpolate({
-          inputRange: [-BANNER_H, 0, BANNER_H, BANNER_H + 1],
-          outputRange: [-BANNER_H / 2, 0, BANNER_H * 0.75, BANNER_H * 0.75],
-        }),
-      },
-      {
-        scale: scrollA.interpolate({
-          inputRange: [-BANNER_H, 0, BANNER_H, BANNER_H + 1],
-          outputRange: [2, 1, 0.5, 0.5],
-        }),
-      },
-    ],
-  }),
-};
-
-export default Test;
+  scrollView: {
+    marginHorizontal: 20,
+  },
+  text: {
+    fontSize: 30,
+  },
+  action: {
+    flexDirection: "row",
+    borderWidth: 1,
+    borderRadius: 25,
+    padding: 15,
+    position: "absolute",
+    bottom: 5,
+    backgroundColor: "#000",
+    width: "50%",
+    justifyContent: "space-around",
+  },
+  actionItem: {
+    color: "#fff",
+  },
+});

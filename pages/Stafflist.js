@@ -6,9 +6,9 @@ import {
   Pressable,
   TextInput,
   FlatList,
-  SafeAreaView,
+  ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import SegmentedPicker from "react-native-segmented-picker";
 
@@ -24,7 +24,8 @@ import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 import { Image } from "expo-image";
-import { set } from "react-native-reanimated";
+
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
@@ -33,6 +34,10 @@ export default function Stafflist({ navigation }) {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [filterBy, setFilterBy] = useState("");
   const [search, setSearch] = useState("");
+
+  const [headerHeight, setHeaderHeight] = useState(300);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
 
   const [departments, setDepartments] = useState([
     {
@@ -270,9 +275,39 @@ export default function Stafflist({ navigation }) {
       </Pressable>
     );
 
+  const onLayout = (event) => {
+    const { x, y, height, width } = event.nativeEvent.layout;
+    setHeaderHeight(height);
+  };
+
+  useEffect(() => {
+    //if scroll height is more than header height and the header is not shown, show
+    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
+    else if (scrollHeight < headerHeight && showMiniHeader)
+      setShowMiniHeader(false);
+  }, [scrollHeight, showMiniHeader]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
+      <View
+        style={
+          showMiniHeader
+            ? styles.headerContainerShowMiniHeader
+            : styles.headerContainerHideMiniHeader
+        }
+      >
+        {showMiniHeader ? (
+          <Animated.View
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <Text style={styles.headerMini} numberOfLines={1}>
+              staff list
+            </Text>
+          </Animated.View>
+        ) : (
+          <Text style={styles.headerMiniInvisible}>title</Text>
+        )}
         <Pressable onPress={toggleSideMenu}>
           <Image
             style={styles.hamburgerIcon}
@@ -281,54 +316,69 @@ export default function Stafflist({ navigation }) {
           />
         </Pressable>
       </View>
-      <View style={styles.headerBottomContainer}>
-        <Text style={styles.header}>staff list</Text>
-        {filterButton}
-      </View>
 
-      <TextInput
-        style={styles.textInput}
-        placeholder="Search"
-        placeholderTextColor="#DBDBDB"
-        onChangeText={(newSearch) => setSearch(newSearch)}
-      />
-
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
+      <ScrollView
         showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        data={
-          filterBy === "" && search === ""
-            ? staffList
-            : filterBy !== "" && search === ""
-            ? staffList.filter((s) => s.department === filterBy)
-            : filterBy === "" && search !== ""
-            ? staffList.filter((s) =>
-                s.name.toLowerCase().includes(search.toLowerCase())
-              )
-            : staffList.filter(
-                (s) =>
-                  s.department === filterBy &&
+        scrollEventThrottle={16}
+        stickyHeaderIndices={[1]}
+        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      >
+        <View style={styles.headerBottomContainer} onLayout={onLayout}>
+          <Text style={styles.header}>staff list</Text>
+          {filterButton}
+        </View>
+
+        <View
+          style={{
+            backgroundColor: "#0C111F",
+          }}
+        >
+          <TextInput
+            style={styles.textInput}
+            placeholder="Search"
+            placeholderTextColor="#DBDBDB"
+            onChangeText={(newSearch) => setSearch(newSearch)}
+          />
+        </View>
+        <FlatList
+          scrollEnabled={false}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          data={
+            filterBy === "" && search === ""
+              ? staffList
+              : filterBy !== "" && search === ""
+              ? staffList.filter((s) => s.department === filterBy)
+              : filterBy === "" && search !== ""
+              ? staffList.filter((s) =>
                   s.name.toLowerCase().includes(search.toLowerCase())
-              )
-        }
-        renderItem={({ item }) => (
-          <>
-            <Pressable
-              onPress={() =>
-                navigation.navigate("Stafflistpage", {
-                  name: item.name,
-                  department: item.department,
-                  contact: item.contactDetails,
-                })
-              }
-            >
-              <Text style={styles.pageItems}>{item.name}</Text>
-            </Pressable>
-            <View style={styles.divider} />
-          </>
-        )}
-      />
+                )
+              : staffList.filter(
+                  (s) =>
+                    s.department === filterBy &&
+                    s.name.toLowerCase().includes(search.toLowerCase())
+                )
+          }
+          renderItem={({ item }) => (
+            <>
+              <Pressable
+                onPress={() =>
+                  navigation.navigate("Stafflistpage", {
+                    name: item.name,
+                    department: item.department,
+                    contact: item.contactDetails,
+                  })
+                }
+              >
+                <Text style={styles.pageItems}>{item.name}</Text>
+              </Pressable>
+              <View style={styles.divider} />
+            </>
+          )}
+        />
+      </ScrollView>
+
       <View style={styles.emptyView}></View>
       <Modal
         isVisible={isSideMenuVisible}
@@ -405,7 +455,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   headerContainer: {
-    marginTop: pixelSizeVertical(26),
+    marginTop: pixelSizeVertical(20),
     flexDirection: "row",
     justifyContent: "flex-end",
   },
@@ -416,7 +466,7 @@ const styles = StyleSheet.create({
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
-    width: pixelSizeHorizontal(40),
+    width: pixelSizeHorizontal(30),
   },
   textInput: {
     backgroundColor: "#1A2238",
@@ -425,7 +475,7 @@ const styles = StyleSheet.create({
     paddingTop: pixelSizeVertical(16),
     paddingBottom: pixelSizeVertical(16),
     marginTop: pixelSizeVertical(10),
-    marginBottom: pixelSizeVertical(24),
+    marginBottom: pixelSizeVertical(18),
     fontSize: fontPixel(16),
     fontWeight: "400",
     color: "#DFE5F8",
@@ -457,5 +507,34 @@ const styles = StyleSheet.create({
     flex: 1,
     height: pixelSizeVertical(30),
     backgroundColor: "#0C111F",
+  },
+  headerMini: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: width - 100,
+  },
+  headerMiniInvisible: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: "80%",
+    opacity: 0,
+  },
+  headerContainerShowMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerContainerHideMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
 });

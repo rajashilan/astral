@@ -9,13 +9,15 @@ import {
 import club4 from "../assets/club4.png";
 import member1 from "../assets/member1.png";
 import member2 from "../assets/member2.png";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 import { Image } from "expo-image";
+
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
@@ -36,6 +38,10 @@ import { ScrollView } from "react-native-gesture-handler";
 
 export default function ClubsPages({ navigation }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+
+  const [headerHeight, setHeaderHeight] = useState(300);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
 
   const [data, setData] = useState([
     {
@@ -62,12 +68,36 @@ export default function ClubsPages({ navigation }) {
 
   const handleJoin = () => {};
 
+  const onLayout = (event) => {
+    const { x, y, height, width } = event.nativeEvent.layout;
+    setHeaderHeight(height);
+  };
+
+  useEffect(() => {
+    //if scroll height is more than header height and the header is not shown, show
+    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
+    else if (scrollHeight < headerHeight && showMiniHeader)
+      setShowMiniHeader(false);
+  }, [scrollHeight, showMiniHeader]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
+      <View style={styles.headerContainerShowMiniHeader}>
         <Pressable onPress={handleNavigateBack}>
           <Text style={styles.backButton}>back</Text>
         </Pressable>
+        {showMiniHeader ? (
+          <Animated.View
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <Text style={styles.headerMini} numberOfLines={1}>
+              {data[0].header}
+            </Text>
+          </Animated.View>
+        ) : (
+          <Text style={styles.headerMiniInvisible}>title</Text>
+        )}
         <Pressable onPress={toggleSideMenu}>
           <Image
             style={styles.hamburgerIcon}
@@ -77,61 +107,87 @@ export default function ClubsPages({ navigation }) {
         </Pressable>
       </View>
 
-      <ImageBackground
-        source={data[0].image}
-        style={styles.imageHeaderContainer}
-      >
-        <View style={styles.overlayContainer}>
-          <Text style={styles.header}>{data[0].header}</Text>
-        </View>
-      </ImageBackground>
-
       <ScrollView
+        scrollEventThrottle={16}
+        stickyHeaderIndices={[2]}
+        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
         style={StyleSheet.create({
           flex: 1,
           marginTop: pixelSizeVertical(10),
-          paddingRight: pixelSizeHorizontal(16),
-          paddingLeft: pixelSizeHorizontal(16),
         })}
       >
-        <Pressable style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>join</Text>
-        </Pressable>
-
-        <View style={styles.navigationContainer}>
-          {data[0].navigations.length > 0 &&
-            data[0].navigations.map((link) => {
-              return (
-                <Pressable onPress={() => setTab(link.name)}>
-                  <Text
-                    style={
-                      link.name === tab
-                        ? styles.navigationLinkActive
-                        : styles.navigationLinkInactive
-                    }
-                  >
-                    {link.name}
-                  </Text>
-                  <View
-                    style={
-                      link.name === tab ? styles.navigationBorderActive : null
-                    }
-                  />
-                </Pressable>
-              );
-            })}
+        <View onLayout={onLayout}>
+          <ImageBackground
+            source={data[0].image}
+            style={styles.imageHeaderContainer}
+          >
+            <View style={styles.overlayContainer}>
+              <Text style={styles.header}>{data[0].header}</Text>
+            </View>
+          </ImageBackground>
         </View>
-        <View style={styles.navigationBorderInactive} />
 
-        {tab === "members" ? (
-          <ClubsMembers club={data[0].header} />
-        ) : tab === "gallery" ? (
-          <ClubsGallery club={data[0].header} />
-        ) : tab === "events" ? (
-          <ClubsEvents club={data[0].header} />
-        ) : tab === "details" ? (
-          <ClubsDetails club={data[0].header} />
-        ) : null}
+        <View
+          style={{
+            paddingRight: pixelSizeHorizontal(16),
+            paddingLeft: pixelSizeHorizontal(16),
+          }}
+        >
+          <Pressable style={styles.loginButton}>
+            <Text style={styles.loginButtonText}>join</Text>
+          </Pressable>
+        </View>
+
+        <View
+          style={{
+            paddingRight: pixelSizeHorizontal(16),
+            paddingLeft: pixelSizeHorizontal(16),
+            backgroundColor: "#0C111F",
+            paddingBottom: pixelSizeVertical(12),
+          }}
+        >
+          <View style={styles.navigationContainer}>
+            {data[0].navigations.length > 0 &&
+              data[0].navigations.map((link) => {
+                return (
+                  <Pressable onPress={() => setTab(link.name)}>
+                    <Text
+                      style={
+                        link.name === tab
+                          ? styles.navigationLinkActive
+                          : styles.navigationLinkInactive
+                      }
+                    >
+                      {link.name}
+                    </Text>
+                    <View
+                      style={
+                        link.name === tab ? styles.navigationBorderActive : null
+                      }
+                    />
+                  </Pressable>
+                );
+              })}
+          </View>
+          <View style={styles.navigationBorderInactive} />
+        </View>
+
+        <View
+          style={{
+            paddingRight: pixelSizeHorizontal(16),
+            paddingLeft: pixelSizeHorizontal(16),
+          }}
+        >
+          {tab === "members" ? (
+            <ClubsMembers club={data[0].header} />
+          ) : tab === "gallery" ? (
+            <ClubsGallery club={data[0].header} />
+          ) : tab === "events" ? (
+            <ClubsEvents club={data[0].header} />
+          ) : tab === "details" ? (
+            <ClubsDetails club={data[0].header} />
+          ) : null}
+        </View>
       </ScrollView>
 
       <Modal
@@ -241,7 +297,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   headerContainer: {
-    marginTop: pixelSizeVertical(26),
+    marginTop: pixelSizeVertical(20),
     marginBottom: pixelSizeVertical(16),
     flexDirection: "row",
     justifyContent: "space-between",
@@ -251,11 +307,45 @@ const styles = StyleSheet.create({
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
-    width: pixelSizeHorizontal(40),
+    width: pixelSizeHorizontal(30),
   },
   backButton: {
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#07BEB8",
+    marginTop: pixelSizeVertical(2),
+  },
+  headerMini: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    maxWidth: width - 180,
+    marginLeft: pixelSizeHorizontal(-10),
+  },
+  headerMiniInvisible: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: "80%",
+    opacity: 0,
+  },
+  headerContainerShowMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerContainerHideMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
 });

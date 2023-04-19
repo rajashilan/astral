@@ -6,9 +6,8 @@ import {
   Pressable,
   FlatList,
   ScrollView,
-  Animated,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import img1 from "../assets/club1.png";
 import img2 from "../assets/club2.png";
@@ -31,12 +30,16 @@ import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 import { Image } from "expo-image";
 
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+
 const { width } = Dimensions.get("window");
-const fontSize = 28;
-const fontWeight = "500";
 
 export default function Department({ navigation }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+
+  const [headerHeight, setHeaderHeight] = useState(300);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
 
   const [tab, setTab] = useState("all");
 
@@ -56,9 +59,39 @@ export default function Department({ navigation }) {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
+  const onLayout = (event) => {
+    const { x, y, height, width } = event.nativeEvent.layout;
+    setHeaderHeight(height);
+  };
+
+  useEffect(() => {
+    //if scroll height is more than header height and the header is not shown, show
+    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
+    else if (scrollHeight < headerHeight && showMiniHeader)
+      setShowMiniHeader(false);
+  }, [scrollHeight, showMiniHeader]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
+      <View
+        style={
+          showMiniHeader
+            ? styles.headerContainerShowMiniHeader
+            : styles.headerContainerHideMiniHeader
+        }
+      >
+        {showMiniHeader ? (
+          <Animated.View
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <Text style={styles.headerMini} numberOfLines={1}>
+              {data[0].department}
+            </Text>
+          </Animated.View>
+        ) : (
+          <Text style={styles.headerMiniInvisible}>title</Text>
+        )}
         <Pressable onPress={toggleSideMenu}>
           <Image
             style={styles.hamburgerIcon}
@@ -68,13 +101,18 @@ export default function Department({ navigation }) {
         </Pressable>
       </View>
       <ScrollView
+        scrollEventThrottle={16}
+        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
         style={StyleSheet.create({
           marginTop: pixelSizeVertical(10),
         })}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
       >
-        <Text style={styles.title}>{data[0].department}</Text>
+        <View onLayout={onLayout}>
+          <Text style={styles.title}>{data[0].department}</Text>
+        </View>
+
         <View style={styles.navigationContainer}>
           {data[0].navigations.length > 0 &&
             data[0].navigations.map((link) => {
@@ -161,8 +199,8 @@ const styles = StyleSheet.create({
     paddingTop: pixelSizeVertical(26),
   },
   title: {
-    fontSize: fontPixel(fontSize),
-    fontWeight: fontWeight,
+    fontSize: fontPixel(28),
+    fontWeight: "500",
     color: "#DFE5F8",
     marginTop: pixelSizeVertical(16),
     marginBottom: pixelSizeVertical(30),
@@ -175,7 +213,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   headerContainer: {
-    marginTop: pixelSizeVertical(26),
+    marginTop: pixelSizeVertical(20),
     flexDirection: "row",
     justifyContent: "flex-end",
     marginRight: pixelSizeHorizontal(16),
@@ -183,7 +221,7 @@ const styles = StyleSheet.create({
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
-    width: pixelSizeHorizontal(40),
+    width: pixelSizeHorizontal(30),
   },
   loginButton: {
     backgroundColor: "#C4FFF9",
@@ -240,5 +278,36 @@ const styles = StyleSheet.create({
     marginTop: pixelSizeVertical(-1),
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
+  },
+  headerMini: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: width - 100,
+  },
+  headerMiniInvisible: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: "80%",
+    opacity: 0,
+  },
+  headerContainerShowMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginRight: pixelSizeHorizontal(16),
+    marginLeft: pixelSizeHorizontal(16),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerContainerHideMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginRight: pixelSizeHorizontal(16),
+    marginLeft: pixelSizeHorizontal(16),
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
 });

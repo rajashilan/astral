@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     paddingTop: pixelSizeVertical(26),
   },
   headerContainer: {
-    marginTop: pixelSizeVertical(26),
+    marginTop: pixelSizeVertical(20),
     marginBottom: pixelSizeVertical(16),
     flexDirection: "row",
     justifyContent: "space-between",
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
-    width: pixelSizeHorizontal(40),
+    width: pixelSizeHorizontal(30),
   },
   backButton: {
     fontSize: fontPixel(22),

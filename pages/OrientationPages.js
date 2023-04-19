@@ -7,13 +7,15 @@ import {
   Dimensions,
 } from "react-native";
 import img1 from "../assets/example-img-1.png";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
+
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 import {
   fontPixel,
@@ -27,6 +29,10 @@ const { width } = Dimensions.get("window");
 
 export default function OrientationPages({ navigation }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+
+  const [headerHeight, setHeaderHeight] = useState(300);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
 
   const [data, setData] = useState([
     {
@@ -58,6 +64,36 @@ export default function OrientationPages({ navigation }) {
             },
           ],
         },
+        {
+          title: "What will you be doing?",
+          content:
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
+          images: [{ image: img1 }],
+        },
+        {
+          title: "What will you be doing?",
+          content:
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
+          images: [{ image: img1 }],
+        },
+        {
+          title: "What will you be doing?",
+          content:
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
+          images: [{ image: img1 }],
+        },
+        {
+          title: "What will you be doing?",
+          content:
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
+          images: [{ image: img1 }],
+        },
+        {
+          title: "What will you be doing?",
+          content:
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
+          images: [{ image: img1 }],
+        },
       ],
     },
   ]);
@@ -70,12 +106,36 @@ export default function OrientationPages({ navigation }) {
     navigation.navigate("Orientation");
   };
 
+  const onLayout = (event) => {
+    const { x, y, height, width } = event.nativeEvent.layout;
+    setHeaderHeight(height);
+  };
+
+  useEffect(() => {
+    //if scroll height is more than header height and the header is not shown, show
+    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
+    else if (scrollHeight < headerHeight && showMiniHeader)
+      setShowMiniHeader(false);
+  }, [scrollHeight, showMiniHeader]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
+      <View style={styles.headerContainerShowMiniHeader}>
         <Pressable onPress={handleNavigateBack}>
           <Text style={styles.backButton}>back</Text>
         </Pressable>
+        {showMiniHeader ? (
+          <Animated.View
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <Text style={styles.headerMini} numberOfLines={1}>
+              sadgasgdsagdsgdhsgdhsagdahgsagdhjsadgaj
+            </Text>
+          </Animated.View>
+        ) : (
+          <Text style={styles.headerMiniInvisible}>title</Text>
+        )}
         <Pressable onPress={toggleSideMenu}>
           <Image
             style={styles.hamburgerIcon}
@@ -86,6 +146,8 @@ export default function OrientationPages({ navigation }) {
       </View>
 
       <FlatList
+        scrollEventThrottle={16}
+        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         style={styles.list}
@@ -93,7 +155,9 @@ export default function OrientationPages({ navigation }) {
         data={data}
         renderItem={({ item }) => (
           <>
-            <Text style={styles.header}>{item.header}</Text>
+            <View onLayout={onLayout}>
+              <Text style={styles.header}>{item.header}</Text>
+            </View>
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.content}>{item.content}</Text>
             {item.images &&
@@ -194,7 +258,7 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(28),
     fontWeight: "500",
     color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(12),
+    marginBottom: pixelSizeVertical(8),
   },
   content: {
     fontSize: fontPixel(14),
@@ -208,7 +272,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#DFE5F8",
     marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(12),
+    marginBottom: pixelSizeVertical(6),
   },
   image: {
     width: "100%",
@@ -237,7 +301,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   headerContainer: {
-    marginTop: pixelSizeVertical(26),
+    marginTop: pixelSizeVertical(20),
     marginBottom: pixelSizeVertical(16),
     flexDirection: "row",
     justifyContent: "space-between",
@@ -245,11 +309,41 @@ const styles = StyleSheet.create({
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
-    width: pixelSizeHorizontal(40),
+    width: pixelSizeHorizontal(30),
   },
   backButton: {
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#07BEB8",
+    marginTop: pixelSizeVertical(4),
+  },
+  headerMini: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    maxWidth: width - 180,
+    marginLeft: pixelSizeHorizontal(-10),
+  },
+  headerMiniInvisible: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: "80%",
+    opacity: 0,
+  },
+  headerContainerShowMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerContainerHideMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
 });

@@ -6,7 +6,7 @@ import {
   Pressable,
   Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   fontPixel,
   widthPixel,
@@ -24,13 +24,43 @@ import Modal from "react-native-modal";
 import { Image } from "expo-image";
 
 import Header from "../components/Header";
+import { ScrollView } from "react-native-gesture-handler";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
 export default function Orientation({ navigation }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
+  const [headerHeight, setHeaderHeight] = useState(300);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
+
   const [pages, setPages] = useState([
+    { page: "first day", id: 1 },
+    { page: "second day", id: 2 },
+    { page: "campus tour", id: 3 },
+    { page: "first day", id: 1 },
+    { page: "second day", id: 2 },
+    { page: "campus tour", id: 3 },
+    { page: "first day", id: 1 },
+    { page: "second day", id: 2 },
+    { page: "campus tour", id: 3 },
+    { page: "first day", id: 1 },
+    { page: "second day", id: 2 },
+    { page: "campus tour", id: 3 },
+    { page: "first day", id: 1 },
+    { page: "second day", id: 2 },
+    { page: "campus tour", id: 3 },
+    { page: "first day", id: 1 },
+    { page: "second day", id: 2 },
+    { page: "campus tour", id: 3 },
+    { page: "first day", id: 1 },
+    { page: "second day", id: 2 },
+    { page: "campus tour", id: 3 },
+    { page: "first day", id: 1 },
+    { page: "second day", id: 2 },
+    { page: "campus tour", id: 3 },
     { page: "first day", id: 1 },
     { page: "second day", id: 2 },
     { page: "campus tour", id: 3 },
@@ -44,9 +74,39 @@ export default function Orientation({ navigation }) {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
+  const onLayout = (event) => {
+    const { x, y, height, width } = event.nativeEvent.layout;
+    setHeaderHeight(height);
+  };
+
+  useEffect(() => {
+    //if scroll height is more than header height and the header is not shown, show
+    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
+    else if (scrollHeight < headerHeight && showMiniHeader)
+      setShowMiniHeader(false);
+  }, [scrollHeight, showMiniHeader]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
+      <View
+        style={
+          showMiniHeader
+            ? styles.headerContainerShowMiniHeader
+            : styles.headerContainerHideMiniHeader
+        }
+      >
+        {showMiniHeader ? (
+          <Animated.View
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <Text style={styles.headerMini} numberOfLines={1}>
+              orientation
+            </Text>
+          </Animated.View>
+        ) : (
+          <Text style={styles.headerMiniInvisible}>title</Text>
+        )}
         <Pressable onPress={toggleSideMenu}>
           <Image
             style={styles.hamburgerIcon}
@@ -56,35 +116,43 @@ export default function Orientation({ navigation }) {
         </Pressable>
       </View>
 
-      <Header header={"orientation"} />
+      <ScrollView
+        scrollEventThrottle={16}
+        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+        showsVerticalScrollIndicator={false}
+      >
+        <View onLayout={onLayout}>
+          <Header header={"orientation"} />
+        </View>
+        <VideoPlayer
+          style={styles.video}
+          videoProps={{
+            resizeMode: ResizeMode.CONTAIN,
+            source: {
+              uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            },
+          }}
+        />
 
-      <VideoPlayer
-        style={styles.video}
-        videoProps={{
-          resizeMode: ResizeMode.CONTAIN,
-          source: {
-            uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-          },
-        }}
-      />
+        <Text style={styles.title}>
+          welcome to inti international college penang!
+        </Text>
 
-      <Text style={styles.title}>
-        welcome to inti international college penang!
-      </Text>
-
-      <FlatList
-        style={styles.list}
-        keyExtractor={(item, index) => index.toString()}
-        data={pages}
-        renderItem={({ item }) => (
-          <>
-            <Pressable onPress={handlePageItemPress}>
-              <Text style={styles.pageItems}>{item.page}</Text>
-            </Pressable>
-            <View style={styles.divider} />
-          </>
-        )}
-      />
+        <FlatList
+          style={styles.list}
+          scrollEnabled={false}
+          keyExtractor={(item, index) => index.toString()}
+          data={pages}
+          renderItem={({ item }) => (
+            <>
+              <Pressable onPress={handlePageItemPress}>
+                <Text style={styles.pageItems}>{item.page}</Text>
+              </Pressable>
+              <View style={styles.divider} />
+            </>
+          )}
+        />
+      </ScrollView>
 
       <Modal
         isVisible={isSideMenuVisible}
@@ -104,7 +172,6 @@ export default function Orientation({ navigation }) {
           navigation={navigation}
         />
       </Modal>
-
       <StatusBar style="light" />
     </View>
   );
@@ -126,9 +193,24 @@ const styles = StyleSheet.create({
     marginTop: pixelSizeVertical(18),
     marginBottom: pixelSizeVertical(26),
   },
+  headerMini: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: width - 100,
+  },
+  headerMiniInvisible: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: "80%",
+    opacity: 0,
+  },
   video: {
     alignSelf: "center",
-    width: 320,
+    width: width - 32,
     height: 200,
   },
   buttons: {
@@ -158,13 +240,22 @@ const styles = StyleSheet.create({
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
   },
-  headerContainer: {
-    marginTop: pixelSizeVertical(26),
+  headerContainerShowMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerContainerHideMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
     flexDirection: "row",
     justifyContent: "flex-end",
+    alignItems: "center",
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
-    width: pixelSizeHorizontal(40),
+    width: pixelSizeHorizontal(30),
   },
 });

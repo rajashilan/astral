@@ -5,8 +5,9 @@ import {
   FlatList,
   Pressable,
   Dimensions,
+  ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 
@@ -22,6 +23,8 @@ import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+
 const { width } = Dimensions.get("window");
 
 import {
@@ -34,6 +37,10 @@ import {
 
 export default function Clubs({ navigation }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+
+  const [headerHeight, setHeaderHeight] = useState(300);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
 
   const [data, setData] = useState([
     {
@@ -66,10 +73,40 @@ export default function Clubs({ navigation }) {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
+  const onLayout = (event) => {
+    const { x, y, height, width } = event.nativeEvent.layout;
+    setHeaderHeight(height);
+  };
+
+  useEffect(() => {
+    //if scroll height is more than header height and the header is not shown, show
+    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
+    else if (scrollHeight < headerHeight && showMiniHeader)
+      setShowMiniHeader(false);
+  }, [scrollHeight, showMiniHeader]);
+
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.headerContainer}>
+        <View
+          style={
+            showMiniHeader
+              ? styles.headerContainerShowMiniHeader
+              : styles.headerContainerHideMiniHeader
+          }
+        >
+          {showMiniHeader ? (
+            <Animated.View
+              entering={FadeIn.duration(300)}
+              exiting={FadeOut.duration(300)}
+            >
+              <Text style={styles.headerMini} numberOfLines={1}>
+                clubs
+              </Text>
+            </Animated.View>
+          ) : (
+            <Text style={styles.headerMiniInvisible}>title</Text>
+          )}
           <Pressable onPress={toggleSideMenu}>
             <Image
               style={styles.hamburgerIcon}
@@ -78,28 +115,40 @@ export default function Clubs({ navigation }) {
             />
           </Pressable>
         </View>
-        <Header header={"clubs"} />
 
-        <FlatList
-          keyExtractor={(item, index) => index.toString()}
+        <ScrollView
+          scrollEventThrottle={16}
+          onScroll={(event) =>
+            setScrollHeight(event.nativeEvent.contentOffset.y)
+          }
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          data={data}
-          renderItem={({ item }) => (
-            <>
-              <Pressable onPress={handlePageItemPress}>
-                <Image
-                  style={styles.image}
-                  source={item.image}
-                  contentFit="cover"
-                  transition={1000}
-                />
-                <Text style={styles.pageItems}>{item.title}</Text>
-              </Pressable>
-              <View style={styles.emptyView}></View>
-            </>
-          )}
-        />
+        >
+          <View onLayout={onLayout}>
+            <Header header={"clubs"} />
+          </View>
+
+          <FlatList
+            keyExtractor={(item, index) => index.toString()}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            scrollEnabled={false}
+            data={data}
+            renderItem={({ item }) => (
+              <>
+                <Pressable onPress={handlePageItemPress}>
+                  <Image
+                    style={styles.image}
+                    source={item.image}
+                    contentFit="cover"
+                    transition={1000}
+                  />
+                  <Text style={styles.pageItems}>{item.title}</Text>
+                </Pressable>
+                <View style={styles.emptyView}></View>
+              </>
+            )}
+          />
+        </ScrollView>
       </View>
       <Modal
         isVisible={isSideMenuVisible}
@@ -163,12 +212,42 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   headerContainer: {
-    marginTop: pixelSizeVertical(26),
+    marginTop: pixelSizeVertical(20),
     flexDirection: "row",
     justifyContent: "flex-end",
+    marginBottom: pixelSizeVertical(8),
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
-    width: pixelSizeHorizontal(40),
+    width: pixelSizeHorizontal(30),
+  },
+  headerMini: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: width - 100,
+  },
+  headerMiniInvisible: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: "80%",
+    opacity: 0,
+  },
+  headerContainerShowMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerContainerHideMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
 });
