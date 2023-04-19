@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(14),
     fontWeight: "400",
     color: "#C6CDE2",
-    lineHeight: 26,
+    lineHeight: 22,
     marginBottom: pixelSizeVertical(10),
   },
   subtitle: {

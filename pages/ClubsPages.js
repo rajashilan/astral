@@ -156,7 +156,10 @@ export default function ClubsPages({ navigation }) {
             {data[0].navigations.length > 0 &&
               data[0].navigations.map((link) => {
                 return (
-                  <Pressable onPress={() => setTab(link.name)}>
+                  <Pressable
+                    onPress={() => setTab(link.name)}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  >
                     <Text
                       style={
                         link.name === tab

@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(14),
     fontWeight: "400",
     color: "#C6CDE2",
+    lineHeight: 22,
   },
   emptyView: {
     flex: 1,

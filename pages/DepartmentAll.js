@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#C6CDE2",
     marginBottom: pixelSizeVertical(10),
+    lineHeight: 22,
   },
   linkContent: {
     fontSize: fontPixel(14),
