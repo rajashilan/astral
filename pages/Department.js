@@ -251,8 +251,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#0C111F",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginRight: pixelSizeHorizontal(16),
-    marginLeft: pixelSizeHorizontal(16),
   },
   navigationLinkActive: {
     color: "#DFE5F8",
@@ -272,8 +270,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: "100%",
     marginTop: pixelSizeVertical(10),
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
   },
   navigationBorderInactive: {
     borderBottomColor: "#DFE5F8",
@@ -281,8 +277,6 @@ const styles = StyleSheet.create({
     width: "100%",
     opacity: 0.5,
     marginTop: pixelSizeVertical(-1),
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
   },
   headerMini: {
     fontSize: fontPixel(22),
