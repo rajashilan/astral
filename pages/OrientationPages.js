@@ -121,7 +121,10 @@ export default function OrientationPages({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainerShowMiniHeader}>
-        <Pressable onPress={handleNavigateBack}>
+        <Pressable
+          onPress={handleNavigateBack}
+          hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
+        >
           <Text style={styles.backButton}>back</Text>
         </Pressable>
         {showMiniHeader ? (
@@ -130,13 +133,16 @@ export default function OrientationPages({ navigation }) {
             exiting={FadeOut.duration(300)}
           >
             <Text style={styles.headerMini} numberOfLines={1}>
-              sadgasgdsagdsgdhsgdhsagdahgsagdhjsadgaj
+              {data[0].header}
             </Text>
           </Animated.View>
         ) : (
           <Text style={styles.headerMiniInvisible}>title</Text>
         )}
-        <Pressable onPress={toggleSideMenu}>
+        <Pressable
+          onPress={toggleSideMenu}
+          hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
+        >
           <Image
             style={styles.hamburgerIcon}
             source={hamburgerIcon}
@@ -271,7 +277,7 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#DFE5F8",
-    marginTop: pixelSizeVertical(20),
+    marginTop: pixelSizeVertical(26),
     marginBottom: pixelSizeVertical(6),
   },
   image: {

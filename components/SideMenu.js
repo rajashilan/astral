@@ -55,7 +55,10 @@ export default class SideMenu extends React.Component {
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.closeContainer}>
-          <Pressable onPress={this.callParentScreenFunction}>
+          <Pressable
+            onPress={this.callParentScreenFunction}
+            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+          >
             <Image
               style={styles.closeIcon}
               source={closeIcon}

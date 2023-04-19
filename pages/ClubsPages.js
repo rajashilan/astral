@@ -83,7 +83,10 @@ export default function ClubsPages({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainerShowMiniHeader}>
-        <Pressable onPress={handleNavigateBack}>
+        <Pressable
+          onPress={handleNavigateBack}
+          hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
+        >
           <Text style={styles.backButton}>back</Text>
         </Pressable>
         {showMiniHeader ? (
@@ -98,7 +101,10 @@ export default function ClubsPages({ navigation }) {
         ) : (
           <Text style={styles.headerMiniInvisible}>title</Text>
         )}
-        <Pressable onPress={toggleSideMenu}>
+        <Pressable
+          onPress={toggleSideMenu}
+          hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
+        >
           <Image
             style={styles.hamburgerIcon}
             source={hamburgerIcon}

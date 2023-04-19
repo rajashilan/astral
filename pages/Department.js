@@ -92,7 +92,10 @@ export default function Department({ navigation }) {
         ) : (
           <Text style={styles.headerMiniInvisible}>title</Text>
         )}
-        <Pressable onPress={toggleSideMenu}>
+        <Pressable
+          onPress={toggleSideMenu}
+          hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
+        >
           <Image
             style={styles.hamburgerIcon}
             source={hamburgerIcon}
