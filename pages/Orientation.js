@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   pageItems: {
     fontSize: fontPixel(28),
     fontWeight: "500",
-    color: "#07BEB8",
+    color: "#C4FFF9",
     marginBottom: pixelSizeVertical(12),
   },
   divider: {

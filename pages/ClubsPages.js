@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
   },
   loginButton: {
-    backgroundColor: "#C4FFF9",
+    backgroundColor: "#07BEB8",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
     paddingTop: pixelSizeVertical(18),
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   backButton: {
     fontSize: fontPixel(22),
     fontWeight: "500",
-    color: "#07BEB8",
+    color: "#C4FFF9",
     marginTop: pixelSizeVertical(2),
   },
   headerMini: {

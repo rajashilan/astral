@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   loginButton: {
-    backgroundColor: "#C4FFF9",
+    backgroundColor: "#07BEB8",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
     paddingTop: pixelSizeVertical(18),
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   secondaryButton: {
-    color: "#07BEB8",
+    color: "#C4FFF9",
     fontSize: fontPixel(18),
     textTransform: "lowercase",
     fontWeight: 500,

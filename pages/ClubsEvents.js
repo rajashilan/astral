@@ -77,7 +77,11 @@ export default function ClubsEvents() {
   return (
     <View style={styles.container}>
       <View style={styles.onlySpan}>
-        <Pressable onPress={() => setInnerTab("past")}>
+        <Pressable
+          onPress={() => {
+            setInnerTab("past");
+          }}
+        >
           <Text
             style={
               innerTab === "past"
@@ -95,7 +99,9 @@ export default function ClubsEvents() {
                 ? styles.innerTabActive
                 : styles.innerTabInactive
             }
-            onPress={() => setInnerTab("future")}
+            onPress={() => {
+              setInnerTab("future");
+            }}
           >
             future
           </Text>
@@ -103,7 +109,7 @@ export default function ClubsEvents() {
       </View>
       <Pagination
         inactiveDotColor="#546593"
-        dotColor={"#07BEB8"}
+        dotColor={"#C4FFF9"}
         activeDotIndex={indexSelected}
         containerStyle={{
           paddingTop: 0,
@@ -159,14 +165,14 @@ const styles = StyleSheet.create({
   innerTabActive: {
     fontSize: fontPixel(22),
     fontWeight: "500",
-    color: "#07BEB8",
+    color: "#C4FFF9",
     marginTop: pixelSizeVertical(-8),
     marginBottom: pixelSizeVertical(20),
   },
   innerTabInactive: {
     fontSize: fontPixel(22),
     fontWeight: "500",
-    color: "#07BEB8",
+    color: "#C4FFF9",
     marginTop: pixelSizeVertical(-8),
     marginBottom: pixelSizeVertical(20),
     opacity: 0.5,
@@ -196,7 +202,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   loginButton: {
-    color: "#C4FFF9",
+    color: "#07BEB8",
     fontSize: fontPixel(78),
     textTransform: "lowercase",
     fontWeight: 700,

@@ -409,12 +409,12 @@ export default function Stafflist({ navigation }) {
       </Modal>
       <SegmentedPicker
         visible={isFilterVisible}
-        confirmTextColor="#07BEB8"
+        confirmTextColor="#C4FFF9"
         toolbarBackgroundColor="#1A2238"
         toolbarBorderColor="#283350"
         pickerItemTextColor="#DFE5F8"
         selectionBackgroundColor="#1A2238"
-        selectionBorderColor="#07BEB8"
+        selectionBorderColor="#C4FFF9"
         backgroundColor="#1A2238"
         options={[
           {
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
   pageItems: {
     fontSize: fontPixel(28),
     fontWeight: "500",
-    color: "#07BEB8",
+    color: "#C4FFF9",
     lineHeight: 36,
     marginLeft: pixelSizeVertical(2),
     marginRight: pixelSizeVertical(2),
@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
   filterButton: {
     fontSize: fontPixel(22),
     fontWeight: "500",
-    color: "#07BEB8",
+    color: "#C4FFF9",
     marginBottom: pixelSizeVertical(5),
   },
   emptyView: {

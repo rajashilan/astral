@@ -51,7 +51,7 @@ export default function ClubsMembers(props) {
       <Text style={styles.header}>{data[0].members} members</Text>
       <Pagination
         inactiveDotColor="#546593"
-        dotColor={"#07BEB8"}
+        dotColor={"#C4FFF9"}
         activeDotIndex={indexSelected}
         containerStyle={{
           paddingTop: 0,
@@ -85,12 +85,6 @@ export default function ClubsMembers(props) {
           </>
         )}
       />
-      <Pressable style={styles.button}>
-        <View style={styles.onlySpan}>
-          <Text style={styles.loginButtonNoUnderline}>j</Text>
-          <Text style={styles.loginButton}>oin</Text>
-        </View>
-      </Pressable>
       <View style={styles.emptyView} />
     </View>
   );

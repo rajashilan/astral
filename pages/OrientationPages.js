@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
   backButton: {
     fontSize: fontPixel(22),
     fontWeight: "500",
-    color: "#07BEB8",
+    color: "#C4FFF9",
     marginTop: pixelSizeVertical(4),
   },
   headerMini: {

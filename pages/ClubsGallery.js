@@ -47,7 +47,7 @@ export default function ClubsGallery() {
     <View style={styles.container}>
       <Pagination
         inactiveDotColor="#546593"
-        dotColor={"#07BEB8"}
+        dotColor={"#C4FFF9"}
         activeDotIndex={indexSelected}
         containerStyle={{
           paddingTop: 0,
