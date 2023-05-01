@@ -66,6 +66,7 @@ export default function ClubsMembers(props) {
       <Carousel
         layout="default"
         data={data[0].membersData}
+        disableIntervalMomentum={true}
         onSnapToItem={(index) => onSelect(index)}
         sliderWidth={width - 32}
         itemWidth={width - 32}

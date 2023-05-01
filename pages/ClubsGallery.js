@@ -62,6 +62,7 @@ export default function ClubsGallery() {
       <Carousel
         layout="default"
         data={data}
+        disableIntervalMomentum={true}
         onSnapToItem={(index) => onSelect(index)}
         sliderWidth={width - 32}
         itemWidth={width - 32}

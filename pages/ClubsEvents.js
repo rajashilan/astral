@@ -129,6 +129,7 @@ export default function ClubsEvents() {
         onSnapToItem={(index) => onSelect(index)}
         sliderWidth={width - 32}
         itemWidth={width - 32}
+        disableIntervalMomentum={true}
         renderItem={({ item, index }) => (
           <>
             {item.image && (
