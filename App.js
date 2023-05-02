@@ -3,11 +3,13 @@ import { StyleSheet, Text } from "react-native";
 import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import { TransitionPresets } from "@react-navigation/stack";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Test from "./pages/Test";
+import Main from "./pages/Main";
+import Signup from "./pages/Signup";
+import SignupDetails from "./pages/SignupDetails";
 
 import Orientation from "./pages/Orientation";
 import OrientationPages from "./pages/OrientationPages";
@@ -27,11 +29,35 @@ export default function App() {
         screenOptions={{
           header: () => null,
         }}
-        initialRouteName="login"
+        initialRouteName="Main"
       >
+        <Stack.Screen
+          name="Main"
+          component={Main}
+          options={{
+            headerShown: false,
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
+        />
         <Stack.Screen
           name="Login"
           component={Login}
+          options={{
+            headerShown: false,
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
+        />
+        <Stack.Screen
+          name="Signup"
+          component={Signup}
+          options={{
+            headerShown: false,
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
+        />
+        <Stack.Screen
+          name="SignupDetails"
+          component={SignupDetails}
           options={{
             headerShown: false,
             ...TransitionPresets.SlideFromRightIOS,
