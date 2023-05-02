@@ -10,6 +10,7 @@ import Test from "./pages/Test";
 import Main from "./pages/Main";
 import Signup from "./pages/Signup";
 import SignupDetails from "./pages/SignupDetails";
+import SignupExtra from "./pages/SignupExtra";
 
 import Orientation from "./pages/Orientation";
 import OrientationPages from "./pages/OrientationPages";
@@ -58,6 +59,14 @@ export default function App() {
         <Stack.Screen
           name="SignupDetails"
           component={SignupDetails}
+          options={{
+            headerShown: false,
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
+        />
+        <Stack.Screen
+          name="SignupExtra"
+          component={SignupExtra}
           options={{
             headerShown: false,
             ...TransitionPresets.SlideFromRightIOS,
