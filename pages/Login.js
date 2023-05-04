@@ -1,4 +1,11 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  SafeAreaView,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import logo from "../assets/logo.png";
@@ -15,6 +22,10 @@ import { TouchableWithoutFeedback } from "react-native-web";
 export default function Login({ navigation }) {
   const handleLogin = () => {
     navigation.replace("Home");
+  };
+
+  const handleSignup = () => {
+    navigation.replace("Signup");
   };
 
   const [email, setEmail] = useState("");
@@ -41,10 +52,13 @@ export default function Login({ navigation }) {
       <Pressable style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>login</Text>
       </Pressable>
-      <TouchableWithoutFeedback>
+      <Pressable
+        hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
+        onPress={handleSignup}
+      >
         <Text style={styles.secondaryButton}>signup instead</Text>
-      </TouchableWithoutFeedback>
-      <StatusBar style="light" />
+      </Pressable>
+      <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
   );
 }

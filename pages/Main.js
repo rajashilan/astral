@@ -78,7 +78,7 @@ export default function Main({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Image
         style={styles.image}
         source={logo}
@@ -127,9 +127,13 @@ export default function Main({ navigation }) {
         <Pressable style={styles.signupButton} onPress={handleSignup}>
           <Text style={styles.loginButtonText}>signup</Text>
         </Pressable>
-        <StatusBar style="light" />
+        <StatusBar
+          style="light"
+          translucent={false}
+          backgroundColor="#0C111F"
+        />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

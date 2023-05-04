@@ -1,4 +1,11 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  SafeAreaView,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useRef } from "react";
 import logo from "../assets/logo.png";
@@ -22,6 +29,10 @@ const db = firebase.firestore();
 export default function Signup({ navigation }) {
   const handleNext = () => {
     navigation.replace("SignupDetails");
+  };
+
+  const handleLogin = () => {
+    navigation.replace("Login");
   };
 
   const [email, setEmail] = useState("");
@@ -421,9 +432,12 @@ export default function Signup({ navigation }) {
         </Animated.View>
       ) : null}
 
-      <TouchableWithoutFeedback>
+      <Pressable
+        hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
+        onPress={handleLogin}
+      >
         <Text style={styles.secondaryButton}>login instead</Text>
-      </TouchableWithoutFeedback>
+      </Pressable>
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
   );

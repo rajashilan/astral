@@ -175,7 +175,7 @@ export default function Orientation({ navigation }) {
           navigation={navigation}
         />
       </Modal>
-      <StatusBar style="light" />
+      <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
   );
 }

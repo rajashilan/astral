@@ -44,7 +44,7 @@ export default function Home({ navigation }) {
           </Pressable>
         )}
       />
-      <StatusBar style="light" />
+      <StatusBar style="light" translucent={false} backgroundColor="#363BB1" />
     </View>
   );
 }

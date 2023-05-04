@@ -196,7 +196,7 @@ export default function Department({ navigation }) {
         />
       </Modal>
 
-      <StatusBar style="light" />
+      <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
   );
 }
