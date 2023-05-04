@@ -22,7 +22,9 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import passwordShow from "../assets/password_show.png";
 import passwordHide from "../assets/password_hide.png";
 
-export default function SignupDetails({ navigation }) {
+export default function SignupDetails({ navigation, route }) {
+  const { college, campus, department, intake } = route.params;
+
   const handleNext = () => {
     navigation.replace("SignupExtra");
   };
@@ -53,7 +55,7 @@ export default function SignupDetails({ navigation }) {
         <View style={styles.progressActive} />
         <View style={styles.progressInactive} />
       </View>
-      <Text style={styles.title}>Now for your details.</Text>
+      <Text style={styles.title}>Now for your details</Text>
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
@@ -202,7 +204,7 @@ export default function SignupDetails({ navigation }) {
             <Text style={styles.disclaimerLink}>Privacy Policy</Text>
           </Pressable>
         </View>
-        <Pressable onPress={() => navigation.replace("Main")}>
+        <Pressable onPress={() => navigation.replace("Signup")}>
           <Text style={styles.tertiaryButton}>back</Text>
         </Pressable>
         <StatusBar

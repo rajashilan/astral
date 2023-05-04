@@ -27,35 +27,19 @@ import { firebase } from "../src/firebase/config";
 const db = firebase.firestore();
 
 export default function Signup({ navigation }) {
-  const handleNext = () => {
-    navigation.replace("SignupDetails");
-  };
-
-  const handleLogin = () => {
-    navigation.replace("Login");
-  };
-
   const [email, setEmail] = useState("");
 
-  const [colleges, setColleges] = useState(["INTI", "Disted"]);
+  const [colleges, setColleges] = useState([]);
   const [selectedCollege, setSelectedCollege] = useState("");
 
-  const [campuses, setCampuses] = useState(["INTI Penang", "INTI Subang"]);
+  const [campuses, setCampuses] = useState([]);
   const [selectedCampus, setSelectedCampus] = useState("");
 
-  const [departments, setDepartments] = useState([
-    "Computing",
-    "Engineering",
-    "Medical",
-  ]);
+  const [departments, setDepartments] = useState([]);
 
   const [selectedDepartment, setSelectedDepartment] = useState("");
 
-  const [intakeMonths, setIntakeMonths] = useState([
-    "Jun 2020",
-    "Aug 2020",
-    "Dec 2020",
-  ]);
+  const [intakeMonths, setIntakeMonths] = useState([]);
   const [intakeYears] = useState([
     2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024,
   ]);
@@ -64,6 +48,19 @@ export default function Signup({ navigation }) {
 
   const departmentDropDownRef = useRef({});
   const campusDropDownRef = useRef({});
+
+  const handleNext = () => {
+    navigation.navigate("SignupDetails", {
+      college: selectedCollege,
+      campus: selectedCampus,
+      department: selectedDepartment,
+      intake: `${selectedIntakeMonth} ${selectedIntakeYear}`,
+    });
+  };
+
+  const handleLogin = () => {
+    navigation.replace("Login");
+  };
 
   const resetAllForCollege = () => {
     setSelectedCampus("");
@@ -432,10 +429,7 @@ export default function Signup({ navigation }) {
         </Animated.View>
       ) : null}
 
-      <Pressable
-        hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
-        onPress={handleLogin}
-      >
+      <Pressable onPress={handleLogin}>
         <Text style={styles.secondaryButton}>login instead</Text>
       </Pressable>
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
