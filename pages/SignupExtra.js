@@ -7,7 +7,7 @@ import {
   Button,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
 import { Image } from "expo-image";
 import {
@@ -19,6 +19,8 @@ import {
 } from "../utils/responsive-font";
 import { TouchableWithoutFeedback } from "react-native-web";
 import * as ImagePicker from "expo-image-picker";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../utils/toast-config";
 
 export default function SignupExtra({ navigation }) {
   const handleNext = () => {
@@ -55,9 +57,7 @@ export default function SignupExtra({ navigation }) {
         <View style={styles.progressInactive} />
         <View style={styles.progressActive} />
       </View>
-      <Text style={styles.welcomeText}>
-        Welcome, {"\n"} Raja Shilan &#128075;
-      </Text>
+      <Text style={styles.welcomeText}>Welcome to astral! &#128075;</Text>
 
       <Text style={styles.title}>A few finishing touches.</Text>
       <Text style={styles.disclaimer}>
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   welcomeText: {
-    fontSize: fontPixel(34),
+    fontSize: fontPixel(32),
     fontWeight: "700",
     color: "#DFE5F8",
     marginBottom: pixelSizeVertical(24),
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   progressActive: {
     display: "flex",
-    width: pixelSizeHorizontal(44),
+    width: pixelSizeHorizontal(50),
     height: pixelSizeVertical(16),
     backgroundColor: "#C4FFF9",
     borderRadius: 5,
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   },
   progressInactive: {
     display: "flex",
-    width: pixelSizeHorizontal(44),
+    width: pixelSizeHorizontal(50),
     height: pixelSizeVertical(16),
     backgroundColor: "#232D4A",
     borderRadius: 5,

@@ -19,6 +19,8 @@ import {
 } from "../utils/responsive-font";
 import { TouchableWithoutFeedback } from "react-native-web";
 import SelectDropdown from "react-native-select-dropdown";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../utils/toast-config";
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
@@ -46,6 +48,12 @@ export default function Signup({ navigation }) {
   const [selectedIntakeMonth, setSelectedIntakeMonth] = useState("");
   const [selectedIntakeYear, setSelectedIntakeYear] = useState(0);
 
+  const [collegeSuffix, setCollegeSuffix] = useState("");
+
+  const [loadingColleges, setLoadingColleges] = useState(false);
+  const [loadingCampuses, setLoadingCampuses] = useState(false);
+  const [loadingCampusDetails, setLoadingCampusDetails] = useState(false);
+
   const departmentDropDownRef = useRef({});
   const campusDropDownRef = useRef({});
 
@@ -55,6 +63,7 @@ export default function Signup({ navigation }) {
       campus: selectedCampus,
       department: selectedDepartment,
       intake: `${selectedIntakeMonth} ${selectedIntakeYear}`,
+      suffix: collegeSuffix,
     });
   };
 
@@ -77,7 +86,9 @@ export default function Signup({ navigation }) {
     if (selectedCampus) departmentDropDownRef.current.reset();
   };
 
+  //getting college details on load
   useEffect(() => {
+    setLoadingColleges(true);
     db.collection("colleges")
       .get()
       .then((data) => {
@@ -86,27 +97,65 @@ export default function Signup({ navigation }) {
           colleges.push(doc.data().name);
         });
         setColleges(colleges);
+        setLoadingColleges(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        setLoadingColleges(false);
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+        console.error(error);
+      });
   }, []);
 
+  //getting campus and suffix details on college select
   useEffect(() => {
     resetAllForCollege();
+    setLoadingCampuses(true);
 
-    db.collection("campuses")
-      .where("college", "==", selectedCollege)
+    db.collection("colleges")
+      .where("name", "==", selectedCollege)
       .get()
       .then((data) => {
-        let campuses = [];
         data.forEach((doc) => {
-          campuses.push(doc.data().name);
+          setCollegeSuffix(doc.data().suffix);
         });
-        setCampuses(campuses);
+
+        db.collection("campuses")
+          .where("college", "==", selectedCollege)
+          .get()
+          .then((data) => {
+            let campuses = [];
+            data.forEach((doc) => {
+              campuses.push(doc.data().name);
+            });
+            setCampuses(campuses);
+            setLoadingCampuses(false);
+          })
+          .catch((error) => {
+            setLoadingCampuses(false);
+            Toast.show({
+              type: "error",
+              text1: "Something went wrong",
+            });
+            console.error(error);
+          });
+      })
+      .catch((error) => {
+        setLoadingCampuses(false);
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+        console.error(error);
       });
   }, [selectedCollege]);
 
+  //getting departments and intakes details on campus select
   useEffect(() => {
     resetAllForCampus();
+    setLoadingCampusDetails(true);
 
     db.collection("campuses")
       .where("name", "==", selectedCampus)
@@ -126,6 +175,15 @@ export default function Signup({ navigation }) {
 
         setDepartments(departments);
         setIntakeMonths(intakes);
+        setLoadingCampusDetails(false);
+      })
+      .catch((error) => {
+        setLoadingCampusDetails(false);
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+        console.error(error);
       });
   }, [selectedCampus]);
 
@@ -148,9 +206,12 @@ export default function Signup({ navigation }) {
         searchInputStyle={{
           backgroundColor: "#232D4A",
         }}
+        disabled={loadingColleges}
         searchPlaceHolder="Search colleges..."
         searchInputTxtColor="#DFE5F8"
-        defaultButtonText={"Select your college"}
+        defaultButtonText={
+          loadingColleges ? "Loading colleges..." : "Select your college"
+        }
         showsVerticalScrollIndicator={true}
         buttonStyle={{
           backgroundColor: "#1A2238",
@@ -208,7 +269,10 @@ export default function Signup({ navigation }) {
             searchPlaceHolder="Search campuses..."
             searchInputTxtColor="#DFE5F8"
             showsVerticalScrollIndicator={true}
-            defaultButtonText={"Select your campus"}
+            disabled={loadingCampuses}
+            defaultButtonText={
+              loadingCampuses ? "Loading campuses..." : "Select your campus"
+            }
             buttonStyle={{
               backgroundColor: "#1A2238",
               marginTop: pixelSizeVertical(10),
@@ -269,7 +333,12 @@ export default function Signup({ navigation }) {
             searchPlaceHolder="Search departments..."
             searchInputTxtColor="#DFE5F8"
             showsVerticalScrollIndicator={true}
-            defaultButtonText={"Select your department"}
+            disabled={loadingCampusDetails}
+            defaultButtonText={
+              loadingCampusDetails
+                ? "Loading departments..."
+                : "Select your department"
+            }
             buttonStyle={{
               backgroundColor: "#1A2238",
               marginTop: pixelSizeVertical(10),
@@ -432,6 +501,7 @@ export default function Signup({ navigation }) {
       <Pressable onPress={handleLogin}>
         <Text style={styles.secondaryButton}>login instead</Text>
       </Pressable>
+      <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
   );
@@ -505,7 +575,7 @@ const styles = StyleSheet.create({
   },
   progressActive: {
     display: "flex",
-    width: pixelSizeHorizontal(44),
+    width: pixelSizeHorizontal(50),
     height: pixelSizeVertical(16),
     backgroundColor: "#C4FFF9",
     borderRadius: 5,
@@ -514,7 +584,7 @@ const styles = StyleSheet.create({
   },
   progressInactive: {
     display: "flex",
-    width: pixelSizeHorizontal(44),
+    width: pixelSizeHorizontal(50),
     height: pixelSizeVertical(16),
     backgroundColor: "#232D4A",
     borderRadius: 5,
