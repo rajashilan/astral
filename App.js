@@ -11,6 +11,7 @@ import Main from "./pages/Main";
 import Signup from "./pages/Signup";
 import SignupDetails from "./pages/SignupDetails";
 import SignupExtra from "./pages/SignupExtra";
+import ForgotPassword from "./pages/ForgotPassword";
 
 import Orientation from "./pages/Orientation";
 import OrientationPages from "./pages/OrientationPages";
@@ -43,6 +44,14 @@ export default function App() {
         <Stack.Screen
           name="Login"
           component={Login}
+          options={{
+            headerShown: false,
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
           options={{
             headerShown: false,
             ...TransitionPresets.SlideFromRightIOS,

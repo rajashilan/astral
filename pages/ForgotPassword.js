@@ -25,80 +25,58 @@ import { toastConfig } from "../utils/toast-config";
 
 import { firebase } from "../src/firebase/config";
 
-export default function Login({ navigation, route }) {
+export default function ForgotPassword({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({
     email: undefined,
-    password: undefined,
     general: undefined,
   });
 
   const emailRegex =
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;
 
-  const handleLogin = () => {
+  const handleSubmit = () => {
     let errors = [...errors];
 
     if (!email.trim()) errors.email = "Please enter your email address";
     else if (email && !email.match(emailRegex))
       errors.email = "Please enter a valid email address";
 
-    if (!password.trim()) errors.password = "Please enter your password";
-
-    if (!errors.email && !errors.password) {
+    if (!errors.email) {
       setLoading(true);
 
       firebase
         .auth()
-        .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
-        .then((authUser) => {
-          if (authUser.user.emailVerified) {
-          } else {
-            Toast.show({
-              type: "neutral",
-              text1:
-                "Oops, please verify your email to complete your registration!",
-            });
-          }
+        .sendPasswordResetEmail(email.trim().toLowerCase())
+        .then(() => {
           setLoading(false);
+          Toast.show({
+            type: "success",
+            text1: "Email sent successfully!",
+          });
         })
-        .catch(function (error) {
-          console.error(error);
-          errors.general = "Invalid user credentials. Please try again.";
+        .catch((error) => {
+          if (error.code === "auth/user-not-found")
+            errors.general = "Please enter a registered email address";
+          else
+            Toast.show({
+              type: "error",
+              text1: "Something went wrong",
+            });
           setLoading(false);
         });
     }
 
     setErrors(errors);
-
-    //navigation.replace("Home");
   };
 
-  const handleSignup = () => {
-    navigation.replace("Signup");
-  };
-
-  // useEffect(() => {
-  //   const usersRef = firebase.firestore().collection("users");
-  //   firebase.auth().onAuthStateChanged((user) => {
-  //     if (user) {
-  //       Toast.show({
-  //         type: "success",
-  //         text1: user.emailVerified,
-  //       });
-  //     } else {
-  //       Toast.show({
-  //         type: "error",
-  //         text1: "Not logged in",
-  //       });
-  //     }
-  //   });
-  // }, []);
-
-  let loginInputs = (
-    <>
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Forgot your password?</Text>
+      <Text style={styles.content}>
+        No worries! We'll send you an email where you can reset your password.
+      </Text>
       <TextInput
         style={styles.textInput}
         placeholder="Email"
@@ -109,83 +87,33 @@ export default function Login({ navigation, route }) {
       />
       {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
 
-      <TextInput
-        style={styles.textInput}
-        placeholder="Password"
-        secureTextEntry={true}
-        placeholderTextColor="#DBDBDB"
-        value={password}
-        editable={!loading}
-        onChangeText={(password) => setPassword(password)}
-      />
-      {errors.password ? (
-        <Text style={styles.error}>{errors.password}</Text>
-      ) : null}
       <Pressable
         style={loading ? styles.loginButtonDisabled : styles.loginButton}
-        onPress={handleLogin}
+        onPress={handleSubmit}
       >
         <Text
           style={
             loading ? styles.loginButtonLoadingText : styles.loginButtonText
           }
         >
-          {loading ? "logging you in..." : "login"}
+          {loading ? "sending..." : "send"}
         </Text>
       </Pressable>
       {errors.general ? (
         <Text style={styles.errorUnderButton}>{errors.general}</Text>
       ) : null}
 
-      <Pressable onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={styles.forgotPasswordButton}>forgot password?</Text>
+      <Pressable
+        onPress={() => {
+          navigation.goBack();
+        }}
+      >
+        <Text style={styles.tertiaryButton}>back</Text>
       </Pressable>
-
-      <Pressable onPress={handleSignup}>
-        <Text style={styles.secondaryButton}>signup instead</Text>
-      </Pressable>
-    </>
-  );
-
-  let loginDisplay = route.params?.signedUp ? (
-    <ImageBackground
-      source={rocketBg}
-      style={styles.imageBackground}
-      transition={3000}
-    >
-      <Image
-        style={styles.image}
-        source={logo}
-        contentFit="cover"
-        transition={1000}
-      />
-      <Text style={styles.welcomeTitle}>
-        Wohoo! Welcome to astral! &#128075;
-      </Text>
-      <Text style={styles.welcomeSubheading}>
-        You’re one step away from convenience! We have sent you a verification
-        email. Please click on the link to complete your registration, and
-        you'll be off!
-      </Text>
-      {loginInputs}
-      <Toast config={toastConfig} />
-      <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </ImageBackground>
-  ) : (
-    <View style={styles.container}>
-      <Image
-        style={styles.image}
-        source={logo}
-        contentFit="cover"
-        transition={1000}
-      />
-      {loginInputs}
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
   );
-
-  return <>{loginDisplay}</>;
 }
 
 const styles = StyleSheet.create({
@@ -265,15 +193,8 @@ const styles = StyleSheet.create({
     color: "#C4FFF9",
     fontSize: fontPixel(18),
     textTransform: "lowercase",
-    fontWeight: "500",
+    fontWeight: 500,
     textDecorationLine: "underline",
-  },
-  forgotPasswordButton: {
-    color: "#C4FFF9",
-    fontSize: fontPixel(14),
-    textTransform: "lowercase",
-    fontWeight: "400",
-    marginBottom: pixelSizeVertical(34),
   },
   welcomeTitle: {
     fontSize: fontPixel(22),
@@ -308,6 +229,28 @@ const styles = StyleSheet.create({
     color: "#a3222d",
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
+    textAlign: "center",
+  },
+  tertiaryButton: {
+    color: "#A7AFC7",
+    fontSize: fontPixel(22),
+    textTransform: "lowercase",
+    fontWeight: "400",
+    textAlign: "center",
+  },
+  title: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginTop: pixelSizeVertical(18),
+    marginBottom: pixelSizeVertical(6),
+    textAlign: "center",
+  },
+  content: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#A7AFC7",
+    marginBottom: pixelSizeVertical(20),
     textAlign: "center",
   },
 });
