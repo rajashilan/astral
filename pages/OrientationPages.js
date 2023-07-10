@@ -7,6 +7,7 @@ import {
   Dimensions,
 } from "react-native";
 import img1 from "../assets/example-img-1.png";
+import img2 from "../assets/member2.png";
 import React, { useState, useEffect } from "react";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
@@ -68,7 +69,7 @@ export default function OrientationPages({ navigation }) {
           title: "What will you be doing?",
           content:
             "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
-          images: [{ image: img1 }],
+          images: [{ image: img1 }, { image: img2 }],
         },
         {
           title: "What will you be doing?",
@@ -252,7 +253,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#0C111F",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(26),
   },
   header: {
     fontSize: fontPixel(34),

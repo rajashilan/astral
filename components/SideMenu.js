@@ -31,9 +31,6 @@ export default class SideMenu extends React.Component {
         name: "department",
       },
       {
-        name: "map",
-      },
-      {
         name: "profile",
       },
       {

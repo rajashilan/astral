@@ -54,14 +54,15 @@ export default function Login({ navigation, route }) {
         .auth()
         .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
         .then((authUser) => {
-          if (authUser.user.emailVerified) {
-          } else {
-            Toast.show({
-              type: "neutral",
-              text1:
-                "Oops, please verify your email to complete your registration!",
-            });
-          }
+          // if (authUser.user.emailVerified) {
+          // } else {
+          //   Toast.show({
+          //     type: "neutral",
+          //     text1:
+          //       "Oops, please verify your email to complete your registration!",
+          //   });
+          // }
+          navigation.replace("Home");
           setLoading(false);
         })
         .catch(function (error) {
@@ -72,8 +73,6 @@ export default function Login({ navigation, route }) {
     }
 
     setErrors(errors);
-
-    //navigation.replace("Home");
   };
 
   const handleSignup = () => {

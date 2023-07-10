@@ -227,7 +227,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    paddingTop: pixelSizeVertical(26),
   },
   imageHeaderContainer: {
     height: pixelSizeVertical(120),

@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   fontPixel,
   widthPixel,
@@ -16,12 +16,13 @@ import {
 } from "../utils/responsive-font";
 import { StatusBar } from "expo-status-bar";
 
+import { firebase } from "../src/firebase/config";
+
 export default function Home({ navigation }) {
   const [menuItems] = useState([
     { name: "orientation" },
     { name: "clubs" },
     { name: "department" },
-    { name: "test" },
     { name: "profile" },
     { name: "staff list" },
   ]);
@@ -31,6 +32,14 @@ export default function Home({ navigation }) {
     if (name === "staff list") navigation.replace("Stafflist");
     else navigation.replace(menuItem.trim());
   };
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log("user logged");
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.container}>

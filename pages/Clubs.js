@@ -182,7 +182,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#0C111F",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(26),
   },
   header: {
     fontSize: fontPixel(42),
