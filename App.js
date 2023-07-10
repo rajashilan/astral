@@ -24,6 +24,11 @@ import Stafflistpage from "./pages/Stafflistpage";
 
 const Stack = createStackNavigator();
 
+const animationConfig = {
+  animation: "timing",
+  config: { duration: 0 },
+};
+
 export default function App() {
   return (
     <NavigationContainer>
@@ -45,6 +50,10 @@ export default function App() {
           name="Login"
           component={Login}
           options={{
+            transitionSpec: {
+              open: animationConfig,
+              close: animationConfig,
+            }, // added
             headerShown: false,
             ...TransitionPresets.SlideFromRightIOS,
           }}
@@ -53,6 +62,10 @@ export default function App() {
           name="ForgotPassword"
           component={ForgotPassword}
           options={{
+            transitionSpec: {
+              open: animationConfig,
+              close: animationConfig,
+            }, // added
             headerShown: false,
             ...TransitionPresets.SlideFromRightIOS,
           }}
@@ -61,6 +74,10 @@ export default function App() {
           name="Signup"
           component={Signup}
           options={{
+            transitionSpec: {
+              open: animationConfig,
+              close: animationConfig,
+            }, // added
             headerShown: false,
             ...TransitionPresets.SlideFromRightIOS,
           }}
@@ -69,6 +86,10 @@ export default function App() {
           name="SignupDetails"
           component={SignupDetails}
           options={{
+            transitionSpec: {
+              open: animationConfig,
+              close: animationConfig,
+            }, // added
             headerShown: false,
             ...TransitionPresets.SlideFromRightIOS,
           }}
@@ -77,6 +98,10 @@ export default function App() {
           name="SignupExtra"
           component={SignupExtra}
           options={{
+            transitionSpec: {
+              open: animationConfig,
+              close: animationConfig,
+            }, // added
             headerShown: false,
             ...TransitionPresets.SlideFromRightIOS,
           }}
