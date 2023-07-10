@@ -22,6 +22,9 @@ import Profile from "./pages/Profile";
 import Stafflist from "./pages/Stafflist";
 import Stafflistpage from "./pages/Stafflistpage";
 
+import { Provider } from "react-redux";
+import { store } from "./src/redux/store";
+
 const Stack = createStackNavigator();
 
 const animationConfig = {
@@ -31,163 +34,165 @@ const animationConfig = {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          header: () => null,
-        }}
-        initialRouteName="Main"
-      >
-        <Stack.Screen
-          name="Main"
-          component={Main}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            header: () => null,
           }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{
-            transitionSpec: {
-              open: animationConfig,
-              close: animationConfig,
-            }, // added
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="ForgotPassword"
-          component={ForgotPassword}
-          options={{
-            transitionSpec: {
-              open: animationConfig,
-              close: animationConfig,
-            }, // added
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="Signup"
-          component={Signup}
-          options={{
-            transitionSpec: {
-              open: animationConfig,
-              close: animationConfig,
-            }, // added
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="SignupDetails"
-          component={SignupDetails}
-          options={{
-            transitionSpec: {
-              open: animationConfig,
-              close: animationConfig,
-            }, // added
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="SignupExtra"
-          component={SignupExtra}
-          options={{
-            transitionSpec: {
-              open: animationConfig,
-              close: animationConfig,
-            }, // added
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="Orientation"
-          component={Orientation}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="OrientationPages"
-          component={OrientationPages}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="Clubs"
-          component={Clubs}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="ClubsPages"
-          component={ClubsPages}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="Department"
-          component={Department}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="Stafflist"
-          component={Stafflist}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="Stafflistpage"
-          component={Stafflistpage}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-        <Stack.Screen
-          name="Test"
-          component={Test}
-          options={{
-            headerShown: false,
-            ...TransitionPresets.SlideFromRightIOS,
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+          initialRouteName="Main"
+        >
+          <Stack.Screen
+            name="Main"
+            component={Main}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPassword}
+            options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="Signup"
+            component={Signup}
+            options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="SignupDetails"
+            component={SignupDetails}
+            options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="SignupExtra"
+            component={SignupExtra}
+            options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="Orientation"
+            component={Orientation}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="OrientationPages"
+            component={OrientationPages}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="Clubs"
+            component={Clubs}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="ClubsPages"
+            component={ClubsPages}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="Department"
+            component={Department}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="Stafflist"
+            component={Stafflist}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="Stafflistpage"
+            component={Stafflistpage}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="Test"
+            component={Test}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 

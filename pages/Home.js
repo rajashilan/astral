@@ -18,7 +18,14 @@ import { StatusBar } from "expo-status-bar";
 
 import { firebase } from "../src/firebase/config";
 
+import { useDispatch, useSelector } from "react-redux";
+
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../utils/toast-config";
+
 export default function Home({ navigation }) {
+  const state = useSelector((state) => state.user);
+
   const [menuItems] = useState([
     { name: "orientation" },
     { name: "clubs" },
@@ -36,10 +43,20 @@ export default function Home({ navigation }) {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        console.log("user logged");
+      } else {
+        navigation.navigate("Main");
+        console.log("logged out");
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (state.credentials.name)
+      Toast.show({
+        type: "neutral",
+        text1: `Welcome back, ${state.credentials.name}!`,
+      });
+  }, [state.credentials]);
 
   return (
     <View style={styles.container}>
@@ -53,6 +70,7 @@ export default function Home({ navigation }) {
           </Pressable>
         )}
       />
+      <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#363BB1" />
     </View>
   );
@@ -76,6 +94,12 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(52),
     marginBottom: pixelSizeVertical(25),
     textTransform: "lowercase",
+    fontWeight: 400,
+  },
+  name: {
+    color: "#C6CDE2",
+    fontSize: fontPixel(36),
+    marginTop: pixelSizeVertical(-50),
     fontWeight: 400,
   },
 });

@@ -8,7 +8,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/logo.png";
 import { Image } from "expo-image";
 import Carousel, { Pagination } from "react-native-snap-carousel";
@@ -29,7 +29,14 @@ import {
 } from "../utils/responsive-font";
 import { TouchableWithoutFeedback } from "react-native-web";
 
+import { firebase } from "../src/firebase/config";
+
+import { useDispatch, useSelector } from "react-redux";
+import { getAuthenticatedUser } from "../src/redux/actions/userActions";
+
 export default function Main({ navigation }) {
+  const dispatch = useDispatch();
+
   const [data] = useState([
     {
       image: welcome,
@@ -61,6 +68,15 @@ export default function Main({ navigation }) {
         "Easily set up meetings with your lecturers using their contact and schedule details.",
     },
   ]);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        dispatch(getAuthenticatedUser(user.email));
+        navigation.replace("Home");
+      }
+    });
+  }, []);
 
   const handleLogin = () => {
     navigation.navigate("Login");
