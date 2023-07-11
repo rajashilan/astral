@@ -27,47 +27,37 @@ import Header from "../components/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
+import { useDispatch, useSelector } from "react-redux";
+import { getOrientation } from "../src/redux/actions/dataActions";
+
 const { width } = Dimensions.get("window");
 
 export default function Orientation({ navigation }) {
+  const orientation = useSelector((state) => state.data.orientation);
+  const state = useSelector((state) => state.data);
+  const loadingUser = useSelector((state) => state.user.loading);
+  const dispatch = useDispatch();
+
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
   const [headerHeight, setHeaderHeight] = useState(300);
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
-  const [pages, setPages] = useState([
-    { page: "first day", id: 1 },
-    { page: "second day", id: 2 },
-    { page: "campus tour", id: 3 },
-    { page: "first day", id: 1 },
-    { page: "second day", id: 2 },
-    { page: "campus tour", id: 3 },
-    { page: "first day", id: 1 },
-    { page: "second day", id: 2 },
-    { page: "campus tour", id: 3 },
-    { page: "first day", id: 1 },
-    { page: "second day", id: 2 },
-    { page: "campus tour", id: 3 },
-    { page: "first day", id: 1 },
-    { page: "second day", id: 2 },
-    { page: "campus tour", id: 3 },
-    { page: "first day", id: 1 },
-    { page: "second day", id: 2 },
-    { page: "campus tour", id: 3 },
-    { page: "first day", id: 1 },
-    { page: "second day", id: 2 },
-    { page: "campus tour", id: 3 },
-    { page: "first day", id: 1 },
-    { page: "second day", id: 2 },
-    { page: "campus tour", id: 3 },
-    { page: "first day", id: 1 },
-    { page: "second day", id: 2 },
-    { page: "campus tour", id: 3 },
-  ]);
+  const [overview, setOverview] = useState({});
 
-  const handlePageItemPress = () => {
-    navigation.navigate("OrientationPages");
+  useEffect(() => {
+    if (!loadingUser) dispatch(getOrientation(state.campus.campusID));
+  }, [loadingUser]);
+
+  useEffect(() => {
+    setOverview({ ...orientation.overview });
+  }, [orientation.overview]);
+
+  const handlePageItemPress = (orientationPageID) => {
+    navigation.navigate("OrientationPages", {
+      orientationPageID,
+    });
   };
 
   const toggleSideMenu = () => {
@@ -127,29 +117,33 @@ export default function Orientation({ navigation }) {
         <View onLayout={onLayout}>
           <Header header={"orientation"} />
         </View>
-        <VideoPlayer
-          style={styles.video}
-          videoProps={{
-            resizeMode: ResizeMode.CONTAIN,
-            source: {
-              uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-            },
-          }}
-        />
+        {overview.video && (
+          <VideoPlayer
+            style={styles.video}
+            videoProps={{
+              resizeMode: ResizeMode.CONTAIN,
+              source: {
+                uri: overview.videos[0],
+              },
+            }}
+          />
+        )}
 
-        <Text style={styles.title}>
-          welcome to inti international college penang!
-        </Text>
+        <Text style={styles.title}>{overview.title}</Text>
 
         <FlatList
           style={styles.list}
           scrollEnabled={false}
           keyExtractor={(item, index) => index.toString()}
-          data={pages}
+          data={overview.pages}
           renderItem={({ item }) => (
             <>
-              <Pressable onPress={handlePageItemPress}>
-                <Text style={styles.pageItems}>{item.page}</Text>
+              <Pressable
+                onPress={() => {
+                  handlePageItemPress(item.orientationPageID);
+                }}
+              >
+                <Text style={styles.pageItems}>{item.title}</Text>
               </Pressable>
               <View style={styles.divider} />
             </>

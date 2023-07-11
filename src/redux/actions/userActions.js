@@ -5,6 +5,7 @@ import {
 } from "../type";
 
 import { firebase } from "../../firebase/config";
+import { getUserCampus, getUserCollege } from "./dataActions";
 const db = firebase.firestore();
 
 export const getAuthenticatedUser = (email) => (dispatch) => {
@@ -28,6 +29,10 @@ export const getAuthenticatedUser = (email) => (dispatch) => {
             type: GET_AUTHENTICATED_USER,
             payload: data,
           });
+          //get college details
+          //get campus details
+          dispatch(getUserCollege(doc.data().college));
+          dispatch(getUserCampus(doc.data().campus));
         });
       }
       dispatch({ type: STOP_LOADING_USER });

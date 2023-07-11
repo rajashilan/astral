@@ -4,6 +4,7 @@ import {
   View,
   FlatList,
   Pressable,
+  TouchableOpacity,
   Dimensions,
 } from "react-native";
 import img1 from "../assets/example-img-1.png";
@@ -16,7 +17,13 @@ import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 
+import Carousel, { Pagination } from "react-native-snap-carousel";
+
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+
+import * as WebBrowser from "expo-web-browser";
+
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   fontPixel,
@@ -25,91 +32,63 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
+import { getOrientationPage } from "../src/redux/actions/dataActions";
 
 const { width } = Dimensions.get("window");
 
-export default function OrientationPages({ navigation }) {
+export default function OrientationPages({ navigation, route }) {
+  const { orientationPageID } = route.params;
+
+  const page = useSelector((state) => state.data.orientation.currentPage);
+  const dispatch = useDispatch();
+
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
   const [headerHeight, setHeaderHeight] = useState(300);
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
-  const [data, setData] = useState([
-    {
-      header: "first day",
-      title: "Welcome to your first day at INTI!",
-      content:
-        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea ",
-      subcontent: [
-        {
-          title: "What will you be doing?",
-          content:
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
-          images: [{ image: img1 }],
-        },
-        {
-          title: "Here are some stuff to help you out!",
-          files: [
-            {
-              title: "student handbook",
-              link: "https://google.com",
-            },
-            {
-              title: "itinerary",
-              link: "https://google.com",
-            },
-            {
-              title: "preparation",
-              link: "https://google.com",
-            },
-          ],
-        },
-        {
-          title: "What will you be doing?",
-          content:
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
-          images: [{ image: img1 }, { image: img2 }],
-        },
-        {
-          title: "What will you be doing?",
-          content:
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
-          images: [{ image: img1 }],
-        },
-        {
-          title: "What will you be doing?",
-          content:
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
-          images: [{ image: img1 }],
-        },
-        {
-          title: "What will you be doing?",
-          content:
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
-          images: [{ image: img1 }],
-        },
-        {
-          title: "What will you be doing?",
-          content:
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut ",
-          images: [{ image: img1 }],
-        },
-      ],
-    },
-  ]);
+  const [indexSelected, setIndexSelected] = useState(0);
+
+  const [data, setData] = useState([]);
+
+  const [focusImage, setFocusImage] = useState("");
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+
+  useEffect(() => {
+    dispatch(getOrientationPage(orientationPageID));
+  }, []);
+
+  useEffect(() => {
+    setData([page]);
+  }, [page]);
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
   const handleNavigateBack = () => {
+    setData([]);
     navigation.navigate("Orientation");
   };
 
   const onLayout = (event) => {
     const { x, y, height, width } = event.nativeEvent.layout;
     setHeaderHeight(height);
+  };
+
+  const onSelect = (indexSelected) => {
+    setIndexSelected(indexSelected);
+  };
+
+  const handleFocusImage = (image) => {
+    if (image) {
+      setFocusImage(image);
+      setIsImageModalVisible(!isImageModalVisible);
+    } else {
+      setFocusImage("");
+      setIsImageModalVisible(!isImageModalVisible);
+    }
   };
 
   useEffect(() => {
@@ -163,70 +142,79 @@ export default function OrientationPages({ navigation }) {
         renderItem={({ item }) => (
           <>
             <View onLayout={onLayout}>
-              <Text style={styles.header}>{item.header}</Text>
+              <Text style={styles.header}>{item.title}</Text>
             </View>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.content}>{item.content}</Text>
-            {item.images &&
-              item.images.map((image, index) => {
+            {item.header && <Text style={styles.title}>{item.header}</Text>}
+            {item.content && <Text style={styles.content}>{item.content}</Text>}
+            {item.subcontent &&
+              item.subcontent.map((content, index) => {
                 return (
-                  <Image
-                    style={styles.image}
-                    source={image.image}
-                    contentFit="cover"
-                    transition={1000}
-                  />
-                );
-              })}
-            {item.files &&
-              item.files.map((file) => {
-                return (
-                  <>
-                    <Pressable>
-                      <Text style={styles.file}>{file.title}</Text>
-                    </Pressable>
-                  </>
-                );
-              })}
-            {item.subcontent.map((content, index) => {
-              return (
-                <>
-                  <Text style={styles.subtitle}>{content.title}</Text>
-                  {content.content && (
-                    <Text style={styles.content}>{content.content}</Text>
-                  )}
-                  {content.images &&
-                    content.images.map((image, index) => {
-                      return (
-                        <Image
-                          style={styles.image}
-                          source={image.image}
-                          contentFit="cover"
-                          transition={1000}
+                  <View style={styles.contentContainer}>
+                    <Text style={styles.subtitle}>{content.title}</Text>
+                    {content.content && (
+                      <Text style={styles.contentNoPadding}>
+                        {content.content}
+                      </Text>
+                    )}
+                    {content.image && (
+                      <>
+                        <Carousel
+                          layout="default"
+                          data={content.image}
+                          disableIntervalMomentum={true}
+                          onSnapToItem={(index) => onSelect(index)}
+                          sliderWidth={width - 32}
+                          itemWidth={width - 32}
+                          renderItem={({ item, index }) => (
+                            <>
+                              <Image
+                                key={index}
+                                style={styles.image}
+                                resizeMode="cover"
+                                source={item}
+                              />
+                            </>
+                          )}
                         />
-                      );
-                    })}
-                  {content.files &&
-                    content.files.map((file) => {
-                      return (
-                        <>
-                          <Pressable>
-                            <Text style={styles.file}>{file.title}</Text>
-                          </Pressable>
-                        </>
-                      );
-                    })}
-                </>
-              );
-            })}
+                        <Pagination
+                          inactiveDotColor="#546593"
+                          dotColor={"#C4FFF9"}
+                          activeDotIndex={indexSelected}
+                          containerStyle={{
+                            paddingTop: 0,
+                            paddingRight: pixelSizeHorizontal(16),
+                            paddingLeft: pixelSizeHorizontal(16),
+                            paddingBottom: 0,
+                            marginBottom: pixelSizeVertical(12),
+                          }}
+                          dotsLength={content.image.length}
+                          inactiveDotScale={1}
+                        />
+                      </>
+                    )}
+                    {content.files &&
+                      content.files.map((file) => {
+                        return (
+                          <>
+                            <Pressable
+                              onPress={async () =>
+                                await WebBrowser.openBrowserAsync(file.url)
+                              }
+                            >
+                              <Text style={styles.file}>{file.filename}</Text>
+                            </Pressable>
+                          </>
+                        );
+                      })}
+                  </View>
+                );
+              })}
             <View style={styles.emptyView}></View>
           </>
         )}
       />
       <Modal
         isVisible={isSideMenuVisible}
-        onBackdropPress={toggleSideMenu} // Android back press
-        onSwipeComplete={toggleSideMenu} // Swipe to discard
         animationIn="slideInRight" // Has others, we want slide in from the left
         animationOut="slideOutRight" // When discarding the drawer
         swipeDirection="left" // Discard the drawer with swipe to left
@@ -241,7 +229,6 @@ export default function OrientationPages({ navigation }) {
           navigation={navigation}
         />
       </Modal>
-
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
   );
@@ -251,22 +238,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
   },
   header: {
     fontSize: fontPixel(34),
     fontWeight: "700",
     color: "#DFE5F8",
     marginBottom: pixelSizeVertical(26),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingRight: pixelSizeHorizontal(16),
   },
   title: {
     fontSize: fontPixel(28),
     fontWeight: "500",
     color: "#DFE5F8",
     marginBottom: pixelSizeVertical(8),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingRight: pixelSizeHorizontal(16),
   },
   content: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#C6CDE2",
+    lineHeight: 22,
+    marginBottom: pixelSizeVertical(10),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingRight: pixelSizeHorizontal(16),
+  },
+  contentNoPadding: {
     fontSize: fontPixel(14),
     fontWeight: "400",
     color: "#C6CDE2",
@@ -277,12 +275,12 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#DFE5F8",
-    marginTop: pixelSizeVertical(26),
     marginBottom: pixelSizeVertical(6),
   },
   image: {
     width: "100%",
-    height: heightPixel(150),
+    height: heightPixel(350),
+    marginTop: pixelSizeVertical(10),
     marginBottom: pixelSizeVertical(10),
     borderRadius: 5,
   },
@@ -344,6 +342,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingRight: pixelSizeHorizontal(16),
   },
   headerContainerHideMiniHeader: {
     marginTop: pixelSizeVertical(20),
@@ -351,5 +351,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
+  },
+  contentContainer: {
+    paddingTop: pixelSizeVertical(20),
+    paddingBottom: pixelSizeVertical(20),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingRight: pixelSizeHorizontal(16),
+    backgroundColor: "#131A2E",
+    marginBottom: pixelSizeVertical(10),
+  },
+  focusImage: {
+    width: width * 0.85,
+    height: heightPixel(350),
+    borderRadius: 5,
+  },
+  focusImageModal: {
+    margin: 0,
+    width: width, // SideMenu width
+    alignSelf: "center",
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingRight: pixelSizeHorizontal(16),
   },
 });

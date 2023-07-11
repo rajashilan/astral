@@ -72,6 +72,7 @@ export default function Main({ navigation }) {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
+        //get user details
         dispatch(getAuthenticatedUser(user.email));
         navigation.replace("Home");
       }
