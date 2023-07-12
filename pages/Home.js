@@ -16,6 +16,8 @@ import {
 } from "../utils/responsive-font";
 import { StatusBar } from "expo-status-bar";
 
+import IosHeight from "../components/IosHeight";
+
 import { firebase } from "../src/firebase/config";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -62,6 +64,7 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <FlatList
         style={styles.list}
         keyExtractor={(item, index) => index.toString()}

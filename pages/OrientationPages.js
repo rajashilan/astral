@@ -13,6 +13,8 @@ import React, { useState, useEffect } from "react";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 
+import IosHeight from "../components/IosHeight";
+
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
@@ -116,6 +118,7 @@ export default function OrientationPages({ navigation, route }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <View style={styles.headerContainerShowMiniHeader}>
         <Pressable
           onPress={() => {

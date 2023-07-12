@@ -22,6 +22,8 @@ import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
+import IosHeight from "../components/IosHeight";
+
 export default function SignupExtra({ navigation }) {
   const handleNext = () => {
     navigation.navigate("SignupDetails");
@@ -46,6 +48,7 @@ export default function SignupExtra({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <Image
         style={styles.image}
         source={logo}

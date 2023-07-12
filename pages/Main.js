@@ -14,6 +14,8 @@ import { Image } from "expo-image";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 const { width } = Dimensions.get("window");
 
+import IosHeight from "../components/IosHeight";
+
 import welcome from "../assets/welcome.png";
 import orientation from "../assets/orientation.png";
 import clubs from "../assets/clubs.png";
@@ -96,6 +98,7 @@ export default function Main({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <Image
         style={styles.image}
         source={logo}

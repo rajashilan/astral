@@ -26,6 +26,8 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 import { firebase } from "../src/firebase/config";
 
+import IosHeight from "../components/IosHeight";
+
 const db = firebase.firestore();
 
 export default function Signup({ navigation }) {
@@ -189,6 +191,7 @@ export default function Signup({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <Image
         style={styles.image}
         source={logo}

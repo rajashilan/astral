@@ -20,6 +20,8 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 
+import IosHeight from "../components/IosHeight";
+
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
@@ -152,6 +154,7 @@ export default function Login({ navigation, route }) {
       style={styles.imageBackground}
       transition={3000}
     >
+      <IosHeight />
       <Image
         style={styles.image}
         source={logo}
@@ -172,6 +175,7 @@ export default function Login({ navigation, route }) {
     </ImageBackground>
   ) : (
     <View style={styles.container}>
+      <IosHeight />
       <Image
         style={styles.image}
         source={logo}

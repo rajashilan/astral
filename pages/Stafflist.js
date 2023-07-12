@@ -25,6 +25,8 @@ import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 import { Image } from "expo-image";
 
+import IosHeight from "../components/IosHeight";
+
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
@@ -295,6 +297,7 @@ export default function Stafflist({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <View
         style={
           showMiniHeader

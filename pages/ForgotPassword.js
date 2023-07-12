@@ -20,6 +20,8 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 
+import IosHeight from "../components/IosHeight";
+
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
@@ -73,6 +75,7 @@ export default function ForgotPassword({ navigation, route }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <Text style={styles.title}>Forgot your password?</Text>
       <Text style={styles.content}>
         No worries! We'll send you an email where you can reset your password.

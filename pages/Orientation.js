@@ -24,6 +24,7 @@ import Modal from "react-native-modal";
 import { Image } from "expo-image";
 
 import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
@@ -78,6 +79,7 @@ export default function Orientation({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <View
         style={
           showMiniHeader

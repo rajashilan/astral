@@ -26,6 +26,8 @@ import { firebase } from "../src/firebase/config";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
+import IosHeight from "../components/IosHeight";
+
 export default function SignupDetails({ navigation, route }) {
   const { college, campus, department, intake, suffix } = route.params;
 
@@ -219,6 +221,7 @@ export default function SignupDetails({ navigation, route }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <Image
         style={styles.image}
         source={logo}

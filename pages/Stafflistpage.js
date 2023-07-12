@@ -22,6 +22,8 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 
+import IosHeight from "../components/IosHeight";
+
 const { width } = Dimensions.get("window");
 export default function Stafflistpage({ navigation, route }) {
   const { name, department, contact } = route.params;
@@ -38,6 +40,7 @@ export default function Stafflistpage({ navigation, route }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <View style={styles.headerContainer}>
         <Pressable
           onPress={handleNavigateBack}

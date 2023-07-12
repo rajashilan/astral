@@ -12,6 +12,7 @@ import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 
 import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
 
 import club1 from "../assets/club1.png";
 import club2 from "../assets/club2.png";
@@ -88,6 +89,7 @@ export default function Clubs({ navigation }) {
   return (
     <>
       <View style={styles.container}>
+        <IosHeight />
         <View
           style={
             showMiniHeader

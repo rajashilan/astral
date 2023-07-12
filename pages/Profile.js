@@ -10,6 +10,8 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 
+import IosHeight from "../components/IosHeight";
+
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
@@ -26,6 +28,7 @@ export default function Profile({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <IosHeight />
       <View style={styles.headerContainer}>
         <Pressable onPress={toggleSideMenu}>
           <Image
