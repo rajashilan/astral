@@ -4,7 +4,7 @@ import {
   Text,
   TextInput,
   View,
-  SafeAreaView,
+  ScrollView,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useRef } from "react";
@@ -204,306 +204,311 @@ export default function Signup({ navigation }) {
         <View style={styles.progressInactive} />
       </View>
       <Text style={styles.title}>Let's start with your campus</Text>
-      <SelectDropdown
-        search={true}
-        searchInputStyle={{
-          backgroundColor: "#232D4A",
-        }}
-        disabled={loadingColleges}
-        searchPlaceHolder="Search colleges..."
-        searchInputTxtColor="#DFE5F8"
-        defaultButtonText={
-          loadingColleges ? "Loading colleges..." : "Select your college"
-        }
-        showsVerticalScrollIndicator={true}
-        buttonStyle={{
-          backgroundColor: "#1A2238",
-          marginTop: pixelSizeVertical(10),
-          height: heightPixel(58),
-          width: "100%",
-          borderRadius: 5,
-        }}
-        buttonTextStyle={{
-          fontSize: fontPixel(16),
-          fontWeight: "400",
-          color: "#DFE5F8",
-          textAlign: "left",
-        }}
-        dropdownStyle={{
-          backgroundColor: "#1A2238",
-          borderRadius: 5,
-        }}
-        rowStyle={{
-          backgroundColor: "#1A2238",
-          borderBottomWidth: 0,
-        }}
-        rowTextStyle={{
-          fontSize: fontPixel(16),
-          fontWeight: "400",
-          color: "#DFE5F8",
-          textAlign: "left",
-        }}
-        selectedRowStyle={{
-          backgroundColor: "#C4FFF9",
-        }}
-        selectedRowTextStyle={{
-          color: "#0C111F",
-          fontSize: fontPixel(16),
-          fontWeight: "400",
-          textAlign: "left",
-        }}
-        data={colleges}
-        onSelect={(selectedItem, index) => {
-          setSelectedCollege(selectedItem);
-        }}
-      />
-      {selectedCollege && (
-        <Animated.View
-          style={{ width: "100%" }}
-          entering={FadeIn.duration(300)}
-          exiting={FadeOut.duration(300)}
-        >
-          <SelectDropdown
-            search={true}
-            searchInputStyle={{
-              backgroundColor: "#232D4A",
-            }}
-            ref={campusDropDownRef}
-            searchPlaceHolder="Search campuses..."
-            searchInputTxtColor="#DFE5F8"
-            showsVerticalScrollIndicator={true}
-            disabled={loadingCampuses}
-            defaultButtonText={
-              loadingCampuses ? "Loading campuses..." : "Select your campus"
-            }
-            buttonStyle={{
-              backgroundColor: "#1A2238",
-              marginTop: pixelSizeVertical(10),
-              height: heightPixel(58),
-              width: "100%",
-              borderRadius: 5,
-            }}
-            buttonTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            dropdownStyle={{
-              backgroundColor: "#1A2238",
-              borderRadius: 5,
-            }}
-            rowStyle={{
-              backgroundColor: "#1A2238",
-              borderBottomWidth: 0,
-            }}
-            rowTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            selectedRowStyle={{
-              backgroundColor: "#C4FFF9",
-            }}
-            selectedRowTextStyle={{
-              color: "#0C111F",
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              textAlign: "left",
-            }}
-            data={campuses}
-            onSelect={(selectedItem, index) => {
-              setSelectedCampus(selectedItem);
-              console.log(selectedItem);
-            }}
-          />
-        </Animated.View>
-      )}
-
-      {selectedCampus && (
-        <Animated.View
-          style={{ width: "100%" }}
-          entering={FadeIn.duration(300)}
-          exiting={FadeOut.duration(300)}
-        >
-          <SelectDropdown
-            search={true}
-            searchInputStyle={{
-              backgroundColor: "#232D4A",
-            }}
-            ref={departmentDropDownRef}
-            searchPlaceHolder="Search departments..."
-            searchInputTxtColor="#DFE5F8"
-            showsVerticalScrollIndicator={true}
-            disabled={loadingCampusDetails}
-            defaultButtonText={
-              loadingCampusDetails
-                ? "Loading departments..."
-                : "Select your department"
-            }
-            buttonStyle={{
-              backgroundColor: "#1A2238",
-              marginTop: pixelSizeVertical(10),
-              height: heightPixel(58),
-              width: "100%",
-              borderRadius: 5,
-            }}
-            buttonTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            dropdownStyle={{
-              backgroundColor: "#1A2238",
-              borderRadius: 5,
-            }}
-            rowStyle={{
-              backgroundColor: "#1A2238",
-              borderBottomWidth: 0,
-            }}
-            rowTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            selectedRowStyle={{
-              backgroundColor: "#C4FFF9",
-            }}
-            selectedRowTextStyle={{
-              color: "#0C111F",
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              textAlign: "left",
-            }}
-            data={departments}
-            onSelect={(selectedItem, index) => {
-              setSelectedDepartment(selectedItem);
-              console.log(selectedItem);
-            }}
-          />
-        </Animated.View>
-      )}
-
-      {selectedDepartment && (
-        <Animated.View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        style={{ width: "100%" }}
+      >
+        <SelectDropdown
+          search={true}
+          searchInputStyle={{
+            backgroundColor: "#232D4A",
           }}
-          entering={FadeIn.duration(300)}
-          exiting={FadeOut.duration(300)}
-        >
-          <SelectDropdown
-            showsVerticalScrollIndicator={true}
-            defaultButtonText={"Intake month"}
-            buttonStyle={{
-              backgroundColor: "#1A2238",
-              marginTop: pixelSizeVertical(10),
-              height: heightPixel(58),
-              borderRadius: 5,
-              width: "48%",
-            }}
-            buttonTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            dropdownStyle={{
-              backgroundColor: "#1A2238",
-              borderRadius: 5,
-            }}
-            rowStyle={{
-              backgroundColor: "#1A2238",
-              borderBottomWidth: 0,
-            }}
-            rowTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            selectedRowStyle={{
-              backgroundColor: "#C4FFF9",
-            }}
-            selectedRowTextStyle={{
-              color: "#0C111F",
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              textAlign: "left",
-            }}
-            data={intakeMonths}
-            onSelect={(selectedItem, index) => {
-              setSelectedIntakeMonth(selectedItem);
-            }}
-          />
-          <SelectDropdown
-            showsVerticalScrollIndicator={true}
-            defaultButtonText={"Intake year"}
-            buttonStyle={{
-              backgroundColor: "#1A2238",
-              marginTop: pixelSizeVertical(10),
-              height: heightPixel(58),
-              borderRadius: 5,
-              width: "48%",
-            }}
-            buttonTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            dropdownStyle={{
-              backgroundColor: "#1A2238",
-              borderRadius: 5,
-            }}
-            rowStyle={{
-              backgroundColor: "#1A2238",
-              borderBottomWidth: 0,
-            }}
-            rowTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            selectedRowStyle={{
-              backgroundColor: "#C4FFF9",
-            }}
-            selectedRowTextStyle={{
-              color: "#0C111F",
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              textAlign: "left",
-            }}
-            data={intakeYears}
-            onSelect={(selectedItem, index) => {
-              setSelectedIntakeYear(selectedItem);
-              console.log(selectedItem);
-            }}
-          />
-        </Animated.View>
-      )}
+          disabled={loadingColleges}
+          searchPlaceHolder="Search colleges..."
+          searchInputTxtColor="#DFE5F8"
+          defaultButtonText={
+            loadingColleges ? "Loading colleges..." : "Select your college"
+          }
+          showsVerticalScrollIndicator={true}
+          buttonStyle={{
+            backgroundColor: "#1A2238",
+            marginTop: pixelSizeVertical(10),
+            height: heightPixel(58),
+            width: "100%",
+            borderRadius: 5,
+          }}
+          buttonTextStyle={{
+            fontSize: fontPixel(16),
+            fontWeight: "400",
+            color: "#DFE5F8",
+            textAlign: "left",
+          }}
+          dropdownStyle={{
+            backgroundColor: "#1A2238",
+            borderRadius: 5,
+          }}
+          rowStyle={{
+            backgroundColor: "#1A2238",
+            borderBottomWidth: 0,
+          }}
+          rowTextStyle={{
+            fontSize: fontPixel(16),
+            fontWeight: "400",
+            color: "#DFE5F8",
+            textAlign: "left",
+          }}
+          selectedRowStyle={{
+            backgroundColor: "#C4FFF9",
+          }}
+          selectedRowTextStyle={{
+            color: "#0C111F",
+            fontSize: fontPixel(16),
+            fontWeight: "400",
+            textAlign: "left",
+          }}
+          data={colleges}
+          onSelect={(selectedItem, index) => {
+            setSelectedCollege(selectedItem);
+          }}
+        />
+        {selectedCollege && (
+          <Animated.View
+            style={{ width: "100%" }}
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <SelectDropdown
+              search={true}
+              searchInputStyle={{
+                backgroundColor: "#232D4A",
+              }}
+              ref={campusDropDownRef}
+              searchPlaceHolder="Search campuses..."
+              searchInputTxtColor="#DFE5F8"
+              showsVerticalScrollIndicator={true}
+              disabled={loadingCampuses}
+              defaultButtonText={
+                loadingCampuses ? "Loading campuses..." : "Select your campus"
+              }
+              buttonStyle={{
+                backgroundColor: "#1A2238",
+                marginTop: pixelSizeVertical(10),
+                height: heightPixel(58),
+                width: "100%",
+                borderRadius: 5,
+              }}
+              buttonTextStyle={{
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                textAlign: "left",
+              }}
+              dropdownStyle={{
+                backgroundColor: "#1A2238",
+                borderRadius: 5,
+              }}
+              rowStyle={{
+                backgroundColor: "#1A2238",
+                borderBottomWidth: 0,
+              }}
+              rowTextStyle={{
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                textAlign: "left",
+              }}
+              selectedRowStyle={{
+                backgroundColor: "#C4FFF9",
+              }}
+              selectedRowTextStyle={{
+                color: "#0C111F",
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                textAlign: "left",
+              }}
+              data={campuses}
+              onSelect={(selectedItem, index) => {
+                setSelectedCampus(selectedItem);
+                console.log(selectedItem);
+              }}
+            />
+          </Animated.View>
+        )}
 
-      {selectedIntakeMonth && selectedIntakeYear ? (
-        <Animated.View
-          style={{ width: "100%" }}
-          entering={FadeIn.duration(300)}
-          exiting={FadeOut.duration(300)}
-        >
-          <Pressable style={styles.loginButton} onPress={handleNext}>
-            <Text style={styles.loginButtonText}>next</Text>
-          </Pressable>
-        </Animated.View>
-      ) : null}
+        {selectedCampus && (
+          <Animated.View
+            style={{ width: "100%" }}
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <SelectDropdown
+              search={true}
+              searchInputStyle={{
+                backgroundColor: "#232D4A",
+              }}
+              ref={departmentDropDownRef}
+              searchPlaceHolder="Search departments..."
+              searchInputTxtColor="#DFE5F8"
+              showsVerticalScrollIndicator={true}
+              disabled={loadingCampusDetails}
+              defaultButtonText={
+                loadingCampusDetails
+                  ? "Loading departments..."
+                  : "Select your department"
+              }
+              buttonStyle={{
+                backgroundColor: "#1A2238",
+                marginTop: pixelSizeVertical(10),
+                height: heightPixel(58),
+                width: "100%",
+                borderRadius: 5,
+              }}
+              buttonTextStyle={{
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                textAlign: "left",
+              }}
+              dropdownStyle={{
+                backgroundColor: "#1A2238",
+                borderRadius: 5,
+              }}
+              rowStyle={{
+                backgroundColor: "#1A2238",
+                borderBottomWidth: 0,
+              }}
+              rowTextStyle={{
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                textAlign: "left",
+              }}
+              selectedRowStyle={{
+                backgroundColor: "#C4FFF9",
+              }}
+              selectedRowTextStyle={{
+                color: "#0C111F",
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                textAlign: "left",
+              }}
+              data={departments}
+              onSelect={(selectedItem, index) => {
+                setSelectedDepartment(selectedItem);
+                console.log(selectedItem);
+              }}
+            />
+          </Animated.View>
+        )}
 
-      <Pressable onPress={handleLogin}>
-        <Text style={styles.secondaryButton}>login instead</Text>
-      </Pressable>
+        {selectedDepartment && (
+          <Animated.View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <SelectDropdown
+              showsVerticalScrollIndicator={true}
+              defaultButtonText={"Intake month"}
+              buttonStyle={{
+                backgroundColor: "#1A2238",
+                marginTop: pixelSizeVertical(10),
+                height: heightPixel(58),
+                borderRadius: 5,
+                width: "48%",
+              }}
+              buttonTextStyle={{
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                textAlign: "left",
+              }}
+              dropdownStyle={{
+                backgroundColor: "#1A2238",
+                borderRadius: 5,
+              }}
+              rowStyle={{
+                backgroundColor: "#1A2238",
+                borderBottomWidth: 0,
+              }}
+              rowTextStyle={{
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                textAlign: "left",
+              }}
+              selectedRowStyle={{
+                backgroundColor: "#C4FFF9",
+              }}
+              selectedRowTextStyle={{
+                color: "#0C111F",
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                textAlign: "left",
+              }}
+              data={intakeMonths}
+              onSelect={(selectedItem, index) => {
+                setSelectedIntakeMonth(selectedItem);
+              }}
+            />
+            <SelectDropdown
+              showsVerticalScrollIndicator={true}
+              defaultButtonText={"Intake year"}
+              buttonStyle={{
+                backgroundColor: "#1A2238",
+                marginTop: pixelSizeVertical(10),
+                height: heightPixel(58),
+                borderRadius: 5,
+                width: "48%",
+              }}
+              buttonTextStyle={{
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                textAlign: "left",
+              }}
+              dropdownStyle={{
+                backgroundColor: "#1A2238",
+                borderRadius: 5,
+              }}
+              rowStyle={{
+                backgroundColor: "#1A2238",
+                borderBottomWidth: 0,
+              }}
+              rowTextStyle={{
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                textAlign: "left",
+              }}
+              selectedRowStyle={{
+                backgroundColor: "#C4FFF9",
+              }}
+              selectedRowTextStyle={{
+                color: "#0C111F",
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                textAlign: "left",
+              }}
+              data={intakeYears}
+              onSelect={(selectedItem, index) => {
+                setSelectedIntakeYear(selectedItem);
+                console.log(selectedItem);
+              }}
+            />
+          </Animated.View>
+        )}
+
+        {selectedIntakeMonth && selectedIntakeYear ? (
+          <Animated.View
+            style={{ width: "100%" }}
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <Pressable style={styles.loginButton} onPress={handleNext}>
+              <Text style={styles.loginButtonText}>next</Text>
+            </Pressable>
+          </Animated.View>
+        ) : null}
+        <Pressable onPress={handleLogin}>
+          <Text style={styles.secondaryButton}>login instead</Text>
+        </Pressable>
+      </ScrollView>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
@@ -566,6 +571,7 @@ const styles = StyleSheet.create({
     color: "#C4FFF9",
     fontSize: fontPixel(18),
     textTransform: "lowercase",
+    textAlign: "center",
     fontWeight: "500",
     textDecorationLine: "underline",
     marginTop: pixelSizeVertical(24),

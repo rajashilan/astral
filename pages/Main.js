@@ -5,7 +5,7 @@ import {
   TextInput,
   View,
   Dimensions,
-  SafeAreaView,
+  ScrollView,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
@@ -99,59 +99,66 @@ export default function Main({ navigation }) {
   return (
     <View style={styles.container}>
       <IosHeight />
-      <Image
-        style={styles.image}
-        source={logo}
-        contentFit="contain"
-        transition={1000}
-      />
-      <View>
-        <Carousel
-          layout="default"
-          data={data}
-          disableIntervalMomentum={true}
-          onSnapToItem={(index) => onSelect(index)}
-          sliderWidth={width - 32}
-          itemWidth={width - 32}
-          renderItem={({ item, index }) => (
-            <>
-              <Image
-                key={index}
-                style={styles.displayImage}
-                resizeMode="contain"
-                source={item.image}
-                transition={1000}
-              />
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.content}>{item.subtitle}</Text>
-            </>
-          )}
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        style={{ width: "100%" }}
+      >
+        <Image
+          style={styles.image}
+          source={logo}
+          contentFit="contain"
+          transition={1000}
         />
-        <Pagination
-          inactiveDotColor="#546593"
-          dotColor={"#C4FFF9"}
-          activeDotIndex={indexSelected}
-          containerStyle={{
-            paddingTop: 0,
-            paddingBottom: 0,
-            marginBottom: pixelSizeVertical(28),
-            alignSelf: "center",
-          }}
-          dotsLength={data.length}
-          inactiveDotScale={1}
-        />
-        <Pressable style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>login</Text>
-        </Pressable>
-        <Pressable style={styles.signupButton} onPress={handleSignup}>
-          <Text style={styles.loginButtonText}>signup</Text>
-        </Pressable>
-        <StatusBar
-          style="light"
-          translucent={false}
-          backgroundColor="#0C111F"
-        />
-      </View>
+        <View>
+          <Carousel
+            layout="default"
+            data={data}
+            disableIntervalMomentum={true}
+            onSnapToItem={(index) => onSelect(index)}
+            sliderWidth={width - 32}
+            itemWidth={width - 32}
+            renderItem={({ item, index }) => (
+              <>
+                <Image
+                  key={index}
+                  style={styles.displayImage}
+                  contentFit="contain"
+                  source={item.image}
+                  transition={1000}
+                />
+                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.content}>{item.subtitle}</Text>
+              </>
+            )}
+          />
+          <Pagination
+            inactiveDotColor="#546593"
+            dotColor={"#C4FFF9"}
+            activeDotIndex={indexSelected}
+            containerStyle={{
+              paddingTop: 0,
+              paddingBottom: 0,
+              marginBottom: pixelSizeVertical(28),
+              alignSelf: "center",
+            }}
+            dotsLength={data.length}
+            inactiveDotScale={1}
+          />
+          <Pressable style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.loginButtonText}>login</Text>
+          </Pressable>
+          <Pressable style={styles.signupButton} onPress={handleSignup}>
+            <Text style={styles.loginButtonText}>signup</Text>
+          </Pressable>
+          <StatusBar
+            style="light"
+            translucent={false}
+            backgroundColor="#0C111F"
+          />
+        </View>
+        <View style={styles.emptyView}></View>
+      </ScrollView>
     </View>
   );
 }
@@ -167,7 +174,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: widthPixel(175),
     height: heightPixel(92),
-    marginTop: pixelSizeVertical(60),
+    marginTop: pixelSizeVertical(36),
   },
   text: {
     color: "#fff",
@@ -225,5 +232,10 @@ const styles = StyleSheet.create({
     color: "#A7AFC7",
     marginBottom: pixelSizeVertical(20),
     textAlign: "center",
+  },
+  emptyView: {
+    flex: 1,
+    height: pixelSizeVertical(30),
+    backgroundColor: "#0C111F",
   },
 });
