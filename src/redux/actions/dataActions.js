@@ -52,8 +52,6 @@ export const getUserCampus = (campus) => (dispatch) => {
 
 export const getOrientation = (campusID) => (dispatch) => {
   dispatch({ type: SET_LOADING_DATA });
-  console.log(campusID);
-  console.log("sdhjsdhsdshjdhfkjdhfkhfkhskfkshfk");
   db.collection("orientations")
     .where("campusID", "==", campusID)
     .get()

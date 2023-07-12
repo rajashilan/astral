@@ -33,6 +33,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { getOrientationPage } from "../src/redux/actions/dataActions";
+import { render } from "react-dom";
 
 const { width } = Dimensions.get("window");
 
@@ -40,6 +41,7 @@ export default function OrientationPages({ navigation, route }) {
   const { orientationPageID } = route.params;
 
   const page = useSelector((state) => state.data.orientation.currentPage);
+  const loading = useSelector((state) => state.data.loading);
   const dispatch = useDispatch();
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -54,14 +56,23 @@ export default function OrientationPages({ navigation, route }) {
 
   const [focusImage, setFocusImage] = useState("");
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+  const [rendered, setRendered] = useState(false);
+  const [goBack, setGoBack] = useState(false);
+
+  //on mount
+  //set render to true
+  //dispatches get orientation page -> loading data
+  //if
 
   useEffect(() => {
+    setRendered(true);
+    setGoBack(false);
     dispatch(getOrientationPage(orientationPageID));
   }, []);
 
   useEffect(() => {
-    setData([page]);
-  }, [page]);
+    if (rendered && !loading) setData([page]);
+  }, [page, rendered]);
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -69,8 +80,13 @@ export default function OrientationPages({ navigation, route }) {
 
   const handleNavigateBack = () => {
     setData([]);
-    navigation.navigate("Orientation");
+    setRendered(false);
+    setGoBack(true);
   };
+
+  useEffect(() => {
+    if (!rendered && goBack) navigation.navigate("Orientation");
+  }, [rendered, goBack]);
 
   const onLayout = (event) => {
     const { x, y, height, width } = event.nativeEvent.layout;
@@ -102,7 +118,9 @@ export default function OrientationPages({ navigation, route }) {
     <View style={styles.container}>
       <View style={styles.headerContainerShowMiniHeader}>
         <Pressable
-          onPress={handleNavigateBack}
+          onPress={() => {
+            handleNavigateBack();
+          }}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
         >
           <Text style={styles.backButton}>back</Text>
@@ -112,9 +130,11 @@ export default function OrientationPages({ navigation, route }) {
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
           >
-            <Text style={styles.headerMini} numberOfLines={1}>
-              {data[0].header}
-            </Text>
+            {data[0].header && (
+              <Text style={styles.headerMini} numberOfLines={1}>
+                {data[0].header}
+              </Text>
+            )}
           </Animated.View>
         ) : (
           <Text style={styles.headerMiniInvisible}>title</Text>
