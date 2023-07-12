@@ -35,7 +35,7 @@ const { width } = Dimensions.get("window");
 export default function Orientation({ navigation }) {
   const orientation = useSelector((state) => state.data.orientation);
   const state = useSelector((state) => state.data);
-  const loadingUser = useSelector((state) => state.user.loading);
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -47,8 +47,8 @@ export default function Orientation({ navigation }) {
   const [overview, setOverview] = useState({});
 
   useEffect(() => {
-    if (!loadingUser) dispatch(getOrientation(state.campus.campusID));
-  }, [loadingUser]);
+    if (user.authenticated) dispatch(getOrientation(state.campus.campusID));
+  }, [user.authenticated]);
 
   useEffect(() => {
     setOverview({ ...orientation.overview });
