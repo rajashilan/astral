@@ -8,7 +8,10 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
+
+import IosHeight from "./IosHeight";
 
 import closeIcon from "../assets/close_icon.png";
 import {
@@ -51,42 +54,49 @@ export default class SideMenu extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.safeAreaView}>
-        <View style={styles.closeContainer}>
-          <Pressable
-            onPress={this.callParentScreenFunction}
-            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
-          >
-            <Image
-              style={styles.closeIcon}
-              source={closeIcon}
-              contentFit="contain"
-            />
-          </Pressable>
-        </View>
+        <View style={styles.paddingContainer}>
+          <View style={styles.closeContainer}>
+            <Pressable
+              onPress={this.callParentScreenFunction}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+            >
+              <Image
+                style={styles.closeIcon}
+                source={closeIcon}
+                contentFit="contain"
+              />
+            </Pressable>
+          </View>
 
-        <FlatList
-          style={styles.list}
-          keyExtractor={(item, index) => index.toString()}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          data={this.state.navigations}
-          renderItem={({ item }) => (
-            <>
-              <Pressable onPress={() => this.handleMenuNavigation(item.name)}>
-                <Text
-                  style={
-                    this.props.currentPage === item.name
-                      ? styles.activeMenuItem
-                      : styles.inactiveMenuItem
-                  }
-                >
-                  {item.name}
-                </Text>
-              </Pressable>
-              <View style={styles.emptyView}></View>
-            </>
-          )}
-        />
+          <FlatList
+            style={styles.list}
+            keyExtractor={(item, index) => index.toString()}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            data={this.state.navigations}
+            renderItem={({ item }) => (
+              <>
+                <Pressable onPress={() => this.handleMenuNavigation(item.name)}>
+                  <Text
+                    style={
+                      this.props.currentPage === item.name
+                        ? styles.activeMenuItem
+                        : styles.inactiveMenuItem
+                    }
+                  >
+                    {item.name}
+                  </Text>
+                </Pressable>
+                <View style={styles.emptyView}></View>
+                <StatusBar
+                  style="light"
+                  translucent={false}
+                  backgroundColor="#0C111F"
+                />
+              </>
+            )}
+          />
+        </View>
       </SafeAreaView>
     );
   }
@@ -96,6 +106,8 @@ const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
     backgroundColor: "#363BB1",
+  },
+  paddingContainer: {
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
@@ -115,12 +127,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#363BB1",
   },
   inactiveMenuItem: {
-    fontSize: fontPixel(52),
+    fontSize: fontPixel(48),
     fontWeight: 400,
     color: "#07BEB8",
   },
   activeMenuItem: {
-    fontSize: fontPixel(52),
+    fontSize: fontPixel(48),
     fontWeight: 700,
     color: "#C4FFF9",
   },
