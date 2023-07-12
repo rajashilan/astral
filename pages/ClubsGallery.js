@@ -63,6 +63,7 @@ export default function ClubsGallery() {
         layout="default"
         data={data}
         disableIntervalMomentum={true}
+        useExperimentalSnap={true}
         onSnapToItem={(index) => onSelect(index)}
         sliderWidth={width - 32}
         itemWidth={width - 32}

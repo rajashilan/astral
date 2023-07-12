@@ -118,6 +118,7 @@ export default function Main({ navigation }) {
             onSnapToItem={(index) => onSelect(index)}
             sliderWidth={width - 32}
             itemWidth={width - 32}
+            useExperimentalSnap={true}
             renderItem={({ item, index }) => (
               <>
                 <Image

@@ -185,6 +185,7 @@ export default function OrientationPages({ navigation, route }) {
                           layout="default"
                           data={content.image}
                           disableIntervalMomentum={true}
+                          useExperimentalSnap={true}
                           onSnapToItem={(index) => onSelect(index)}
                           sliderWidth={width - 32}
                           itemWidth={width - 32}

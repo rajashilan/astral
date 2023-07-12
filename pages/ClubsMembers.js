@@ -67,6 +67,7 @@ export default function ClubsMembers(props) {
         layout="default"
         data={data[0].membersData}
         disableIntervalMomentum={true}
+        useExperimentalSnap={true}
         onSnapToItem={(index) => onSelect(index)}
         sliderWidth={width - 32}
         itemWidth={width - 32}

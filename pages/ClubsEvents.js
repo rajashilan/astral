@@ -130,6 +130,7 @@ export default function ClubsEvents() {
         sliderWidth={width - 32}
         itemWidth={width - 32}
         disableIntervalMomentum={true}
+        useExperimentalSnap={true}
         renderItem={({ item, index }) => (
           <>
             {item.image && (
