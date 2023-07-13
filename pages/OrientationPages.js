@@ -133,7 +133,7 @@ export default function OrientationPages({ navigation, route }) {
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
           >
-            {data[0].header && (
+            {data[0] && data[0].header && (
               <Text style={styles.headerMini} numberOfLines={1}>
                 {data[0].header}
               </Text>
