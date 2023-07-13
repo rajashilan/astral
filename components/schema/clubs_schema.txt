@@ -1,0 +1,93 @@
+clubs: {
+    "clubID": {
+        clubID,
+        name,
+        members: [
+            {
+                name,
+                phone_number,
+                email,
+                intake,
+                course,
+                memberID
+                role,
+                createdAt,
+                profileImage,
+                bio,
+            }
+        ],
+        gallery: [
+            {
+                image,
+                title,
+                description,
+                createdAt,
+            }
+        ],
+        events: [
+            image,
+            title,
+            date,
+            description,
+            createdAt,
+        ],
+        details: [
+            meetings: [
+                {
+                    day,
+                    time,
+                }
+            ],
+            fees: {
+                fee,
+                type: 'monthly/annually'
+            }
+        ],
+        roles: [
+            //sames structure for other roles
+            president: {
+                memberID,
+                alternateName: ''
+            },
+            vicePresident: memberID,
+            secretary: memberID,
+            treasurer: memberID,
+            addedRole: memberID
+            members: 'alternate_name' (members by default)
+        ],
+        approval: 'pending/approved/reject',
+        rejectionReason,
+        status: 'active/inactive/deactivated',
+        membersRequests: [
+            {
+                name,
+                phone_number,
+                email,
+                intake,
+                course,
+                memberID (automatically generated and added to the user's db <clubID-memberID>)
+                role: member,
+                status: 'pending/accepted' (if accepted, move member to member's list and clear off from this list)
+                createdAt,
+                profileImage,
+                bio,
+            }
+        ]
+        createdAt,
+    }
+}
+
+users: {
+    "userID": {
+        ...users,
+        clubs: [
+            {
+                clubID,
+                memberID,
+                role,
+                createdAt,
+                status: 'active/pending'
+            }
+        ]
+    }
+}
