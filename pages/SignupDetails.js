@@ -105,6 +105,8 @@ export default function SignupDetails({ navigation, route }) {
                     department: department,
                     campus: campus,
                     intake: intake,
+                    clubs: [],
+                    phone_number: "",
                     createdAt: new Date(),
                   };
 

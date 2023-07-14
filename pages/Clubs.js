@@ -198,13 +198,16 @@ export default function Clubs({ navigation }) {
                 <Text style={styles.joinClubText}>
                   Can't find the perfect club?
                 </Text>
-                <Pressable>
+                <Pressable onPress={() => navigation.navigate("CreateAClub")}>
                   <Text style={styles.joinClubButton}>Create your own!</Text>
                 </Pressable>
               </View>
             </View>
           ) : (
-            <Pressable style={{ alignItems: "center" }}>
+            <Pressable
+              onPress={() => navigation.navigate("CreateAClub")}
+              style={{ alignItems: "center" }}
+            >
               <Text style={styles.joinClubSmallButton}>
                 Create your own club
               </Text>

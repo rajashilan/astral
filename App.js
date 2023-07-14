@@ -21,6 +21,7 @@ import Department from "./pages/Department";
 import Profile from "./pages/Profile";
 import Stafflist from "./pages/Stafflist";
 import Stafflistpage from "./pages/Stafflistpage";
+import CreateAClub from "./pages/CreateAClub";
 
 import { Provider } from "react-redux";
 import { store } from "./src/redux/store";
@@ -177,6 +178,14 @@ export default function App() {
           <Stack.Screen
             name="Stafflistpage"
             component={Stafflistpage}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="CreateAClub"
+            component={CreateAClub}
             options={{
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,

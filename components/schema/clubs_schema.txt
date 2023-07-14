@@ -9,7 +9,7 @@ clubs: {
                 phone_number,
                 email,
                 intake,
-                course,
+                department,
                 memberID
                 role,
                 createdAt,
@@ -75,6 +75,7 @@ clubs: {
             }
         ]
         createdAt,
+        createdBy: user's userID,
     }
 }
 
@@ -84,7 +85,11 @@ clubsOverview: {
             {
                 name,
                 image,
-                clubID
+                clubID,
+                approval: 'pending/approved/reject',
+                rejectionReason,
+                status: 'active/inactive/deactivated/suspended', suspended:indefintelely/suspended:datetime
+                 createdBy: user's userID,
             }
         ]
     }
@@ -100,6 +105,7 @@ users: {
                 role,
                 createdAt,
                 status: 'active/pending'
+                 createdBy: user's userID,
             }
         ]
     }

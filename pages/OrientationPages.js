@@ -239,6 +239,8 @@ export default function OrientationPages({ navigation, route }) {
       />
       <Modal
         isVisible={isSideMenuVisible}
+        onBackdropPress={toggleSideMenu} // Android back press
+        onSwipeComplete={toggleSideMenu} // Swipe to discard
         animationIn="slideInRight" // Has others, we want slide in from the left
         animationOut="slideOutRight" // When discarding the drawer
         swipeDirection="left" // Discard the drawer with swipe to left
