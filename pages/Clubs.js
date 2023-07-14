@@ -43,7 +43,9 @@ export default function Clubs({ navigation }) {
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
-  const [data, setData] = useState([
+  const [tab, setTab] = useState("all clubs");
+
+  const [all, setAll] = useState([
     {
       image: club1,
       title: "Anime Club",
@@ -56,6 +58,17 @@ export default function Clubs({ navigation }) {
       image: club3,
       title: "Engineering Club",
     },
+    {
+      image: club4,
+      title: "Computer Science Club",
+    },
+    {
+      image: club5,
+      title: "Charitable Cause for Animals Club",
+    },
+  ]);
+
+  const [yours, setYours] = useState([
     {
       image: club4,
       title: "Computer Science Club",
@@ -103,7 +116,7 @@ export default function Clubs({ navigation }) {
               exiting={FadeOut.duration(300)}
             >
               <Text style={styles.headerMini} numberOfLines={1}>
-                clubs
+                {tab}
               </Text>
             </Animated.View>
           ) : (
@@ -128,8 +141,26 @@ export default function Clubs({ navigation }) {
           }
           showsVerticalScrollIndicator={false}
         >
-          <View onLayout={onLayout}>
-            <Header header={"clubs"} />
+          <View
+            onLayout={onLayout}
+            style={{ display: "flex", flexDirection: "row" }}
+          >
+            <Pressable onPress={() => setTab("all clubs")}>
+              <Text
+                style={
+                  tab === "all clubs" ? styles.tabActive : styles.tabInactive
+                }
+              >
+                all clubs
+              </Text>
+            </Pressable>
+            <Pressable onPress={() => setTab("yours")}>
+              <Text
+                style={tab === "yours" ? styles.tabActive : styles.tabInactive}
+              >
+                yours
+              </Text>
+            </Pressable>
           </View>
 
           <FlatList
@@ -137,9 +168,9 @@ export default function Clubs({ navigation }) {
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             scrollEnabled={false}
-            data={data}
+            data={tab === "all clubs" ? all : yours}
             renderItem={({ item }) => (
-              <>
+              <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
                 <Pressable onPress={handlePageItemPress}>
                   <Image
                     style={styles.image}
@@ -149,10 +180,37 @@ export default function Clubs({ navigation }) {
                   />
                   <Text style={styles.pageItems}>{item.title}</Text>
                 </Pressable>
-                <View style={styles.emptyView}></View>
-              </>
+              </View>
             )}
           />
+          {tab === "yours" && yours.length === 0 ? (
+            <View style={styles.joinClubContainer}>
+              <View style={styles.joinClubInnerContainer}>
+                <Pressable>
+                  <Text style={styles.joinClubButton}>Find your club,</Text>
+                </Pressable>
+                <Text style={styles.joinClubText}>
+                  make friends, and share your passion!
+                </Text>
+              </View>
+
+              <View style={styles.joinClubInnerContainer}>
+                <Text style={styles.joinClubText}>
+                  Can't find the perfect club?
+                </Text>
+                <Pressable>
+                  <Text style={styles.joinClubButton}>Create your own!</Text>
+                </Pressable>
+              </View>
+            </View>
+          ) : (
+            <Pressable style={{ alignItems: "center" }}>
+              <Text style={styles.joinClubSmallButton}>
+                Create your own club
+              </Text>
+            </Pressable>
+          )}
+          <View style={styles.emptyView}></View>
         </ScrollView>
       </View>
       <Modal
@@ -207,7 +265,7 @@ const styles = StyleSheet.create({
   },
   emptyView: {
     flex: 1,
-    height: pixelSizeVertical(30),
+    height: pixelSizeVertical(60),
     backgroundColor: "#0C111F",
   },
   sideMenuStyle: {
@@ -253,5 +311,48 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
+  },
+  tabActive: {
+    fontSize: fontPixel(34),
+    fontWeight: "500",
+    color: "#C4FFF9",
+    marginBottom: pixelSizeVertical(18),
+    marginRight: pixelSizeHorizontal(32),
+  },
+  tabInactive: {
+    fontSize: fontPixel(34),
+    fontWeight: "500",
+    color: "#C4FFF9",
+    marginBottom: pixelSizeVertical(18),
+    opacity: 0.5,
+    marginRight: pixelSizeHorizontal(32),
+  },
+  joinClubContainer: {
+    display: "flex",
+    flexDirection: "column",
+    marginTop: pixelSizeVertical(24),
+  },
+  joinClubInnerContainer: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: pixelSizeVertical(24),
+  },
+  joinClubButton: {
+    fontSize: fontPixel(36),
+    fontWeight: "500",
+    color: "#07BEB8",
+    textDecorationLine: "underline",
+  },
+  joinClubSmallButton: {
+    fontSize: fontPixel(20),
+    fontWeight: "500",
+    color: "#07BEB8",
+    textDecorationLine: "underline",
+    marginTop: pixelSizeVertical(42),
+  },
+  joinClubText: {
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#DFE5F8",
   },
 });
