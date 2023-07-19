@@ -82,7 +82,7 @@ export default function Main({ navigation }) {
   }, []);
 
   const handleLogin = () => {
-    navigation.navigate("Login");
+    navigation.replace("Login");
   };
 
   const handleSignup = () => {
