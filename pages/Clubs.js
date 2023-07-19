@@ -24,9 +24,14 @@ import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 
+import { useDispatch, useSelector } from "react-redux";
+import { firebase } from "../src/firebase/config";
+
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
+
+const db = firebase.firestore();
 
 import {
   fontPixel,
@@ -37,6 +42,9 @@ import {
 } from "../utils/responsive-font";
 
 export default function Clubs({ navigation }) {
+  const user = useSelector((state) => state.user.credentials);
+  const state = useSelector((state) => state.data);
+
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
   const [headerHeight, setHeaderHeight] = useState(300);
@@ -45,43 +53,46 @@ export default function Clubs({ navigation }) {
 
   const [tab, setTab] = useState("all clubs");
 
-  const [all, setAll] = useState([
-    {
-      image: club1,
-      title: "Anime Club",
-    },
-    {
-      image: club2,
-      title: "Guitar Club",
-    },
-    {
-      image: club3,
-      title: "Engineering Club",
-    },
-    {
-      image: club4,
-      title: "Computer Science Club",
-    },
-    {
-      image: club5,
-      title: "Charitable Cause for Animals Club",
-    },
-  ]);
+  const [all, setAll] = useState([]);
 
-  const [yours, setYours] = useState([
-    {
-      image: club4,
-      title: "Computer Science Club",
-    },
-    {
-      image: club5,
-      title: "Charitable Cause for Animals Club",
-    },
-  ]);
+  const [yours, setYours] = useState([]);
+
+  useEffect(() => {
+    console.log(state.campus.campusID);
+    db.doc(`/clubsOverview/${state.campus.campusID}`)
+      .get()
+      .then((doc) => {
+        if (doc.data()) setAll(doc.data().clubs);
+      })
+      .catch((error) => console.error(error));
+  }, [state.campus.campusID]);
+
+  useEffect(() => {
+    let temp = [];
+    if (all.length > 0 && user.clubs.length > 0) {
+      user.clubs.map((club) => {
+        let index = all.findIndex((all) => all.clubID === club.clubID);
+        if (index !== -1) {
+          temp.push({
+            ...all[index],
+            role: club.role,
+          });
+        }
+      });
+    }
+    setYours([...temp]);
+    console.log(all);
+  }, [all]);
+
+  useEffect(() => {
+    console.log(yours);
+  }, [yours]);
 
   const handlePageItemPress = () => {
     navigation.navigate("ClubsPages");
   };
+
+  const handlePageItemResubmit = () => {};
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -171,22 +182,102 @@ export default function Clubs({ navigation }) {
             data={tab === "all clubs" ? all : yours}
             renderItem={({ item }) => (
               <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
-                <Pressable onPress={handlePageItemPress}>
-                  <Image
-                    style={styles.image}
-                    source={item.image}
-                    contentFit="cover"
-                    transition={1000}
-                  />
-                  <Text style={styles.pageItems}>{item.title}</Text>
-                </Pressable>
+                {item.approval === "pending" ? (
+                  item.createdBy === user.userId && (
+                    <>
+                      <View style={styles.borderPending} />
+                      <Text style={styles.pageItemsPending}>{item.name}</Text>
+                      <Text style={styles.pageItemSubtitlePending}>
+                        {item.approval}
+                      </Text>
+                    </>
+                  )
+                ) : item.approval === "rejected" ? (
+                  item.createdBy === user.userId && (
+                    <Pressable onPress={handlePageItemResubmit}>
+                      <View style={styles.borderRejected} />
+                      <Text style={styles.pageItemsPending}>{item.name}</Text>
+                      <Text style={styles.pageItemSubtitleSuspendedSmaller}>
+                        {item.approval}
+                      </Text>
+                      <Text style={styles.pageItemSubtitleRejected}>
+                        {item.rejectionReason}
+                      </Text>
+                    </Pressable>
+                  )
+                ) : item.status === "inactive" ? (
+                  <Pressable onPress={handlePageItemPress}>
+                    {item.image ? (
+                      <Image
+                        style={styles.imageHalfOpacity}
+                        source={item.image}
+                        contentFit="cover"
+                        transition={1000}
+                      />
+                    ) : (
+                      <View style={styles.borderInactive} />
+                    )}
+                    <Text style={styles.pageItemsInactive}>{item.name}</Text>
+                    <Text style={styles.pageItemSubtitleInactive}>
+                      {item.status}
+                    </Text>
+                  </Pressable>
+                ) : item.status === "suspended" ? (
+                  <>
+                    {item.image ? (
+                      <Image
+                        style={styles.imageHalfOpacity}
+                        source={item.image}
+                        contentFit="cover"
+                        transition={1000}
+                      />
+                    ) : (
+                      <View style={styles.borderRejected} />
+                    )}
+                    <Text style={styles.pageItemsSuspended}>{item.name}</Text>
+                    <Text style={styles.pageItemSubtitleSuspendedSmaller}>
+                      {item.status}
+                    </Text>
+                  </>
+                ) : item.status === "deactivated" ? (
+                  <Pressable onPress={handlePageItemPress}>
+                    {item.image ? (
+                      <Image
+                        style={styles.imageHalfOpacity}
+                        source={item.image}
+                        contentFit="cover"
+                        transition={1000}
+                      />
+                    ) : (
+                      <View style={styles.borderInactive} />
+                    )}
+                    <Text style={styles.pageItemsInactive}>{item.name}</Text>
+                    <Text style={styles.pageItemSubtitleInactive}>
+                      {item.status}
+                    </Text>
+                  </Pressable>
+                ) : (
+                  <Pressable onPress={handlePageItemPress}>
+                    {item.image ? (
+                      <Image
+                        style={styles.image}
+                        source={item.image}
+                        contentFit="cover"
+                        transition={1000}
+                      />
+                    ) : (
+                      <View style={styles.borderNormal} />
+                    )}
+                    <Text style={styles.pageItems}>{item.name}</Text>
+                  </Pressable>
+                )}
               </View>
             )}
           />
           {tab === "yours" && yours.length === 0 ? (
             <View style={styles.joinClubContainer}>
               <View style={styles.joinClubInnerContainer}>
-                <Pressable>
+                <Pressable onPress={() => setTab("all clubs")}>
                   <Text style={styles.joinClubButton}>Find your club,</Text>
                 </Pressable>
                 <Text style={styles.joinClubText}>
@@ -258,13 +349,120 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(10),
     borderRadius: 5,
   },
+  borderPending: {
+    width: "100%",
+    height: heightPixel(150),
+    marginBottom: pixelSizeVertical(10),
+    borderRadius: 5,
+    borderWidth: 3,
+    opacity: 0.5,
+    borderColor: "#C6CDE2",
+  },
+  borderNormal: {
+    width: "100%",
+    height: heightPixel(150),
+    marginBottom: pixelSizeVertical(10),
+    borderRadius: 5,
+    borderWidth: 3,
+    borderColor: "#DFE5F8",
+  },
+  borderInactive: {
+    width: "100%",
+    height: heightPixel(150),
+    marginBottom: pixelSizeVertical(10),
+    borderRadius: 5,
+    borderWidth: 3,
+    borderColor: "#232F52",
+  },
+  borderRejected: {
+    width: "100%",
+    height: heightPixel(150),
+    marginBottom: pixelSizeVertical(10),
+    borderRadius: 5,
+    borderWidth: 3,
+    borderColor: "#9B222C",
+  },
+  imageHalfOpacity: {
+    width: "100%",
+    height: heightPixel(150),
+    marginBottom: pixelSizeVertical(10),
+    borderRadius: 5,
+    opacity: 0.5,
+  },
   pageItems: {
     fontSize: fontPixel(28),
     fontWeight: "500",
     color: "#C4FFF9",
     lineHeight: 36,
-    marginLeft: pixelSizeVertical(2),
-    marginRight: pixelSizeVertical(2),
+    marginLeft: pixelSizeHorizontal(2),
+    marginRight: pixelSizeHorizontal(2),
+  },
+  pageItemsPending: {
+    fontSize: fontPixel(28),
+    fontWeight: "400",
+    color: "#C6CDE2",
+    lineHeight: 36,
+    marginLeft: pixelSizeHorizontal(2),
+    marginRight: pixelSizeHorizontal(2),
+  },
+  pageItemsInactive: {
+    fontSize: fontPixel(28),
+    fontWeight: "400",
+    color: "#232F52",
+    lineHeight: 36,
+    marginLeft: pixelSizeHorizontal(2),
+    marginRight: pixelSizeHorizontal(2),
+  },
+  pageItemsSuspended: {
+    fontSize: fontPixel(28),
+    fontWeight: "400",
+    color: "#A3222D",
+    marginTop: pixelSizeVertical(4),
+    marginLeft: pixelSizeHorizontal(2),
+    marginRight: pixelSizeHorizontal(2),
+  },
+  pageItemSubtitleSuspended: {
+    fontSize: fontPixel(18),
+    fontWeight: "400",
+    color: "#A3222D",
+    marginTop: pixelSizeVertical(4),
+    marginLeft: pixelSizeHorizontal(2),
+    marginRight: pixelSizeHorizontal(2),
+  },
+  pageItemSubtitleSuspendedSmaller: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#A3222D",
+    marginTop: pixelSizeVertical(4),
+    marginLeft: pixelSizeHorizontal(2),
+    marginRight: pixelSizeHorizontal(2),
+  },
+  pageItemSubtitlePending: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#C6CDE2",
+    lineHeight: 36,
+    marginLeft: pixelSizeHorizontal(2),
+    marginRight: pixelSizeHorizontal(2),
+  },
+  pageItemSubtitleRejected: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#C6CDE2",
+    lineHeight: 22,
+    marginLeft: pixelSizeHorizontal(2),
+    marginRight: pixelSizeHorizontal(2),
+    marginTop: pixelSizeVertical(2),
+    marginBottom: pixelSizeVertical(-3),
+  },
+  pageItemSubtitleInactive: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#232F52",
+    lineHeight: 36,
+    marginLeft: pixelSizeHorizontal(2),
+    marginRight: pixelSizeHorizontal(2),
+    marginBottom: pixelSizeVertical(-3),
   },
   emptyView: {
     flex: 1,

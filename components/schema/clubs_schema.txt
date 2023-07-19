@@ -89,7 +89,7 @@ clubsOverview: {
                 approval: 'pending/approved/reject',
                 rejectionReason,
                 status: 'active/inactive/deactivated/suspended', suspended:indefintelely/suspended:datetime
-                 createdBy: user's userID,
+                createdBy: user's userID,
             }
         ]
     }
@@ -103,9 +103,7 @@ users: {
                 clubID,
                 memberID,
                 role,
-                createdAt,
-                status: 'active/pending'
-                 createdBy: user's userID,
+                approval: 'pending/approved/reject',
             }
         ]
     }
