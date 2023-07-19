@@ -1,4 +1,5 @@
 import {
+  ADD_USER_CLUB,
   GET_AUTHENTICATED_USER,
   SET_LOADING_USER,
   STOP_LOADING_USER,
@@ -17,6 +18,12 @@ export default function (state = initialState, action) {
         ...state,
         authenticated: true,
         credentials: { ...action.payload },
+      };
+    case ADD_USER_CLUB:
+      state.credentials.clubs.push({ ...action.payload });
+      console.log(state.credentials.clubs);
+      return {
+        ...state,
       };
     case SET_LOADING_USER:
       return {
