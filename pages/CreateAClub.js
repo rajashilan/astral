@@ -35,6 +35,7 @@ import { toastConfig } from "../utils/toast-config";
 import { firebase } from "../src/firebase/config";
 
 import { useDispatch, useSelector } from "react-redux";
+import { ADD_USER_CLUB } from "../src/redux/type";
 
 const { width } = Dimensions.get("window");
 
@@ -44,8 +45,6 @@ export default function Login({ navigation, route }) {
   const user = useSelector((state) => state.user.credentials);
   const state = useSelector((state) => state.data);
   const dispatch = useDispatch();
-
-  console.log(user);
 
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
@@ -140,15 +139,14 @@ export default function Login({ navigation, route }) {
         clubID: "",
         memberID,
         role: "president",
-        createdAt,
-        status: "active",
+        approval: "pending",
         createdBy,
       };
 
-      //test if the user has any other pending club requests
       let index = user.clubs.findIndex(
-        (club) => club.status === "pending" && club.createdBy === user.userId
+        (club) => club.approval === "pending" && club.createdBy === user.userId
       );
+
       if (index === -1) {
         db.collection("clubs")
           .add(clubsData)
@@ -195,11 +193,10 @@ export default function Login({ navigation, route }) {
                   .then(() => {
                     setLoading(false);
 
-                    //fix loading bug
-                    //shift all of this to data actions
-                    //after creating, immediately append to user's local state list of clubs
+                    //after creating, immediately append to user's local state list of clubs overview
                     //after creating, add to local states yours list of clubs
-                    //perform logic to show user the club and its respective status and all
+
+                    dispatch({ type: ADD_USER_CLUB, payload: userData });
 
                     setSuccessMessage(
                       "Request submitted! Stay tuned for updates"
@@ -209,14 +206,19 @@ export default function Login({ navigation, route }) {
                     });
                   });
               });
+          })
+          .catch((error) => {
+            setLoading(false);
+            console.error(error);
+            dispatch({ type: STOP_LOADING_DATA });
           });
       } else {
         errors.name = "You can only create a request for one club at a time.";
+        setLoading(false);
       }
     }
 
     setErrors(errors);
-    setLoading(false);
   };
 
   const toggleSideMenu = () => {
