@@ -81,12 +81,7 @@ export default function Clubs({ navigation }) {
       });
     }
     setYours([...temp]);
-    console.log(all);
   }, [all]);
-
-  useEffect(() => {
-    console.log(yours);
-  }, [yours]);
 
   const handlePageItemPress = () => {
     navigation.navigate("ClubsPages");
