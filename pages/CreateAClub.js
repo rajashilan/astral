@@ -123,6 +123,7 @@ export default function Login({ navigation, route }) {
         membersRequests: [],
         createdAt,
         createdBy,
+        campusID: state.campus.campusID,
       };
 
       let clubsOverviewData = {
@@ -133,6 +134,7 @@ export default function Login({ navigation, route }) {
         rejectionReason: "",
         status: "inactive",
         createdBy,
+        campusID: state.campus.campusID,
       };
 
       let userData = {

@@ -76,6 +76,7 @@ clubs: {
         ]
         createdAt,
         createdBy: user's userID,
+        campusID,
     }
 }
 
@@ -90,6 +91,7 @@ clubsOverview: {
                 rejectionReason,
                 status: 'active/inactive/deactivated/suspended', suspended:indefintelely/suspended:datetime
                 createdBy: user's userID,
+                campusID,
             }
         ]
     }
