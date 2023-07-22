@@ -3,6 +3,7 @@ import {
   Text,
   View,
   FlatList,
+  RefreshControl,
   Pressable,
   Dimensions,
   ScrollView,
@@ -11,14 +12,7 @@ import React, { useState, useEffect } from "react";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 
-import Header from "../components/Header";
 import IosHeight from "../components/IosHeight";
-
-import club1 from "../assets/club1.png";
-import club2 from "../assets/club2.png";
-import club3 from "../assets/club3.png";
-import club4 from "../assets/club4.png";
-import club5 from "../assets/club5.png";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
@@ -51,6 +45,8 @@ export default function Clubs({ navigation }) {
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
+  const [refreshing, setRefreshing] = useState(false);
+
   const [tab, setTab] = useState("all clubs");
 
   const [all, setAll] = useState([]);
@@ -58,7 +54,7 @@ export default function Clubs({ navigation }) {
   const [yours, setYours] = useState([]);
 
   useEffect(() => {
-    console.log(state.campus.campusID);
+    //get clubs from clubs overview
     db.doc(`/clubsOverview/${state.campus.campusID}`)
       .get()
       .then((doc) => {
@@ -66,6 +62,21 @@ export default function Clubs({ navigation }) {
       })
       .catch((error) => console.error(error));
   }, [state.campus.campusID]);
+
+  const onRefresh = React.useCallback(() => {
+    //get clubs from clubs overview
+    setRefreshing(true);
+    db.doc(`/clubsOverview/${state.campus.campusID}`)
+      .get()
+      .then((doc) => {
+        if (doc.data()) setAll(doc.data().clubs);
+        setRefreshing(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setRefreshing(false);
+      });
+  }, []);
 
   useEffect(() => {
     let temp = [];
@@ -146,6 +157,9 @@ export default function Clubs({ navigation }) {
             setScrollHeight(event.nativeEvent.contentOffset.y)
           }
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           <View
             onLayout={onLayout}
