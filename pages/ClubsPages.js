@@ -350,13 +350,4 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  headerContainerHideMiniHeader: {
-    marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(8),
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
 });

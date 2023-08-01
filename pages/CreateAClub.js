@@ -10,8 +10,6 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import logo from "../assets/logo.png";
-import rocketBg from "../assets/rocket_background.png";
 import { Image } from "expo-image";
 import {
   fontPixel,

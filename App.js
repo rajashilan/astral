@@ -22,6 +22,7 @@ import Profile from "./pages/Profile";
 import Stafflist from "./pages/Stafflist";
 import Stafflistpage from "./pages/Stafflistpage";
 import CreateAClub from "./pages/CreateAClub";
+import ClubResubmission from "./pages/ClubResubmisson";
 
 import { Provider } from "react-redux";
 import { store } from "./src/redux/store";
@@ -146,6 +147,14 @@ export default function App() {
           <Stack.Screen
             name="ClubsPages"
             component={ClubsPages}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="ClubResubmission"
+            component={ClubResubmission}
             options={{
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,

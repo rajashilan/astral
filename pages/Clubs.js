@@ -18,6 +18,9 @@ import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
 
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../utils/toast-config";
+
 import { useDispatch, useSelector } from "react-redux";
 import { firebase } from "../src/firebase/config";
 
@@ -52,6 +55,8 @@ export default function Clubs({ navigation }) {
   const [all, setAll] = useState([]);
 
   const [yours, setYours] = useState([]);
+
+  //set and get data from redux
 
   useEffect(() => {
     //get clubs from clubs overview
@@ -98,7 +103,9 @@ export default function Clubs({ navigation }) {
     navigation.navigate("ClubsPages");
   };
 
-  const handlePageItemResubmit = () => {};
+  const handlePageItemResubmit = (item) => {
+    navigation.navigate("ClubResubmission", { club: item });
+  };
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -203,7 +210,7 @@ export default function Clubs({ navigation }) {
                   )
                 ) : item.approval === "rejected" ? (
                   item.createdBy === user.userId && (
-                    <Pressable onPress={handlePageItemResubmit}>
+                    <Pressable onPress={() => handlePageItemResubmit(item)}>
                       <View style={styles.borderRejected} />
                       <Text style={styles.pageItemsPending}>{item.name}</Text>
                       <Text style={styles.pageItemSubtitleSuspendedSmaller}>
@@ -215,56 +222,62 @@ export default function Clubs({ navigation }) {
                     </Pressable>
                   )
                 ) : item.status === "inactive" ? (
-                  <Pressable onPress={handlePageItemPress}>
-                    {item.image ? (
-                      <Image
-                        style={styles.imageHalfOpacity}
-                        source={item.image}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                    ) : (
-                      <View style={styles.borderInactive} />
-                    )}
-                    <Text style={styles.pageItemsInactive}>{item.name}</Text>
-                    <Text style={styles.pageItemSubtitleInactive}>
-                      {item.status}
-                    </Text>
-                  </Pressable>
+                  item.createdBy === user.userId && (
+                    <Pressable onPress={handlePageItemPress}>
+                      {item.image ? (
+                        <Image
+                          style={styles.imageHalfOpacity}
+                          source={item.image}
+                          contentFit="cover"
+                          transition={1000}
+                        />
+                      ) : (
+                        <View style={styles.borderInactive} />
+                      )}
+                      <Text style={styles.pageItemsInactive}>{item.name}</Text>
+                      <Text style={styles.pageItemSubtitleInactive}>
+                        {item.status}
+                      </Text>
+                    </Pressable>
+                  )
                 ) : item.status === "suspended" ? (
-                  <>
-                    {item.image ? (
-                      <Image
-                        style={styles.imageHalfOpacity}
-                        source={item.image}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                    ) : (
-                      <View style={styles.borderRejected} />
-                    )}
-                    <Text style={styles.pageItemsSuspended}>{item.name}</Text>
-                    <Text style={styles.pageItemSubtitleSuspendedSmaller}>
-                      {item.status}
-                    </Text>
-                  </>
+                  item.createdBy === user.userId && (
+                    <>
+                      {item.image ? (
+                        <Image
+                          style={styles.imageHalfOpacity}
+                          source={item.image}
+                          contentFit="cover"
+                          transition={1000}
+                        />
+                      ) : (
+                        <View style={styles.borderRejected} />
+                      )}
+                      <Text style={styles.pageItemsSuspended}>{item.name}</Text>
+                      <Text style={styles.pageItemSubtitleSuspendedSmaller}>
+                        {item.status}
+                      </Text>
+                    </>
+                  )
                 ) : item.status === "deactivated" ? (
-                  <Pressable onPress={handlePageItemPress}>
-                    {item.image ? (
-                      <Image
-                        style={styles.imageHalfOpacity}
-                        source={item.image}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                    ) : (
-                      <View style={styles.borderInactive} />
-                    )}
-                    <Text style={styles.pageItemsInactive}>{item.name}</Text>
-                    <Text style={styles.pageItemSubtitleInactive}>
-                      {item.status}
-                    </Text>
-                  </Pressable>
+                  item.createdBy === user.userId && (
+                    <Pressable onPress={handlePageItemPress}>
+                      {item.image ? (
+                        <Image
+                          style={styles.imageHalfOpacity}
+                          source={item.image}
+                          contentFit="cover"
+                          transition={1000}
+                        />
+                      ) : (
+                        <View style={styles.borderInactive} />
+                      )}
+                      <Text style={styles.pageItemsInactive}>{item.name}</Text>
+                      <Text style={styles.pageItemSubtitleInactive}>
+                        {item.status}
+                      </Text>
+                    </Pressable>
+                  )
                 ) : (
                   <Pressable onPress={handlePageItemPress}>
                     {item.image ? (
@@ -334,6 +347,8 @@ export default function Clubs({ navigation }) {
           navigation={navigation}
         />
       </Modal>
+
+      <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </>
   );
