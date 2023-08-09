@@ -171,6 +171,14 @@ export default function ClubResubmission({ navigation, route }) {
         return db.doc(`/clubs/${club.clubID}`).delete();
       })
       .then(() => {
+        //delete from events
+        return db.doc(`/events/${club.clubID}`).delete();
+      })
+      .then(() => {
+        //delete from gallery
+        return db.doc(`/gallery/${club.clubID}`).delete();
+      })
+      .then(() => {
         setLoading(false);
         Toast.show({
           type: "success",

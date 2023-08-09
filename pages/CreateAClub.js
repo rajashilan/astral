@@ -34,6 +34,7 @@ import { firebase } from "../src/firebase/config";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_USER_CLUB } from "../src/redux/type";
+import { event } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
@@ -88,8 +89,8 @@ export default function Login({ navigation, route }) {
             bio: "",
           },
         ],
-        gallery: [],
-        events: [],
+        gallery: false,
+        events: false,
         details: [],
         roles: [
           {
@@ -120,6 +121,20 @@ export default function Login({ navigation, route }) {
         status: "inactive",
         membersRequests: [],
         createdAt,
+        createdBy,
+        campusID: state.campus.campusID,
+      };
+
+      let eventData = {
+        events: [],
+        clubID: "",
+        createdBy,
+        campusID: state.campus.campusID,
+      };
+
+      let galleryData = {
+        gallery: [],
+        clubID: "",
         createdBy,
         campusID: state.campus.campusID,
       };
@@ -156,6 +171,8 @@ export default function Login({ navigation, route }) {
           })
           .then(() => {
             clubsOverviewData.clubID = clubID;
+            eventData.clubID = clubID;
+            galleryData.clubID = clubID;
 
             //first check if the campusID is in clubsOverview collection
             db.doc(`/clubsOverview/${state.campus.campusID}`)
@@ -189,6 +206,16 @@ export default function Login({ navigation, route }) {
                     return db
                       .doc(`/users/${user.userId}`)
                       .update({ clubs: [...temp] });
+                  })
+                  .then(() => {
+                    //create event details
+                    return db.doc(`/events/${eventData.clubID}`).set(eventData);
+                  })
+                  .then(() => {
+                    //create gallery details
+                    return db
+                      .doc(`/gallery/${galleryData.clubID}`)
+                      .set(galleryData);
                   })
                   .then(() => {
                     setLoading(false);

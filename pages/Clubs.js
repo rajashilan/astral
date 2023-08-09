@@ -26,6 +26,8 @@ import { firebase } from "../src/firebase/config";
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
+import { getAuthenticatedUser } from "../src/redux/actions/userActions";
+
 const { width } = Dimensions.get("window");
 
 const db = firebase.firestore();
@@ -41,6 +43,7 @@ import {
 export default function Clubs({ navigation }) {
   const user = useSelector((state) => state.user.credentials);
   const state = useSelector((state) => state.data);
+  const dispatch = useDispatch();
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
@@ -71,6 +74,7 @@ export default function Clubs({ navigation }) {
   const onRefresh = React.useCallback(() => {
     //get clubs from clubs overview
     setRefreshing(true);
+    dispatch(getAuthenticatedUser(user.email));
     db.doc(`/clubsOverview/${state.campus.campusID}`)
       .get()
       .then((doc) => {
