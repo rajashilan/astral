@@ -156,6 +156,7 @@ export default function Login({ navigation, route }) {
         role: "president",
         approval: "pending",
         createdBy,
+        createdAt,
       };
 
       let index = user.clubs.findIndex(
