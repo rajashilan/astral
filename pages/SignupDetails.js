@@ -98,7 +98,8 @@ export default function SignupDetails({ navigation, route }) {
                     username: username,
                     gender: selectedGender,
                     birthday: birthday,
-                    profileImgUrl: "",
+                    profileImage:
+                      "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/users%2FprofileImage%2Fuser_default.svg?alt=media",
                     bio: "",
                     userId: "",
                     college: college,

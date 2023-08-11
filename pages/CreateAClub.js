@@ -74,21 +74,8 @@ export default function Login({ navigation, route }) {
       let clubsData = {
         clubID: "", //get it later after adding
         name,
-        image: "",
-        members: [
-          {
-            name: user.name,
-            phone_number: user.phone_number,
-            email: user.email,
-            intake: user.intake,
-            department: user.department,
-            memberID, //to be generated
-            role: "president", //by default
-            createdAt,
-            profileImage: "",
-            bio: "",
-          },
-        ],
+        image:
+          "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.svg?alt=media",
         gallery: false,
         events: false,
         details: [],
@@ -132,6 +119,25 @@ export default function Login({ navigation, route }) {
         campusID: state.campus.campusID,
       };
 
+      let clubMembers = {
+        campusID: state.campus.campusID,
+        clubID: "",
+        members: [
+          {
+            name: user.name,
+            phone_number: user.phone_number,
+            email: user.email,
+            intake: user.intake,
+            department: user.department,
+            memberID, //to be generated
+            role: "president", //by default
+            createdAt,
+            profileImage: user.profileImage,
+            bio: "",
+          },
+        ],
+      };
+
       let galleryData = {
         gallery: [],
         clubID: "",
@@ -141,7 +147,8 @@ export default function Login({ navigation, route }) {
 
       let clubsOverviewData = {
         name,
-        image: "",
+        image:
+          "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.svg?alt=media",
         clubID: "", //to be added later
         approval: "pending",
         rejectionReason: "",
@@ -174,6 +181,7 @@ export default function Login({ navigation, route }) {
             clubsOverviewData.clubID = clubID;
             eventData.clubID = clubID;
             galleryData.clubID = clubID;
+            clubMembers.clubID = clubID;
 
             //first check if the campusID is in clubsOverview collection
             db.doc(`/clubsOverview/${state.campus.campusID}`)
@@ -217,6 +225,12 @@ export default function Login({ navigation, route }) {
                     return db
                       .doc(`/gallery/${galleryData.clubID}`)
                       .set(galleryData);
+                  })
+                  .then(() => {
+                    //add members details
+                    return db
+                      .doc(`/clubMembers/${clubMembers.clubID}`)
+                      .set(clubMembers);
                   })
                   .then(() => {
                     setLoading(false);

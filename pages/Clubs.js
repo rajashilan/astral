@@ -88,6 +88,7 @@ export default function Clubs({ navigation }) {
   }, []);
 
   useEffect(() => {
+    console.log(all);
     let temp = [];
     if (all.length > 0 && user.clubs.length > 0) {
       user.clubs.map((club) => {
@@ -205,7 +206,12 @@ export default function Clubs({ navigation }) {
                 {item.approval === "pending" ? (
                   item.createdBy === user.userId && (
                     <>
-                      <View style={styles.borderPending} />
+                      <Image
+                        style={styles.imageHalfOpacity}
+                        source={item.image}
+                        contentFit="cover"
+                        transition={1000}
+                      />
                       <Text style={styles.pageItemsPending}>{item.name}</Text>
                       <Text style={styles.pageItemSubtitlePending}>
                         {item.approval}
@@ -215,7 +221,12 @@ export default function Clubs({ navigation }) {
                 ) : item.approval === "rejected" ? (
                   item.createdBy === user.userId && (
                     <Pressable onPress={() => handlePageItemResubmit(item)}>
-                      <View style={styles.borderRejected} />
+                      <Image
+                        style={styles.imageHalfOpacity}
+                        source={item.image}
+                        contentFit="cover"
+                        transition={1000}
+                      />
                       <Text style={styles.pageItemsPending}>{item.name}</Text>
                       <Text style={styles.pageItemSubtitleSuspendedSmaller}>
                         {item.approval}
@@ -228,16 +239,12 @@ export default function Clubs({ navigation }) {
                 ) : item.status === "inactive" ? (
                   item.createdBy === user.userId && (
                     <Pressable onPress={handlePageItemPress}>
-                      {item.image ? (
-                        <Image
-                          style={styles.imageHalfOpacity}
-                          source={item.image}
-                          contentFit="cover"
-                          transition={1000}
-                        />
-                      ) : (
-                        <View style={styles.borderInactive} />
-                      )}
+                      <Image
+                        style={styles.imageHalfOpacity}
+                        source={item.image}
+                        contentFit="cover"
+                        transition={1000}
+                      />
                       <Text style={styles.pageItemsInactive}>{item.name}</Text>
                       <Text style={styles.pageItemSubtitleInactive}>
                         {item.status}
@@ -247,16 +254,12 @@ export default function Clubs({ navigation }) {
                 ) : item.status === "suspended" ? (
                   item.createdBy === user.userId && (
                     <>
-                      {item.image ? (
-                        <Image
-                          style={styles.imageHalfOpacity}
-                          source={item.image}
-                          contentFit="cover"
-                          transition={1000}
-                        />
-                      ) : (
-                        <View style={styles.borderRejected} />
-                      )}
+                      <Image
+                        style={styles.imageHalfOpacity}
+                        source={item.image}
+                        contentFit="cover"
+                        transition={1000}
+                      />
                       <Text style={styles.pageItemsSuspended}>{item.name}</Text>
                       <Text style={styles.pageItemSubtitleSuspendedSmaller}>
                         {item.status}
@@ -266,16 +269,12 @@ export default function Clubs({ navigation }) {
                 ) : item.status === "deactivated" ? (
                   item.createdBy === user.userId && (
                     <Pressable onPress={handlePageItemPress}>
-                      {item.image ? (
-                        <Image
-                          style={styles.imageHalfOpacity}
-                          source={item.image}
-                          contentFit="cover"
-                          transition={1000}
-                        />
-                      ) : (
-                        <View style={styles.borderInactive} />
-                      )}
+                      <Image
+                        style={styles.imageHalfOpacity}
+                        source={item.image}
+                        contentFit="cover"
+                        transition={1000}
+                      />
                       <Text style={styles.pageItemsInactive}>{item.name}</Text>
                       <Text style={styles.pageItemSubtitleInactive}>
                         {item.status}
@@ -284,16 +283,12 @@ export default function Clubs({ navigation }) {
                   )
                 ) : (
                   <Pressable onPress={handlePageItemPress}>
-                    {item.image ? (
-                      <Image
-                        style={styles.image}
-                        source={item.image}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                    ) : (
-                      <View style={styles.borderNormal} />
-                    )}
+                    <Image
+                      style={styles.image}
+                      source={item.image}
+                      contentFit="cover"
+                      transition={1000}
+                    />
                     <Text style={styles.pageItems}>{item.name}</Text>
                   </Pressable>
                 )}
