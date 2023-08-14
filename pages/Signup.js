@@ -320,7 +320,6 @@ export default function Signup({ navigation }) {
               data={campuses}
               onSelect={(selectedItem, index) => {
                 setSelectedCampus(selectedItem);
-                console.log(selectedItem);
               }}
             />
           </Animated.View>
@@ -386,7 +385,6 @@ export default function Signup({ navigation }) {
               data={departments}
               onSelect={(selectedItem, index) => {
                 setSelectedDepartment(selectedItem);
-                console.log(selectedItem);
               }}
             />
           </Animated.View>
@@ -488,7 +486,6 @@ export default function Signup({ navigation }) {
               data={intakeYears}
               onSelect={(selectedItem, index) => {
                 setSelectedIntakeYear(selectedItem);
-                console.log(selectedItem);
               }}
             />
           </Animated.View>

@@ -79,27 +79,33 @@ export default function Login({ navigation, route }) {
         gallery: false,
         events: false,
         details: [],
+        numberOfMembers: 1,
         roles: [
           {
             president: {
               memberID, //to be generated
+              userID: createdBy,
               alternateName: "",
             },
             vicePresident: {
               memberID: "", //to be generated
+              userID: "",
               alternateName: "",
             },
             secretary: {
               memberID: "", //to be generated
+              userID: "",
               alternateName: "",
             },
             treasurer: {
               memberID: "", //to be generated
+              userID: "",
               alternateName: "",
             },
             members: {
               alternateName: "",
               membersIDs: [],
+              userIDs: [],
             },
           },
         ],
@@ -130,6 +136,7 @@ export default function Login({ navigation, route }) {
             intake: user.intake,
             department: user.department,
             memberID, //to be generated
+            userID: createdBy,
             role: "president", //by default
             createdAt,
             profileImage: user.profileImage,

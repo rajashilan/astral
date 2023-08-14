@@ -28,7 +28,6 @@ import { toastConfig } from "../utils/toast-config";
 export default function Home({ navigation }) {
   const state = useSelector((state) => state.user);
   const loading = useSelector((state) => state.user.loading);
-  console.log(loading);
 
   const [menuItems] = useState([
     { name: "orientation" },
@@ -43,13 +42,11 @@ export default function Home({ navigation }) {
     if (name === "staff list") navigation.replace("Stafflist");
     else navigation.replace(menuItem.trim());
   };
-  console.log(loading);
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
       } else {
         navigation.navigate("Main");
-        console.log("logged out");
       }
     });
   }, []);

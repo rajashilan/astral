@@ -1,7 +1,5 @@
 import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
-import React, { useState } from "react";
-import member1 from "../assets/member1.png";
-import member2 from "../assets/member2.png";
+import React, { useEffect, useState } from "react";
 import {
   fontPixel,
   widthPixel,
@@ -12,33 +10,16 @@ import {
 import { Image } from "expo-image";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 
+import { useSelector } from "react-redux";
+
 const { width } = Dimensions.get("window");
 
 export default function ClubsMembers(props) {
-  const [data, setData] = useState([
-    {
-      members: 13,
-      membersData: [
-        {
-          name: "Jonathan",
-          year: 3,
-          course: "BCSCU",
-          role: "President",
-          quote:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. ",
-          image: member1,
-        },
-        {
-          name: "Kelly",
-          year: 2,
-          course: "BCSCU",
-          role: "Vice President",
-          quote: "I am your mother",
-          image: member2,
-        },
-      ],
-    },
-  ]);
+  const members = useSelector((state) => state.data.clubData.members);
+  const currentMember = useSelector(
+    (state) => state.data.clubData.currentMember
+  );
+  const numberOfMembers = `${members.length} members`;
 
   const [indexSelected, setIndexSelected] = useState(0);
 
@@ -48,7 +29,7 @@ export default function ClubsMembers(props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{data[0].members} members</Text>
+      {numberOfMembers && <Text style={styles.header}>{numberOfMembers}</Text>}
       <Pagination
         inactiveDotColor="#546593"
         dotColor={"#C4FFF9"}
@@ -60,12 +41,12 @@ export default function ClubsMembers(props) {
           paddingBottom: 0,
           marginBottom: pixelSizeVertical(12),
         }}
-        dotsLength={data[0].membersData.length}
+        dotsLength={members && members.length}
         inactiveDotScale={1}
       />
       <Carousel
         layout="default"
-        data={data[0].membersData}
+        data={members && members}
         disableIntervalMomentum={true}
         useExperimentalSnap={true}
         onSnapToItem={(index) => onSelect(index)}
@@ -76,14 +57,14 @@ export default function ClubsMembers(props) {
             <Image
               key={index}
               style={styles.image}
-              resizeMode="cover"
-              source={item.image}
+              contentFit="cover"
+              source={item.profileImage}
             />
-            <Text style={styles.role}>{item.role}</Text>
+            {currentMember && <Text style={styles.role}>{item.role}</Text>}
             <Text style={styles.name}>
-              {item.name} - Year {item.year}, {item.course}
+              {item.name} - Intake {item.intake}, {item.department}
             </Text>
-            <Text style={styles.quote}>"{item.quote}"</Text>
+            <Text style={styles.quote}>{item.bio && item.bio}</Text>
           </>
         )}
       />
@@ -107,7 +88,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 280,
+    height: heightPixel(280),
     marginBottom: pixelSizeVertical(12),
     borderRadius: 5,
   },

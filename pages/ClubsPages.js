@@ -6,9 +6,6 @@ import {
   Pressable,
   ImageBackground,
 } from "react-native";
-import club4 from "../assets/club4.png";
-import member1 from "../assets/member1.png";
-import member2 from "../assets/member2.png";
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 
@@ -19,7 +16,10 @@ import { Image } from "expo-image";
 
 import IosHeight from "../components/IosHeight";
 
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../utils/toast-config";
+
+import { useDispatch, useSelector } from "react-redux";
 
 const { width } = Dimensions.get("window");
 
@@ -38,25 +38,45 @@ import ClubsMembers from "./ClubsMembers";
 
 import { ScrollView } from "react-native-gesture-handler";
 
-export default function ClubsPages({ navigation }) {
+import { firebase } from "../src/firebase/config";
+import { getAClub, getClubMembers } from "../src/redux/actions/dataActions";
+const db = firebase.firestore();
+
+export default function ClubsPages({ navigation, route }) {
+  const { clubID } = route.params;
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.credentials);
+  const data = useSelector((state) => state.data.clubData.club);
+  const currentMember = useSelector(
+    (state) => state.data.clubData.currentMember
+  );
+
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
   const [headerHeight, setHeaderHeight] = useState(300);
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
-  const [data, setData] = useState([
-    {
-      header: "Computer Science Club",
-      image: club4,
-      navigations: [
-        { name: "members" },
-        { name: "gallery" },
-        { name: "events" },
-        { name: "details" },
-      ],
-    },
-  ]);
+  const [navigations] = useState({
+    navigations: [
+      { name: "members" },
+      { name: "gallery" },
+      { name: "events" },
+      { name: "details" },
+    ],
+  });
+
+  useEffect(() => {
+    dispatch(getAClub(clubID, user.userId));
+  }, []);
+
+  //show edit buttons based on the user data logic
+  //if filter returns null, show join button, dont show you button or add button
+  //the members data can then be passed to clubsMembers as props
+  //pass down current member data to all components as prop
+  //same goes for clubsDetails
+  //gallery and events get their data separately
 
   const [tab, setTab] = useState("members");
 
@@ -66,6 +86,10 @@ export default function ClubsPages({ navigation }) {
 
   const handleNavigateBack = () => {
     navigation.navigate("Clubs");
+  };
+
+  const handleYou = () => {
+    navigation.navigate("ClubsYou");
   };
 
   const handleJoin = () => {};
@@ -92,7 +116,7 @@ export default function ClubsPages({ navigation }) {
         >
           <Text style={styles.backButton}>back</Text>
         </Pressable>
-        {showMiniHeader ? (
+        {/* {showMiniHeader ? (
           <Animated.View
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
@@ -103,6 +127,11 @@ export default function ClubsPages({ navigation }) {
           </Animated.View>
         ) : (
           <Text style={styles.headerMiniInvisible}>title</Text>
+        )} */}
+        {currentMember && (
+          <Pressable onPress={handleYou} style={styles.youButton}>
+            <Text style={styles.youText}>you</Text>
+          </Pressable>
         )}
         <Pressable
           onPress={toggleSideMenu}
@@ -125,16 +154,18 @@ export default function ClubsPages({ navigation }) {
           marginTop: pixelSizeVertical(10),
         })}
       >
-        <View onLayout={onLayout}>
-          <ImageBackground
-            source={data[0].image}
-            style={styles.imageHeaderContainer}
-          >
-            <View style={styles.overlayContainer}>
-              <Text style={styles.header}>{data[0].header}</Text>
-            </View>
-          </ImageBackground>
-        </View>
+        {data && (
+          <View onLayout={onLayout}>
+            <ImageBackground
+              source={{ uri: data.image }}
+              style={styles.imageHeaderContainer}
+            >
+              <View style={styles.overlayContainer}>
+                <Text style={styles.header}>{data.name}</Text>
+              </View>
+            </ImageBackground>
+          </View>
+        )}
 
         <View
           style={{
@@ -142,9 +173,11 @@ export default function ClubsPages({ navigation }) {
             paddingLeft: pixelSizeHorizontal(16),
           }}
         >
-          <Pressable style={styles.loginButton}>
-            <Text style={styles.loginButtonText}>join</Text>
-          </Pressable>
+          {!currentMember && (
+            <Pressable style={styles.loginButton}>
+              <Text style={styles.loginButtonText}>join</Text>
+            </Pressable>
+          )}
         </View>
 
         <View
@@ -156,8 +189,8 @@ export default function ClubsPages({ navigation }) {
           }}
         >
           <View style={styles.navigationContainer}>
-            {data[0].navigations.length > 0 &&
-              data[0].navigations.map((link) => {
+            {navigations.navigations.length > 0 &&
+              navigations.navigations.map((link) => {
                 return (
                   <Pressable
                     onPress={() => setTab(link.name)}
@@ -191,13 +224,13 @@ export default function ClubsPages({ navigation }) {
           }}
         >
           {tab === "members" ? (
-            <ClubsMembers club={data[0].header} />
+            <ClubsMembers />
           ) : tab === "gallery" ? (
-            <ClubsGallery club={data[0].header} />
+            <ClubsGallery />
           ) : tab === "events" ? (
-            <ClubsEvents club={data[0].header} />
+            <ClubsEvents />
           ) : tab === "details" ? (
-            <ClubsDetails club={data[0].header} />
+            <ClubsDetails />
           ) : null}
         </View>
       </ScrollView>
@@ -220,7 +253,7 @@ export default function ClubsPages({ navigation }) {
           navigation={navigation}
         />
       </Modal>
-
+      <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
   );
@@ -268,6 +301,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   navigationContainer: {
+    marginTop: pixelSizeVertical(16),
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -349,5 +383,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  youButton: {
+    marginLeft: "auto",
+    marginRight: pixelSizeHorizontal(16),
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(1),
+    paddingBottom: pixelSizeVertical(6),
+    backgroundColor: "#232F52",
+    borderRadius: 5,
+  },
+  youText: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
   },
 });

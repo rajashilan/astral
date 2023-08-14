@@ -22,7 +22,6 @@ import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
 import { useDispatch, useSelector } from "react-redux";
-import { firebase } from "../src/firebase/config";
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
@@ -30,6 +29,7 @@ import { getAuthenticatedUser } from "../src/redux/actions/userActions";
 
 const { width } = Dimensions.get("window");
 
+import { firebase } from "../src/firebase/config";
 const db = firebase.firestore();
 
 import {
@@ -88,7 +88,6 @@ export default function Clubs({ navigation }) {
   }, []);
 
   useEffect(() => {
-    console.log(all);
     let temp = [];
     if (all.length > 0 && user.clubs.length > 0) {
       user.clubs.map((club) => {
@@ -104,8 +103,8 @@ export default function Clubs({ navigation }) {
     setYours([...temp]);
   }, [all]);
 
-  const handlePageItemPress = () => {
-    navigation.navigate("ClubsPages");
+  const handlePageItemPress = (clubID) => {
+    navigation.navigate("ClubsPages", { clubID });
   };
 
   const handlePageItemResubmit = (item) => {
@@ -238,7 +237,7 @@ export default function Clubs({ navigation }) {
                   )
                 ) : item.status === "inactive" ? (
                   item.createdBy === user.userId && (
-                    <Pressable onPress={handlePageItemPress}>
+                    <Pressable onPress={() => handlePageItemPress(item.clubID)}>
                       <Image
                         style={styles.imageHalfOpacity}
                         source={item.image}
@@ -268,7 +267,7 @@ export default function Clubs({ navigation }) {
                   )
                 ) : item.status === "deactivated" ? (
                   item.createdBy === user.userId && (
-                    <Pressable onPress={handlePageItemPress}>
+                    <Pressable onPress={() => handlePageItemPress(item.clubID)}>
                       <Image
                         style={styles.imageHalfOpacity}
                         source={item.image}
@@ -282,7 +281,7 @@ export default function Clubs({ navigation }) {
                     </Pressable>
                   )
                 ) : (
-                  <Pressable onPress={handlePageItemPress}>
+                  <Pressable onPress={() => handlePageItemPress(item.clubID)}>
                     <Image
                       style={styles.image}
                       source={item.image}

@@ -1,14 +1,21 @@
 import {
+  GET_A_CLUB_DATA,
   GET_ORIENTATION_OVERVIEW,
   GET_ORIENTATION_PAGE,
   GET_ORIENTATION_PAGES,
   GET_USER_CAMPUS,
   GET_USER_COLLEGE,
+  SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
   STOP_LOADING_DATA,
+  UPDATE_CLUB_MEMBER_BIO,
+  UPDATE_CLUB_MEMBER_PHOTO,
 } from "../type";
 
+import Toast from "react-native-toast-message";
+
 import { firebase } from "../../firebase/config";
+import { disableErrorHandling } from "expo";
 const db = firebase.firestore();
 
 //get college details
@@ -105,3 +112,112 @@ export const getOrientationPage = (orientationPageID) => (dispatch) => {
       dispatch({ type: STOP_LOADING_DATA });
     });
 };
+
+export const getAClub = (clubID, userID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+
+  db.doc(`/clubs/${clubID}`)
+    .get()
+    .then((doc) => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: GET_A_CLUB_DATA, payload: { ...doc.data() } });
+      dispatch(getClubMembers(clubID, userID));
+    })
+    .catch((error) => {
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+export const getClubMembers = (clubID, userID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+
+  db.doc(`/clubMembers/${clubID}`)
+    .get()
+    .then((doc) => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({
+        type: SET_CLUB_MEMBERS_DATA,
+        payload: { members: [...doc.data().members], userID },
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+export const updateClubMemberBio =
+  (clubName, clubID, userID, bio) => (dispatch) => {
+    dispatch({ type: SET_LOADING_DATA });
+
+    db.doc(`/clubMembers/${clubID}`)
+      .get()
+      .then((doc) => {
+        let temp = [...doc.data().members];
+        let index = temp.findIndex((member) => member.userID === userID);
+        temp[index].bio = bio;
+
+        return db.doc(`/clubMembers/${clubID}`).update({ members: [...temp] });
+      })
+      .then(() => {
+        dispatch({ type: STOP_LOADING_DATA });
+        dispatch({
+          type: UPDATE_CLUB_MEMBER_BIO,
+          payload: { userID, bio },
+        });
+        Toast.show({
+          type: "success",
+          text1: `Updated your bio for ${clubName} successfully.`,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: STOP_LOADING_DATA });
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+      });
+  };
+
+export const updateClubMemberPhoto =
+  (clubName, clubID, userID, photoUrl) => (dispatch) => {
+    dispatch({ type: SET_LOADING_DATA });
+
+    db.doc(`/clubMembers/${clubID}`)
+      .get()
+      .then((doc) => {
+        let temp = [...doc.data().members];
+        let index = temp.findIndex((member) => member.userID === userID);
+        temp[index].profileImage = photoUrl;
+
+        return db.doc(`/clubMembers/${clubID}`).update({ members: [...temp] });
+      })
+      .then(() => {
+        dispatch({ type: STOP_LOADING_DATA });
+        dispatch({
+          type: UPDATE_CLUB_MEMBER_PHOTO,
+          payload: { userID, photoUrl },
+        });
+        Toast.show({
+          type: "success",
+          text1: `Updated your profile photo for ${clubName} successfully.`,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: STOP_LOADING_DATA });
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+      });
+  };
