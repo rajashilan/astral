@@ -226,9 +226,9 @@ export default function ClubsPages({ navigation, route }) {
           {tab === "members" ? (
             <ClubsMembers />
           ) : tab === "gallery" ? (
-            <ClubsGallery />
+            <ClubsGallery navigation={navigation} />
           ) : tab === "events" ? (
-            <ClubsEvents />
+            <ClubsEvents navigation={navigation} />
           ) : tab === "details" ? (
             <ClubsDetails />
           ) : null}

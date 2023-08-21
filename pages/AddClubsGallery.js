@@ -32,35 +32,38 @@ import { useDispatch, useSelector } from "react-redux";
 
 import * as ImagePicker from "expo-image-picker";
 
+import Header from "../components/Header";
+
 import { firebase } from "../src/firebase/config";
 import {
-  updateClubMemberBio,
-  updateClubMemberPhoto,
+  addClubsGallery,
+  setClubGalleryToTrue,
 } from "../src/redux/actions/dataActions";
 const db = firebase.firestore();
 
 const { width } = Dimensions.get("window");
 
-export default function ClubsYou({ navigation }) {
+export default function AddClubsGallery({ navigation }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.credentials);
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
   );
   const club = useSelector((state) => state.data.clubData.club);
-
   const loading = useSelector((state) => state.data.loading);
 
   //get current member data from redux
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
-  const [bio, setBio] = useState("");
+  const [image, setImage] = useState("");
   const [imageType, setImageType] = useState("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
-  useEffect(() => {
-    setBio(currentMember.bio);
-  }, []);
+  const [errors, setErrors] = useState({
+    title: undefined,
+    image: undefined,
+  });
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -70,20 +73,11 @@ export default function ClubsYou({ navigation }) {
     navigation.goBack();
   };
 
-  //edit the club member's bio, not the user's original bio
-  //the user can have a different bio for different clubs
-  const handleUpdateBio = () => {
-    dispatch(updateClubMemberBio(club.name, club.clubID, user.userId, bio));
-  };
-
-  const handleUpdatePhoto = () => {
-    const name = Crypto.randomUUID();
-    let imageFileName = `${name}.${imageType}`;
-    let firebasePath = `clubs/members/photos/${imageFileName}`;
-
+  const handleAddPhoto = () => {
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: "Images",
       allowsEditing: true,
+      aspect: [3, 2],
       quality: 1,
     })
       .then((result) => {
@@ -91,28 +85,62 @@ export default function ClubsYou({ navigation }) {
           // User picked an image
           const uri = result.assets[0].uri;
           setImageType(uri.split(".")[uri.split(".").length - 1]);
-          return uriToBlob(uri);
+          setImage(uri);
+          console.log(uri);
         }
-      })
-      .then((blob) => {
-        return uploadToFirebase(blob, imageFileName);
-      })
-      .then((snapshot) => {
-        return firebase.storage().ref(firebasePath).getDownloadURL();
-      })
-      .then((url) => {
-        //store in clubmembers db and update in redux
-        dispatch(
-          updateClubMemberPhoto(club.name, club.clubID, user.userId, url)
-        );
       })
       .catch((error) => {
         console.error(error);
         Toast.show({
-          type: "error",
-          text1: "Something went wrong",
+          type: "success",
+          text1: "",
         });
       });
+  };
+
+  const handleAddToGallery = () => {
+    //verify image and title
+    let errors = [...errors];
+
+    if (!title.trim()) errors.title = "Please enter a title for your photo.";
+    if (!image) errors.image = "Please choose a photo to add.";
+
+    if (!errors.title && !errors.image) {
+      const name = Crypto.randomUUID();
+      let imageFileName = `${name}.${imageType}`;
+      let firebasePath = `clubs/gallery/photos/${imageFileName}`;
+
+      //first upload image and get url
+      uriToBlob(image)
+        .then((blob) => {
+          return uploadToFirebase(blob, imageFileName);
+        })
+        .then((snapshot) => {
+          return firebase.storage().ref(firebasePath).getDownloadURL();
+        })
+        .then((url) => {
+          //store in gallery db and update in local
+          dispatch(
+            addClubsGallery(
+              club.name,
+              club.clubID,
+              currentMember.userID,
+              url,
+              title,
+              content
+            )
+          );
+
+          //check if clubs.gallery is false
+          //if it is, update clubs.gallery as true
+          if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
+        })
+        .catch((error) => {
+          throw error;
+        });
+    }
+
+    setErrors(errors);
   };
 
   const uriToBlob = (uri) => {
@@ -140,7 +168,7 @@ export default function ClubsYou({ navigation }) {
       var storageRef = firebase.storage().ref();
 
       storageRef
-        .child(`clubs/members/photos/${imageFileName}`)
+        .child(`clubs/gallery/photos/${imageFileName}`)
         .put(blob, {
           contentType: `image/${imageType}`,
         })
@@ -178,59 +206,89 @@ export default function ClubsYou({ navigation }) {
       </View>
       <ScrollView>
         <View style={styles.paddingContainer}>
-          <Pressable onPress={handleUpdatePhoto}>
-            <Image
-              style={styles.image}
-              contentFit="cover"
-              source={currentMember.profileImage}
-            />
-          </Pressable>
-          {currentMember && (
-            <Text style={styles.role}>{currentMember.role}</Text>
-          )}
-          <Text style={styles.name}>
-            {currentMember.name} - Intake {currentMember.intake},{" "}
-            {currentMember.department}
-          </Text>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter your bio"
-            placeholderTextColor="#DBDBDB"
-            value={bio}
-            multiline
-            numberOfLines={4}
-            editable={!loading}
-            onChangeText={(bio) => setBio(bio)}
-          />
+          <View style={{ width: "100%", flexDirection: "column" }}>
+            <Header header={"add a photo"} />
+            <Text style={styles.disclaimer}>{club.name}</Text>
 
-          {bio !== currentMember.bio && (
-            <>
-              <Pressable
-                style={
-                  loading ? styles.loginButtonDisabled : styles.loginButton
-                }
-                onPress={handleUpdateBio}
-              >
-                <Text
-                  style={
-                    loading
-                      ? styles.loginButtonLoadingText
-                      : styles.loginButtonText
-                  }
-                >
-                  {loading ? "saving bio..." : "save"}
-                </Text>
-              </Pressable>
-
-              <Pressable
-                onPress={() => {
-                  setBio(currentMember.bio);
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: pixelSizeVertical(28),
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: fontPixel(16),
+                  fontWeight: "400",
+                  color: "#DFE5F8",
+                  paddingLeft: pixelSizeHorizontal(16),
                 }}
               >
-                <Text style={styles.tertiaryButton}>discard</Text>
+                Choose a photo
+              </Text>
+              <Pressable onPress={handleAddPhoto} style={styles.imagePicker}>
+                <Text
+                  style={{
+                    fontSize: fontPixel(16),
+                    fontWeight: "400",
+                    color: "#DFE5F8",
+                  }}
+                >
+                  Choose photo
+                </Text>
               </Pressable>
-            </>
-          )}
+            </View>
+            {errors.image ? (
+              <Text style={styles.error}>{errors.image}</Text>
+            ) : null}
+            <TextInput
+              style={styles.textInput}
+              placeholder="Enter the title"
+              placeholderTextColor="#DBDBDB"
+              value={title}
+              multiline
+              editable={!loading}
+              onChangeText={(title) => setTitle(title)}
+            />
+            {errors.title ? (
+              <Text style={styles.error}>{errors.title}</Text>
+            ) : null}
+            <TextInput
+              style={styles.textInput}
+              placeholder="Share more details about the photo..."
+              placeholderTextColor="#DBDBDB"
+              value={content}
+              multiline
+              numberOfLines={4}
+              editable={!loading}
+              onChangeText={(content) => setContent(content)}
+            />
+
+            <Pressable
+              style={loading ? styles.loginButtonDisabled : styles.loginButton}
+              onPress={handleAddToGallery}
+            >
+              <Text
+                style={
+                  loading
+                    ? styles.loginButtonLoadingText
+                    : styles.loginButtonText
+                }
+              >
+                {loading ? "adding to gallery..." : "add"}
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <Text style={styles.secondaryButton}>cancel</Text>
+            </Pressable>
+          </View>
         </View>
       </ScrollView>
 
@@ -392,6 +450,7 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
     width: "100%",
     borderRadius: 5,
+    marginTop: pixelSizeVertical(10),
   },
   loginButtonLoadingText: {
     fontSize: fontPixel(22),
@@ -416,5 +475,69 @@ const styles = StyleSheet.create({
     textTransform: "lowercase",
     fontWeight: "400",
     textAlign: "center",
+  },
+  disclaimer: {
+    marginTop: pixelSizeVertical(-18),
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#C6CDE2",
+  },
+  imagePicker: {
+    backgroundColor: "#232F52",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    borderRadius: 5,
+  },
+  loginButton: {
+    backgroundColor: "#07BEB8",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(18),
+    paddingBottom: pixelSizeVertical(18),
+    marginTop: pixelSizeVertical(16),
+    marginBottom: pixelSizeVertical(24),
+    width: "100%",
+    borderRadius: 5,
+  },
+  loginButtonDisabled: {
+    backgroundColor: "#1A2238",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(18),
+    paddingBottom: pixelSizeVertical(18),
+    marginTop: pixelSizeVertical(16),
+    marginBottom: pixelSizeVertical(24),
+    width: "100%",
+    borderRadius: 5,
+  },
+  loginButtonText: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#0C111F",
+    textAlign: "center",
+  },
+  loginButtonLoadingText: {
+    fontSize: fontPixel(22),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    textAlign: "center",
+  },
+  secondaryButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#A7AFC7",
+    marginTop: pixelSizeVertical(2),
+    textAlign: "center",
+  },
+  error: {
+    marginTop: pixelSizeVertical(8),
+    marginBottom: pixelSizeVertical(8),
+    fontSize: fontPixel(12),
+    fontWeight: "400",
+    color: "#a3222d",
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingRight: pixelSizeHorizontal(16),
   },
 });

@@ -1,10 +1,13 @@
 import {
+  ADD_CLUB_GALLERY,
   GET_A_CLUB_DATA,
   GET_ORIENTATION_OVERVIEW,
   GET_ORIENTATION_PAGE,
   GET_ORIENTATION_PAGES,
   GET_USER_CAMPUS,
   GET_USER_COLLEGE,
+  SET_CLUB_GALLERY,
+  SET_CLUB_GALLERY_TO_TRUE,
   SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
   STOP_LOADING_DATA,
@@ -221,3 +224,79 @@ export const updateClubMemberPhoto =
         });
       });
   };
+
+export const getClubGallery = (clubID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+
+  db.doc(`/gallery/${clubID}`)
+    .get()
+    .then((doc) => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({
+        type: SET_CLUB_GALLERY,
+        payload: { gallery: [...doc.data().gallery] },
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+export const addClubsGallery =
+  (clubName, clubID, userID, image, title, content) => (dispatch) => {
+    dispatch({ type: SET_LOADING_DATA });
+
+    let data = {
+      image,
+      title,
+      content,
+    };
+
+    db.doc(`/gallery/${clubID}`)
+      .get()
+      .then((doc) => {
+        let temp = [...doc.data().gallery];
+        temp.unshift(data);
+
+        return db.doc(`/gallery/${clubID}`).update({ gallery: [...temp] });
+      })
+      .then(() => {
+        dispatch({ type: STOP_LOADING_DATA });
+        dispatch({ type: ADD_CLUB_GALLERY, payload: { gallery: { ...data } } });
+        Toast.show({
+          type: "success",
+          text1: `Added to gallery successfully`,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: STOP_LOADING_DATA });
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+      });
+  };
+
+export const setClubGalleryToTrue = (clubID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+  db.doc(`/clubs/${clubID}`)
+    .update({ gallery: true })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: SET_CLUB_GALLERY_TO_TRUE, payload: clubID });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
