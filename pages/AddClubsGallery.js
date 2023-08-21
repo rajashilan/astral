@@ -131,6 +131,11 @@ export default function AddClubsGallery({ navigation }) {
             )
           );
 
+          setImage("");
+          setImageType("");
+          setTitle("");
+          setContent("");
+
           //check if clubs.gallery is false
           //if it is, update clubs.gallery as true
           if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
@@ -225,9 +230,10 @@ export default function AddClubsGallery({ navigation }) {
                   fontWeight: "400",
                   color: "#DFE5F8",
                   paddingLeft: pixelSizeHorizontal(16),
+                  maxWidth: "70%",
                 }}
               >
-                Choose a photo
+                {image ? "Choose a different photo" : "Choose a photo"}
               </Text>
               <Pressable onPress={handleAddPhoto} style={styles.imagePicker}>
                 <Text

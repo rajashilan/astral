@@ -1,5 +1,6 @@
 import {
   ADD_CLUB_GALLERY,
+  DELETE_GALLERY,
   GET_A_CLUB_DATA,
   GET_ORIENTATION_OVERVIEW,
   GET_ORIENTATION_PAGE,
@@ -7,6 +8,7 @@ import {
   GET_USER_CAMPUS,
   GET_USER_COLLEGE,
   SET_CLUB_GALLERY,
+  SET_CLUB_GALLERY_TO_FALSE,
   SET_CLUB_GALLERY_TO_TRUE,
   SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
@@ -18,7 +20,6 @@ import {
 import Toast from "react-native-toast-message";
 
 import { firebase } from "../../firebase/config";
-import { disableErrorHandling } from "expo";
 const db = firebase.firestore();
 
 //get college details
@@ -290,6 +291,54 @@ export const setClubGalleryToTrue = (clubID) => (dispatch) => {
     .then(() => {
       dispatch({ type: STOP_LOADING_DATA });
       dispatch({ type: SET_CLUB_GALLERY_TO_TRUE, payload: clubID });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+export const setClubGalleryToFalse = (clubID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+  db.doc(`/clubs/${clubID}`)
+    .update({ gallery: false })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: SET_CLUB_GALLERY_TO_FALSE, payload: clubID });
+      Toast.show({
+        type: "success",
+        text1: `Photo deleted successfully`,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+//WHY IS GALLERY NOT UPDATING LOCALLY AS FALSE AND TRUE
+
+export const handleDeleteClubGallery = (image, clubID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+  db.doc(`/gallery/${clubID}`)
+    .get()
+    .then((doc) => {
+      let temp = [...doc.data().gallery];
+      let index = temp.findIndex((gallery) => gallery.image === image);
+      temp.splice(index, 1);
+
+      return db.doc(`/gallery/${clubID}`).update({ gallery: [...temp] });
+    })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: DELETE_GALLERY, payload: image });
     })
     .catch((error) => {
       console.error(error);

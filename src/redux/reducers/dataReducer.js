@@ -1,5 +1,6 @@
 import {
   ADD_CLUB_GALLERY,
+  DELETE_GALLERY,
   GET_A_CLUB_DATA,
   GET_ORIENTATION_OVERVIEW,
   GET_ORIENTATION_PAGE,
@@ -128,22 +129,24 @@ export default function (state = initialState, action) {
         },
       };
     case SET_CLUB_GALLERY_TO_TRUE:
-      state.clubData.club.gallery = true;
+      let clubGalleryTrue = { ...state.clubData.club };
+      clubGalleryTrue.gallery = true;
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
+          club: { ...clubGalleryTrue },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
         },
       };
     case SET_CLUB_GALLERY_TO_FALSE:
-      state.clubData.club.gallery = false;
+      let clubGalleryFalse = { ...state.clubData.club };
+      clubGalleryFalse.gallery = false;
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
+          club: { ...clubGalleryFalse },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
@@ -162,7 +165,6 @@ export default function (state = initialState, action) {
     case ADD_CLUB_GALLERY:
       let addClubGalleryTemp = [...state.clubData.gallery];
       addClubGalleryTemp.unshift(action.payload.gallery);
-      console.log(addClubGalleryTemp);
       return {
         ...state,
         clubData: {
@@ -170,6 +172,21 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...addClubGalleryTemp],
+        },
+      };
+    case DELETE_GALLERY:
+      let deleteGalleryTemp = [...state.clubData.gallery];
+      let findDeleteGalleryIndex = deleteGalleryTemp.findIndex(
+        (gallery) => gallery.image === action.payload
+      );
+      deleteGalleryTemp.splice(findDeleteGalleryIndex, 1);
+      return {
+        ...state,
+        clubData: {
+          club: { ...state.clubData.club },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...deleteGalleryTemp],
         },
       };
     case SET_LOADING_DATA:
