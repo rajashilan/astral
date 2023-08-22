@@ -126,7 +126,7 @@ export default function ClubsGallery({ navigation }) {
 
       <Modal
         isVisible={showDeleteModal}
-        onBackdropPress={() => setShowWithdrawModal(!showWithdrawModal)} // Android back press
+        onBackdropPress={() => setShowDeleteModal(!showDeleteModal)} // Android back press
         animationIn="bounceIn" // Has others, we want slide in from the left
         animationOut="bounceOut" // When discarding the drawer
         useNativeDriver // Faster animation

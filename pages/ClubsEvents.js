@@ -12,8 +12,14 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 
+import Modal from "react-native-modal";
+
 import { useSelector, useDispatch } from "react-redux";
-import { getClubEvent } from "../src/redux/actions/dataActions";
+import {
+  getClubEvent,
+  handleDeleteClubEvent,
+  setClubEventToFalse,
+} from "../src/redux/actions/dataActions";
 
 const { width } = Dimensions.get("window");
 
@@ -38,6 +44,9 @@ export default function ClubsEvents({ navigation }) {
     future: [],
   });
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [eventID, setEventID] = useState("");
+
   useEffect(() => {
     dispatch(getClubEvent(club.clubID));
   }, []);
@@ -61,6 +70,22 @@ export default function ClubsEvents({ navigation }) {
 
   const onSelect = (indexSelected) => {
     setIndexSelected(indexSelected);
+  };
+
+  const handleShowDeleteModal = (eventID) => {
+    if (eventID) setEventID(eventID);
+    else setEventID("");
+
+    setShowDeleteModal(!showDeleteModal);
+  };
+
+  const handleDeleteEvent = () => {
+    dispatch(handleDeleteClubEvent(eventID, club.clubID));
+    handleShowDeleteModal();
+    //check if event length is 1
+    //if it is, update clubs.events as false
+    if (data.past.length + data.future.length === 1)
+      dispatch(setClubEventToFalse(club.clubID));
   };
 
   return (
@@ -144,13 +169,59 @@ export default function ClubsEvents({ navigation }) {
             </Text>
             {item.content && <Text style={styles.content}>{item.content}</Text>}
             {currentMember.role === "president" && (
-              <Pressable style={styles.borderButton} onPress={() => {}}>
+              <Pressable
+                style={styles.borderButton}
+                onPress={() => {
+                  handleShowDeleteModal(item.eventID);
+                }}
+              >
                 <Text style={styles.borderButtonText}>delete</Text>
               </Pressable>
             )}
           </>
         )}
       />
+      <Modal
+        isVisible={showDeleteModal}
+        onBackdropPress={() => setShowDeleteModal(!showDeleteModal)} // Android back press
+        animationIn="bounceIn" // Has others, we want slide in from the left
+        animationOut="bounceOut" // When discarding the drawer
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
+      >
+        <View style={styles.withdrawMenu}>
+          <Text
+            style={[
+              styles.rejectionReason,
+              { textAlign: "center", marginBottom: pixelSizeHorizontal(8) },
+            ]}
+          >
+            {data.past.length + data.future.length === 1
+              ? "Deleting this event will set your club as inactive. Do you wish to continue?"
+              : "Are you sure to delete this event?"}
+          </Text>
+          <Pressable
+            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            onPress={handleDeleteEvent}
+          >
+            <Text
+              style={
+                loading ? styles.loginButtonLoadingText : styles.loginButtonText
+              }
+            >
+              {loading ? "deleting..." : "delete"}
+            </Text>
+          </Pressable>
+          {!loading && (
+            <Pressable onPress={() => handleShowDeleteModal()}>
+              <Text style={styles.withdrawButton}>cancel</Text>
+            </Pressable>
+          )}
+        </View>
+      </Modal>
+
       <View style={styles.emptyView} />
     </View>
   );
