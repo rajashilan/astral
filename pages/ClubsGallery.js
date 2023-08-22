@@ -110,14 +110,16 @@ export default function ClubsGallery({ navigation }) {
             />
             {item.title && <Text style={styles.title}>{item.title}</Text>}
             {item.content && <Text style={styles.content}>{item.content}</Text>}
-            <Pressable
-              style={styles.borderButton}
-              onPress={() => {
-                handleShowDeleteModal(item.image && item.image);
-              }}
-            >
-              <Text style={styles.borderButtonText}>delete</Text>
-            </Pressable>
+            {currentMember.role === "president" && (
+              <Pressable
+                style={styles.borderButton}
+                onPress={() => {
+                  handleShowDeleteModal(item.image && item.image);
+                }}
+              >
+                <Text style={styles.borderButtonText}>delete</Text>
+              </Pressable>
+            )}
           </>
         )}
       />

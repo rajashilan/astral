@@ -1,5 +1,7 @@
 import {
+  ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
+  DELETE_EVENT,
   DELETE_GALLERY,
   GET_A_CLUB_DATA,
   GET_ORIENTATION_OVERVIEW,
@@ -7,6 +9,8 @@ import {
   GET_ORIENTATION_PAGES,
   GET_USER_CAMPUS,
   GET_USER_COLLEGE,
+  SET_CLUB_EVENT,
+  SET_CLUB_EVENT_TO_TRUE,
   SET_CLUB_GALLERY,
   SET_CLUB_GALLERY_TO_FALSE,
   SET_CLUB_GALLERY_TO_TRUE,
@@ -30,6 +34,7 @@ const initialState = {
     club: {},
     members: [],
     gallery: [],
+    event: [],
     currentMember: {},
   },
 };
@@ -81,6 +86,7 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           club: { ...action.payload },
           gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
         },
       };
     case SET_CLUB_MEMBERS_DATA:
@@ -94,6 +100,7 @@ export default function (state = initialState, action) {
           currentMember: { ...action.payload.members[currentMember] },
           members: [...action.payload.members],
           gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
         },
       };
     case UPDATE_CLUB_MEMBER_BIO:
@@ -110,6 +117,7 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
         },
       };
     case UPDATE_CLUB_MEMBER_PHOTO:
@@ -126,6 +134,7 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
         },
       };
     case SET_CLUB_GALLERY_TO_TRUE:
@@ -138,6 +147,7 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
         },
       };
     case SET_CLUB_GALLERY_TO_FALSE:
@@ -150,6 +160,7 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
         },
       };
     case SET_CLUB_GALLERY:
@@ -160,6 +171,7 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...action.payload.gallery],
+          event: [...state.clubData.event],
         },
       };
     case ADD_CLUB_GALLERY:
@@ -172,6 +184,7 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...addClubGalleryTemp],
+          event: [...state.clubData.event],
         },
       };
     case DELETE_GALLERY:
@@ -187,6 +200,73 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...deleteGalleryTemp],
+          event: [...state.clubData.event],
+        },
+      };
+    case SET_CLUB_EVENT_TO_TRUE:
+      let clubEventTrue = { ...state.clubData.club };
+      clubEventTrue.event = true;
+      return {
+        ...state,
+        clubData: {
+          club: { ...clubEventTrue },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+        },
+      };
+    case SET_CLUB_GALLERY_TO_FALSE:
+      let clubEventFalse = { ...state.clubData.club };
+      clubEventFalse.event = false;
+      return {
+        ...state,
+        clubData: {
+          club: { ...clubEventFalse },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+        },
+      };
+    case SET_CLUB_EVENT:
+      return {
+        ...state,
+        clubData: {
+          club: { ...state.clubData.club },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...action.payload.event],
+        },
+      };
+    case ADD_CLUB_EVENT:
+      let addClubEventTemp = [...state.clubData.event];
+      addClubEventTemp.unshift(action.payload.event);
+      return {
+        ...state,
+        clubData: {
+          club: { ...state.clubData.club },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...addClubEventTemp],
+        },
+      };
+    case DELETE_EVENT:
+      let deleteEventTemp = [...state.clubData.event];
+      let findDeleteEventIndex = deleteEventTemp.findIndex(
+        (event) => event.eventID === action.payload
+      );
+      deleteEventTemp.splice(findDeleteEventIndex, 1);
+      return {
+        ...state,
+        clubData: {
+          club: { ...state.clubData.club },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...deleteEventTemp],
         },
       };
     case SET_LOADING_DATA:

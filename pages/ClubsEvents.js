@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
 import Carousel, { Pagination } from "react-native-snap-carousel";
+import dayjs from "dayjs";
 
 import {
   fontPixel,
@@ -11,64 +12,52 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 
-import club1 from "../assets/club1.png";
-import club2 from "../assets/club2.png";
-import club3 from "../assets/club3.png";
+import { useSelector, useDispatch } from "react-redux";
+import { getClubEvent } from "../src/redux/actions/dataActions";
 
 const { width } = Dimensions.get("window");
 
-export default function ClubsEvents() {
+export default function ClubsEvents({ navigation }) {
   //can have image, must have title, must have date, can have text
 
   const [innerTab, setInnerTab] = useState("past");
 
-  const [data, setData] = useState([
-    {
-      past: [
-        {
-          image: club1,
-          title: "ALS Charity Event",
-          date: "30th March 2023",
-          content:
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam.Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam.",
-        },
-        {
-          title: "Free food for all",
-          date: "12th March 2023",
-          content:
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam.",
-        },
-        {
-          title: "ALS Charity Event",
-          date: "30th March 2023",
-        },
-      ],
-      future: [
-        {
-          image: club1,
-          title: "ALS Future Event",
-          date: "To be announced",
-          content: "Lorem ipsum dolor sit amet, consetetur ",
-        },
-        {
-          title: "Free food Coming soon",
-          date: "31st March 2023",
-          content:
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam.",
-        },
-        {
-          title: "ALS Future Event",
-          date: "To be announced",
-        },
-        {
-          title: "ALS Future Event",
-          date: "To be announced",
-        },
-      ],
-    },
-  ]);
+  const dispatch = useDispatch();
+
+  const events = useSelector((state) => state.data.clubData.event);
+  const club = useSelector((state) => state.data.clubData.club);
+  const currentMember = useSelector(
+    (state) => state.data.clubData.currentMember
+  );
+  const loading = useSelector((state) => state.data.loading);
 
   const [indexSelected, setIndexSelected] = useState(0);
+
+  const [data, setData] = useState({
+    past: [],
+    future: [],
+  });
+
+  useEffect(() => {
+    dispatch(getClubEvent(club.clubID));
+  }, []);
+
+  useEffect(() => {
+    //perform filtering according to past and future
+    let currentDate = new Date().toISOString();
+    currentDate = currentDate.split("T")[0];
+    let tempPast = [];
+    let tempFuture = [];
+
+    events.map((event) => {
+      if (event.date.split("T")[0] < currentDate) tempPast.push(event);
+      else tempFuture.push(event);
+    });
+    setData({
+      past: [...tempPast],
+      future: [...tempFuture],
+    });
+  }, [events]);
 
   const onSelect = (indexSelected) => {
     setIndexSelected(indexSelected);
@@ -76,6 +65,16 @@ export default function ClubsEvents() {
 
   return (
     <View style={styles.container}>
+      {currentMember.role === "president" && (
+        <Pressable
+          style={styles.loginButton}
+          onPress={() => {
+            navigation.navigate("AddClubsEvent");
+          }}
+        >
+          <Text style={styles.loginButtonText}>add an event</Text>
+        </Pressable>
+      )}
       <View style={styles.onlySpan}>
         <Pressable
           onPress={() => {
@@ -118,14 +117,12 @@ export default function ClubsEvents() {
           paddingBottom: 0,
           marginBottom: pixelSizeVertical(12),
         }}
-        dotsLength={
-          innerTab === "past" ? data[0].past.length : data[0].future.length
-        }
+        dotsLength={innerTab === "past" ? data.past.length : data.future.length}
         inactiveDotScale={1}
       />
       <Carousel
         layout="default"
-        data={innerTab === "past" ? data[0].past : data[0].future}
+        data={innerTab === "past" ? data.past : data.future}
         onSnapToItem={(index) => onSelect(index)}
         sliderWidth={width - 32}
         itemWidth={width - 32}
@@ -137,13 +134,20 @@ export default function ClubsEvents() {
               <Image
                 key={index}
                 style={styles.image}
-                resizeMode="cover"
+                contentFit="cover"
                 source={item.image}
               />
             )}
             <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.date}>{item.date}</Text>
+            <Text style={styles.date}>
+              {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
+            </Text>
             {item.content && <Text style={styles.content}>{item.content}</Text>}
+            {currentMember.role === "president" && (
+              <Pressable style={styles.borderButton} onPress={() => {}}>
+                <Text style={styles.borderButtonText}>delete</Text>
+              </Pressable>
+            )}
           </>
         )}
       />
@@ -204,11 +208,14 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   loginButton: {
-    color: "#07BEB8",
-    fontSize: fontPixel(78),
-    textTransform: "lowercase",
-    fontWeight: 700,
-    textDecorationLine: "underline",
+    backgroundColor: "#07BEB8",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(18),
+    paddingBottom: pixelSizeVertical(18),
+    marginBottom: pixelSizeVertical(24),
+    width: "100%",
+    borderRadius: 5,
   },
   onlySpan: {
     flexDirection: "row",
@@ -220,5 +227,58 @@ const styles = StyleSheet.create({
     flex: 1,
     height: pixelSizeVertical(30),
     backgroundColor: "#0C111F",
+  },
+  loginButtonText: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#0C111F",
+    textAlign: "center",
+  },
+  borderButton: {
+    backgroundColor: "#0C111F",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(18),
+    paddingBottom: pixelSizeVertical(18),
+    marginTop: pixelSizeVertical(24),
+    width: "100%",
+    borderRadius: 5,
+    borderColor: "#C6CDE2",
+    borderWidth: 1,
+  },
+  borderButtonText: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#C6CDE2",
+    textAlign: "center",
+  },
+  withdrawMenu: {
+    height: "auto",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    backgroundColor: "#131A2E",
+    display: "flex",
+    borderRadius: 5,
+  },
+  rejectionReason: {
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#DFE5F8",
+  },
+  withdrawButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#A7AFC7",
+    marginTop: pixelSizeVertical(2),
+    textAlign: "center",
+  },
+  loginButtonLoadingText: {
+    fontSize: fontPixel(22),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    textAlign: "center",
+    marginTop: pixelSizeVertical(8),
   },
 });
