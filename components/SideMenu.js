@@ -13,6 +13,8 @@ import { Image } from "expo-image";
 
 import IosHeight from "./IosHeight";
 
+import { firebase } from "../src/firebase/config";
+
 import closeIcon from "../assets/close_icon.png";
 import {
   pixelSizeVertical,
@@ -49,6 +51,14 @@ export default class SideMenu extends React.Component {
     const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
     if (name === "staff list") this.props.navigation.replace("Stafflist");
     else this.props.navigation.replace(menuItem.trim());
+  };
+
+  signOutUser = async () => {
+    try {
+      await firebase.auth().signOut();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   render() {
@@ -88,13 +98,16 @@ export default class SideMenu extends React.Component {
                   </Text>
                 </Pressable>
                 <View style={styles.emptyView}></View>
-                <StatusBar
-                  style="light"
-                  translucent={false}
-                  backgroundColor="#0C111F"
-                />
               </>
             )}
+          />
+          <Pressable onPress={this.signOutUser}>
+            <Text style={styles.logout}>logout</Text>
+          </Pressable>
+          <StatusBar
+            style="light"
+            translucent={false}
+            backgroundColor="#0C111F"
           />
         </View>
       </SafeAreaView>
@@ -135,5 +148,10 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(48),
     fontWeight: 700,
     color: "#C4FFF9",
+  },
+  logout: {
+    fontSize: fontPixel(32),
+    fontWeight: 400,
+    color: "#8C91FB",
   },
 });
