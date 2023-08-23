@@ -68,6 +68,10 @@ export default function ClubsEvents({ navigation }) {
     });
   }, [events]);
 
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
   const onSelect = (indexSelected) => {
     setIndexSelected(indexSelected);
   };
@@ -90,7 +94,7 @@ export default function ClubsEvents({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {currentMember.role === "president" && (
+      {!isEmpty(currentMember) && currentMember.role === "president" && (
         <Pressable
           style={styles.loginButton}
           onPress={() => {
@@ -168,7 +172,7 @@ export default function ClubsEvents({ navigation }) {
               {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
             </Text>
             {item.content && <Text style={styles.content}>{item.content}</Text>}
-            {currentMember.role === "president" && (
+            {!isEmpty(currentMember) && currentMember.role === "president" && (
               <Pressable
                 style={styles.borderButton}
                 onPress={() => {

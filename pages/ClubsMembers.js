@@ -23,6 +23,10 @@ export default function ClubsMembers(props) {
 
   const [indexSelected, setIndexSelected] = useState(0);
 
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
   const onSelect = (indexSelected) => {
     setIndexSelected(indexSelected);
   };
@@ -60,7 +64,9 @@ export default function ClubsMembers(props) {
               contentFit="cover"
               source={item.profileImage}
             />
-            {currentMember && <Text style={styles.role}>{item.role}</Text>}
+            {!isEmpty(currentMember) && currentMember && (
+              <Text style={styles.role}>{item.role}</Text>
+            )}
             <Text style={styles.name}>
               {item.name} - Intake {item.intake}, {item.department}
             </Text>

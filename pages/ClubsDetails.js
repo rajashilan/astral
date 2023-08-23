@@ -29,6 +29,10 @@ export default function ClubsDetails({ navigation }) {
   const [fees, setFees] = useState("");
   const [more, setMore] = useState("");
 
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
   useEffect(() => {
     setDetails();
   }, [data]);
@@ -139,7 +143,9 @@ export default function ClubsDetails({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {currentMember.role === "president" ? editView : normalView}
+      {!isEmpty(currentMember) && currentMember.role === "president"
+        ? editView
+        : normalView}
       <Toast config={toastConfig} />
       <View style={styles.emptyView} />
     </View>

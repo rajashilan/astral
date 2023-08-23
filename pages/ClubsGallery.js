@@ -46,6 +46,10 @@ export default function ClubsGallery({ navigation }) {
     dispatch(getClubGallery(club.clubID));
   }, []);
 
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
   const onSelect = (indexSelected) => {
     setIndexSelected(indexSelected);
   };
@@ -67,7 +71,7 @@ export default function ClubsGallery({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {currentMember.role === "president" && (
+      {!isEmpty(currentMember) && currentMember.role === "president" && (
         <Pressable
           style={styles.loginButton}
           onPress={() => {
@@ -110,7 +114,7 @@ export default function ClubsGallery({ navigation }) {
             />
             {item.title && <Text style={styles.title}>{item.title}</Text>}
             {item.content && <Text style={styles.content}>{item.content}</Text>}
-            {currentMember.role === "president" && (
+            {!isEmpty(currentMember) && currentMember.role === "president" && (
               <Pressable
                 style={styles.borderButton}
                 onPress={() => {

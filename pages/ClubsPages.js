@@ -38,6 +38,8 @@ import ClubsMembers from "./ClubsMembers";
 
 import { ScrollView } from "react-native-gesture-handler";
 
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+
 import { firebase } from "../src/firebase/config";
 import { getAClub, getClubMembers } from "../src/redux/actions/dataActions";
 const db = firebase.firestore();
@@ -92,6 +94,8 @@ export default function ClubsPages({ navigation, route }) {
     navigation.navigate("ClubsYou");
   };
 
+  const handleEditClub = () => {};
+
   const handleJoin = () => {};
 
   const onLayout = (event) => {
@@ -106,6 +110,10 @@ export default function ClubsPages({ navigation, route }) {
       setShowMiniHeader(false);
   }, [scrollHeight, showMiniHeader]);
 
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -116,21 +124,26 @@ export default function ClubsPages({ navigation, route }) {
         >
           <Text style={styles.backButton}>back</Text>
         </Pressable>
-        {/* {showMiniHeader ? (
+        {isEmpty(currentMember) && showMiniHeader ? (
           <Animated.View
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
           >
             <Text style={styles.headerMini} numberOfLines={1}>
-              {data[0].header}
+              {data && data.name}
             </Text>
           </Animated.View>
         ) : (
           <Text style={styles.headerMiniInvisible}>title</Text>
-        )} */}
-        {currentMember && (
+        )}
+        {!isEmpty(currentMember) && (
           <Pressable onPress={handleYou} style={styles.youButton}>
             <Text style={styles.youText}>you</Text>
+          </Pressable>
+        )}
+        {!isEmpty(currentMember) && currentMember.role === "president" && (
+          <Pressable onPress={handleEditClub} style={styles.youButtonNoAuto}>
+            <Text style={styles.youText}>club</Text>
           </Pressable>
         )}
         <Pressable
@@ -173,7 +186,7 @@ export default function ClubsPages({ navigation, route }) {
             paddingLeft: pixelSizeHorizontal(16),
           }}
         >
-          {!currentMember && (
+          {isEmpty(currentMember) && (
             <Pressable style={styles.loginButton}>
               <Text style={styles.loginButtonText}>join</Text>
             </Pressable>
@@ -384,9 +397,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  youButtonNoAuto: {
+    marginRight: pixelSizeHorizontal(18),
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(1),
+    paddingBottom: pixelSizeVertical(6),
+    backgroundColor: "#232F52",
+    borderRadius: 5,
+  },
   youButton: {
     marginLeft: "auto",
-    marginRight: pixelSizeHorizontal(16),
+    marginRight: pixelSizeHorizontal(12),
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
     paddingTop: pixelSizeVertical(1),
