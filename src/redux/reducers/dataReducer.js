@@ -17,6 +17,7 @@ import {
   SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
   STOP_LOADING_DATA,
+  UPDATE_CLUB_DETAILS,
   UPDATE_CLUB_MEMBER_BIO,
   UPDATE_CLUB_MEMBER_PHOTO,
 } from "../type";
@@ -267,6 +268,19 @@ export default function (state = initialState, action) {
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...deleteEventTemp],
+        },
+      };
+    case UPDATE_CLUB_DETAILS:
+      let tempClubDetails = { ...state.clubData.club };
+      tempClubDetails.details = action.payload;
+      return {
+        ...state,
+        clubData: {
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+          club: { ...tempClubDetails },
         },
       };
     case SET_LOADING_DATA:

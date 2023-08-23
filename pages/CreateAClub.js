@@ -78,7 +78,11 @@ export default function Login({ navigation, route }) {
           "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.svg?alt=media",
         gallery: false,
         events: false,
-        details: [],
+        details: {
+          schedule: "",
+          fees: "",
+          misc: "",
+        },
         numberOfMembers: 1,
         roles: [
           {

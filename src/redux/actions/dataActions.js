@@ -18,6 +18,7 @@ import {
   SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
   STOP_LOADING_DATA,
+  UPDATE_CLUB_DETAILS,
   UPDATE_CLUB_MEMBER_BIO,
   UPDATE_CLUB_MEMBER_PHOTO,
 } from "../type";
@@ -474,6 +475,29 @@ export const handleDeleteClubEvent = (eventID, clubID) => (dispatch) => {
     .then(() => {
       dispatch({ type: STOP_LOADING_DATA });
       dispatch({ type: DELETE_EVENT, payload: eventID });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+//edit details -> update redux locally in clubData.club
+export const handleUpdateClubDetails = (clubID, data) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+  db.doc(`/clubs/${clubID}`)
+    .update({ details: data })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: UPDATE_CLUB_DETAILS, payload: data });
+      Toast.show({
+        type: "success",
+        text1: "Club details updated successfully.",
+      });
     })
     .catch((error) => {
       console.error(error);

@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
 
 import {
   fontPixel,
@@ -9,41 +9,139 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 
-export default function ClubsDetails() {
-  const [data, setData] = useState([
-    {
-      meetings: [{ entry: "Tuesdays 3pm-4pm" }, { entry: "Fridays 4pm-5pm" }],
-      fees: [{ entry: "RM35 yearly" }],
-    },
-  ]);
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../utils/toast-config";
+
+import { useSelector, useDispatch } from "react-redux";
+import { handleUpdateClubDetails } from "../src/redux/actions/dataActions";
+
+export default function ClubsDetails({ navigation }) {
+  const dispatch = useDispatch();
+
+  const club = useSelector((state) => state.data.clubData.club);
+  const currentMember = useSelector(
+    (state) => state.data.clubData.currentMember
+  );
+  const data = useSelector((state) => state.data.clubData.club.details);
+  const loading = useSelector((state) => state.data.loading);
+
+  const [meetings, setMeetings] = useState("");
+  const [fees, setFees] = useState("");
+  const [more, setMore] = useState("");
+
+  useEffect(() => {
+    setDetails();
+  }, [data]);
+
+  const setDetails = () => {
+    setMeetings(data.schedule);
+    setFees(data.fees);
+    setMore(data.misc);
+  };
+
+  const handleUpdateDetails = () => {
+    let data = {
+      schedule: meetings,
+      fees,
+      misc: more,
+    };
+    dispatch(handleUpdateClubDetails(club.clubID, data));
+  };
+
+  //show normal view if user is other than president
+  //show edit view if user is presient
+
+  let normalView = (
+    <>
+      {meetings && <Text style={styles.title}>Meetings</Text>}
+      {meetings && <Text style={styles.content}>{meetings}</Text>}
+      {fees && <Text style={styles.titleMarginTop}>Fees</Text>}
+      {fees && <Text style={styles.content}>{fees}</Text>}
+      {more && <Text style={styles.titleMarginTop}>More...</Text>}
+      {more && <Text style={styles.content}>{more}</Text>}
+    </>
+  );
+
+  let editView = (
+    <>
+      <Text style={[styles.title, { paddingLeft: pixelSizeHorizontal(8) }]}>
+        Meetings
+      </Text>
+      <TextInput
+        style={styles.textInput}
+        placeholder="Enter your club's meeting schedule. It would be good to add the day, time, venue, and frequency. Eg: Every Thurday, 5pm, at LR504."
+        placeholderTextColor="#C6CDE2"
+        value={meetings}
+        multiline
+        numberOfLines={4}
+        editable={!loading}
+        onChangeText={(meetings) => setMeetings(meetings)}
+      />
+      <Text
+        style={[styles.titleMarginTop, { paddingLeft: pixelSizeHorizontal(8) }]}
+      >
+        Fees
+      </Text>
+      <TextInput
+        style={styles.textInput}
+        placeholder="Enter your club's fees. Please add the amount, and frequency. Eg: RM20 per month."
+        placeholderTextColor="#C6CDE2"
+        value={fees}
+        multiline
+        numberOfLines={4}
+        editable={!loading}
+        onChangeText={(fees) => setFees(fees)}
+      />
+      <Text
+        style={[styles.titleMarginTop, { paddingLeft: pixelSizeHorizontal(8) }]}
+      >
+        More...
+      </Text>
+      <TextInput
+        style={styles.textInput}
+        placeholder="Enter more details about the Club should you wish to share. This is optional."
+        placeholderTextColor="#C6CDE2"
+        value={more}
+        multiline
+        numberOfLines={4}
+        editable={!loading}
+        onChangeText={(more) => setMore(more)}
+      />
+
+      {(meetings !== data.schedule ||
+        fees !== data.fees ||
+        more !== data.misc) && (
+        <>
+          <Pressable
+            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            onPress={handleUpdateDetails}
+          >
+            <Text
+              style={
+                loading ? styles.loginButtonLoadingText : styles.loginButtonText
+              }
+            >
+              {loading ? "saving details..." : "save"}
+            </Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => {
+              setDetails();
+            }}
+          >
+            <Text style={styles.tertiaryButton}>discard</Text>
+          </Pressable>
+        </>
+      )}
+    </>
+  );
 
   return (
     <View style={styles.container}>
-      <FlatList
-        style={styles.list}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        scrollEnabled={false}
-        data={data}
-        renderItem={({ item }) => (
-          <>
-            {item.meetings && <Text style={styles.title}>Meetings</Text>}
-            {item.meetings &&
-              item.meetings.map((meeting) => {
-                return <Text style={styles.content}>{meeting.entry}</Text>;
-              })}
-
-            {item.fees && <Text style={styles.titleMarginTop}>Fees</Text>}
-            {item.fees &&
-              item.fees.map((fee) => {
-                return <Text style={styles.content}>{fee.entry}</Text>;
-              })}
-
-            <View style={styles.emptyView} />
-          </>
-        )}
-      />
+      {currentMember.role === "president" ? editView : normalView}
+      <Toast config={toastConfig} />
+      <View style={styles.emptyView} />
     </View>
   );
 }
@@ -58,14 +156,14 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(20),
     fontWeight: "400",
     color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(10),
+    marginBottom: pixelSizeVertical(4),
   },
   titleMarginTop: {
     marginTop: pixelSizeVertical(16),
     fontSize: fontPixel(20),
     fontWeight: "400",
     color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(10),
+    marginBottom: pixelSizeVertical(4),
   },
   content: {
     fontSize: fontPixel(14),
@@ -77,5 +175,58 @@ const styles = StyleSheet.create({
     flex: 1,
     height: pixelSizeVertical(32),
     backgroundColor: "#0C111F",
+  },
+  textInput: {
+    backgroundColor: "#1A2238",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    fontSize: fontPixel(16),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    width: "100%",
+    borderRadius: 5,
+  },
+  loginButtonLoadingText: {
+    fontSize: fontPixel(22),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    textAlign: "center",
+  },
+  loginButtonDisabled: {
+    backgroundColor: "#1A2238",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(18),
+    paddingBottom: pixelSizeVertical(18),
+    marginTop: pixelSizeVertical(16),
+    marginBottom: pixelSizeVertical(24),
+    width: "100%",
+    borderRadius: 5,
+  },
+  loginButton: {
+    backgroundColor: "#07BEB8",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(18),
+    paddingBottom: pixelSizeVertical(18),
+    marginTop: pixelSizeVertical(16),
+    marginBottom: pixelSizeVertical(30),
+    width: "100%",
+    borderRadius: 5,
+  },
+  loginButtonText: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#0C111F",
+    textAlign: "center",
+  },
+  tertiaryButton: {
+    color: "#A7AFC7",
+    fontSize: fontPixel(22),
+    textTransform: "lowercase",
+    fontWeight: "400",
+    textAlign: "center",
   },
 });
