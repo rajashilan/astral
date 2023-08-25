@@ -68,6 +68,11 @@ export default function ClubsDetails({ navigation }) {
 
   let editView = (
     <>
+      {!loading && meetings === "" && fees === "" && (
+        <Text style={styles.warningText}>
+          Please add meetings and fees details to be able to activate your club.
+        </Text>
+      )}
       <Text style={[styles.title, { paddingLeft: pixelSizeHorizontal(8) }]}>
         Meetings
       </Text>
@@ -234,5 +239,11 @@ const styles = StyleSheet.create({
     textTransform: "lowercase",
     fontWeight: "400",
     textAlign: "center",
+  },
+  warningText: {
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#C8A427",
+    marginBottom: pixelSizeVertical(32),
   },
 });

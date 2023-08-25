@@ -32,6 +32,7 @@ export default function ClubsEvents({ navigation }) {
 
   const events = useSelector((state) => state.data.clubData.event);
   const club = useSelector((state) => state.data.clubData.club);
+  const campusID = useSelector((state) => state.data.campus.campusID);
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
   );
@@ -89,7 +90,7 @@ export default function ClubsEvents({ navigation }) {
     //check if event length is 1
     //if it is, update clubs.events as false
     if (data.past.length + data.future.length === 1)
-      dispatch(setClubEventToFalse(club.clubID));
+      dispatch(setClubEventToFalse(club.clubID, campusID));
   };
 
   return (
@@ -104,37 +105,47 @@ export default function ClubsEvents({ navigation }) {
           <Text style={styles.loginButtonText}>add an event</Text>
         </Pressable>
       )}
-      <View style={styles.onlySpan}>
-        <Pressable
-          onPress={() => {
-            setInnerTab("past");
-          }}
-        >
-          <Text
-            style={
-              innerTab === "past"
-                ? styles.innerTabActive
-                : styles.innerTabInactive
-            }
-          >
-            past
+      {!loading &&
+        data.past.length + data.future.length === 0 &&
+        !isEmpty(currentMember) &&
+        currentMember.role === "president" && (
+          <Text style={styles.warningText}>
+            Please add an event to be able to activate your club.
           </Text>
-        </Pressable>
-        <Pressable>
-          <Text
-            style={
-              innerTab === "future"
-                ? styles.innerTabActive
-                : styles.innerTabInactive
-            }
+        )}
+      {!loading && data.past.length + data.future.length !== 0 && (
+        <View style={styles.onlySpan}>
+          <Pressable
             onPress={() => {
-              setInnerTab("future");
+              setInnerTab("past");
             }}
           >
-            future
-          </Text>
-        </Pressable>
-      </View>
+            <Text
+              style={
+                innerTab === "past"
+                  ? styles.innerTabActive
+                  : styles.innerTabInactive
+              }
+            >
+              past
+            </Text>
+          </Pressable>
+          <Pressable>
+            <Text
+              style={
+                innerTab === "future"
+                  ? styles.innerTabActive
+                  : styles.innerTabInactive
+              }
+              onPress={() => {
+                setInnerTab("future");
+              }}
+            >
+              future
+            </Text>
+          </Pressable>
+        </View>
+      )}
       <Pagination
         inactiveDotColor="#546593"
         dotColor={"#C4FFF9"}
@@ -355,5 +366,10 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
     textAlign: "center",
     marginTop: pixelSizeVertical(8),
+  },
+  warningText: {
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#C8A427",
   },
 });

@@ -31,6 +31,7 @@ const db = firebase.firestore();
 export default function ClubsGallery({ navigation }) {
   const dispatch = useDispatch();
   const club = useSelector((state) => state.data.clubData.club);
+  const campusID = useSelector((state) => state.data.campus.campusID);
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
   );
@@ -66,7 +67,8 @@ export default function ClubsGallery({ navigation }) {
     handleShowDeleteModal();
     //check if gallery length is 1
     //if it is, update clubs.gallery as false
-    if (data.length === 1) dispatch(setClubGalleryToFalse(club.clubID));
+    if (data.length === 1)
+      dispatch(setClubGalleryToFalse(club.clubID, campusID));
   };
 
   return (
@@ -81,7 +83,14 @@ export default function ClubsGallery({ navigation }) {
           <Text style={styles.loginButtonText}>add a photo</Text>
         </Pressable>
       )}
-
+      {!loading &&
+        data.length === 0 &&
+        !isEmpty(currentMember) &&
+        currentMember.role === "president" && (
+          <Text style={styles.warningText}>
+            Please add a photo to be able to activate your club.
+          </Text>
+        )}
       <Pagination
         inactiveDotColor="#546593"
         dotColor={"#C4FFF9"}
@@ -269,5 +278,10 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
     textAlign: "center",
     marginTop: pixelSizeVertical(8),
+  },
+  warningText: {
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#C8A427",
   },
 });
