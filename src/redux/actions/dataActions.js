@@ -1,6 +1,8 @@
 import {
+  ACTIVATE_CLUB,
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
+  DEACTIVATE_CLUB,
   DELETE_EVENT,
   DELETE_GALLERY,
   GET_A_CLUB_DATA,
@@ -310,17 +312,23 @@ export const setClubGalleryToTrue = (clubID) => (dispatch) => {
     });
 };
 
-export const setClubGalleryToFalse = (clubID) => (dispatch) => {
+export const setClubGalleryToFalse = (clubID, campusID) => (dispatch) => {
   dispatch({ type: SET_LOADING_DATA });
   db.doc(`/clubs/${clubID}`)
-    .update({ gallery: false })
+    .update({ gallery: false, status: "inactive" })
+    .then(() => {
+      return db.doc(`/clubsOverview/${campusID}`).get();
+    })
+    .then((doc) => {
+      let temp = [...doc.data().clubs];
+      let index = temp.findIndex((club) => club.clubID === clubID);
+      temp[index].status = "inactive";
+
+      return db.doc(`/clubsOverview/${campusID}`).update({ clubs: [...temp] });
+    })
     .then(() => {
       dispatch({ type: STOP_LOADING_DATA });
       dispatch({ type: SET_CLUB_GALLERY_TO_FALSE, payload: clubID });
-      Toast.show({
-        type: "success",
-        text1: `Photo deleted successfully`,
-      });
     })
     .catch((error) => {
       console.error(error);
@@ -340,12 +348,15 @@ export const handleDeleteClubGallery = (image, clubID) => (dispatch) => {
       let temp = [...doc.data().gallery];
       let index = temp.findIndex((gallery) => gallery.image === image);
       temp.splice(index, 1);
-
       return db.doc(`/gallery/${clubID}`).update({ gallery: [...temp] });
     })
     .then(() => {
       dispatch({ type: STOP_LOADING_DATA });
       dispatch({ type: DELETE_GALLERY, payload: image });
+      Toast.show({
+        type: "success",
+        text1: `Photo deleted successfully`,
+      });
     })
     .catch((error) => {
       console.error(error);
@@ -439,17 +450,23 @@ export const setClubEventToTrue = (clubID) => (dispatch) => {
     });
 };
 
-export const setClubEventToFalse = (clubID) => (dispatch) => {
+export const setClubEventToFalse = (clubID, campusID) => (dispatch) => {
   dispatch({ type: SET_LOADING_DATA });
   db.doc(`/clubs/${clubID}`)
-    .update({ events: false })
+    .update({ events: false, status: "inactive" })
+    .then(() => {
+      return db.doc(`/clubsOverview/${campusID}`).get();
+    })
+    .then((doc) => {
+      let temp = [...doc.data().clubs];
+      let index = temp.findIndex((club) => club.clubID === clubID);
+      temp[index].status = "inactive";
+
+      return db.doc(`/clubsOverview/${campusID}`).update({ clubs: [...temp] });
+    })
     .then(() => {
       dispatch({ type: STOP_LOADING_DATA });
       dispatch({ type: SET_CLUB_EVENT_TO_FALSE, payload: clubID });
-      Toast.show({
-        type: "success",
-        text1: `Event deleted successfully`,
-      });
     })
     .catch((error) => {
       console.error(error);
@@ -469,12 +486,15 @@ export const handleDeleteClubEvent = (eventID, clubID) => (dispatch) => {
       let temp = [...doc.data().events];
       let index = temp.findIndex((events) => events.eventID === eventID);
       temp.splice(index, 1);
-
       return db.doc(`/events/${clubID}`).update({ events: [...temp] });
     })
     .then(() => {
       dispatch({ type: STOP_LOADING_DATA });
       dispatch({ type: DELETE_EVENT, payload: eventID });
+      Toast.show({
+        type: "success",
+        text1: `Event deleted successfully`,
+      });
     })
     .catch((error) => {
       console.error(error);
@@ -497,6 +517,71 @@ export const handleUpdateClubDetails = (clubID, data) => (dispatch) => {
       Toast.show({
         type: "success",
         text1: "Club details updated successfully.",
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+export const handleActivateClub = (clubID, campusID) => (dispatch) => {
+  console.log(campusID);
+  dispatch({ type: SET_LOADING_DATA });
+  db.doc(`/clubs/${clubID}`)
+    .update({ status: "active" })
+    .then(() => {
+      return db.doc(`/clubsOverview/${campusID}`).get();
+    })
+    .then((doc) => {
+      let temp = [...doc.data().clubs];
+      let index = temp.findIndex((club) => club.clubID === clubID);
+      temp[index].status = "active";
+
+      return db.doc(`/clubsOverview/${campusID}`).update({ clubs: [...temp] });
+    })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: ACTIVATE_CLUB, payload: clubID });
+      Toast.show({
+        type: "success",
+        text1: "Club activated successfully.",
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+export const handleDeactivateClub = (clubID, campusID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+  db.doc(`/clubs/${clubID}`)
+    .update({ status: "inactive" })
+    .then(() => {
+      return db.doc(`/clubsOverview/${campusID}`).get();
+    })
+    .then((doc) => {
+      let temp = [...doc.data().clubs];
+      let index = temp.findIndex((club) => club.clubID === clubID);
+      temp[index].status = "inactive";
+
+      return db.doc(`/clubsOverview/${campusID}`).update({ clubs: [...temp] });
+    })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: DEACTIVATE_CLUB, payload: clubID });
+      Toast.show({
+        type: "success",
+        text1: "Club deactivated successfully.",
       });
     })
     .catch((error) => {

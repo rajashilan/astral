@@ -94,7 +94,9 @@ export default function ClubsPages({ navigation, route }) {
     navigation.navigate("ClubsYou");
   };
 
-  const handleEditClub = () => {};
+  const handleEditClub = () => {
+    navigation.navigate("EditClub");
+  };
 
   const handleJoin = () => {};
 

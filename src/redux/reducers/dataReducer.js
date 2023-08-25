@@ -1,6 +1,8 @@
 import {
+  ACTIVATE_CLUB,
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
+  DEACTIVATE_CLUB,
   DELETE_EVENT,
   DELETE_GALLERY,
   GET_A_CLUB_DATA,
@@ -10,6 +12,7 @@ import {
   GET_USER_CAMPUS,
   GET_USER_COLLEGE,
   SET_CLUB_EVENT,
+  SET_CLUB_EVENT_TO_FALSE,
   SET_CLUB_EVENT_TO_TRUE,
   SET_CLUB_GALLERY,
   SET_CLUB_GALLERY_TO_FALSE,
@@ -154,6 +157,7 @@ export default function (state = initialState, action) {
     case SET_CLUB_GALLERY_TO_FALSE:
       let clubGalleryFalse = { ...state.clubData.club };
       clubGalleryFalse.gallery = false;
+      clubGalleryFalse.status = "inactive";
       return {
         ...state,
         clubData: {
@@ -217,9 +221,10 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
-    case SET_CLUB_GALLERY_TO_FALSE:
+    case SET_CLUB_EVENT_TO_FALSE:
       let clubEventFalse = { ...state.clubData.club };
       clubEventFalse.event = false;
+      clubEventFalse.status = "inactive";
       return {
         ...state,
         clubData: {
@@ -281,6 +286,32 @@ export default function (state = initialState, action) {
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
           club: { ...tempClubDetails },
+        },
+      };
+    case ACTIVATE_CLUB:
+      let activateClub = { ...state.clubData.club };
+      activateClub.status = "active";
+      return {
+        ...state,
+        clubData: {
+          club: { ...activateClub },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+        },
+      };
+    case DEACTIVATE_CLUB:
+      let deactivateClub = { ...state.clubData.club };
+      deactivateClub.status = "inactive";
+      return {
+        ...state,
+        clubData: {
+          club: { ...deactivateClub },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
         },
       };
     case SET_LOADING_DATA:

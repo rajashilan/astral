@@ -26,6 +26,7 @@ import ClubResubmission from "./pages/ClubResubmisson";
 import ClubsYou from "./pages/ClubsYou";
 import AddClubsGallery from "./pages/AddClubsGallery";
 import AddClubsEvent from "./pages/AddClubsEvent";
+import EditClub from "./pages/EditClub";
 
 import { Provider } from "react-redux";
 import { store } from "./src/redux/store";
@@ -182,6 +183,14 @@ export default function App() {
           <Stack.Screen
             name="AddClubsEvent"
             component={AddClubsEvent}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="EditClub"
+            component={EditClub}
             options={{
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
