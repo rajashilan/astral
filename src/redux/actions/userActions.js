@@ -9,6 +9,7 @@ import { getUserCampus, getUserCollege } from "./dataActions";
 const db = firebase.firestore();
 
 export const getAuthenticatedUser = (email) => (dispatch) => {
+  console.log(email);
   dispatch({ type: SET_LOADING_USER });
   db.collection("users")
     .where("email", "==", email)

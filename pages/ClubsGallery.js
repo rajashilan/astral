@@ -151,7 +151,7 @@ export default function ClubsGallery({ navigation }) {
           <Text
             style={[
               styles.rejectionReason,
-              { textAlign: "center", marginBottom: pixelSizeHorizontal(8) },
+              { textAlign: "center", marginBottom: pixelSizeHorizontal(24) },
             ]}
           >
             {data.length === 1

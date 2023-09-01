@@ -80,7 +80,6 @@ export default function EditClub({ navigation }) {
       (!club.gallery ||
         !club.events ||
         club.details.schedule === "" ||
-        club.details.misc === "" ||
         club.details.fee === "") &&
       selectedActive === "activate"
     )

@@ -224,17 +224,6 @@ export default function AddClubsGallery({ navigation }) {
                 marginTop: pixelSizeVertical(28),
               }}
             >
-              <Text
-                style={{
-                  fontSize: fontPixel(16),
-                  fontWeight: "400",
-                  color: "#DFE5F8",
-                  paddingLeft: pixelSizeHorizontal(16),
-                  maxWidth: "70%",
-                }}
-              >
-                {image ? "Choose a different photo" : "Choose a photo"}
-              </Text>
               <Pressable onPress={handleAddPhoto} style={styles.imagePicker}>
                 <Text
                   style={{
@@ -243,7 +232,7 @@ export default function AddClubsGallery({ navigation }) {
                     color: "#DFE5F8",
                   }}
                 >
-                  Choose photo
+                  {image ? "Choose a different photo" : "Choose a photo"}
                 </Text>
               </Pressable>
             </View>

@@ -26,8 +26,11 @@ import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
 import { firebase } from "../src/firebase/config";
+import { useDispatch, useSelector } from "react-redux";
+import { LOGOUT } from "../src/redux/type";
 
 export default function Login({ navigation, route }) {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,6 +39,10 @@ export default function Login({ navigation, route }) {
     password: undefined,
     general: undefined,
   });
+
+  useEffect(() => {
+    dispatch({ type: LOGOUT });
+  }, []);
 
   const emailRegex =
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;

@@ -3,6 +3,7 @@ export const GET_AUTHENTICATED_USER = "GET_AUTHENTICATED_USER";
 export const SET_LOADING_USER = "SET_LOADING_USER";
 export const STOP_LOADING_USER = "STOP_LOADING_USER";
 export const ADD_USER_CLUB = "ADD_USER_CLUB";
+export const LOGOUT = "LOGOUT";
 
 //data types
 //orientation

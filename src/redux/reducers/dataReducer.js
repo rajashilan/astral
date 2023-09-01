@@ -11,6 +11,7 @@ import {
   GET_ORIENTATION_PAGES,
   GET_USER_CAMPUS,
   GET_USER_COLLEGE,
+  LOGOUT,
   SET_CLUB_EVENT,
   SET_CLUB_EVENT_TO_FALSE,
   SET_CLUB_EVENT_TO_TRUE,
@@ -314,6 +315,8 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
+    case LOGOUT:
+      return initialState;
     case SET_LOADING_DATA:
       return {
         ...state,

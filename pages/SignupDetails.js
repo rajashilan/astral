@@ -234,7 +234,6 @@ export default function SignupDetails({ navigation, route }) {
       <View style={styles.progressContainer}>
         <View style={styles.progressInactive} />
         <View style={styles.progressActive} />
-        <View style={styles.progressInactive} />
       </View>
       <Text style={styles.title}>Now for your details</Text>
       <ScrollView
@@ -268,7 +267,7 @@ export default function SignupDetails({ navigation, route }) {
           placeholderTextColor="#DBDBDB"
           value={username}
           editable={!loading}
-          onChangeText={(username) => setUsername(username)}
+          onChangeText={(username) => setUsername(username.toLowerCase())}
         />
         {errors.username ? (
           <Text style={styles.error}>{errors.username}</Text>
@@ -361,6 +360,7 @@ export default function SignupDetails({ navigation, route }) {
             display="spinner"
             maximumDate={new Date(2012, 11, 25)}
             onChange={onChange}
+            textColor="white"
           />
         )}
         <View style={styles.passwordContainer}>

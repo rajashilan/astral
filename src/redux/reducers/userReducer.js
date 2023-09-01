@@ -1,6 +1,7 @@
 import {
   ADD_USER_CLUB,
   GET_AUTHENTICATED_USER,
+  LOGOUT,
   SET_LOADING_USER,
   STOP_LOADING_USER,
 } from "../type";
@@ -25,6 +26,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
       };
+    case LOGOUT:
+      return initialState;
     case SET_LOADING_USER:
       return {
         ...state,

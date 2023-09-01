@@ -210,7 +210,7 @@ export default function ClubsEvents({ navigation }) {
           <Text
             style={[
               styles.rejectionReason,
-              { textAlign: "center", marginBottom: pixelSizeHorizontal(8) },
+              { textAlign: "center", marginBottom: pixelSizeHorizontal(24) },
             ]}
           >
             {data.past.length + data.future.length === 1

@@ -59,6 +59,7 @@ export default class SideMenu extends React.Component {
     } catch (e) {
       console.log(e);
     }
+    this.callParentScreenFunction();
   };
 
   render() {

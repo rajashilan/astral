@@ -201,7 +201,6 @@ export default function Signup({ navigation }) {
       <View style={styles.progressContainer}>
         <View style={styles.progressActive} />
         <View style={styles.progressInactive} />
-        <View style={styles.progressInactive} />
       </View>
       <Text style={styles.title}>Let's start with your campus</Text>
       <ScrollView
