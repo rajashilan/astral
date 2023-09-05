@@ -6,6 +6,7 @@ import {
   Pressable,
   TextInput,
   ScrollView,
+  FlatList,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -17,13 +18,10 @@ import {
 } from "../utils/responsive-font";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
-import * as Crypto from "expo-crypto";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
-
-import SelectDropdown from "react-native-select-dropdown";
 
 import IosHeight from "../components/IosHeight";
 
@@ -34,16 +32,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Header from "../components/Header";
 
-import { firebase } from "../src/firebase/config";
-import {
-  handleActivateClub,
-  handleDeactivateClub,
-} from "../src/redux/actions/dataActions";
-const db = firebase.firestore();
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
-export default function EditClub({ navigation }) {
+export default function ClubCurrentMembers({ navigation }) {
   const dispatch = useDispatch();
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
@@ -51,19 +44,25 @@ export default function EditClub({ navigation }) {
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
-
-  //view existing members
-  //view members request
+  const members = useSelector((state) => state.data.clubData.members);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
-  const [activeStatus, setActiveStatus] = useState(club.status);
-  const [activeSelection] = useState(["activate", "deactivate"]);
-  const [selectedActive, setSelectedActive] = useState("");
+  const [headerHeight, setHeaderHeight] = useState(300);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
 
-  const [errors, setErrors] = useState({
-    active: undefined,
-  });
+  const onLayout = (event) => {
+    const { x, y, height, width } = event.nativeEvent.layout;
+    setHeaderHeight(height);
+  };
+
+  useEffect(() => {
+    //if scroll height is more than header height and the header is not shown, show
+    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
+    else if (scrollHeight < headerHeight && showMiniHeader)
+      setShowMiniHeader(false);
+  }, [scrollHeight, showMiniHeader]);
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -71,28 +70,6 @@ export default function EditClub({ navigation }) {
 
   const handleNavigateBack = () => {
     navigation.goBack();
-  };
-
-  const handleEditActiveStatus = () => {
-    let errors = [...errors];
-
-    if (
-      (!club.gallery ||
-        !club.events ||
-        club.details.schedule === "" ||
-        club.details.fee === "") &&
-      selectedActive === "activate"
-    )
-      errors.active = "Please complete your club details to active the club.";
-
-    if (!errors.active) {
-      if (selectedActive === "activate")
-        dispatch(handleActivateClub(club.clubID, campusID));
-      if (selectedActive === "deactivate")
-        dispatch(handleDeactivateClub(club.clubID, campusID));
-    }
-
-    setErrors(errors);
   };
 
   return (
@@ -105,7 +82,18 @@ export default function EditClub({ navigation }) {
         >
           <Text style={styles.backButton}>back</Text>
         </Pressable>
-
+        {showMiniHeader ? (
+          <Animated.View
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <Text style={styles.headerMini} numberOfLines={1}>
+              current members
+            </Text>
+          </Animated.View>
+        ) : (
+          <Text style={styles.headerMiniInvisible}>title</Text>
+        )}
         <Pressable
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
@@ -117,106 +105,72 @@ export default function EditClub({ navigation }) {
           />
         </Pressable>
       </View>
-      <ScrollView>
+      <ScrollView
+        scrollEventThrottle={16}
+        stickyHeaderIndices={[1]}
+        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      >
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
-            <Header header={"edit club's details"} />
-            <Text style={styles.disclaimer}>{club.name}</Text>
-
-            <SelectDropdown
-              search={true}
-              searchInputStyle={{
-                backgroundColor: "#232D4A",
-              }}
-              disabled={loading}
-              searchPlaceHolder="select active status"
-              searchInputTxtColor="#DFE5F8"
-              defaultButtonText={`current status: ${activeStatus}`}
-              showsVerticalScrollIndicator={true}
-              buttonStyle={{
-                backgroundColor: "#1A2238",
-                marginTop: pixelSizeVertical(10),
-                marginBottom: pixelSizeVertical(10),
-                height: heightPixel(58),
-                width: "100%",
-                borderRadius: 5,
-              }}
-              buttonTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              dropdownStyle={{
-                backgroundColor: "#1A2238",
-                borderRadius: 5,
-              }}
-              rowStyle={{
-                backgroundColor: "#1A2238",
-                borderBottomWidth: 0,
-              }}
-              rowTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              selectedRowStyle={{
-                backgroundColor: "#C4FFF9",
-              }}
-              selectedRowTextStyle={{
-                color: "#0C111F",
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                textAlign: "left",
-              }}
-              data={activeSelection}
-              onSelect={(selectedItem, index) => {
-                setSelectedActive(selectedItem);
-              }}
-            />
-            {errors.active ? (
-              <Text style={styles.error}>{errors.active}</Text>
-            ) : null}
-
-            <Pressable
-              onPress={() => navigation.navigate("ClubCurrentMembers")}
-            >
-              <Text style={styles.altButton}>current members</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => navigation.navigate("ClubMembersRequest")}
-            >
-              <Text style={styles.altButton}>members' requests</Text>
-            </Pressable>
-
-            {selectedActive && (
-              <>
-                <Pressable
-                  style={
-                    loading ? styles.loginButtonDisabled : styles.loginButton
-                  }
-                  onPress={handleEditActiveStatus}
-                >
-                  <Text
-                    style={
-                      loading
-                        ? styles.loginButtonLoadingText
-                        : styles.loginButtonText
+            <View onLayout={onLayout}>
+              <Header header={"current members"} />
+            </View>
+            <Text style={styles.disclaimer}>view and edit your members</Text>
+            <FlatList
+              style={{ marginTop: pixelSizeVertical(24) }}
+              keyExtractor={(item, index) => index.toString()}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              scrollEnabled={false}
+              data={members}
+              renderItem={({ item, index }) =>
+                members.length > 0 && (
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate("EditClubMember", { member: item })
                     }
                   >
-                    {loading ? "saving changes..." : "save"}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                >
-                  <Text style={styles.secondaryButton}>cancel</Text>
-                </Pressable>
-              </>
-            )}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Image
+                        key={index}
+                        style={styles.image}
+                        contentFit="cover"
+                        source={item.profileImage}
+                      />
+                      <View
+                        style={{
+                          marginLeft: pixelSizeHorizontal(16),
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: fontPixel(16),
+                            fontWeight: "500",
+                            color: "#DFE5F8",
+                          }}
+                        >
+                          {item.name} - Intake {item.intake}, {item.department}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: fontPixel(14),
+                            fontWeight: "400",
+                            color: "#DFE5F8",
+                          }}
+                        >
+                          {item.role}
+                        </Text>
+                      </View>
+                    </View>
+                  </Pressable>
+                )
+              }
+            />
           </View>
         </View>
       </ScrollView>
@@ -345,10 +299,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    width: "100%",
-    height: heightPixel(280),
+    width: widthPixel(50),
+    height: heightPixel(50),
     marginBottom: pixelSizeVertical(12),
-    borderRadius: 5,
+    borderRadius: 50,
   },
   role: {
     fontSize: fontPixel(14),
@@ -481,5 +435,14 @@ const styles = StyleSheet.create({
     color: "#07BEB8",
     marginTop: pixelSizeVertical(8),
     opacity: 0.5,
+  },
+  headerContainerHideMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginRight: pixelSizeHorizontal(16),
+    marginLeft: pixelSizeHorizontal(16),
+    marginBottom: pixelSizeVertical(8),
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
 });

@@ -27,6 +27,9 @@ import ClubsYou from "./pages/ClubsYou";
 import AddClubsGallery from "./pages/AddClubsGallery";
 import AddClubsEvent from "./pages/AddClubsEvent";
 import EditClub from "./pages/EditClub";
+import ClubCurrentMembers from "./pages/ClubCurrentMembers";
+import ClubMembersRequest from "./pages/ClubMembersRequest";
+import EditClubMember from "./pages/EditClubMember";
 
 import { Provider } from "react-redux";
 import { store } from "./src/redux/store";
@@ -191,6 +194,30 @@ export default function App() {
           <Stack.Screen
             name="EditClub"
             component={EditClub}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="ClubCurrentMembers"
+            component={ClubCurrentMembers}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="ClubMembersRequest"
+            component={ClubMembersRequest}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="EditClubMember"
+            component={EditClubMember}
             options={{
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,

@@ -17,13 +17,11 @@ import {
 } from "../utils/responsive-font";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
-import * as Crypto from "expo-crypto";
+import Carousel, { Pagination } from "react-native-snap-carousel";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
-
-import SelectDropdown from "react-native-select-dropdown";
 
 import IosHeight from "../components/IosHeight";
 
@@ -34,16 +32,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Header from "../components/Header";
 
-import { firebase } from "../src/firebase/config";
-import {
-  handleActivateClub,
-  handleDeactivateClub,
-} from "../src/redux/actions/dataActions";
-const db = firebase.firestore();
-
 const { width } = Dimensions.get("window");
 
-export default function EditClub({ navigation }) {
+export default function ClubMembersRequest({ navigation }) {
   const dispatch = useDispatch();
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
@@ -51,19 +42,15 @@ export default function EditClub({ navigation }) {
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
-
-  //view existing members
-  //view members request
+  const membersRequests = club.membersRequests;
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
-  const [activeStatus, setActiveStatus] = useState(club.status);
-  const [activeSelection] = useState(["activate", "deactivate"]);
-  const [selectedActive, setSelectedActive] = useState("");
+  const [indexSelected, setIndexSelected] = useState(0);
 
-  const [errors, setErrors] = useState({
-    active: undefined,
-  });
+  const onSelect = (indexSelected) => {
+    setIndexSelected(indexSelected);
+  };
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -73,27 +60,11 @@ export default function EditClub({ navigation }) {
     navigation.goBack();
   };
 
-  const handleEditActiveStatus = () => {
-    let errors = [...errors];
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
 
-    if (
-      (!club.gallery ||
-        !club.events ||
-        club.details.schedule === "" ||
-        club.details.fee === "") &&
-      selectedActive === "activate"
-    )
-      errors.active = "Please complete your club details to active the club.";
-
-    if (!errors.active) {
-      if (selectedActive === "activate")
-        dispatch(handleActivateClub(club.clubID, campusID));
-      if (selectedActive === "deactivate")
-        dispatch(handleDeactivateClub(club.clubID, campusID));
-    }
-
-    setErrors(errors);
-  };
+  const handleAcceptMember = (userID, accepted) => {};
 
   return (
     <View style={styles.container}>
@@ -120,102 +91,98 @@ export default function EditClub({ navigation }) {
       <ScrollView>
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
-            <Header header={"edit club's details"} />
-            <Text style={styles.disclaimer}>{club.name}</Text>
-
-            <SelectDropdown
-              search={true}
-              searchInputStyle={{
-                backgroundColor: "#232D4A",
-              }}
-              disabled={loading}
-              searchPlaceHolder="select active status"
-              searchInputTxtColor="#DFE5F8"
-              defaultButtonText={`current status: ${activeStatus}`}
-              showsVerticalScrollIndicator={true}
-              buttonStyle={{
-                backgroundColor: "#1A2238",
-                marginTop: pixelSizeVertical(10),
-                marginBottom: pixelSizeVertical(10),
-                height: heightPixel(58),
-                width: "100%",
-                borderRadius: 5,
-              }}
-              buttonTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              dropdownStyle={{
-                backgroundColor: "#1A2238",
-                borderRadius: 5,
-              }}
-              rowStyle={{
-                backgroundColor: "#1A2238",
-                borderBottomWidth: 0,
-              }}
-              rowTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              selectedRowStyle={{
-                backgroundColor: "#C4FFF9",
-              }}
-              selectedRowTextStyle={{
-                color: "#0C111F",
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                textAlign: "left",
-              }}
-              data={activeSelection}
-              onSelect={(selectedItem, index) => {
-                setSelectedActive(selectedItem);
-              }}
-            />
-            {errors.active ? (
-              <Text style={styles.error}>{errors.active}</Text>
-            ) : null}
-
-            <Pressable
-              onPress={() => navigation.navigate("ClubCurrentMembers")}
-            >
-              <Text style={styles.altButton}>current members</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => navigation.navigate("ClubMembersRequest")}
-            >
-              <Text style={styles.altButton}>members' requests</Text>
-            </Pressable>
-
-            {selectedActive && (
+            <Header header={"members' requests"} />
+            <Text style={styles.disclaimer}>view and accept new members</Text>
+            {membersRequests.length > 0 && (
               <>
-                <Pressable
-                  style={
-                    loading ? styles.loginButtonDisabled : styles.loginButton
-                  }
-                  onPress={handleEditActiveStatus}
-                >
-                  <Text
-                    style={
-                      loading
-                        ? styles.loginButtonLoadingText
-                        : styles.loginButtonText
-                    }
-                  >
-                    {loading ? "saving changes..." : "save"}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => {
-                    navigation.goBack();
+                <Pagination
+                  inactiveDotColor="#546593"
+                  dotColor={"#C4FFF9"}
+                  activeDotIndex={indexSelected}
+                  containerStyle={{
+                    paddingTop: 0,
+                    paddingRight: pixelSizeHorizontal(16),
+                    paddingLeft: pixelSizeHorizontal(16),
+                    paddingBottom: 0,
+                    marginBottom: pixelSizeVertical(12),
+                    marginTop: pixelSizeVertical(24),
                   }}
-                >
-                  <Text style={styles.secondaryButton}>cancel</Text>
-                </Pressable>
+                  dotsLength={membersRequests.length}
+                  inactiveDotScale={1}
+                />
+                <Carousel
+                  layout="default"
+                  data={membersRequests}
+                  disableIntervalMomentum={true}
+                  useExperimentalSnap={true}
+                  onSnapToItem={(index) => onSelect(index)}
+                  sliderWidth={width - 32}
+                  itemWidth={width - 32}
+                  renderItem={({ item, index }) => (
+                    <>
+                      <Image
+                        key={index}
+                        style={styles.image}
+                        contentFit="cover"
+                        source={item.profileImage}
+                      />
+                      <Text style={styles.title}>
+                        {item.name} - Intake {item.intake}, {item.department}
+                      </Text>
+                      {!isEmpty(currentMember) &&
+                        currentMember.role === "president" && (
+                          <>
+                            <Pressable
+                              disabled={loading}
+                              style={
+                                loading
+                                  ? styles.loginButtonDisabled
+                                  : styles.loginButton
+                              }
+                              onPress={() =>
+                                handleAcceptMember(item.userID, true)
+                              }
+                            >
+                              <Text
+                                style={
+                                  loading
+                                    ? styles.loginButtonLoadingText
+                                    : styles.loginButtonText
+                                }
+                              >
+                                {loading ? "accepting..." : "accept"}
+                              </Text>
+                            </Pressable>
+                            {!loading && (
+                              <Pressable
+                                onPress={() =>
+                                  handleAcceptMember(item.userID, false)
+                                }
+                              >
+                                <Text style={styles.withdrawButton}>
+                                  reject
+                                </Text>
+                              </Pressable>
+                            )}
+                          </>
+                        )}
+                    </>
+                  )}
+                />
               </>
+            )}
+            {membersRequests.length === 0 && (
+              <Text
+                style={{
+                  fontSize: fontPixel(18),
+                  fontWeight: "400",
+                  color: "#DFE5F8",
+                  textAlign: "center",
+                  marginTop: pixelSizeVertical(48),
+                }}
+              >
+                no members requests at the moment.
+              </Text>
             )}
           </View>
         </View>
@@ -481,5 +448,18 @@ const styles = StyleSheet.create({
     color: "#07BEB8",
     marginTop: pixelSizeVertical(8),
     opacity: 0.5,
+  },
+  title: {
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    marginBottom: pixelSizeVertical(4),
+  },
+  withdrawButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#A7AFC7",
+    marginTop: pixelSizeVertical(2),
+    textAlign: "center",
   },
 });

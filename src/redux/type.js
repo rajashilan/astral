@@ -34,5 +34,6 @@ export const SET_CLUB_EVENT_TO_FALSE = "SET_CLUB_EVENT_TO_FALSE";
 export const UPDATE_CLUB_DETAILS = "UPDATE_CLUB_DETAILS";
 export const ACTIVATE_CLUB = "ACTIVATE_CLUB";
 export const DEACTIVATE_CLUB = "DEACTIVATE_CLUB";
+export const JOIN_CLUB = "JOIN_CLUB";
 
 //ui types

@@ -11,6 +11,7 @@ import {
   GET_ORIENTATION_PAGES,
   GET_USER_CAMPUS,
   GET_USER_COLLEGE,
+  JOIN_CLUB,
   SET_CLUB_EVENT,
   SET_CLUB_EVENT_TO_FALSE,
   SET_CLUB_EVENT_TO_TRUE,
@@ -530,7 +531,6 @@ export const handleUpdateClubDetails = (clubID, data) => (dispatch) => {
 };
 
 export const handleActivateClub = (clubID, campusID) => (dispatch) => {
-  console.log(campusID);
   dispatch({ type: SET_LOADING_DATA });
   db.doc(`/clubs/${clubID}`)
     .update({ status: "active" })
@@ -593,3 +593,64 @@ export const handleDeactivateClub = (clubID, campusID) => (dispatch) => {
       });
     });
 };
+
+//joining a club
+export const joinClub = (data, clubsData) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+
+  //add to clubMembers -> clubID -> members
+  db.doc(`/clubMembers/${clubsData.clubID}`)
+    .get()
+    .then((doc) => {
+      let temp = [...doc.data().members];
+      temp.append(data);
+      return db
+        .doc(`/clubMembers/${clubsData.clubID}`)
+        .update({ members: [...temp] });
+    })
+    .then(() => {
+      //add to users -> userID -> clubs
+      return db.doc(`/users/${data.userID}`).get();
+    })
+    .then((doc) => {
+      let temp = [...doc.data().clubs];
+      temp.append(clubsData);
+
+      return db.doc(`/users/${data.userID}`).update({ clubs: [...temp] });
+    })
+    .then(() => {
+      //remove member from club -> clubID -> membersRequests
+      return db.doc(`/clubs/${clubsData.clubID}`).get();
+    })
+    .then((doc) => {
+      let temp = [...doc.data().membersRequests];
+      let index = temp.findIndex((member) => member.userID === data.userID);
+      temp.splice(index, 1);
+
+      return db
+        .doc(`/clubs/${clubsData.clubID}`)
+        .update({ membersRequests: [...temp] });
+    })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: JOIN_CLUB, payload: data });
+      Toast.show({
+        type: "success",
+        text1: "Member accepted successfully.",
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+//accepting a new member
+
+//rejecting a new member
+
+//assigning a new role to committee members

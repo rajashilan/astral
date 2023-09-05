@@ -11,6 +11,7 @@ import {
   GET_ORIENTATION_PAGES,
   GET_USER_CAMPUS,
   GET_USER_COLLEGE,
+  JOIN_CLUB,
   LOGOUT,
   SET_CLUB_EVENT,
   SET_CLUB_EVENT_TO_FALSE,
@@ -311,6 +312,19 @@ export default function (state = initialState, action) {
           club: { ...deactivateClub },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+        },
+      };
+    case JOIN_CLUB:
+      let joinClubMembersList = [...state.clubData.members];
+      joinClubMembersList.append(action.payload);
+      return {
+        ...state,
+        clubData: {
+          club: { ...state.clubData.club },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...joinClubMembersList],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },

@@ -50,6 +50,7 @@ export default function ClubsPages({ navigation, route }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.credentials);
   const data = useSelector((state) => state.data.clubData.club);
+  const loading = useSelector((state) => state.data.loading);
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
   );
@@ -188,7 +189,7 @@ export default function ClubsPages({ navigation, route }) {
             paddingLeft: pixelSizeHorizontal(16),
           }}
         >
-          {isEmpty(currentMember) && (
+          {isEmpty(currentMember) && !loading && (
             <Pressable style={styles.loginButton}>
               <Text style={styles.loginButtonText}>join</Text>
             </Pressable>
