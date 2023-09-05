@@ -51,7 +51,7 @@ export default function Login({ navigation, route }) {
     let errors = [...errors];
 
     if (!email.trim()) errors.email = "Please enter your email address";
-    else if (email && !email.match(emailRegex))
+    else if (email.trim() && !email.trim().match(emailRegex))
       errors.email = "Please enter a valid email address";
 
     if (!password.trim()) errors.password = "Please enter your password";
