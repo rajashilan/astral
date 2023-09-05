@@ -84,35 +84,32 @@ export default function Login({ navigation, route }) {
           misc: "",
         },
         numberOfMembers: 1,
-        roles: [
-          {
-            president: {
-              memberID, //to be generated
-              userID: createdBy,
-              alternateName: "",
-            },
-            vicePresident: {
-              memberID: "", //to be generated
-              userID: "",
-              alternateName: "",
-            },
-            secretary: {
-              memberID: "", //to be generated
-              userID: "",
-              alternateName: "",
-            },
-            treasurer: {
-              memberID: "", //to be generated
-              userID: "",
-              alternateName: "",
-            },
-            members: {
-              alternateName: "",
-              membersIDs: [],
-              userIDs: [],
-            },
+        roles: {
+          president: {
+            memberID, //to be generated
+            userID: createdBy,
+            alternateName: "",
           },
-        ],
+          vicepresident: {
+            memberID: "", //to be generated
+            userID: "",
+            alternateName: "",
+          },
+          secretary: {
+            memberID: "", //to be generated
+            userID: "",
+            alternateName: "",
+          },
+          treasurer: {
+            memberID: "", //to be generated
+            userID: "",
+            alternateName: "",
+          },
+          members: {
+            alternateName: "",
+            membersData: [],
+          },
+        },
         approval: "pending",
         rejectionReason: "",
         status: "inactive",
