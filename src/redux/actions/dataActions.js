@@ -1,4 +1,5 @@
 import {
+  ACCEPT_NEW_CLUB_MEMBER,
   ACTIVATE_CLUB,
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
@@ -595,7 +596,7 @@ export const handleDeactivateClub = (clubID, campusID) => (dispatch) => {
 };
 
 //joining a club
-export const joinClub = (data, clubsData) => (dispatch) => {
+export const acceptNewMember = (data, clubsData) => (dispatch) => {
   dispatch({ type: SET_LOADING_DATA });
 
   //add to clubMembers -> clubID -> members
@@ -633,7 +634,7 @@ export const joinClub = (data, clubsData) => (dispatch) => {
     })
     .then(() => {
       dispatch({ type: STOP_LOADING_DATA });
-      dispatch({ type: JOIN_CLUB, payload: data });
+      dispatch({ type: ACCEPT_NEW_CLUB_MEMBER, payload: data });
       Toast.show({
         type: "success",
         text1: "Member accepted successfully.",

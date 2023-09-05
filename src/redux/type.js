@@ -35,5 +35,6 @@ export const UPDATE_CLUB_DETAILS = "UPDATE_CLUB_DETAILS";
 export const ACTIVATE_CLUB = "ACTIVATE_CLUB";
 export const DEACTIVATE_CLUB = "DEACTIVATE_CLUB";
 export const JOIN_CLUB = "JOIN_CLUB";
+export const ACCEPT_NEW_CLUB_MEMBER = "ACCEPT_NEW_CLUB_MEMBER";
 
 //ui types

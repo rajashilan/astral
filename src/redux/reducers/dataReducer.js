@@ -1,4 +1,5 @@
 import {
+  ACCEPT_NEW_CLUB_MEMBER,
   ACTIVATE_CLUB,
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
@@ -316,7 +317,7 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
-    case JOIN_CLUB:
+    case ACCEPT_NEW_CLUB_MEMBER:
       let joinClubMembersList = [...state.clubData.members];
       joinClubMembersList.append(action.payload);
       return {
