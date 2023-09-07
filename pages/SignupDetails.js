@@ -33,11 +33,36 @@ export default function SignupDetails({ navigation, route }) {
 
   const passwordRegex =
     /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/;
-  const usernameRegex = /^([a-z0-9]|[_](?![_])){6,18}$/;
+  const usernameRegex = /^([A-Za-z0-9]|[_](?![_])){6,18}$/;
   const emailRegex =
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;
 
   const [loading, setLoading] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [selectedGender, setSelectedGender] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [gender] = useState(["Male", "Female", "Rather not say"]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [passwordInvisible, setPasswordInvisibile] = useState(true);
+
+  const [errors, setErrors] = useState({
+    email: undefined,
+    name: undefined,
+    username: undefined,
+    gender: undefined,
+    birthday: undefined,
+    password: undefined,
+  });
+
+  const capitalize = (string) => {
+    return [...string.slice(0, 1).toUpperCase(), ...string.slice(1)].join("");
+  };
 
   const handleNext = () => {
     let errors = [...errors];
@@ -51,7 +76,7 @@ export default function SignupDetails({ navigation, route }) {
     if (!username.trim()) errors.username = "Please enter your username";
     else if (username && !username.match(usernameRegex))
       errors.username =
-        "Username should be in lowercase, within 6-18 characters, and must contain at least 1 letter. Special character '_' is allowed one at a time.";
+        "Username should be within 6-18 characters, and must contain at least 1 letter. Special character '_' is allowed one at a time.";
 
     if (!selectedGender) errors.gender = "Please select";
     if (!birthday) errors.birthday = "Please enter your birthday";
@@ -84,7 +109,7 @@ export default function SignupDetails({ navigation, route }) {
             firebase
               .firestore()
               .collection("users")
-              .where("username", "==", username)
+              .where("username", "==", username.toLowerCase())
               .get()
               .then((data) => {
                 if (!data.empty) {
@@ -94,8 +119,8 @@ export default function SignupDetails({ navigation, route }) {
                   //if both email and username is cleared, then register user
                   const data = {
                     email: email.trim().toLowerCase(),
-                    name: name,
-                    username: username,
+                    name: capitalize(name),
+                    username: username.trim().toLowerCase(),
                     gender: selectedGender,
                     birthday: birthday,
                     profileImage:
@@ -179,26 +204,6 @@ export default function SignupDetails({ navigation, route }) {
     setErrors(errors);
   };
 
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [selectedGender, setSelectedGender] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [gender] = useState(["Male", "Female", "Rather not say"]);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [passwordInvisible, setPasswordInvisibile] = useState(true);
-
-  const [errors, setErrors] = useState({
-    email: undefined,
-    name: undefined,
-    username: undefined,
-    gender: undefined,
-    birthday: undefined,
-    password: undefined,
-  });
-
   const onChange = (event, selectedDate) => {
     if (
       event.type === "dismissed" ||
@@ -267,11 +272,24 @@ export default function SignupDetails({ navigation, route }) {
           placeholderTextColor="#DBDBDB"
           value={username}
           editable={!loading}
-          onChangeText={(username) => setUsername(username.toLowerCase())}
+          onChangeText={(username) => setUsername(username)}
         />
         {errors.username ? (
           <Text style={styles.error}>{errors.username}</Text>
         ) : null}
+
+        <TextInput
+          style={styles.textInput}
+          placeholder="Phone Number (optional)"
+          placeholderTextColor="#DBDBDB"
+          value={phoneNumber}
+          editable={!loading}
+          keyboardType="number-pad"
+          onChangeText={(number) => setPhoneNumber(number)}
+        />
+        <Text style={styles.disclaimer}>
+          Your contact details will only be shared with clubs that you join.
+        </Text>
 
         <SelectDropdown
           defaultButtonText={"Gender"}

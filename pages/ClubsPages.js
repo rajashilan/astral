@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
+import * as Crypto from "expo-crypto";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
@@ -41,7 +42,11 @@ import { ScrollView } from "react-native-gesture-handler";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 import { firebase } from "../src/firebase/config";
-import { getAClub, getClubMembers } from "../src/redux/actions/dataActions";
+import {
+  getAClub,
+  getClubMembers,
+  joinClub,
+} from "../src/redux/actions/dataActions";
 const db = firebase.firestore();
 
 export default function ClubsPages({ navigation, route }) {
@@ -54,8 +59,10 @@ export default function ClubsPages({ navigation, route }) {
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
   );
+  const [hasRequested, setHasRequested] = useState(false);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+  const [showAgreementPopUp, setShowAgreementPopUp] = useState(false);
 
   const [headerHeight, setHeaderHeight] = useState(300);
   const [scrollHeight, setScrollHeight] = useState(0);
@@ -70,9 +77,23 @@ export default function ClubsPages({ navigation, route }) {
     ],
   });
 
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
   useEffect(() => {
     dispatch(getAClub(clubID, user.userId));
   }, []);
+
+  useEffect(() => {
+    if (!isEmpty(data)) {
+      let temp = [...data.membersRequests];
+      let index = temp.findIndex((member) => member.userID === user.userId);
+      console.log(temp[index]);
+      if (index !== -1)
+        if (temp[index].approval !== "rejected") setHasRequested(true);
+    }
+  }, [data]);
 
   //show edit buttons based on the user data logic
   //if filter returns null, show join button, dont show you button or add button
@@ -99,7 +120,35 @@ export default function ClubsPages({ navigation, route }) {
     navigation.navigate("EditClub");
   };
 
-  const handleJoin = () => {};
+  const handleJoin = () => {
+    setShowAgreementPopUp(!showAgreementPopUp);
+    const memberID = Crypto.randomUUID();
+    createdAt = new Date();
+
+    let joinData = {
+      name: user.name,
+      phone: user.phone_number,
+      email: user.email,
+      intake: user.intake,
+      course: user.department,
+      memberID,
+      userID: user.userId,
+      role: "member",
+      createdAt,
+      profileImage: user.profileImage,
+      bio: "",
+    };
+
+    let clubsData = {
+      clubID: data.clubID,
+      userID: user.userId,
+      memberID,
+      role: "member",
+      createdAt,
+      approval: "pending",
+    };
+    dispatch(joinClub(joinData, clubsData, data.clubID));
+  };
 
   const onLayout = (event) => {
     const { x, y, height, width } = event.nativeEvent.layout;
@@ -189,8 +238,11 @@ export default function ClubsPages({ navigation, route }) {
             paddingLeft: pixelSizeHorizontal(16),
           }}
         >
-          {isEmpty(currentMember) && !loading && (
-            <Pressable style={styles.loginButton}>
+          {isEmpty(currentMember) && !hasRequested && (
+            <Pressable
+              onPress={() => setShowAgreementPopUp(!showAgreementPopUp)}
+              style={styles.loginButton}
+            >
               <Text style={styles.loginButtonText}>join</Text>
             </Pressable>
           )}
@@ -268,6 +320,51 @@ export default function ClubsPages({ navigation, route }) {
           currentPage={"clubs"}
           navigation={navigation}
         />
+      </Modal>
+
+      <Modal
+        isVisible={showAgreementPopUp}
+        onBackdropPress={() => setShowAgreementPopUp(!showAgreementPopUp)} // Android back press
+        animationIn="bounceIn" // Has others, we want slide in from the left
+        animationOut="bounceOut" // When discarding the drawer
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
+      >
+        <View style={styles.withdrawMenu}>
+          <Text
+            style={{
+              fontSize: fontPixel(20),
+              fontWeight: "400",
+              color: "#DFE5F8",
+              marginBottom: pixelSizeVertical(12),
+              textAlign: "center",
+            }}
+          >
+            By tapping confirm, you agree that your details can be shared to the
+            club upon joining.
+          </Text>
+          <Pressable
+            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            onPress={handleJoin}
+          >
+            <Text
+              style={
+                loading ? styles.loginButtonLoadingText : styles.loginButtonText
+              }
+            >
+              confirm
+            </Text>
+          </Pressable>
+          {!loading && (
+            <Pressable
+              onPress={() => setShowAgreementPopUp(!showAgreementPopUp)}
+            >
+              <Text style={styles.withdrawButton}>cancel</Text>
+            </Pressable>
+          )}
+        </View>
       </Modal>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
@@ -423,5 +520,39 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#DFE5F8",
+  },
+  loginButtonLoadingText: {
+    fontSize: fontPixel(22),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    textAlign: "center",
+  },
+  loginButtonDisabled: {
+    backgroundColor: "#1A2238",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(18),
+    paddingBottom: pixelSizeVertical(18),
+    marginTop: pixelSizeVertical(16),
+    marginBottom: pixelSizeVertical(24),
+    width: "100%",
+    borderRadius: 5,
+  },
+  withdrawMenu: {
+    height: "auto",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    backgroundColor: "#131A2E",
+    display: "flex",
+    borderRadius: 5,
+  },
+  withdrawButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#A7AFC7",
+    marginTop: pixelSizeVertical(2),
+    textAlign: "center",
   },
 });

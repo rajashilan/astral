@@ -69,7 +69,6 @@ clubs: {
                 memberID (automatically generated and added to the user's db <clubID-memberID>)
                 userID,
                 role: member,
-                status: 'pending/accepted' (if accepted, move member to member's list and clear off from this list)
                 createdAt,
                 profileImage,
                 bio,

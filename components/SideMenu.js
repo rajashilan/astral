@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
+import { CommonActions } from "@react-navigation/native";
 
 import IosHeight from "./IosHeight";
 
@@ -53,13 +54,23 @@ export default class SideMenu extends React.Component {
     else this.props.navigation.replace(menuItem.trim());
   };
 
-  signOutUser = async () => {
-    try {
-      await firebase.auth().signOut();
-    } catch (e) {
-      console.log(e);
-    }
-    this.callParentScreenFunction();
+  signOutUser = () => {
+    this.props.navigation.dispatch((state) => {
+      return CommonActions.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
+    });
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        this.callParentScreenFunction();
+      })
+      .catch(function (error) {
+        // An error happened.
+        console.error(error);
+      });
   };
 
   render() {

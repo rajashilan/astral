@@ -40,6 +40,7 @@ import {
   setClubEventToTrue,
 } from "../src/redux/actions/dataActions";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { SET_LOADING_DATA } from "../src/redux/type";
 
 const db = firebase.firestore();
 
@@ -121,6 +122,8 @@ export default function AddClubsEvent({ navigation }) {
       const eventID = Crypto.randomUUID();
 
       if (image) {
+        dispatch({ type: SET_LOADING_DATA });
+
         const name = Crypto.randomUUID();
         let imageFileName = `${name}.${imageType}`;
         let firebasePath = `clubs/events/photos/${imageFileName}`;

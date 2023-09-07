@@ -169,7 +169,7 @@ export default function Login({ navigation, route }) {
         clubID: "",
         memberID,
         role: "president",
-        approval: "pending",
+        approval: "approved",
         createdBy,
         createdAt,
       };

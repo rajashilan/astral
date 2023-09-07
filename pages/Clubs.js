@@ -62,6 +62,7 @@ export default function Clubs({ navigation }) {
   //set and get data from redux
 
   useEffect(() => {
+    console.log("HELLO");
     //get clubs from clubs overview
     db.doc(`/clubsOverview/${state.campus.campusID}`)
       .get()
@@ -89,7 +90,7 @@ export default function Clubs({ navigation }) {
 
   useEffect(() => {
     let temp = [];
-    if (all.length > 0 && user.clubs.length > 0) {
+    if (all && all.length > 0 && user.clubs.length > 0) {
       user.clubs.map((club) => {
         let index = all.findIndex((all) => all.clubID === club.clubID);
         if (index !== -1) {

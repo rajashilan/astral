@@ -187,7 +187,15 @@ export default function EditClub({ navigation }) {
             <Pressable
               onPress={() => navigation.navigate("ClubMembersRequest")}
             >
-              <Text style={styles.altButton}>members' requests</Text>
+              <Text
+                style={
+                  club.membersRequests.length > 0
+                    ? styles.altButton
+                    : styles.altButtonInactive
+                }
+              >
+                members' requests
+              </Text>
             </Pressable>
 
             {selectedActive && (

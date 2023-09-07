@@ -24,8 +24,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
+import { getAuthenticatedUser } from "../src/redux/actions/userActions";
 
 export default function Home({ navigation }) {
+  const dispatch = useDispatch();
   const state = useSelector((state) => state.user);
   const loading = useSelector((state) => state.user.loading);
 
@@ -42,11 +44,21 @@ export default function Home({ navigation }) {
     if (name === "staff list") navigation.replace("Stafflist");
     else navigation.replace(menuItem.trim());
   };
+
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
       } else {
-        navigation.navigate("Main");
+        //navigation.replace("Main");
+      }
+
+      if (user && isEmpty(state.credentials) && !loading) {
+        console.log("yeah");
+        dispatch(getAuthenticatedUser(user.email));
       }
     });
   }, []);

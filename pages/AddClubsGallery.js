@@ -39,6 +39,7 @@ import {
   addClubsGallery,
   setClubGalleryToTrue,
 } from "../src/redux/actions/dataActions";
+import { SET_LOADING_DATA } from "../src/redux/type";
 const db = firebase.firestore();
 
 const { width } = Dimensions.get("window");
@@ -106,6 +107,8 @@ export default function AddClubsGallery({ navigation }) {
     if (!image) errors.image = "Please choose a photo to add.";
 
     if (!errors.title && !errors.image) {
+      dispatch({ type: SET_LOADING_DATA });
+
       const name = Crypto.randomUUID();
       let imageFileName = `${name}.${imageType}`;
       let firebasePath = `clubs/gallery/photos/${imageFileName}`;

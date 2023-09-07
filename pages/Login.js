@@ -19,6 +19,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
+import { CommonActions } from "@react-navigation/native";
 
 import IosHeight from "../components/IosHeight";
 
@@ -28,9 +29,11 @@ import { toastConfig } from "../utils/toast-config";
 import { firebase } from "../src/firebase/config";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGOUT } from "../src/redux/type";
+import { getAuthenticatedUser } from "../src/redux/actions/userActions";
 
 export default function Login({ navigation, route }) {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -71,7 +74,13 @@ export default function Login({ navigation, route }) {
           //       "Oops, please verify your email to complete your registration!",
           //   });
           // }
-          navigation.replace("Home");
+          dispatch(getAuthenticatedUser(authUser.email));
+          navigation.dispatch((state) => {
+            return CommonActions.reset({
+              index: 0,
+              routes: [{ name: "Home" }],
+            });
+          });
           setLoading(false);
         })
         .catch(function (error) {

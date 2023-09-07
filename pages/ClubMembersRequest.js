@@ -31,6 +31,10 @@ import { toastConfig } from "../utils/toast-config";
 import { useDispatch, useSelector } from "react-redux";
 
 import Header from "../components/Header";
+import {
+  acceptNewMember,
+  rejectNewMember,
+} from "../src/redux/actions/dataActions";
 
 const { width } = Dimensions.get("window");
 
@@ -42,7 +46,9 @@ export default function ClubMembersRequest({ navigation }) {
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
-  const membersRequests = club.membersRequests;
+  const membersRequests = useSelector(
+    (state) => state.data.clubData.club.membersRequests
+  );
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
@@ -64,7 +70,10 @@ export default function ClubMembersRequest({ navigation }) {
     return Object.keys(obj).length === 0;
   }
 
-  const handleAcceptMember = (userID, accepted) => {};
+  const handleAcceptMember = (item, accepted) => {
+    if (accepted) dispatch(acceptNewMember(item, club.clubID));
+    else dispatch(rejectNewMember(item, club.clubID));
+  };
 
   return (
     <View style={styles.container}>
@@ -93,7 +102,7 @@ export default function ClubMembersRequest({ navigation }) {
           <View style={{ width: "100%", flexDirection: "column" }}>
             <Header header={"members' requests"} />
             <Text style={styles.disclaimer}>view and accept new members</Text>
-            {membersRequests.length > 0 && (
+            {membersRequests && membersRequests.length > 0 && (
               <>
                 <Pagination
                   inactiveDotColor="#546593"
@@ -122,7 +131,14 @@ export default function ClubMembersRequest({ navigation }) {
                     <>
                       <Image
                         key={index}
-                        style={styles.image}
+                        style={
+                          membersRequests.length > 1
+                            ? styles.image
+                            : [
+                                styles.image,
+                                { marginTop: pixelSizeVertical(24) },
+                              ]
+                        }
                         contentFit="cover"
                         source={item.profileImage}
                       />
@@ -139,9 +155,7 @@ export default function ClubMembersRequest({ navigation }) {
                                   ? styles.loginButtonDisabled
                                   : styles.loginButton
                               }
-                              onPress={() =>
-                                handleAcceptMember(item.userID, true)
-                              }
+                              onPress={() => handleAcceptMember(item, true)}
                             >
                               <Text
                                 style={
@@ -171,7 +185,7 @@ export default function ClubMembersRequest({ navigation }) {
                 />
               </>
             )}
-            {membersRequests.length === 0 && (
+            {membersRequests && membersRequests.length === 0 && (
               <Text
                 style={{
                   fontSize: fontPixel(18),

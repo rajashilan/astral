@@ -14,6 +14,7 @@ import {
   GET_USER_COLLEGE,
   JOIN_CLUB,
   LOGOUT,
+  REJECT_NEW_CLUB_MEMBER,
   SET_CLUB_EVENT,
   SET_CLUB_EVENT_TO_FALSE,
   SET_CLUB_EVENT_TO_TRUE,
@@ -318,14 +319,56 @@ export default function (state = initialState, action) {
         },
       };
     case ACCEPT_NEW_CLUB_MEMBER:
-      let joinClubMembersList = [...state.clubData.members];
-      joinClubMembersList.append(action.payload);
+      let acceptNewClubMemberList = [...state.clubData.members];
+      acceptNewClubMemberList.push(action.payload);
+      //also remove from membersrequests
+      let removeMemberRequestAccept = { ...state.clubData.club };
+      let removeMemberRequestAcceptIndex =
+        removeMemberRequestAccept.membersRequests.findIndex(
+          (member) => member.userID === action.payload.userID
+        );
+      removeMemberRequestAccept.membersRequests.splice(
+        removeMemberRequestAcceptIndex,
+        1
+      );
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
+          club: { ...removeMemberRequestAccept },
           currentMember: { ...state.clubData.currentMember },
-          members: [...joinClubMembersList],
+          members: [...acceptNewClubMemberList],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+        },
+      };
+    case JOIN_CLUB:
+      //push to membersRequests
+      let tempMembersRequestsClub = { ...state.clubData.club };
+      tempMembersRequestsClub.membersRequests.push(action.payload);
+
+      return {
+        ...state,
+        clubData: {
+          club: { ...tempMembersRequestsClub },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+        },
+      };
+    case REJECT_NEW_CLUB_MEMBER:
+      let rejectClubMember = { ...state.clubData.club };
+      let rejectClubMemberIndex = rejectClubMember.membersRequests.findIndex(
+        (member) => member.userID === action.payload
+      );
+      rejectClubMember.membersRequests.splice(rejectClubMemberIndex, 1);
+
+      return {
+        ...state,
+        clubData: {
+          club: { ...rejectClubMember },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },

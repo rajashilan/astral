@@ -13,6 +13,7 @@ import {
   GET_USER_CAMPUS,
   GET_USER_COLLEGE,
   JOIN_CLUB,
+  REJECT_NEW_CLUB_MEMBER,
   SET_CLUB_EVENT,
   SET_CLUB_EVENT_TO_FALSE,
   SET_CLUB_EVENT_TO_TRUE,
@@ -595,42 +596,40 @@ export const handleDeactivateClub = (clubID, campusID) => (dispatch) => {
     });
 };
 
-//joining a club
-export const acceptNewMember = (data, clubsData) => (dispatch) => {
+//accepting a new member
+export const acceptNewMember = (data, clubID) => (dispatch) => {
+  //clubsData = user's club data to be added under users collection in clubs field
   dispatch({ type: SET_LOADING_DATA });
 
   //add to clubMembers -> clubID -> members
-  db.doc(`/clubMembers/${clubsData.clubID}`)
+  db.doc(`/clubMembers/${clubID}`)
     .get()
     .then((doc) => {
       let temp = [...doc.data().members];
-      temp.append(data);
-      return db
-        .doc(`/clubMembers/${clubsData.clubID}`)
-        .update({ members: [...temp] });
+      temp.push(data);
+      return db.doc(`/clubMembers/${clubID}`).update({ members: [...temp] });
     })
     .then(() => {
-      //add to users -> userID -> clubs
+      //update users -> userID -> clubs -> approval: approved
       return db.doc(`/users/${data.userID}`).get();
     })
     .then((doc) => {
       let temp = [...doc.data().clubs];
-      temp.append(clubsData);
+      let index = temp.findIndex((club) => club.clubID === clubID);
+      temp[index].approval = "approved";
 
       return db.doc(`/users/${data.userID}`).update({ clubs: [...temp] });
     })
     .then(() => {
       //remove member from club -> clubID -> membersRequests
-      return db.doc(`/clubs/${clubsData.clubID}`).get();
+      return db.doc(`/clubs/${clubID}`).get();
     })
     .then((doc) => {
       let temp = [...doc.data().membersRequests];
       let index = temp.findIndex((member) => member.userID === data.userID);
       temp.splice(index, 1);
 
-      return db
-        .doc(`/clubs/${clubsData.clubID}`)
-        .update({ membersRequests: [...temp] });
+      return db.doc(`/clubs/${clubID}`).update({ membersRequests: [...temp] });
     })
     .then(() => {
       dispatch({ type: STOP_LOADING_DATA });
@@ -650,8 +649,98 @@ export const acceptNewMember = (data, clubsData) => (dispatch) => {
     });
 };
 
-//accepting a new member
+//joining a club
+export const joinClub = (data, userClubData, clubID) => (dispatch) => {
+  //remove any existing data in users/clubs relating to the clubID
+
+  //add data to club's membersRequests and user's clubs
+  dispatch({ type: SET_LOADING_DATA });
+
+  db.doc(`/clubs/${clubID}`)
+    .get()
+    .then((doc) => {
+      console.log("DATAAA ", doc.data().membersRequests);
+      let temp = [...doc.data().membersRequests];
+      temp.push(data);
+
+      return db.doc(`/clubs/${clubID}`).update({ membersRequests: [...temp] });
+    })
+    .then(() => {
+      return db.doc(`/users/${data.userID}`).get();
+    })
+    .then((doc) => {
+      let temp = [...doc.data().clubs];
+      let index = temp.findIndex((club) => club.clubID === clubID);
+      if (index !== -1) temp.splice(index, 1);
+      temp.push(userClubData);
+
+      return db.doc(`/users/${data.userID}`).update({ clubs: [...temp] });
+    })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: JOIN_CLUB, payload: data });
+      Toast.show({
+        type: "success",
+        text1: "Request sent, please await approval.",
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+//something wrong with this one!!!
 
 //rejecting a new member
+export const rejectNewMember = (userID, clubID) => (dispatch) => {
+  //update data in users/clubs -> approval:rejected
+  //give reason -> rejected:reason
+  //show reason in frontend? as notification?
+  //just keep reason first for now
+  //add data to club's membersRequests
+
+  dispatch({ type: SET_LOADING_DATA });
+
+  db.doc(`/clubs/${clubID}`)
+    .get()
+    .then((doc) => {
+      let temp = [...doc.data().membersRequests];
+      let index = temp.findIndex((club) => club.userID === userID);
+      temp.splice(index, 1);
+
+      return db.doc(`/clubs/${clubID}`).update({ membersRequests: [...temp] });
+    })
+    .then(() => {
+      return db.doc(`/users/${userID}`).get();
+    })
+    .then((doc) => {
+      let temp = [...doc.data().clubs];
+      let index = temp.findIndex((club) => club.userID === userID);
+      temp[index].approval = "rejected";
+
+      return db.doc(`/users/${userID}`).update({ clubs: [...temp] });
+    })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: REJECT_NEW_CLUB_MEMBER, payload: userID });
+      Toast.show({
+        type: "success",
+        text1: "Member request rejected successfully",
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
 
 //assigning a new role to committee members
