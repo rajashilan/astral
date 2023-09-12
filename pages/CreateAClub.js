@@ -105,10 +105,6 @@ export default function Login({ navigation, route }) {
             userID: "",
             alternateName: "",
           },
-          members: {
-            alternateName: "",
-            membersData: [],
-          },
         },
         approval: "pending",
         rejectionReason: "",

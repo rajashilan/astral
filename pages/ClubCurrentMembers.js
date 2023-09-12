@@ -37,13 +37,6 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 const { width } = Dimensions.get("window");
 
 export default function ClubCurrentMembers({ navigation }) {
-  const dispatch = useDispatch();
-  const currentMember = useSelector(
-    (state) => state.data.clubData.currentMember
-  );
-  const club = useSelector((state) => state.data.clubData.club);
-  const loading = useSelector((state) => state.data.loading);
-  const campusID = useSelector((state) => state.data.campus.campusID);
   const members = useSelector((state) => state.data.clubData.members);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);

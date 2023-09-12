@@ -36,6 +36,7 @@ import Header from "../components/Header";
 const { width } = Dimensions.get("window");
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { assignNewClubRole } from "../src/redux/actions/dataActions";
 
 export default function EditClubMember({ navigation, route }) {
   const { member } = route.params;
@@ -64,13 +65,16 @@ export default function EditClubMember({ navigation, route }) {
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
   const [showAssignRolePopUp, setShowAssignRolePopUp] = useState(false);
-  const [showPresidentWarningPopUp, setShowPresidentWarningPopUp] =
-    useState(false);
+  const [showRoleWarningPopUp, setShowRoleWarningPopUp] = useState(false);
 
   const onLayout = (event) => {
     const { x, y, height, width } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
+
+  //prev user 49I2
+  //new user qKd2
+  //another user => vice president -> prev user clubs, clubmembers, users -> member and new user "" -> vice president
 
   useEffect(() => {
     //if scroll height is more than header height and the header is not shown, show
@@ -90,22 +94,76 @@ export default function EditClubMember({ navigation, route }) {
   const handleShowAssignRolePopUp = () => {
     setShowAssignRolePopUp(!showAssignRolePopUp);
   };
+  //assign roles
+  //create new roles
+  //delete created roles
 
   const handleAssignRole = () => {
-    //if president wants to assign another member is president, show pop up that the current member's role will become 'member'
-    //if president wants to assign the roles of the vice president, secretary, or treasurer, notify president that the current person's role will become 'member'
-    //if all is okay
-    //update in: clubs -> roles -> roleName -> memberID & userID
+    //if role being assigned belongs to another member, show warning message
+    let role = selectedRole.split(" ").join("");
+    if (selectedRole !== "member" && club.roles[role].userID !== "")
+      handleShowRoleWarningPopUp();
+    else {
+      let newMember = {
+        userID: member.userID,
+        memberID: member.memberID,
+      };
+      if (member.role === "member")
+        dispatch(
+          assignNewClubRole(
+            selectedRole,
+            newMember,
+            club.clubID,
+            undefined,
+            undefined,
+            false
+          )
+        );
+      else {
+        dispatch(
+          assignNewClubRole(
+            selectedRole,
+            newMember,
+            club.clubID,
+            undefined,
+            member.role,
+            false
+          )
+        );
+        console.log(member);
+      }
+      handleShowAssignRolePopUp();
+      setSelectedRole("");
+    }
   };
 
-  const handleShowPresidentWarningPopUp = () => {
-    setShowPresidentWarningPopUp(!showPresidentWarningPopUp);
+  const handleShowRoleWarningPopUp = () => {
+    setShowRoleWarningPopUp(!showRoleWarningPopUp);
   };
 
-  const handleAssignPresidentRole = () => {
-    //assign role as usual
-    //update in redux
-    //bring user back to main club page
+  const handleAssignCommitteeRole = () => {
+    let newMember = {
+      userID: member.userID,
+      memberID: member.memberID,
+    };
+    let role = selectedRole.split(" ").join("");
+    let prevMember = {
+      userID: club.roles[role].userID,
+      memberID: club.roles[role].memberID,
+    };
+    dispatch(
+      assignNewClubRole(
+        selectedRole,
+        newMember,
+        club.clubID,
+        prevMember,
+        undefined,
+        false
+      )
+    );
+    handleShowRoleWarningPopUp();
+    handleShowAssignRolePopUp();
+    setSelectedRole("");
   };
 
   return (
@@ -199,6 +257,7 @@ export default function EditClubMember({ navigation, route }) {
                 onPress={() => {
                   navigation.goBack();
                 }}
+                disabled={loading}
               >
                 <Text style={styles.secondaryButton}>deactivate</Text>
               </Pressable>
@@ -296,8 +355,7 @@ export default function EditClubMember({ navigation, route }) {
             }}
             data={roles.filter(
               (role) =>
-                role.split(" ").join("") !==
-                currentMember.role.split(" ").join("")
+                role.split(" ").join("") !== member.role.split(" ").join("")
             )}
             onSelect={(selectedItem, index) => {
               setSelectedRole(selectedItem);
@@ -306,13 +364,19 @@ export default function EditClubMember({ navigation, route }) {
           {errors.role ? <Text style={styles.error}>{errors.role}</Text> : null}
 
           <Pressable
-            disabled={loading}
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            disabled={loading || !selectedRole}
+            style={
+              loading || !selectedRole
+                ? styles.loginButtonDisabled
+                : styles.loginButton
+            }
             onPress={handleAssignRole}
           >
             <Text
               style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
+                loading || !selectedRole
+                  ? styles.loginButtonLoadingText
+                  : styles.loginButtonText
               }
             >
               {loading ? "assigning..." : "assign"}
@@ -327,8 +391,8 @@ export default function EditClubMember({ navigation, route }) {
       </Modal>
 
       <Modal
-        isVisible={showPresidentWarningPopUp}
-        onBackdropPress={handleShowPresidentWarningPopUp} // Android back press
+        isVisible={showRoleWarningPopUp}
+        onBackdropPress={handleShowRoleWarningPopUp} // Android back press
         animationIn="bounceIn" // Has others, we want slide in from the left
         animationOut="bounceOut" // When discarding the drawer
         useNativeDriver // Faster animation
@@ -346,13 +410,13 @@ export default function EditClubMember({ navigation, route }) {
               textAlign: "center",
             }}
           >
-            Assigning this member the President's role will remove your role as
-            a president and reassign your role as a member. Do you wish to
-            continue?
+            {selectedRole === "president"
+              ? "Assigning this member the President's role will remove your role as a president and reassign your role as a member. Do you wish to continue?"
+              : "Reassigning this role will reset the previous member's role. Do you wish to continue?"}
           </Text>
           <Pressable
             style={loading ? styles.loginButtonDisabled : styles.loginButton}
-            onPress={handleAssignPresidentRole}
+            onPress={handleAssignCommitteeRole}
           >
             <Text
               style={
@@ -363,7 +427,7 @@ export default function EditClubMember({ navigation, route }) {
             </Text>
           </Pressable>
           {!loading && (
-            <Pressable onPress={handleShowPresidentWarningPopUp}>
+            <Pressable onPress={handleShowRoleWarningPopUp}>
               <Text style={styles.withdrawButton}>cancel</Text>
             </Pressable>
           )}
@@ -511,12 +575,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   loginButtonDisabled: {
     backgroundColor: "#1A2238",

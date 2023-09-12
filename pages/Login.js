@@ -33,7 +33,6 @@ import { getAuthenticatedUser } from "../src/redux/actions/userActions";
 
 export default function Login({ navigation, route }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -3,6 +3,7 @@ import {
   ACTIVATE_CLUB,
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
+  ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
   DELETE_EVENT,
   DELETE_GALLERY,
@@ -373,6 +374,57 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
+    case ASSIGN_NEW_CLUB_ROLE:
+      //update in clubs, clubMembers and currentMember if currentMember userID === previousMember.userID
+      let newRoleClub = { ...state.clubData.club };
+      let newRoleMembers = [...state.clubData.members];
+      let newRoleMembersIndex;
+      let newRoleCurrentMember = { ...state.clubData.currentMember };
+
+      //if previous member exists, set the previous member's role to "member" in clubData.members
+      if (action.payload.previousMember) {
+        newRoleMembersIndex = newRoleMembers.findIndex(
+          (member) => member.userID === action.payload.previousMember.userID
+        );
+        newRoleMembers[newRoleMembersIndex].role = "member";
+      }
+
+      //if the president's role is changed, set the current president's role as "member" in currentMember
+      if (action.payload.role === "president")
+        newRoleCurrentMember.role = "member";
+
+      //if the role isnt a member then set the newMember IDs in club.roles
+      if (action.payload.role !== "member") {
+        newRoleClub.roles[action.payload.role.split(" ").join("")].userID =
+          action.payload.newMember.userID;
+        newRoleClub.roles[action.payload.role.split(" ").join("")].memberID =
+          action.payload.newMember.memberID;
+      } else {
+        //if it is a member, then set the member's previous role IDs to empty in club.roles
+        newRoleClub.roles[action.payload.prevRole.split(" ").join("")].userID =
+          "";
+        newRoleClub.roles[
+          action.payload.prevRole.split(" ").join("")
+        ].memberID = "";
+      }
+
+      //find and set the new member's role in clubData.members
+      newRoleMembersIndex = newRoleMembers.findIndex(
+        (member) => member.userID === action.payload.newMember.userID
+      );
+      newRoleMembers[newRoleMembersIndex].role = action.payload.role;
+
+      return {
+        ...state,
+        clubData: {
+          club: { ...newRoleClub },
+          currentMember: { ...newRoleCurrentMember },
+          members: [...newRoleMembers],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+        },
+      };
+
     case LOGOUT:
       return initialState;
     case SET_LOADING_DATA:

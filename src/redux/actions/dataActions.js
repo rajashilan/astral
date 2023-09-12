@@ -3,6 +3,7 @@ import {
   ACTIVATE_CLUB,
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
+  ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
   DELETE_EVENT,
   DELETE_GALLERY,
@@ -31,6 +32,7 @@ import {
 import Toast from "react-native-toast-message";
 
 import { firebase } from "../../firebase/config";
+import { ServerContainer } from "@react-navigation/native";
 const db = firebase.firestore();
 
 //get college details
@@ -659,7 +661,6 @@ export const joinClub = (data, userClubData, clubID) => (dispatch) => {
   db.doc(`/clubs/${clubID}`)
     .get()
     .then((doc) => {
-      console.log("DATAAA ", doc.data().membersRequests);
       let temp = [...doc.data().membersRequests];
       temp.push(data);
 
@@ -743,4 +744,92 @@ export const rejectNewMember = (userID, clubID) => (dispatch) => {
     });
 };
 
+//how to send details of both members when assigning role for member from another member
+
 //assigning a new role to committee members
+export const assignNewClubRole =
+  (role, newMember, clubID, previousMember, prevRole, secondRound) =>
+  (dispatch) => {
+    //update in: clubs -> roles -> roleName -> memberID & userID
+    dispatch({ type: SET_LOADING_DATA });
+    db.doc(`/clubs/${clubID}`)
+      .get()
+      .then((doc) => {
+        if (role === "member" && prevRole) {
+          let temp = { ...doc.data().roles };
+          let tempRole = prevRole.split(" ").join("");
+          temp[tempRole].userID = "";
+          temp[tempRole].memberID = "";
+          return db.doc(`/clubs/${clubID}`).update({ roles: { ...temp } });
+        } else if (role === "member" && !prevRole) {
+          return;
+        } else {
+          let temp = { ...doc.data().roles };
+          let tempRole = role.split(" ").join("");
+          temp[tempRole].userID = newMember.userID;
+          temp[tempRole].memberID = newMember.memberID;
+
+          return db.doc(`/clubs/${clubID}`).update({ roles: { ...temp } });
+        }
+      })
+      .then(() => {
+        //update in: users -> clubs -> role
+        return db.doc(`/users/${newMember.userID}`).get();
+      })
+      .then((doc) => {
+        let temp = [...doc.data().clubs];
+        let index = temp.findIndex((club) => club.clubID === clubID);
+        temp[index].role = role;
+
+        return db
+          .doc(`/users/${newMember.userID}`)
+          .update({ clubs: [...temp] });
+      })
+      .then(() => {
+        //update in: clubMembers -> members -> userID -> role
+        return db.doc(`/clubMembers/${clubID}`).get();
+      })
+      .then((doc) => {
+        let temp = [...doc.data().members];
+        let index = temp.findIndex((user) => user.userID === newMember.userID);
+        temp[index].role = role;
+
+        return db.doc(`/clubMembers/${clubID}`).update({ members: [...temp] });
+      })
+      .then(() => {
+        //if previous member, change that member's role to "member"
+        //else proceed as usual
+        if (previousMember)
+          dispatch(
+            assignNewClubRole(
+              "member",
+              previousMember,
+              clubID,
+              undefined,
+              undefined,
+              true
+            )
+          );
+        if (!secondRound) {
+          dispatch({ type: STOP_LOADING_DATA });
+          dispatch({
+            type: ASSIGN_NEW_CLUB_ROLE,
+            payload: { newMember, previousMember, role, prevRole },
+          });
+          Toast.show({
+            type: "success",
+            text1: "Roles assigned successfully.",
+          });
+        } else {
+          dispatch({ type: STOP_LOADING_DATA });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: STOP_LOADING_DATA });
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+      });
+  };
