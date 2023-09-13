@@ -130,7 +130,7 @@ export default function ClubsPages({ navigation, route }) {
       phone: user.phone_number,
       email: user.email,
       intake: user.intake,
-      course: user.department,
+      department: user.department,
       memberID,
       userID: user.userId,
       role: "member",
