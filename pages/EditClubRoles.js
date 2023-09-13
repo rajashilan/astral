@@ -4,8 +4,9 @@ import {
   View,
   Dimensions,
   Pressable,
-  TextInput,
+  FlatList,
   ScrollView,
+  TextInput,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -29,17 +30,15 @@ import { toastConfig } from "../utils/toast-config";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import SelectDropdown from "react-native-select-dropdown";
-
 import Header from "../components/Header";
 
 const { width } = Dimensions.get("window");
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { assignNewClubRole } from "../src/redux/actions/dataActions";
+import { useNavigationState } from "@react-navigation/native";
+import { addNewClubRole } from "../src/redux/actions/dataActions";
 
-export default function EditClubMember({ navigation, route }) {
-  const { member } = route.params;
+export default function EditClubRoles({ navigation }) {
   const dispatch = useDispatch();
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
@@ -47,33 +46,38 @@ export default function EditClubMember({ navigation, route }) {
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
+  const [roles, setRoles] = useState([
+    "president",
+    "vice president",
+    "secretary",
+    "treasurer",
+    "member",
+  ]);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
-
-  const [roles, setRoles] = useState([]);
-  const [selectedRole, setSelectedRole] = useState("");
-  const [errors, setErrors] = useState({ role: undefined });
 
   const [headerHeight, setHeaderHeight] = useState(300);
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
-  const [showAssignRolePopUp, setShowAssignRolePopUp] = useState(false);
-  const [showRoleWarningPopUp, setShowRoleWarningPopUp] = useState(false);
-
-  useEffect(() => {
-    let temp = [...Object.values(club.roles)];
-    let arr = [];
-    temp.forEach((role) => {
-      arr.push(role.name);
-    });
-    setRoles([...arr]);
-  }, [club.roles]);
+  const [showDeletePopUp, setShowDeletePopUp] = useState(false);
+  const [showAddPopUp, setShowAddPopUp] = useState(false);
+  const [newRole, setNewRole] = useState("");
+  const [errors, setErrors] = useState({ role: undefined });
 
   const onLayout = (event) => {
     const { x, y, height, width } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
+
+  useEffect(() => {
+    let temp = [...Object.values(club.roles)];
+    let arr = [...roles];
+    temp.forEach((role) => {
+      if (!roles.includes(role.name)) arr.push(role.name);
+    });
+    setRoles([...arr]);
+  }, [club]);
 
   useEffect(() => {
     //if scroll height is more than header height and the header is not shown, show
@@ -90,78 +94,29 @@ export default function EditClubMember({ navigation, route }) {
     navigation.goBack();
   };
 
-  const handleShowAssignRolePopUp = () => {
-    setShowAssignRolePopUp(!showAssignRolePopUp);
+  const handleShowAddPopUp = () => {
+    setShowAddPopUp(!showAddPopUp);
+    setNewRole("");
   };
+  const handleShowDeletePopUp = () => setShowDeletePopUp(!showDeletePopUp);
 
-  //create new roles
-  //delete created roles
+  const handleDeleteRole = (role) => {};
 
-  const handleAssignRole = () => {
-    //if role being assigned belongs to another member, show warning message
-    let role = selectedRole.split(" ").join("");
-    if (selectedRole !== "member" && club.roles[role].userID !== "")
-      handleShowRoleWarningPopUp();
-    else {
-      let newMember = {
-        userID: member.userID,
-        memberID: member.memberID,
-      };
-      if (member.role === "member")
-        dispatch(
-          assignNewClubRole(
-            selectedRole,
-            newMember,
-            club.clubID,
-            undefined,
-            undefined,
-            false
-          )
-        );
-      else {
-        dispatch(
-          assignNewClubRole(
-            selectedRole,
-            newMember,
-            club.clubID,
-            undefined,
-            member.role,
-            false
-          )
-        );
-      }
-      handleShowAssignRolePopUp();
-      setSelectedRole("");
+  const handleAddRole = () => {
+    let temp = newRole.toLowerCase();
+    temp = temp.split(" ").join("");
+    let errors = [...errors];
+
+    if (temp === "") errors.role = "please enter a new role";
+    if (roles.includes(temp))
+      errors.role = "cannot enter a role that already exists";
+
+    if (!errors.role) {
+      dispatch(addNewClubRole(temp, newRole.toLowerCase(), club.clubID));
+      handleShowAddPopUp();
     }
-  };
 
-  const handleShowRoleWarningPopUp = () => {
-    setShowRoleWarningPopUp(!showRoleWarningPopUp);
-  };
-
-  const handleAssignCommitteeRole = () => {
-    let newMember = {
-      userID: member.userID,
-      memberID: member.memberID,
-    };
-    let role = selectedRole.split(" ").join("");
-    let prevMember = {
-      userID: club.roles[role].userID,
-      memberID: club.roles[role].memberID,
-    };
-    dispatch(
-      assignNewClubRole(
-        selectedRole,
-        newMember,
-        club.clubID,
-        prevMember,
-        undefined,
-        false
-      )
-    );
-    handleShowRoleWarningPopUp();
-    handleShowAssignRolePopUp();
-    setSelectedRole("");
+    setErrors(errors);
   };
 
   return (
@@ -180,7 +135,7 @@ export default function EditClubMember({ navigation, route }) {
             exiting={FadeOut.duration(300)}
           >
             <Text style={styles.headerMini} numberOfLines={1}>
-              {member.name}
+              edit roles
             </Text>
           </Animated.View>
         ) : (
@@ -205,40 +160,85 @@ export default function EditClubMember({ navigation, route }) {
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
             <View onLayout={onLayout}>
-              <Header header={member.name} />
+              <Header header={"edit roles"} />
             </View>
-            <Text style={styles.disclaimer}>{member.role}</Text>
-            <Image
-              style={styles.image}
-              contentFit="cover"
-              source={member.profileImage}
+            <Text style={styles.disclaimer}>{club.name}</Text>
+            <Text
+              style={{
+                fontSize: fontPixel(22),
+                fontWeight: "500",
+                color: "#DFE5F8",
+                marginTop: pixelSizeVertical(16),
+                marginBottom: pixelSizeVertical(8),
+              }}
+            >
+              current roles
+            </Text>
+            <FlatList
+              scrollEnabled={false}
+              keyExtractor={(item, index) => index.toString()}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              data={roles}
+              renderItem={({ item }) => (
+                <>
+                  <Pressable
+                    disabled={
+                      item === "president" ||
+                      item === "vicepresident" ||
+                      item === "treasurer" ||
+                      item === "secretary" ||
+                      item === "member"
+                    }
+                    onPress={handleShowDeletePopUp}
+                  >
+                    <View
+                      style={{
+                        backgroundColor: "#232F52",
+                        width: "100%",
+                        borderRadius: 5,
+                        paddingTop: pixelSizeVertical(14),
+                        paddingBottom: pixelSizeVertical(14),
+                        paddingRight: pixelSizeHorizontal(12),
+                        paddingLeft: pixelSizeHorizontal(12),
+                        marginBottom: pixelSizeVertical(10),
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: fontPixel(18),
+                          fontWeight: "400",
+                          color: "#DFE5F8",
+                        }}
+                      >
+                        {item}
+                      </Text>
+                      {item === "president" ||
+                        item === "vice president" ||
+                        item === "treasurer" ||
+                        item === "secretary" ||
+                        (item !== "member" && (
+                          <Text
+                            style={{
+                              fontSize: fontPixel(18),
+                              fontWeight: "800",
+                              color: "#A3222D",
+                            }}
+                          >
+                            &#10005;
+                          </Text>
+                        ))}
+                    </View>
+                  </Pressable>
+                </>
+              )}
             />
-            <Text
-              style={{
-                fontSize: fontPixel(20),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                marginTop: pixelSizeVertical(12),
-              }}
-            >
-              {member.email}
-            </Text>
-            <Text
-              style={{
-                fontSize: fontPixel(20),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                marginTop: pixelSizeVertical(6),
-                marginBottom: pixelSizeVertical(24),
-              }}
-            >
-              {member.phone_number
-                ? member.phone_number
-                : "phone number not available"}
-            </Text>
             <Pressable
+              disabled={loading}
               style={loading ? styles.loginButtonDisabled : styles.loginButton}
-              onPress={handleShowAssignRolePopUp}
+              onPress={handleShowAddPopUp}
             >
               <Text
                 style={
@@ -247,19 +247,9 @@ export default function EditClubMember({ navigation, route }) {
                     : styles.loginButtonText
                 }
               >
-                {loading ? "assigning role..." : "assign role"}
+                {loading ? "adding new role..." : "add new role"}
               </Text>
             </Pressable>
-            {member.name !== currentMember.name && (
-              <Pressable
-                onPress={() => {
-                  navigation.goBack();
-                }}
-                disabled={loading}
-              >
-                <Text style={styles.secondaryButton}>deactivate</Text>
-              </Pressable>
-            )}
           </View>
         </View>
       </ScrollView>
@@ -282,10 +272,9 @@ export default function EditClubMember({ navigation, route }) {
           navigation={navigation}
         />
       </Modal>
-
       <Modal
-        isVisible={showAssignRolePopUp}
-        onBackdropPress={handleShowAssignRolePopUp} // Android back press
+        isVisible={showAddPopUp}
+        onBackdropPress={handleShowAddPopUp} // Android back press
         animationIn="bounceIn" // Has others, we want slide in from the left
         animationOut="bounceOut" // When discarding the drawer
         useNativeDriver // Faster animation
@@ -303,129 +292,34 @@ export default function EditClubMember({ navigation, route }) {
               textAlign: "center",
             }}
           >
-            {`Assign new role for ${member.name}`}
+            add a new role
           </Text>
-          <SelectDropdown
-            search={true}
-            searchInputStyle={{
-              backgroundColor: "#232D4A",
-            }}
-            disabled={loading}
-            searchPlaceHolder="select new role"
-            searchInputTxtColor="#DFE5F8"
-            defaultButtonText={`current role: ${member.role}`}
-            showsVerticalScrollIndicator={true}
-            buttonStyle={{
-              backgroundColor: "#1A2238",
-              marginTop: pixelSizeVertical(10),
-              height: heightPixel(58),
-              width: "100%",
-              borderRadius: 5,
-            }}
-            buttonTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            dropdownStyle={{
-              backgroundColor: "#1A2238",
-              borderRadius: 5,
-            }}
-            rowStyle={{
-              backgroundColor: "#1A2238",
-              borderBottomWidth: 0,
-            }}
-            rowTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            selectedRowStyle={{
-              backgroundColor: "#C4FFF9",
-            }}
-            selectedRowTextStyle={{
-              color: "#0C111F",
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              textAlign: "left",
-            }}
-            data={roles.filter(
-              (role) =>
-                role.split(" ").join("") !== member.role.split(" ").join("")
-            )}
-            onSelect={(selectedItem, index) => {
-              setSelectedRole(selectedItem);
-            }}
+
+          <TextInput
+            style={styles.textInput}
+            placeholder="enter new role"
+            placeholderTextColor="#DBDBDB"
+            value={newRole}
+            editable={!loading}
+            onChangeText={(role) => setNewRole(role)}
           />
           {errors.role ? <Text style={styles.error}>{errors.role}</Text> : null}
 
           <Pressable
-            disabled={loading || !selectedRole}
-            style={
-              loading || !selectedRole
-                ? styles.loginButtonDisabled
-                : styles.loginButton
-            }
-            onPress={handleAssignRole}
-          >
-            <Text
-              style={
-                loading || !selectedRole
-                  ? styles.loginButtonLoadingText
-                  : styles.loginButtonText
-              }
-            >
-              {loading ? "assigning..." : "assign"}
-            </Text>
-          </Pressable>
-          {!loading && (
-            <Pressable onPress={handleShowAssignRolePopUp}>
-              <Text style={styles.withdrawButton}>cancel</Text>
-            </Pressable>
-          )}
-        </View>
-      </Modal>
-
-      <Modal
-        isVisible={showRoleWarningPopUp}
-        onBackdropPress={handleShowRoleWarningPopUp} // Android back press
-        animationIn="bounceIn" // Has others, we want slide in from the left
-        animationOut="bounceOut" // When discarding the drawer
-        useNativeDriver // Faster animation
-        hideModalContentWhileAnimating // Better performance, try with/without
-        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
-        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
-      >
-        <View style={styles.withdrawMenu}>
-          <Text
-            style={{
-              fontSize: fontPixel(20),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              marginBottom: pixelSizeVertical(12),
-              textAlign: "center",
-            }}
-          >
-            {selectedRole === "president"
-              ? "Assigning this member the President's role will remove your role as a president and reassign your role as a member. Do you wish to continue?"
-              : "Reassigning this role will reset the previous member's role. Do you wish to continue?"}
-          </Text>
-          <Pressable
+            disabled={loading}
             style={loading ? styles.loginButtonDisabled : styles.loginButton}
-            onPress={handleAssignCommitteeRole}
+            onPress={handleAddRole}
           >
             <Text
               style={
                 loading ? styles.loginButtonLoadingText : styles.loginButtonText
               }
             >
-              continue
+              {loading ? "adding new role..." : "add"}
             </Text>
           </Pressable>
           {!loading && (
-            <Pressable onPress={handleShowRoleWarningPopUp}>
+            <Pressable onPress={handleShowAddPopUp}>
               <Text style={styles.withdrawButton}>cancel</Text>
             </Pressable>
           )}
@@ -539,7 +433,6 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: heightPixel(280),
-    marginTop: pixelSizeVertical(24),
     marginBottom: pixelSizeVertical(12),
     borderRadius: 5,
   },
@@ -562,7 +455,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   textInput: {
-    backgroundColor: "#1A2238",
+    backgroundColor: "#212A46",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
     paddingTop: pixelSizeVertical(16),
@@ -573,6 +466,12 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
+  },
+  loginButtonLoadingText: {
+    fontSize: fontPixel(22),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    textAlign: "center",
   },
   loginButtonDisabled: {
     backgroundColor: "#1A2238",

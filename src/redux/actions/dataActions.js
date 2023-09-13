@@ -3,6 +3,7 @@ import {
   ACTIVATE_CLUB,
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
+  ADD_NEW_CLUB_ROLE,
   ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
   DELETE_EVENT,
@@ -833,3 +834,37 @@ export const assignNewClubRole =
         });
       });
   };
+
+export const addNewClubRole = (roleID, roleName, clubID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+
+  db.doc(`/clubs/${clubID}`)
+    .get()
+    .then((doc) => {
+      let temp = { ...doc.data().roles };
+      temp[roleID] = {
+        memberID: "",
+        userID: "",
+        alternateName: "",
+        name: roleName,
+      };
+
+      return db.doc(`/clubs/${clubID}`).update({ roles: { ...temp } });
+    })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: ADD_NEW_CLUB_ROLE, payload: { roleID, roleName } });
+      Toast.show({
+        type: "success",
+        text1: "added new role successfully.",
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};

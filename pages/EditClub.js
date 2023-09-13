@@ -197,6 +197,9 @@ export default function EditClub({ navigation }) {
                 members' requests
               </Text>
             </Pressable>
+            <Pressable onPress={() => navigation.navigate("EditClubRoles")}>
+              <Text style={styles.altButton}>edit roles</Text>
+            </Pressable>
 
             {selectedActive && (
               <>

@@ -89,21 +89,30 @@ export default function Login({ navigation, route }) {
             memberID, //to be generated
             userID: createdBy,
             alternateName: "",
+            name: "president",
           },
           vicepresident: {
             memberID: "", //to be generated
             userID: "",
             alternateName: "",
+            name: "vice president",
           },
           secretary: {
             memberID: "", //to be generated
             userID: "",
             alternateName: "",
+            name: "secretary",
           },
           treasurer: {
             memberID: "", //to be generated
             userID: "",
             alternateName: "",
+            name: "treasurer",
+          },
+          member: {
+            details: [],
+            alternateName: "",
+            name: "member",
           },
         },
         approval: "pending",

@@ -30,6 +30,7 @@ import EditClub from "./pages/EditClub";
 import ClubCurrentMembers from "./pages/ClubCurrentMembers";
 import ClubMembersRequest from "./pages/ClubMembersRequest";
 import EditClubMember from "./pages/EditClubMember";
+import EditClubRoles from "./pages/EditClubRoles";
 
 import { Provider } from "react-redux";
 import { store } from "./src/redux/store";
@@ -218,6 +219,14 @@ export default function App() {
           <Stack.Screen
             name="EditClubMember"
             component={EditClubMember}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="EditClubRoles"
+            component={EditClubRoles}
             options={{
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,

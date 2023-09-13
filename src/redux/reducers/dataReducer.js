@@ -3,6 +3,7 @@ import {
   ACTIVATE_CLUB,
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
+  ADD_NEW_CLUB_ROLE,
   ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
   DELETE_EVENT,
@@ -424,7 +425,25 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
+    case ADD_NEW_CLUB_ROLE:
+      let addNewRoleClub = { ...state.clubData.club };
+      addNewRoleClub.roles[action.payload.roleID] = {
+        memberID: "",
+        userID: "",
+        alternateName: "",
+        name: action.payload.roleName,
+      };
 
+      return {
+        ...state,
+        clubData: {
+          club: { ...addNewRoleClub },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+        },
+      };
     case LOGOUT:
       return initialState;
     case SET_LOADING_DATA:
