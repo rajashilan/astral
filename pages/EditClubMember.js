@@ -162,6 +162,8 @@ export default function EditClubMember({ navigation, route }) {
     handleShowRoleWarningPopUp();
     handleShowAssignRolePopUp();
     setSelectedRole("");
+    if (selectedRole === "president")
+      navigation.replace("ClubsPages", { clubID: club.clubID });
   };
 
   return (
