@@ -6,6 +6,7 @@ import {
   ADD_NEW_CLUB_ROLE,
   ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
+  DEACTIVATE_CLUB_MEMBER,
   DELETE_CLUB_ROLE,
   DELETE_EVENT,
   DELETE_GALLERY,
@@ -455,6 +456,23 @@ export default function (state = initialState, action) {
           club: { ...deleteRoleClub },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+        },
+      };
+    case DEACTIVATE_CLUB_MEMBER:
+      let deactivateMembers = [...state.clubData.members];
+      let deactivateMembersIndex = deactivateMembers.findIndex(
+        (member) => member.userID === action.payload
+      );
+      deactivateMembers.splice(deactivateMembersIndex, 1);
+
+      return {
+        ...state,
+        clubData: {
+          club: { ...state.clubData.club },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...deactivateMembers],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },

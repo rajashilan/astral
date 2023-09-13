@@ -141,10 +141,12 @@ export default function ClubCurrentMembers({ navigation }) {
                         }}
                       >
                         <Text
+                          numberOfLines={3}
                           style={{
                             fontSize: fontPixel(16),
                             fontWeight: "500",
                             color: "#DFE5F8",
+                            width: width - 99,
                           }}
                         >
                           {item.name} - Intake {item.intake}, {item.department}

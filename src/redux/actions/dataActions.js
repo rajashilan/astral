@@ -6,6 +6,7 @@ import {
   ADD_NEW_CLUB_ROLE,
   ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
+  DEACTIVATE_CLUB_MEMBER,
   DELETE_CLUB_ROLE,
   DELETE_EVENT,
   DELETE_GALLERY,
@@ -887,6 +888,48 @@ export const deleteClubRole = (roleID, clubID) => (dispatch) => {
       Toast.show({
         type: "success",
         text1: "role deleted successfully.",
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+export const deactivateClubMember = (userID, clubID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+
+  //remove member from clubMembers
+  //remove club from users -> member
+  db.doc(`/clubMembers/${clubID}`)
+    .get()
+    .then((doc) => {
+      let temp = [...doc.data().members];
+      let index = temp.findIndex((member) => member.userID === userID);
+      temp.splice(index, 1);
+
+      return db.doc(`/clubMembers/${clubID}`).update({ members: [...temp] });
+    })
+    .then(() => {
+      return db.doc(`/users/${userID}`).get();
+    })
+    .then((doc) => {
+      let temp = [...doc.data().clubs];
+      let index = temp.findIndex((club) => club.clubID === clubID);
+      temp.splice(index, 1);
+
+      return db.doc(`/users/${userID}`).update({ clubs: [...temp] });
+    })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: DEACTIVATE_CLUB_MEMBER, payload: userID });
+      Toast.show({
+        type: "success",
+        text1: "member removed successfully.",
       });
     })
     .catch((error) => {

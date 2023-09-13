@@ -36,7 +36,10 @@ import Header from "../components/Header";
 const { width } = Dimensions.get("window");
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { assignNewClubRole } from "../src/redux/actions/dataActions";
+import {
+  assignNewClubRole,
+  deactivateClubMember,
+} from "../src/redux/actions/dataActions";
 
 export default function EditClubMember({ navigation, route }) {
   const { member } = route.params;
@@ -60,6 +63,9 @@ export default function EditClubMember({ navigation, route }) {
 
   const [showAssignRolePopUp, setShowAssignRolePopUp] = useState(false);
   const [showRoleWarningPopUp, setShowRoleWarningPopUp] = useState(false);
+
+  const [showDeactivateMemberPopUp, setShowDeactivateMemberPopUp] =
+    useState(false);
 
   useEffect(() => {
     let temp = [...Object.values(club.roles)];
@@ -166,6 +172,33 @@ export default function EditClubMember({ navigation, route }) {
       navigation.replace("ClubsPages", { clubID: club.clubID });
   };
 
+  const handleShowDeactivateMemberPopUp = () => {
+    setShowDeactivateMemberPopUp(!showDeactivateMemberPopUp);
+  };
+
+  const handleDeactivateMember = () => {
+    //if the member's role is not member, set the role to member
+    if (member.role !== "member") {
+      let newMember = {
+        userID: member.userID,
+        memberID: member.memberID,
+      };
+      dispatch(
+        assignNewClubRole(
+          "member",
+          newMember,
+          club.clubID,
+          undefined,
+          member.role,
+          true
+        )
+      );
+    }
+
+    dispatch(deactivateClubMember(member.userID, club.clubID));
+    navigation.replace("ClubCurrentMembers");
+  };
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -254,12 +287,10 @@ export default function EditClubMember({ navigation, route }) {
             </Pressable>
             {member.name !== currentMember.name && (
               <Pressable
-                onPress={() => {
-                  navigation.goBack();
-                }}
+                onPress={handleShowDeactivateMemberPopUp}
                 disabled={loading}
               >
-                <Text style={styles.secondaryButton}>deactivate</Text>
+                <Text style={styles.secondaryButton}>remove</Text>
               </Pressable>
             )}
           </View>
@@ -428,6 +459,48 @@ export default function EditClubMember({ navigation, route }) {
           </Pressable>
           {!loading && (
             <Pressable onPress={handleShowRoleWarningPopUp}>
+              <Text style={styles.withdrawButton}>cancel</Text>
+            </Pressable>
+          )}
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={showDeactivateMemberPopUp}
+        onBackdropPress={handleShowDeactivateMemberPopUp} // Android back press
+        animationIn="bounceIn" // Has others, we want slide in from the left
+        animationOut="bounceOut" // When discarding the drawer
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
+      >
+        <View style={styles.withdrawMenu}>
+          <Text
+            style={{
+              fontSize: fontPixel(20),
+              fontWeight: "400",
+              color: "#DFE5F8",
+              marginBottom: pixelSizeVertical(12),
+              textAlign: "center",
+            }}
+          >
+            are you sure to remove this member?
+          </Text>
+          <Pressable
+            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            onPress={handleDeactivateMember}
+          >
+            <Text
+              style={
+                loading ? styles.loginButtonLoadingText : styles.loginButtonText
+              }
+            >
+              remove
+            </Text>
+          </Pressable>
+          {!loading && (
+            <Pressable onPress={handleShowDeactivateMemberPopUp}>
               <Text style={styles.withdrawButton}>cancel</Text>
             </Pressable>
           )}
