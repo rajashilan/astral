@@ -6,6 +6,7 @@ import {
   ADD_NEW_CLUB_ROLE,
   ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
+  DELETE_CLUB_ROLE,
   DELETE_EVENT,
   DELETE_GALLERY,
   GET_A_CLUB_DATA,
@@ -438,6 +439,20 @@ export default function (state = initialState, action) {
         ...state,
         clubData: {
           club: { ...addNewRoleClub },
+          currentMember: { ...state.clubData.currentMember },
+          members: [...state.clubData.members],
+          gallery: [...state.clubData.gallery],
+          event: [...state.clubData.event],
+        },
+      };
+    case DELETE_CLUB_ROLE:
+      let deleteRoleClub = { ...state.clubData.club };
+      delete deleteRoleClub.roles[action.payload];
+
+      return {
+        ...state,
+        clubData: {
+          club: { ...deleteRoleClub },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],

@@ -6,6 +6,7 @@ import {
   ADD_NEW_CLUB_ROLE,
   ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
+  DELETE_CLUB_ROLE,
   DELETE_EVENT,
   DELETE_GALLERY,
   GET_A_CLUB_DATA,
@@ -857,6 +858,35 @@ export const addNewClubRole = (roleID, roleName, clubID) => (dispatch) => {
       Toast.show({
         type: "success",
         text1: "added new role successfully.",
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+export const deleteClubRole = (roleID, clubID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+
+  db.doc(`/clubs/${clubID}`)
+    .get()
+    .then((doc) => {
+      let temp = { ...doc.data().roles };
+      delete temp[roleID];
+
+      return db.doc(`/clubs/${clubID}`).update({ roles: { ...temp } });
+    })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: DELETE_CLUB_ROLE, payload: roleID });
+      Toast.show({
+        type: "success",
+        text1: "role deleted successfully.",
       });
     })
     .catch((error) => {
