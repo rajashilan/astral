@@ -232,7 +232,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#0C111F",
   },
   paddingContainer: {
-    marginTop: pixelSizeVertical(20),
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
