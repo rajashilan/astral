@@ -92,6 +92,8 @@ export default function ClubsYou({ navigation }) {
           const uri = result.assets[0].uri;
           setImageType(uri.split(".")[uri.split(".").length - 1]);
           return uriToBlob(uri);
+        } else {
+          return Promise.reject("cancelled");
         }
       })
       .then((blob) => {
@@ -107,11 +109,11 @@ export default function ClubsYou({ navigation }) {
         );
       })
       .catch((error) => {
-        console.error(error);
-        Toast.show({
-          type: "error",
-          text1: "Something went wrong",
-        });
+        if (!error === "cancelled")
+          Toast.show({
+            type: "error",
+            text1: "Something went wrong",
+          });
       });
   };
 
