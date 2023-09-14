@@ -17,6 +17,7 @@ import {
 } from "../utils/responsive-font";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
+import * as ImagePicker from "expo-image-picker";
 import * as Crypto from "expo-crypto";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
@@ -38,6 +39,7 @@ import { firebase } from "../src/firebase/config";
 import {
   handleActivateClub,
   handleDeactivateClub,
+  updateClubImage,
 } from "../src/redux/actions/dataActions";
 const db = firebase.firestore();
 
@@ -60,6 +62,8 @@ export default function EditClub({ navigation }) {
   const [activeStatus, setActiveStatus] = useState(club.status);
   const [activeSelection] = useState(["activate", "deactivate"]);
   const [selectedActive, setSelectedActive] = useState("");
+
+  const [imageType, setImageType] = useState("");
 
   const [errors, setErrors] = useState({
     active: undefined,
@@ -95,6 +99,84 @@ export default function EditClub({ navigation }) {
     setErrors(errors);
   };
 
+  const handleUpdatePhoto = () => {
+    const name = Crypto.randomUUID();
+    let imageFileName = `${name}.${imageType}`;
+    let firebasePath = `clubs/photos/${imageFileName}`;
+
+    ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "Images",
+      allowsEditing: true,
+      quality: 1,
+    })
+      .then((result) => {
+        if (!result.canceled) {
+          // User picked an image
+          const uri = result.assets[0].uri;
+          setImageType(uri.split(".")[uri.split(".").length - 1]);
+          return uriToBlob(uri);
+        } else {
+          return Promise.reject("cancelled");
+        }
+      })
+      .then((blob) => {
+        return uploadToFirebase(blob, imageFileName);
+      })
+      .then((snapshot) => {
+        return firebase.storage().ref(firebasePath).getDownloadURL();
+      })
+      .then((url) => {
+        //store in clubmembers db and update in redux
+        dispatch(updateClubImage(club.clubID, url, campusID));
+      })
+      .catch((error) => {
+        if (!error === "cancelled")
+          Toast.show({
+            type: "error",
+            text1: "Something went wrong",
+          });
+      });
+  };
+
+  const uriToBlob = (uri) => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        // return the blob
+        resolve(xhr.response);
+      };
+
+      xhr.onerror = function () {
+        // something went wrong
+        reject(new Error("uriToBlob failed"));
+      };
+      // this helps us get a blob
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+
+      xhr.send(null);
+    });
+  };
+
+  uploadToFirebase = (blob, imageFileName) => {
+    return new Promise((resolve, reject) => {
+      var storageRef = firebase.storage().ref();
+
+      storageRef
+        .child(`clubs/photos/${imageFileName}`)
+        .put(blob, {
+          contentType: `image/${imageType}`,
+        })
+        .then((snapshot) => {
+          blob.close();
+          resolve(snapshot);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  };
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -122,6 +204,14 @@ export default function EditClub({ navigation }) {
           <View style={{ width: "100%", flexDirection: "column" }}>
             <Header header={"edit club's details"} />
             <Text style={styles.disclaimer}>{club.name}</Text>
+
+            <Pressable onPress={handleUpdatePhoto}>
+              <Image
+                style={styles.image}
+                contentFit="cover"
+                source={club.image}
+              />
+            </Pressable>
 
             <SelectDropdown
               search={true}
@@ -357,8 +447,9 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: heightPixel(280),
-    marginBottom: pixelSizeVertical(12),
+    height: heightPixel(150),
+    marginTop: pixelSizeVertical(24),
+    marginBottom: pixelSizeVertical(10),
     borderRadius: 5,
   },
   role: {

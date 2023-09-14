@@ -62,7 +62,6 @@ export default function Clubs({ navigation }) {
   //set and get data from redux
 
   useEffect(() => {
-    console.log("HELLO");
     //get clubs from clubs overview
     db.doc(`/clubsOverview/${state.campus.campusID}`)
       .get()

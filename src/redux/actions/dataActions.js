@@ -28,6 +28,7 @@ import {
   SET_LOADING_DATA,
   STOP_LOADING_DATA,
   UPDATE_CLUB_DETAILS,
+  UPDATE_CLUB_IMAGE,
   UPDATE_CLUB_MEMBER_BIO,
   UPDATE_CLUB_MEMBER_PHOTO,
 } from "../type";
@@ -930,6 +931,39 @@ export const deactivateClubMember = (userID, clubID) => (dispatch) => {
       Toast.show({
         type: "success",
         text1: "member removed successfully.",
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+export const updateClubImage = (clubID, photoUrl, campusID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+
+  db.doc(`/clubs/${clubID}`)
+    .update({ image: photoUrl })
+    .then(() => {
+      return db.doc(`/clubsOverview/${campusID}`).get();
+    })
+    .then((doc) => {
+      let temp = [...doc.data().clubs];
+      let index = temp.findIndex((club) => club.clubID === clubID);
+      temp[index].image = photoUrl;
+
+      return db.doc(`/clubsOverview/${campusID}`).update({ clubs: [...temp] });
+    })
+    .then(() => {
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: UPDATE_CLUB_IMAGE, payload: photoUrl });
+      Toast.show({
+        type: "success",
+        text1: "club image updated successfully.",
       });
     })
     .catch((error) => {
