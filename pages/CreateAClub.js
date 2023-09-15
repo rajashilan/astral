@@ -172,6 +172,7 @@ export default function Login({ navigation, route }) {
 
       let userData = {
         clubID: "",
+        name,
         memberID,
         role: "president",
         approval: "approved",

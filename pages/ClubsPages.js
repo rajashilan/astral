@@ -109,7 +109,7 @@ export default function ClubsPages({ navigation, route }) {
   };
 
   const handleNavigateBack = () => {
-    navigation.navigate("Clubs");
+    navigation.goBack();
   };
 
   const handleYou = () => {

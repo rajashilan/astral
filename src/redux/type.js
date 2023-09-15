@@ -4,6 +4,8 @@ export const SET_LOADING_USER = "SET_LOADING_USER";
 export const STOP_LOADING_USER = "STOP_LOADING_USER";
 export const ADD_USER_CLUB = "ADD_USER_CLUB";
 export const LOGOUT = "LOGOUT";
+export const UPDATE_USER_PHOTO = "UPDATE_USER_PHOTO";
+export const UPDATE_USER_BIO = "UPDATE_USER_BIO";
 
 //data types
 //orientation
