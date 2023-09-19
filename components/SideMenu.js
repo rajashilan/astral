@@ -1,4 +1,3 @@
-// This gist is part of a medium post - https://medium.com/p/8e03510b8cc1/
 import React from "react";
 import {
   SafeAreaView,
@@ -10,12 +9,8 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
-import { CommonActions } from "@react-navigation/native";
-
-import IosHeight from "./IosHeight";
-
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { firebase } from "../src/firebase/config";
-
 import closeIcon from "../assets/close_icon.png";
 import {
   pixelSizeVertical,
@@ -23,49 +18,23 @@ import {
   fontPixel,
 } from "../utils/responsive-font";
 
-export default class SideMenu extends React.Component {
-  state = {
-    toggle_option_one: false,
-    navigations: [
-      {
-        name: "orientation",
-      },
-      {
-        name: "clubs",
-      },
-      {
-        name: "department",
-      },
-      {
-        name: "profile",
-      },
-      {
-        name: "staff list",
-      },
-    ],
-  };
+const SideMenu = (props) => {
+  const navigation = useNavigation();
 
-  callParentScreenFunction = () => this.props.callParentScreenFunction();
-
-  handleMenuNavigation = (name) => {
-    this.callParentScreenFunction();
+  const handleMenuNavigation = (name) => {
+    props.callParentScreenFunction();
     const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
-    if (name === "staff list") this.props.navigation.replace("Stafflist");
-    else this.props.navigation.replace(menuItem.trim());
+    if (name === "staff list") navigation.replace("Stafflist");
+    else navigation.replace(menuItem.trim());
   };
 
-  signOutUser = () => {
-    this.props.navigation.dispatch((state) => {
-      return CommonActions.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      });
-    });
+  const signOutUser = () => {
     firebase
       .auth()
       .signOut()
       .then(() => {
-        this.callParentScreenFunction();
+        props.callParentScreenFunction();
+        navigation.replace("Login");
       })
       .catch(function (error) {
         // An error happened.
@@ -73,59 +42,72 @@ export default class SideMenu extends React.Component {
       });
   };
 
-  render() {
-    return (
-      <SafeAreaView style={styles.safeAreaView}>
-        <View style={styles.paddingContainer}>
-          <View style={styles.closeContainer}>
-            <Pressable
-              onPress={this.callParentScreenFunction}
-              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
-            >
-              <Image
-                style={styles.closeIcon}
-                source={closeIcon}
-                contentFit="contain"
-              />
-            </Pressable>
-          </View>
-
-          <FlatList
-            style={styles.list}
-            keyExtractor={(item, index) => index.toString()}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            data={this.state.navigations}
-            renderItem={({ item }) => (
-              <>
-                <Pressable onPress={() => this.handleMenuNavigation(item.name)}>
-                  <Text
-                    style={
-                      this.props.currentPage === item.name
-                        ? styles.activeMenuItem
-                        : styles.inactiveMenuItem
-                    }
-                  >
-                    {item.name}
-                  </Text>
-                </Pressable>
-                <View style={styles.emptyView}></View>
-              </>
-            )}
-          />
-          <Pressable onPress={this.signOutUser}>
-            <Text style={styles.logout}>logout</Text>
+  return (
+    <SafeAreaView style={styles.safeAreaView}>
+      <View style={styles.paddingContainer}>
+        <View style={styles.closeContainer}>
+          <Pressable
+            onPress={props.callParentScreenFunction}
+            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+          >
+            <Image
+              style={styles.closeIcon}
+              source={closeIcon}
+              contentFit="contain"
+            />
           </Pressable>
-          <StatusBar
-            style="light"
-            translucent={false}
-            backgroundColor="#0C111F"
-          />
         </View>
-      </SafeAreaView>
-    );
-  }
-}
+        <FlatList
+          style={styles.list}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          data={[
+            {
+              name: "orientation",
+            },
+            {
+              name: "clubs",
+            },
+            {
+              name: "department",
+            },
+            {
+              name: "profile",
+            },
+            {
+              name: "staff list",
+            },
+          ]}
+          renderItem={({ item }) => (
+            <>
+              <Pressable onPress={() => handleMenuNavigation(item.name)}>
+                <Text
+                  style={
+                    props.currentPage === item.name
+                      ? styles.activeMenuItem
+                      : styles.inactiveMenuItem
+                  }
+                >
+                  {item.name}
+                </Text>
+              </Pressable>
+              <View style={styles.emptyView}></View>
+            </>
+          )}
+        />
+        <Pressable onPress={signOutUser}>
+          <Text style={styles.logout}>logout</Text>
+        </Pressable>
+        <StatusBar
+          style="light"
+          translucent={false}
+          backgroundColor="#0C111F"
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   safeAreaView: {
@@ -167,3 +149,5 @@ const styles = StyleSheet.create({
     color: "#8C91FB",
   },
 });
+
+export default SideMenu;
