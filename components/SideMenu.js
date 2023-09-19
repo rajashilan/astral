@@ -6,26 +6,43 @@ import {
   FlatList,
   StyleSheet,
   Pressable,
+  PixelRatio,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { Image } from "expo-image";
-import { CommonActions, useNavigation } from "@react-navigation/native";
-import { firebase } from "../src/firebase/config";
-import closeIcon from "../assets/close_icon.png";
 import {
+  fontPixel,
+  widthPixel,
+  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
-  fontPixel,
 } from "../utils/responsive-font";
+import { StatusBar } from "expo-status-bar";
+import { Image } from "expo-image";
+import { useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { firebase } from "../src/firebase/config";
+import closeIcon from "../assets/close_icon.png";
+import notificationIcon from "../assets/notification_icon.png";
 
 const SideMenu = (props) => {
   const navigation = useNavigation();
+
+  const user = useSelector((state) => state.user.credentials);
 
   const handleMenuNavigation = (name) => {
     props.callParentScreenFunction();
     const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
     if (name === "staff list") navigation.replace("Stafflist");
     else navigation.replace(menuItem.trim());
+  };
+
+  const handleNavigateToProfile = () => {
+    props.callParentScreenFunction();
+    navigation.replace("Profile");
+  };
+
+  const handleNavigateToNotifications = () => {
+    props.callParentScreenFunction();
+    navigation.replace("Notifications");
   };
 
   const signOutUser = () => {
@@ -44,10 +61,11 @@ const SideMenu = (props) => {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <View style={styles.paddingContainer}>
+      <View>
         <View style={styles.closeContainer}>
           <Pressable
             onPress={props.callParentScreenFunction}
+            style={styles.paddingContainer}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
             <Image
@@ -57,8 +75,67 @@ const SideMenu = (props) => {
             />
           </Pressable>
         </View>
+
+        <Text style={styles.college}>{user.campus}</Text>
+        <View
+          style={
+            props.currentPage === "profile"
+              ? styles.userDetailsContainerBorder
+              : styles.userDetailsContainer
+          }
+        >
+          <Pressable onPress={handleNavigateToProfile}>
+            <Image
+              style={styles.image}
+              contentFit="cover"
+              source={user.profileImage}
+            />
+          </Pressable>
+          <Pressable
+            style={{
+              marginRight: pixelSizeHorizontal(10),
+              marginLeft: pixelSizeHorizontal(10),
+              maxWidth: "60%",
+            }}
+            onPress={handleNavigateToProfile}
+          >
+            <Text
+              style={{
+                color: "#DFE5F8",
+                fontSize: fontPixel(22),
+                marginBottom: pixelSizeVertical(2),
+                fontWeight: "500",
+              }}
+              numberOfLines={5}
+            >
+              {user.name}
+            </Text>
+            <Text
+              style={{
+                color: "#C6CDE2",
+                fontSize: fontPixel(14),
+                fontWeight: "400",
+              }}
+            >
+              {user.intake}, {user.department}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={{
+              marginLeft: "auto",
+            }}
+            onPress={handleNavigateToNotifications}
+          >
+            <Image
+              style={styles.notificationIcon}
+              contentFit="contain"
+              source={notificationIcon}
+            />
+          </Pressable>
+        </View>
+
         <FlatList
-          style={styles.list}
+          style={styles.paddingContainer}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
@@ -71,9 +148,6 @@ const SideMenu = (props) => {
             },
             {
               name: "department",
-            },
-            {
-              name: "profile",
             },
             {
               name: "staff list",
@@ -147,6 +221,49 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(32),
     fontWeight: 400,
     color: "#8C91FB",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+  },
+  notificationIcon: {
+    height: pixelSizeVertical(24),
+    width: pixelSizeHorizontal(28),
+  },
+  image: {
+    width: widthPixel(60),
+    height: heightPixel(60),
+    marginTop: "auto",
+    marginBottom: "auto",
+    borderRadius: 50,
+  },
+  college: {
+    color: "#DFE5F8",
+    fontSize: fontPixel(18),
+    marginTop: pixelSizeVertical(8),
+    marginBottom: pixelSizeVertical(24),
+    fontWeight: "400",
+    textAlign: "center",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+  },
+  userDetailsContainer: {
+    flexDirection: "row",
+    marginBottom: pixelSizeVertical(24),
+    backgroundColor: "#242997",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(12),
+    paddingBottom: pixelSizeVertical(12),
+  },
+  userDetailsContainerBorder: {
+    flexDirection: "row",
+    marginBottom: pixelSizeVertical(24),
+    backgroundColor: "#242997",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(12),
+    paddingBottom: pixelSizeVertical(12),
+    borderWidth: widthPixel(4),
+    borderColor: "#C4FFF9",
   },
 });
 
