@@ -35,7 +35,12 @@ const { width } = Dimensions.get("window");
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
 export default function Notifications({ navigation }) {
+  dayjs.extend(relativeTime);
+
   const dispatch = useDispatch();
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
@@ -58,6 +63,9 @@ export default function Notifications({ navigation }) {
       sourceName: "Computer Science Club",
       sourceDestination: "ClubsPages",
       defaultText: "", //for normal notifications with no available source names
+      sourceImage:
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fphotos%2F529c62ce-7ce6-491d-b8fc-5297d52fb2f3.?alt=media&token=35f4da9c-c47c-4b75-946e-054452496f7b",
+      createdAt: "2023-09-22T08:23:16.007Z",
     },
     {
       text: "",
@@ -66,6 +74,9 @@ export default function Notifications({ navigation }) {
       sourceName: "",
       sourceDestination: "",
       defaultText: "Congragulations on reaching 100 members!", //for normal notifications with no available source names
+      sourceImage:
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fphotos%2F529c62ce-7ce6-491d-b8fc-5297d52fb2f3.?alt=media&token=35f4da9c-c47c-4b75-946e-054452496f7b",
+      createdAt: "2023-09-21T08:23:16.007Z",
     },
   ];
 
@@ -149,18 +160,43 @@ export default function Notifications({ navigation }) {
                       : styles.notificationContainerUnread
                   }
                 >
+                  <Image
+                    style={styles.image}
+                    contentFit="cover"
+                    source={item.sourceImage}
+                  />
                   {item.defaultText ? (
                     <Text
                       style={{
-                        fontSize: fontPixel(14),
-                        fontWeight: "400",
-                        color: "#DFE5F8",
+                        flexGrow: 1,
+                        flexShrink: 1,
+                        lineHeight: 20,
                       }}
                     >
-                      {item.defaultText}
+                      <Text
+                        style={{
+                          fontSize: fontPixel(14),
+                          fontWeight: "400",
+                          color: "#DFE5F8",
+                        }}
+                      >
+                        {item.defaultText}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: fontPixel(12),
+                          fontWeight: "400",
+                          color: "#A7AFC7",
+                        }}
+                      >
+                        {" "}
+                        {dayjs(item.createdAt.split("T")[0]).fromNow()}
+                      </Text>
                     </Text>
                   ) : (
-                    <Text style={{ lineHeight: 20 }}>
+                    <Text
+                      style={{ lineHeight: 20, flexGrow: 1, flexShrink: 1 }}
+                    >
                       <Text
                         style={{
                           fontSize: fontPixel(14),
@@ -179,6 +215,16 @@ export default function Notifications({ navigation }) {
                       >
                         {" "}
                         {item.text}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: fontPixel(12),
+                          fontWeight: "400",
+                          color: "#A7AFC7",
+                        }}
+                      >
+                        {" "}
+                        {dayjs(item.createdAt.split("T")[0]).fromNow()}
                       </Text>
                     </Text>
                   )}
@@ -306,10 +352,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    width: "100%",
-    height: heightPixel(280),
-    marginBottom: pixelSizeVertical(12),
-    borderRadius: 5,
+    width: widthPixel(60),
+    height: heightPixel(60),
+    marginTop: "auto",
+    marginBottom: "auto",
+    marginRight: pixelSizeHorizontal(10),
+    borderRadius: 50,
   },
   role: {
     fontSize: fontPixel(14),
@@ -449,6 +497,8 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingTop: pixelSizeVertical(12),
     paddingBottom: pixelSizeVertical(12),
+    flexDirection: "row",
+    flexGrow: 1,
   },
   notificationContainerRead: {
     backgroundColor: "#0E1834",
@@ -456,6 +506,8 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingTop: pixelSizeVertical(12),
     paddingBottom: pixelSizeVertical(12),
+    flexDirection: "row",
+    flexGrow: 1,
   },
   emptyView: {
     flex: 1,
