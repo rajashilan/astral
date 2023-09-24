@@ -6,6 +6,7 @@ import {
   Pressable,
   FlatList,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -38,47 +39,82 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
+import { firebase } from "../src/firebase/config";
+import { setNotificationsRead } from "../src/redux/actions/dataActions";
+const db = firebase.firestore();
+
 export default function Notifications({ navigation }) {
   dayjs.extend(relativeTime);
 
   const dispatch = useDispatch();
-  const currentMember = useSelector(
-    (state) => state.data.clubData.currentMember
-  );
-  const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
+  const user = useSelector((state) => state.user.credentials);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const [headerHeight, setHeaderHeight] = useState(300);
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
-  const data = [
-    {
-      text: "has been approved! Add more details so others can see your club now.",
-      read: false,
-      sourceID: "E1FnMBdQlSQgC6rfcjy5",
-      sourceName: "Computer Science Club",
-      sourceDestination: "ClubsPages",
-      defaultText: "", //for normal notifications with no available source names
-      sourceImage:
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fphotos%2F529c62ce-7ce6-491d-b8fc-5297d52fb2f3.?alt=media&token=35f4da9c-c47c-4b75-946e-054452496f7b",
-      createdAt: "2023-09-22T08:23:16.007Z",
-    },
-    {
-      text: "",
-      read: true,
-      sourceID: "",
-      sourceName: "",
-      sourceDestination: "",
-      defaultText: "Congragulations on reaching 100 members!", //for normal notifications with no available source names
-      sourceImage:
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fphotos%2F529c62ce-7ce6-491d-b8fc-5297d52fb2f3.?alt=media&token=35f4da9c-c47c-4b75-946e-054452496f7b",
-      createdAt: "2023-09-21T08:23:16.007Z",
-    },
-  ];
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    db.collection("notifications")
+      .where("userID", "==", user.userId)
+      .orderBy("createdAt", "desc")
+      .get()
+      .then((data) => {
+        let temp = [];
+        data.forEach((doc) => {
+          temp.push({ ...doc.data() });
+        });
+        setData([...temp]);
+      })
+      .catch((error) => {
+        console.error(error);
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+      });
+  }, []);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      let notificationIDs = [];
+      data.forEach((notification) => {
+        notificationIDs.push(notification.notificationID);
+      });
+      dispatch(setNotificationsRead(notificationIDs));
+    }
+  }, [data]);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    db.collection("notifications")
+      .where("userID", "==", user.userId)
+      .orderBy("createdAt", "desc")
+      .get()
+      .then((data) => {
+        let temp = [];
+        data.forEach((doc) => {
+          temp.push({ ...doc.data() });
+        });
+        setData([...temp]);
+        setRefreshing(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+        setRefreshing(false);
+      });
+  }, []);
 
   const onLayout = (event) => {
     const { x, y, height, width } = event.nativeEvent.layout;
@@ -127,6 +163,9 @@ export default function Notifications({ navigation }) {
         scrollEventThrottle={16}
         stickyHeaderIndices={[1]}
         onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         <View style={{ width: "100%", flexDirection: "column" }}>
           <View style={styles.paddingContainer}>
@@ -134,104 +173,127 @@ export default function Notifications({ navigation }) {
               <Header header={"notifications"} />
             </View>
           </View>
-          <FlatList
-            style={{ marginBottom: pixelSizeVertical(32) }}
-            keyExtractor={(item, index) => index.toString()}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            scrollEnabled={false}
-            data={data}
-            renderItem={({ item, index }) => (
-              <Pressable
-                onPress={() => {
-                  if (item.sourceDestination) {
-                    if (item.sourceDestination === "ClubsPages") {
-                      navigation.navigate("ClubsPages", {
-                        clubID: item.sourceID,
-                      });
+          {data.length > 0 ? (
+            <FlatList
+              style={{ marginBottom: pixelSizeVertical(32) }}
+              keyExtractor={(item, index) => index.toString()}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              scrollEnabled={false}
+              data={data}
+              renderItem={({ item, index }) => (
+                <Pressable
+                  onPress={() => {
+                    if (item.sourceDestination) {
+                      if (item.sourceDestination === "ClubsPages") {
+                        navigation.navigate("ClubsPages", {
+                          clubID: item.sourceID,
+                        });
+                      }
                     }
-                  }
-                }}
-              >
-                <View
-                  style={
-                    item.read
-                      ? styles.notificationContainerRead
-                      : styles.notificationContainerUnread
-                  }
+                  }}
                 >
-                  <Image
-                    style={styles.image}
-                    contentFit="cover"
-                    source={item.sourceImage}
-                  />
-                  {item.defaultText ? (
-                    <Text
-                      style={{
-                        flexGrow: 1,
-                        flexShrink: 1,
-                        lineHeight: 20,
-                      }}
-                    >
+                  <View
+                    style={
+                      item.read
+                        ? styles.notificationContainerRead
+                        : styles.notificationContainerUnread
+                    }
+                  >
+                    <Image
+                      style={styles.image}
+                      contentFit="cover"
+                      source={item.sourceImage}
+                    />
+                    {item.defaultText ? (
                       <Text
                         style={{
-                          fontSize: fontPixel(14),
-                          fontWeight: "400",
-                          color: "#DFE5F8",
+                          flexGrow: 1,
+                          flexShrink: 1,
+                          lineHeight: 20,
                         }}
                       >
-                        {item.defaultText}
+                        <Text
+                          style={{
+                            fontSize: fontPixel(14),
+                            fontWeight: "400",
+                            color: "#DFE5F8",
+                          }}
+                        >
+                          {item.defaultText}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: fontPixel(12),
+                            fontWeight: "400",
+                            color: "#A7AFC7",
+                          }}
+                        >
+                          {" "}
+                          {dayjs(item.createdAt.split("T")[0]).fromNow()}
+                        </Text>
                       </Text>
+                    ) : (
                       <Text
-                        style={{
-                          fontSize: fontPixel(12),
-                          fontWeight: "400",
-                          color: "#A7AFC7",
-                        }}
+                        style={{ lineHeight: 20, flexGrow: 1, flexShrink: 1 }}
                       >
-                        {" "}
-                        {dayjs(item.createdAt.split("T")[0]).fromNow()}
+                        <Text
+                          style={{
+                            fontSize: fontPixel(14),
+                            fontWeight: "400",
+                            color: "#DFE5F8",
+                          }}
+                        >
+                          {item.preText}{" "}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: fontPixel(14),
+                            fontWeight: "600",
+                            color: "#07BEB8",
+                          }}
+                        >
+                          {item.sourceName}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: fontPixel(14),
+                            fontWeight: "400",
+                            color: "#DFE5F8",
+                          }}
+                        >
+                          {" "}
+                          {item.postText}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: fontPixel(12),
+                            fontWeight: "400",
+                            color: "#A7AFC7",
+                          }}
+                        >
+                          {" "}
+                          {dayjs(item.createdAt.split("T")[0]).fromNow()}
+                        </Text>
                       </Text>
-                    </Text>
-                  ) : (
-                    <Text
-                      style={{ lineHeight: 20, flexGrow: 1, flexShrink: 1 }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: fontPixel(14),
-                          fontWeight: "600",
-                          color: "#07BEB8",
-                        }}
-                      >
-                        {item.sourceName}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: fontPixel(14),
-                          fontWeight: "400",
-                          color: "#DFE5F8",
-                        }}
-                      >
-                        {" "}
-                        {item.text}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: fontPixel(12),
-                          fontWeight: "400",
-                          color: "#A7AFC7",
-                        }}
-                      >
-                        {" "}
-                        {dayjs(item.createdAt.split("T")[0]).fromNow()}
-                      </Text>
-                    </Text>
-                  )}
-                </View>
-              </Pressable>
-            )}
-          />
+                    )}
+                  </View>
+                </Pressable>
+              )}
+            />
+          ) : (
+            <Text
+              style={{
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                paddingRight: pixelSizeHorizontal(16),
+                paddingLeft: pixelSizeHorizontal(16),
+              }}
+            >
+              no notifications yet
+            </Text>
+          )}
         </View>
       </ScrollView>
 
