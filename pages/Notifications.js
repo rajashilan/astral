@@ -239,15 +239,17 @@ export default function Notifications({ navigation }) {
                       <Text
                         style={{ lineHeight: 20, flexGrow: 1, flexShrink: 1 }}
                       >
-                        <Text
-                          style={{
-                            fontSize: fontPixel(14),
-                            fontWeight: "400",
-                            color: "#DFE5F8",
-                          }}
-                        >
-                          {item.preText}{" "}
-                        </Text>
+                        {item.preText && (
+                          <Text
+                            style={{
+                              fontSize: fontPixel(14),
+                              fontWeight: "400",
+                              color: "#DFE5F8",
+                            }}
+                          >
+                            {item.preText}{" "}
+                          </Text>
+                        )}
                         <Text
                           style={{
                             fontSize: fontPixel(14),
@@ -257,16 +259,18 @@ export default function Notifications({ navigation }) {
                         >
                           {item.sourceName}
                         </Text>
-                        <Text
-                          style={{
-                            fontSize: fontPixel(14),
-                            fontWeight: "400",
-                            color: "#DFE5F8",
-                          }}
-                        >
-                          {" "}
-                          {item.postText}
-                        </Text>
+                        {item.postText && (
+                          <Text
+                            style={{
+                              fontSize: fontPixel(14),
+                              fontWeight: "400",
+                              color: "#DFE5F8",
+                            }}
+                          >
+                            {" "}
+                            {item.postText}
+                          </Text>
+                        )}
                         <Text
                           style={{
                             fontSize: fontPixel(12),

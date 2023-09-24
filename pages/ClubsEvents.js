@@ -16,6 +16,7 @@ import Modal from "react-native-modal";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
+  createNotification,
   getClubEvent,
   handleDeleteClubEvent,
   setClubEventToFalse,
@@ -90,7 +91,29 @@ export default function ClubsEvents({ navigation }) {
     //check if event length is 1
     //if it is, update clubs.events as false
     if (data.past.length + data.future.length === 1) {
-      dispatch(setClubEventToFalse(club.clubID, campusID));
+      if (club.status === "active") {
+        dispatch(setClubEventToFalse(club.clubID, campusID));
+        let notification = {
+          preText: "",
+          postText: "has been deactivated due to insufficient details.",
+          sourceID: club.clubID,
+          sourceName: club.name,
+          sourceImage: club.image,
+          sourceDestination: "ClubsPages",
+          defaultText: "",
+          read: false,
+          userID: "",
+          createdAt: new Date().toISOString(),
+          notificationID: "",
+        };
+        let userIDs = [];
+        let temp = Object.values(club.roles);
+        temp.forEach((role) => {
+          if (role.userID && role.userID !== "") userIDs.push(role.userID);
+        });
+
+        dispatch(createNotification(notification, userIDs));
+      }
     }
   };
 

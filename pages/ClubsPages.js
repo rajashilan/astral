@@ -157,7 +157,7 @@ export default function ClubsPages({ navigation, route }) {
       sourceDestination: "ClubsPages",
       defaultText: "",
       read: false,
-      userID: data.roles.president.userID,
+      userID: "",
       createdAt: new Date().toISOString(),
       notificationID: "",
     };

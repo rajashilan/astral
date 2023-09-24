@@ -37,6 +37,7 @@ import Header from "../components/Header";
 
 import { firebase } from "../src/firebase/config";
 import {
+  createNotification,
   handleActivateClub,
   handleDeactivateClub,
   updateClubImage,
@@ -92,9 +93,51 @@ export default function EditClub({ navigation }) {
     if (!errors.active) {
       if (selectedActive === "activate") {
         dispatch(handleActivateClub(club.clubID, campusID));
+
+        let notification = {
+          preText: "",
+          postText: "has been activated by President.",
+          sourceID: club.clubID,
+          sourceName: club.name,
+          sourceImage: club.image,
+          sourceDestination: "ClubsPages",
+          defaultText: "",
+          read: false,
+          userID: "",
+          createdAt: new Date().toISOString(),
+          notificationID: "",
+        };
+        let userIDs = [];
+        let temp = Object.values(club.roles);
+        temp.forEach((role) => {
+          if (role.userID && role.userID !== "") userIDs.push(role.userID);
+        });
+
+        dispatch(createNotification(notification, userIDs));
       }
       if (selectedActive === "deactivate") {
         dispatch(handleDeactivateClub(club.clubID, campusID, true));
+
+        let notification = {
+          preText: "",
+          postText: "has been deactivated by President",
+          sourceID: club.clubID,
+          sourceName: club.name,
+          sourceImage: club.image,
+          sourceDestination: "ClubsPages",
+          defaultText: "",
+          read: false,
+          userID: "",
+          createdAt: new Date().toISOString(),
+          notificationID: "",
+        };
+        let userIDs = [];
+        let temp = Object.values(club.roles);
+        temp.forEach((role) => {
+          if (role.userID && role.userID !== "") userIDs.push(role.userID);
+        });
+
+        dispatch(createNotification(notification, userIDs));
       }
     }
 

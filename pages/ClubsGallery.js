@@ -22,6 +22,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { firebase } from "../src/firebase/config";
 import {
+  createNotification,
   getClubGallery,
   handleDeleteClubGallery,
   setClubGalleryToFalse,
@@ -67,8 +68,31 @@ export default function ClubsGallery({ navigation }) {
     handleShowDeleteModal();
     //check if gallery length is 1
     //if it is, update clubs.gallery as false
-    if (data.length === 1)
-      dispatch(setClubGalleryToFalse(club.clubID, campusID));
+    if (data.length === 1) {
+      if (club.status === "active") {
+        dispatch(setClubGalleryToFalse(club.clubID, campusID));
+        let notification = {
+          preText: "",
+          postText: "has been deactivated due to insufficient details.",
+          sourceID: club.clubID,
+          sourceName: club.name,
+          sourceImage: club.image,
+          sourceDestination: "ClubsPages",
+          defaultText: "",
+          read: false,
+          userID: "",
+          createdAt: new Date().toISOString(),
+          notificationID: "",
+        };
+        let userIDs = [];
+        let temp = Object.values(club.roles);
+        temp.forEach((role) => {
+          if (role.userID && role.userID !== "") userIDs.push(role.userID);
+        });
+
+        dispatch(createNotification(notification, userIDs));
+      }
+    }
   };
 
   return (

@@ -83,7 +83,7 @@ export default function ClubMembersRequest({ navigation }) {
         sourceDestination: "ClubsPages",
         defaultText: "",
         read: false,
-        userID: item.userID,
+        userID: "",
         createdAt: new Date().toISOString(),
         notificationID: "",
       };
@@ -100,7 +100,7 @@ export default function ClubMembersRequest({ navigation }) {
         sourceDestination: "ClubsPages",
         defaultText: "",
         read: false,
-        userID: item,
+        userID: "",
         createdAt: new Date().toISOString(),
         notificationID: "",
       };

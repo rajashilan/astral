@@ -14,6 +14,7 @@ import { toastConfig } from "../utils/toast-config";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
+  createNotification,
   handleDeactivateClub,
   handleUpdateClubDetails,
 } from "../src/redux/actions/dataActions";
@@ -54,7 +55,29 @@ export default function ClubsDetails({ navigation }) {
       misc: more,
     };
     dispatch(handleUpdateClubDetails(club.clubID, data));
-    dispatch(handleDeactivateClub(club.clubID, campusID, false));
+    if (club.status === "active") {
+      dispatch(handleDeactivateClub(club.clubID, campusID, false));
+      let notification = {
+        preText: "",
+        postText: "has been deactivated due to insufficient details.",
+        sourceID: club.clubID,
+        sourceName: club.name,
+        sourceImage: club.image,
+        sourceDestination: "ClubsPages",
+        defaultText: "",
+        read: false,
+        userID: "",
+        createdAt: new Date().toISOString(),
+        notificationID: "",
+      };
+      let userIDs = [];
+      let temp = Object.values(club.roles);
+      temp.forEach((role) => {
+        if (role.userID && role.userID !== "") userIDs.push(role.userID);
+      });
+
+      dispatch(createNotification(notification, userIDs));
+    }
   };
 
   //show normal view if user is other than president
