@@ -38,6 +38,8 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 import { firebase } from "../src/firebase/config";
 import { setNotificationsRead } from "../src/redux/actions/dataActions";
@@ -71,6 +73,7 @@ export default function Notifications({ navigation }) {
         data.forEach((doc) => {
           temp.push({ ...doc.data() });
         });
+        console.log(temp);
         setData([...temp]);
       })
       .catch((error) => {
@@ -273,7 +276,7 @@ export default function Notifications({ navigation }) {
                           }}
                         >
                           {" "}
-                          {dayjs(item.createdAt.split("T")[0]).fromNow()}
+                          {dayjs(new Date(item.createdAt).toString()).fromNow()}
                         </Text>
                       </Text>
                     )}
