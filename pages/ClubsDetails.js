@@ -13,7 +13,10 @@ import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
 import { useSelector, useDispatch } from "react-redux";
-import { handleUpdateClubDetails } from "../src/redux/actions/dataActions";
+import {
+  handleDeactivateClub,
+  handleUpdateClubDetails,
+} from "../src/redux/actions/dataActions";
 
 export default function ClubsDetails({ navigation }) {
   const dispatch = useDispatch();
@@ -22,6 +25,7 @@ export default function ClubsDetails({ navigation }) {
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
   );
+  const campusID = useSelector((state) => state.data.campus.campusID);
   const data = useSelector((state) => state.data.clubData.club.details);
   const loading = useSelector((state) => state.data.loading);
 
@@ -50,6 +54,7 @@ export default function ClubsDetails({ navigation }) {
       misc: more,
     };
     dispatch(handleUpdateClubDetails(club.clubID, data));
+    dispatch(handleDeactivateClub(club.clubID, campusID, false));
   };
 
   //show normal view if user is other than president
@@ -68,11 +73,11 @@ export default function ClubsDetails({ navigation }) {
 
   let editView = (
     <>
-      {!loading && meetings === "" && fees === "" && (
+      {(!loading && meetings === "") || (!loading && fees === "") ? (
         <Text style={styles.warningText}>
           Please add meetings and fees details to be able to activate your club.
         </Text>
-      )}
+      ) : null}
       <Text style={[styles.title, { paddingLeft: pixelSizeHorizontal(8) }]}>
         Meetings
       </Text>

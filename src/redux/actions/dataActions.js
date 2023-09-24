@@ -569,37 +569,42 @@ export const handleActivateClub = (clubID, campusID) => (dispatch) => {
     });
 };
 
-export const handleDeactivateClub = (clubID, campusID) => (dispatch) => {
-  dispatch({ type: SET_LOADING_DATA });
-  db.doc(`/clubs/${clubID}`)
-    .update({ status: "inactive" })
-    .then(() => {
-      return db.doc(`/clubsOverview/${campusID}`).get();
-    })
-    .then((doc) => {
-      let temp = [...doc.data().clubs];
-      let index = temp.findIndex((club) => club.clubID === clubID);
-      temp[index].status = "inactive";
+export const handleDeactivateClub =
+  (clubID, campusID, showLoading) => (dispatch) => {
+    if (showLoading) dispatch({ type: SET_LOADING_DATA });
+    db.doc(`/clubs/${clubID}`)
+      .update({ status: "inactive" })
+      .then(() => {
+        return db.doc(`/clubsOverview/${campusID}`).get();
+      })
+      .then((doc) => {
+        let temp = [...doc.data().clubs];
+        let index = temp.findIndex((club) => club.clubID === clubID);
+        temp[index].status = "inactive";
 
-      return db.doc(`/clubsOverview/${campusID}`).update({ clubs: [...temp] });
-    })
-    .then(() => {
-      dispatch({ type: STOP_LOADING_DATA });
-      dispatch({ type: DEACTIVATE_CLUB, payload: clubID });
-      Toast.show({
-        type: "success",
-        text1: "Club deactivated successfully.",
+        return db
+          .doc(`/clubsOverview/${campusID}`)
+          .update({ clubs: [...temp] });
+      })
+      .then(() => {
+        if (showLoading) {
+          dispatch({ type: STOP_LOADING_DATA });
+          Toast.show({
+            type: "success",
+            text1: "Club deactivated successfully.",
+          });
+        }
+        dispatch({ type: DEACTIVATE_CLUB, payload: clubID });
+      })
+      .catch((error) => {
+        console.error(error);
+        if (showLoading) dispatch({ type: STOP_LOADING_DATA });
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
       });
-    })
-    .catch((error) => {
-      console.error(error);
-      dispatch({ type: STOP_LOADING_DATA });
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
-    });
-};
+  };
 
 //accepting a new member
 export const acceptNewMember = (data, clubID) => (dispatch) => {

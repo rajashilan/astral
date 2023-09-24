@@ -24,7 +24,6 @@ export default function (state = initialState, action) {
       };
     case ADD_USER_CLUB:
       state.credentials.clubs.push({ ...action.payload });
-      console.log(state.credentials.clubs);
       return {
         ...state,
       };

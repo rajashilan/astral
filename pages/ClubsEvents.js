@@ -89,8 +89,9 @@ export default function ClubsEvents({ navigation }) {
     handleShowDeleteModal();
     //check if event length is 1
     //if it is, update clubs.events as false
-    if (data.past.length + data.future.length === 1)
+    if (data.past.length + data.future.length === 1) {
       dispatch(setClubEventToFalse(club.clubID, campusID));
+    }
   };
 
   return (

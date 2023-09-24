@@ -84,16 +84,18 @@ export default function EditClub({ navigation }) {
       (!club.gallery ||
         !club.events ||
         club.details.schedule === "" ||
-        club.details.fee === "") &&
+        club.details.fees === "") &&
       selectedActive === "activate"
     )
       errors.active = "Please complete your club details to active the club.";
 
     if (!errors.active) {
-      if (selectedActive === "activate")
+      if (selectedActive === "activate") {
         dispatch(handleActivateClub(club.clubID, campusID));
-      if (selectedActive === "deactivate")
-        dispatch(handleDeactivateClub(club.clubID, campusID));
+      }
+      if (selectedActive === "deactivate") {
+        dispatch(handleDeactivateClub(club.clubID, campusID, true));
+      }
     }
 
     setErrors(errors);
