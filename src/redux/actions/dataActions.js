@@ -36,7 +36,6 @@ import {
 import Toast from "react-native-toast-message";
 
 import { firebase } from "../../firebase/config";
-import { ServerContainer } from "@react-navigation/native";
 const db = firebase.firestore();
 
 //get college details
@@ -974,4 +973,51 @@ export const updateClubImage = (clubID, photoUrl, campusID) => (dispatch) => {
         text1: "Something went wrong",
       });
     });
+};
+
+//   preText: (text to go along source name)
+//   postText:
+//   sourceID: (id of source eg: club, user profile, event etc)
+//   sourceName: (name of source eg: club name, user name, event name etc)
+//   sourceImage:
+//   sourceDestination: (destination of source: which page to navigate to)
+//   defaultText: (for normal notifications with no available source names or ids)
+//   read: false,
+//   userID,
+//   createdAt,
+//   notificationID: "",
+export const createNotification = (notification, userIDs) => (dispatch) => {
+  //userIDs type array
+
+  let batch = db.batch();
+
+  userIDs.forEach((userID) => {
+    const ref = db.collection("notifications").doc();
+    let temp = ref;
+    temp = String.valueOf(temp);
+    temp = temp.split("/")[temp.split("/").length - 1];
+    console.log("NOTIFICATIONS ID: ", temp);
+    notification.notificationID = temp;
+    batch.set(ref, notification);
+  });
+  batch
+    .commit()
+    .then(() => {})
+    .catch((error) => console.error(error));
+};
+
+//function to batch set notifications read to true
+//update in redux as well
+//receive notification IDs from frontEnd
+export const setNotificationsRead = (notificationIDs) => (dispatch) => {
+  let batch = db.batch();
+
+  notificationIDs.forEach((notificationID) => {
+    const notification = db.doc(`/notifications/${notificationID}`);
+    batch.update(notification, { read: true });
+  });
+  batch
+    .commit()
+    .then(() => {})
+    .catch((error) => console.error(error));
 };
