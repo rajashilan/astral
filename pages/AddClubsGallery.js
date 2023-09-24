@@ -87,7 +87,6 @@ export default function AddClubsGallery({ navigation }) {
           const uri = result.assets[0].uri;
           setImageType(uri.split(".")[uri.split(".").length - 1]);
           setImage(uri);
-          console.log(uri);
         }
       })
       .catch((error) => {

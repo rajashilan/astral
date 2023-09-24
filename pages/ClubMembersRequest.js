@@ -33,6 +33,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Header from "../components/Header";
 import {
   acceptNewMember,
+  createNotification,
   rejectNewMember,
 } from "../src/redux/actions/dataActions";
 
@@ -71,8 +72,41 @@ export default function ClubMembersRequest({ navigation }) {
   }
 
   const handleAcceptMember = (item, accepted) => {
-    if (accepted) dispatch(acceptNewMember(item, club.clubID));
-    else dispatch(rejectNewMember(item, club.clubID));
+    if (accepted) {
+      dispatch(acceptNewMember(item, club.clubID));
+      let notification = {
+        preText: "Your request to join",
+        postText: "has been approved",
+        sourceID: club.clubID,
+        sourceName: club.name,
+        sourceImage: club.image,
+        sourceDestination: "ClubsPages",
+        defaultText: "",
+        read: false,
+        userID: item.userID,
+        createdAt: new Date().toISOString(),
+        notificationID: "",
+      };
+      let userIDs = [item.userID];
+      dispatch(createNotification(notification, userIDs));
+    } else {
+      dispatch(rejectNewMember(item, club.clubID));
+      let notification = {
+        preText: "Your request to join",
+        postText: "was denied. Please feel free to reapply.",
+        sourceID: club.clubID,
+        sourceName: club.name,
+        sourceImage: club.image,
+        sourceDestination: "ClubsPages",
+        defaultText: "",
+        read: false,
+        userID: item,
+        createdAt: new Date().toISOString(),
+        notificationID: "",
+      };
+      let userIDs = [item];
+      dispatch(createNotification(notification, userIDs));
+    }
   };
 
   return (

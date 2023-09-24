@@ -24,7 +24,7 @@ export const getAuthenticatedUser = (email) => (dispatch) => {
             try {
               await firebase.auth().signOut();
             } catch (e) {
-              console.log(e);
+              console.error(e);
             }
           };
         } else {

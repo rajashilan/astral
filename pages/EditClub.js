@@ -279,7 +279,7 @@ export default function EditClub({ navigation }) {
             >
               <Text
                 style={
-                  club.membersRequests.length > 0
+                  club.membersRequests && club.membersRequests.length > 0
                     ? styles.altButton
                     : styles.altButtonInactive
                 }

@@ -73,7 +73,6 @@ export default function Notifications({ navigation }) {
         data.forEach((doc) => {
           temp.push({ ...doc.data() });
         });
-        console.log(temp);
         setData([...temp]);
       })
       .catch((error) => {

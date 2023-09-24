@@ -43,6 +43,7 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 import { firebase } from "../src/firebase/config";
 import {
+  createNotification,
   getAClub,
   getClubMembers,
   joinClub,
@@ -89,7 +90,6 @@ export default function ClubsPages({ navigation, route }) {
     if (!isEmpty(data)) {
       let temp = [...data.membersRequests];
       let index = temp.findIndex((member) => member.userID === user.userId);
-      console.log(temp[index]);
       if (index !== -1)
         if (temp[index].approval !== "rejected") setHasRequested(true);
     }
@@ -147,7 +147,25 @@ export default function ClubsPages({ navigation, route }) {
       createdAt,
       approval: "pending",
     };
+
+    let notification = {
+      preText: "New member request for",
+      postText: "",
+      sourceID: data.clubID,
+      sourceName: data.name,
+      sourceImage: data.image,
+      sourceDestination: "ClubsPages",
+      defaultText: "",
+      read: false,
+      userID: data.roles.president.userID,
+      createdAt: new Date().toISOString(),
+      notificationID: "",
+    };
+
+    let userIDs = [data.roles.president.userID];
+
     dispatch(joinClub(joinData, clubsData, data.clubID));
+    dispatch(createNotification(notification, userIDs));
   };
 
   const onLayout = (event) => {

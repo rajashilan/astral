@@ -988,16 +988,12 @@ export const updateClubImage = (clubID, photoUrl, campusID) => (dispatch) => {
 //   notificationID: "",
 export const createNotification = (notification, userIDs) => (dispatch) => {
   //userIDs type array
-
+  console.log("Called");
   let batch = db.batch();
 
   userIDs.forEach((userID) => {
     const ref = db.collection("notifications").doc();
-    let temp = ref;
-    temp = String.valueOf(temp);
-    temp = temp.split("/")[temp.split("/").length - 1];
-    console.log("NOTIFICATIONS ID: ", temp);
-    notification.notificationID = temp;
+    notification.notificationID = ref.id;
     batch.set(ref, notification);
   });
   batch
