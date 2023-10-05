@@ -41,12 +41,13 @@ export default function Home({ navigation }) {
     { name: "orientation" },
     { name: "clubs" },
     { name: "department" },
-    { name: "staff list" },
+    { name: "general forms" },
   ]);
 
   const handleMenuNavigation = (name) => {
     const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
     if (name === "staff list") navigation.replace("Stafflist");
+    else if (name === "general forms") navigation.replace("GeneralForms");
     else navigation.replace(menuItem.trim());
   };
 

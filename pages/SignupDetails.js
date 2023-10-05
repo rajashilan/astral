@@ -258,7 +258,7 @@ export default function SignupDetails({ navigation, route }) {
 
         <TextInput
           style={styles.textInput}
-          placeholder="Name"
+          placeholder="Full Name"
           placeholderTextColor="#DBDBDB"
           value={name}
           onChangeText={(name) => setName(name)}

@@ -17,14 +17,18 @@ import {
 } from "../utils/responsive-font";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { firebase } from "../src/firebase/config";
 import closeIcon from "../assets/close_icon.png";
 import notificationIcon from "../assets/notification_icon.png";
+import { LOGOUT } from "../src/redux/type";
+
+import Notification_Icon from "../assets/Notification_Icon";
 
 const SideMenu = (props) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.credentials);
 
@@ -32,6 +36,7 @@ const SideMenu = (props) => {
     props.callParentScreenFunction();
     const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
     if (name === "staff list") navigation.replace("Stafflist");
+    else if (name === "general forms") navigation.replace("GeneralForms");
     else navigation.replace(menuItem.trim());
   };
 
@@ -51,6 +56,9 @@ const SideMenu = (props) => {
       .signOut()
       .then(() => {
         props.callParentScreenFunction();
+        useEffect(() => {
+          dispatch({ type: LOGOUT });
+        }, []);
         navigation.replace("Login");
       })
       .catch(function (error) {
@@ -126,11 +134,12 @@ const SideMenu = (props) => {
             }}
             onPress={handleNavigateToNotifications}
           >
-            <Image
+            {/* <Image
               style={styles.notificationIcon}
               contentFit="contain"
               source={notificationIcon}
-            />
+            /> */}
+            <Notification_Icon />
           </Pressable>
         </View>
 
@@ -150,7 +159,7 @@ const SideMenu = (props) => {
               name: "department",
             },
             {
-              name: "staff list",
+              name: "general forms",
             },
           ]}
           renderItem={({ item }) => (

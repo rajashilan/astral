@@ -42,10 +42,6 @@ export default function Login({ navigation, route }) {
     general: undefined,
   });
 
-  useEffect(() => {
-    dispatch({ type: LOGOUT });
-  }, []);
-
   const emailRegex =
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;
 
