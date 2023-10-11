@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   SafeAreaView,
   Text,
@@ -56,9 +56,7 @@ const SideMenu = (props) => {
       .signOut()
       .then(() => {
         props.callParentScreenFunction();
-        useEffect(() => {
-          dispatch({ type: LOGOUT });
-        }, []);
+        dispatch({ type: LOGOUT });
         navigation.replace("Login");
       })
       .catch(function (error) {
