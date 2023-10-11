@@ -18,6 +18,7 @@ import {
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import * as Crypto from "expo-crypto";
+import dayjs from "dayjs";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
@@ -314,7 +315,11 @@ export default function AddClubsEvent({ navigation }) {
               style={styles.datePickerButton}
               onPress={() => setDatePickerVisibility(!isDatePickerVisible)}
             >
-              <Text style={styles.datePickerButtonText}>select date</Text>
+              <Text style={styles.datePickerButtonText}>
+                {date === ""
+                  ? "select date"
+                  : dayjs(date.split("T")[0]).format("D MMM YYYY")}
+              </Text>
             </Pressable>
             {errors.date ? (
               <Text style={styles.error}>{errors.date}</Text>

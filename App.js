@@ -32,6 +32,10 @@ import ClubMembersRequest from "./pages/ClubMembersRequest";
 import EditClubMember from "./pages/EditClubMember";
 import EditClubRoles from "./pages/EditClubRoles";
 import Notifications from "./pages/Notifications";
+import GeneralForms from "./pages/GeneralForms";
+import GeneralFormsPage from "./pages/GeneralFormsPages";
+import ResubmitClubsEvent from "./pages/ResubmitClubsEvent";
+import ResubmitClubsGallery from "./pages/ResubmitClubsGallery";
 
 import { Provider } from "react-redux";
 import { store } from "./src/redux/store";
@@ -186,8 +190,24 @@ export default function App() {
             }}
           />
           <Stack.Screen
+            name="ResubmitClubsGallery"
+            component={ResubmitClubsGallery}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
             name="AddClubsEvent"
             component={AddClubsEvent}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="ResubmitClubsEvent"
+            component={ResubmitClubsEvent}
             options={{
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
@@ -236,6 +256,22 @@ export default function App() {
           <Stack.Screen
             name="Notifications"
             component={Notifications}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="GeneralForms"
+            component={GeneralForms}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="GeneralFormsPage"
+            component={GeneralFormsPage}
             options={{
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,

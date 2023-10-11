@@ -36,17 +36,34 @@ export default function ClubsGallery({ navigation }) {
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
   );
-  const data = useSelector((state) => state.data.clubData.gallery);
+  const gallery = useSelector((state) => state.data.clubData.gallery);
   const loading = useSelector((state) => state.data.loading);
 
   const [indexSelected, setIndexSelected] = useState(0);
 
+  const [data, setData] = useState([]);
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteImage, setDeleteImage] = useState("");
+  const [galleryID, setDeleteGalleryID] = useState("");
 
   useEffect(() => {
     dispatch(getClubGallery(club.clubID));
   }, []);
+
+  useEffect(() => {
+    let temp = [];
+    gallery.map((g) => {
+      if (g.approval === "approved") temp.push(g);
+      else if (
+        g.approval !== "approved" &&
+        !isEmpty(currentMember) &&
+        currentMember.role === "president"
+      )
+        temp.push(g);
+    });
+
+    setData([...temp]);
+  }, [gallery]);
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0;
@@ -56,15 +73,15 @@ export default function ClubsGallery({ navigation }) {
     setIndexSelected(indexSelected);
   };
 
-  const handleShowDeleteModal = (image) => {
-    if (image) setDeleteImage(image);
-    else setDeleteImage("");
+  const handleShowDeleteModal = (galleryID) => {
+    if (galleryID) setDeleteGalleryID(galleryID);
+    else setDeleteGalleryID("");
 
     setShowDeleteModal(!showDeleteModal);
   };
 
   const handleDeleteGallery = () => {
-    dispatch(handleDeleteClubGallery(deleteImage, club.clubID));
+    dispatch(handleDeleteClubGallery(galleryID, club.clubID, true));
     handleShowDeleteModal();
     //check if gallery length is 1
     //if it is, update clubs.gallery as false
@@ -139,24 +156,90 @@ export default function ClubsGallery({ navigation }) {
         itemWidth={width - 32}
         renderItem={({ item, index }) => (
           <>
-            <Image
-              key={index}
-              style={styles.image}
-              contentFit="cover"
-              source={item.image}
-            />
-            {item.title && <Text style={styles.title}>{item.title}</Text>}
-            {item.content && <Text style={styles.content}>{item.content}</Text>}
-            {!isEmpty(currentMember) && currentMember.role === "president" && (
-              <Pressable
-                style={styles.borderButton}
-                onPress={() => {
-                  handleShowDeleteModal(item.image && item.image);
-                }}
-              >
-                <Text style={styles.borderButtonText}>delete</Text>
-              </Pressable>
-            )}
+            <Pressable
+              onPress={() => {
+                if (item.approval === "rejected")
+                  navigation.navigate("ResubmitClubsGallery", {
+                    gallery: item,
+                  });
+              }}
+            >
+              <Image
+                key={index}
+                style={
+                  item.approval === "approved"
+                    ? styles.image
+                    : [styles.image, { opacity: 0.5 }]
+                }
+                contentFit="cover"
+                source={item.image}
+              />
+              {item.title && (
+                <Text
+                  style={
+                    item.approval === "approved"
+                      ? styles.title
+                      : item.approval === "rejected"
+                      ? [styles.title, { color: "#A3222D" }]
+                      : [styles.title, { opacity: 0.5 }]
+                  }
+                >
+                  {item.title}
+                </Text>
+              )}
+              {item.approval === "approved"
+                ? item.content && (
+                    <Text style={styles.content}>{item.content}</Text>
+                  )
+                : null}
+              {!isEmpty(currentMember) &&
+                currentMember.role === "president" &&
+                item.approval === "approved" && (
+                  <Pressable
+                    style={styles.borderButton}
+                    onPress={() => {
+                      handleShowDeleteModal(item.galleryID);
+                    }}
+                  >
+                    <Text style={styles.borderButtonText}>delete</Text>
+                  </Pressable>
+                )}
+              {item.approval === "rejected" && (
+                <>
+                  <Text
+                    style={{
+                      fontSize: fontPixel(16),
+                      fontWeight: "400",
+                      color: "#A3222D",
+                    }}
+                  >
+                    rejected
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: fontPixel(16),
+                      fontWeight: "400",
+                      color: "#C6CDE2",
+                      marginTop: pixelSizeVertical(2),
+                    }}
+                  >
+                    {item.rejectionReason}
+                  </Text>
+                </>
+              )}
+              {item.approval === "pending" && (
+                <Text
+                  style={{
+                    fontSize: fontPixel(16),
+                    fontWeight: "400",
+                    color: "#C6CDE2",
+                    marginTop: pixelSizeVertical(2),
+                  }}
+                >
+                  pending approval
+                </Text>
+              )}
+            </Pressable>
           </>
         )}
       />

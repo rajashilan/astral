@@ -265,7 +265,7 @@ export default function ClubsEvents({ navigation }) {
                 <>
                   <Text
                     style={{
-                      fontSize: fontPixel(14),
+                      fontSize: fontPixel(16),
                       fontWeight: "400",
                       color: "#A3222D",
                     }}
@@ -274,7 +274,7 @@ export default function ClubsEvents({ navigation }) {
                   </Text>
                   <Text
                     style={{
-                      fontSize: fontPixel(14),
+                      fontSize: fontPixel(16),
                       fontWeight: "400",
                       color: "#C6CDE2",
                       marginTop: pixelSizeVertical(2),
@@ -287,7 +287,7 @@ export default function ClubsEvents({ navigation }) {
               {item.approval === "pending" && (
                 <Text
                   style={{
-                    fontSize: fontPixel(14),
+                    fontSize: fontPixel(16),
                     fontWeight: "400",
                     color: "#C6CDE2",
                     marginTop: pixelSizeVertical(2),

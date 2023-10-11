@@ -18,7 +18,6 @@ import {
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import * as Crypto from "expo-crypto";
-import dayjs from "dayjs";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
@@ -37,19 +36,17 @@ import Header from "../components/Header";
 
 import { firebase } from "../src/firebase/config";
 import {
-  addClubEvent,
-  handleDeleteClubEvent,
-  setClubEventToTrue,
+  addClubsGallery,
+  handleDeleteClubGallery,
+  setClubGalleryToTrue,
 } from "../src/redux/actions/dataActions";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { SET_LOADING_DATA } from "../src/redux/type";
-
 const db = firebase.firestore();
 
 const { width } = Dimensions.get("window");
 
-export default function ResubmitClubsEvent({ navigation, route }) {
-  const { event } = route.params;
+export default function ResubmitClubsGallery({ navigation, route }) {
+  const { gallery } = route.params;
 
   const dispatch = useDispatch();
   const currentMember = useSelector(
@@ -67,16 +64,19 @@ export default function ResubmitClubsEvent({ navigation, route }) {
   const [imageType, setImageType] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [date, setDate] = useState("");
   const [submittedImage, setSubmittedImage] = useState("");
-
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const [errors, setErrors] = useState({
     title: undefined,
-    content: undefined,
-    date: undefined,
+    image: undefined,
   });
+
+  useEffect(() => {
+    setSubmittedImage(gallery.image);
+    setTitle(gallery.title);
+    setContent(gallery.content);
+    setImage(gallery.image);
+  }, []);
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -85,14 +85,6 @@ export default function ResubmitClubsEvent({ navigation, route }) {
   const handleNavigateBack = () => {
     navigation.goBack();
   };
-
-  useEffect(() => {
-    setSubmittedImage(event.image);
-    setTitle(event.title);
-    setContent(event.content);
-    setDate(event.date);
-    setImage(event.image);
-  }, []);
 
   const handleAddPhoto = () => {
     ImagePicker.launchImageLibraryAsync({
@@ -118,28 +110,21 @@ export default function ResubmitClubsEvent({ navigation, route }) {
       });
   };
 
-  const handleConfirmDatePicker = (event, date) => {
-    setDate(date.toISOString());
-    setDatePickerVisibility(!isDatePickerVisible);
-  };
-
-  const handleAddToEvent = () => {
+  const handleAddToGallery = () => {
     //verify image and title
     let errors = [...errors];
 
-    if (!title.trim()) errors.title = "Please enter a title for your event.";
-    if (!content) errors.content = "Please explain about your event.";
-    if (!date) errors.date = "Please add a date for your event.";
+    if (!title.trim()) errors.title = "Please enter a title for your photo.";
+    if (!image) errors.image = "Please choose a photo to add.";
 
-    if (!errors.title && !errors.content && !errors.date) {
-      const eventID = Crypto.randomUUID();
+    if (!errors.title && !errors.image) {
+      dispatch({ type: SET_LOADING_DATA });
 
-      if (image !== "" && image !== submittedImage) {
-        dispatch({ type: SET_LOADING_DATA });
+      const name = Crypto.randomUUID();
+      let imageFileName = `${name}.${imageType}`;
+      let firebasePath = `clubs/gallery/photos/${imageFileName}`;
 
-        const name = Crypto.randomUUID();
-        let imageFileName = `${name}.${imageType}`;
-        let firebasePath = `clubs/events/photos/${imageFileName}`;
+      if (image !== submittedImage) {
         //first upload image and get url
         uriToBlob(image)
           .then((blob) => {
@@ -150,17 +135,18 @@ export default function ResubmitClubsEvent({ navigation, route }) {
           })
           .then((url) => {
             //store in gallery db and update in local
+            const galleryID = Crypto.randomUUID();
+
             dispatch(
-              addClubEvent(
+              addClubsGallery(
                 club.name,
                 club.clubID,
                 currentMember.userID,
                 url,
                 title,
                 content,
-                date,
-                eventID,
-                campusID
+                campusID,
+                galleryID
               )
             );
 
@@ -168,31 +154,32 @@ export default function ResubmitClubsEvent({ navigation, route }) {
             setImageType("");
             setTitle("");
             setContent("");
-            setDate("");
 
-            //check if clubs.events is false
-            //if it is, update clubs.events as true
-            if (!club.events) dispatch(setClubEventToTrue(club.clubID));
+            //check if clubs.gallery is false
+            //if it is, update clubs.gallery as true
+            if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
           })
           .catch((error) => {
-            throw error;
+            Toast.show({
+              type: "error",
+              text1: "something went wrong",
+            });
+            console.error(error);
           });
       } else {
-        let url;
-        if (image !== "") url = image;
-        else url = "";
+        //store in gallery db and update in local
+        const galleryID = Crypto.randomUUID();
 
         dispatch(
-          addClubEvent(
+          addClubsGallery(
             club.name,
             club.clubID,
             currentMember.userID,
-            url,
+            image,
             title,
             content,
-            date,
-            eventID,
-            campusID
+            campusID,
+            galleryID
           )
         );
 
@@ -200,14 +187,12 @@ export default function ResubmitClubsEvent({ navigation, route }) {
         setImageType("");
         setTitle("");
         setContent("");
-        setDate("");
 
-        //check if clubs.events is false
-        //if it is, update clubs.events as true
-        if (!club.events) dispatch(setClubEventToTrue(club.clubID));
+        //check if clubs.gallery is false
+        //if it is, update clubs.gallery as true
+        if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
       }
-      //delete the current event request
-      dispatch(handleDeleteClubEvent(event.eventID, club.clubID, false));
+      dispatch(handleDeleteClubGallery(gallery.galleryID, club.clubID, false));
     }
 
     setErrors(errors);
@@ -238,7 +223,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
       var storageRef = firebase.storage().ref();
 
       storageRef
-        .child(`clubs/events/photos/${imageFileName}`)
+        .child(`clubs/gallery/photos/${imageFileName}`)
         .put(blob, {
           contentType: `image/${imageType}`,
         })
@@ -277,7 +262,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
       <ScrollView>
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
-            <Header header={"resubmit event"} />
+            <Header header={"add a photo"} />
             <Text style={styles.disclaimer}>{club.name}</Text>
 
             <View
@@ -301,6 +286,9 @@ export default function ResubmitClubsEvent({ navigation, route }) {
                 </Text>
               </Pressable>
             </View>
+            {errors.image ? (
+              <Text style={styles.error}>{errors.image}</Text>
+            ) : null}
             <TextInput
               style={styles.textInput}
               placeholder="Enter the title"
@@ -315,7 +303,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
             ) : null}
             <TextInput
               style={styles.textInput}
-              placeholder="Share more details about the event..."
+              placeholder="Share more details about the photo..."
               placeholderTextColor="#DBDBDB"
               value={content}
               multiline
@@ -323,36 +311,10 @@ export default function ResubmitClubsEvent({ navigation, route }) {
               editable={!loading}
               onChangeText={(content) => setContent(content)}
             />
-            {errors.content ? (
-              <Text style={styles.error}>{errors.content}</Text>
-            ) : null}
-            <Pressable
-              disabled={loading}
-              style={styles.datePickerButton}
-              onPress={() => setDatePickerVisibility(!isDatePickerVisible)}
-            >
-              <Text style={styles.datePickerButtonText}>
-                {date === ""
-                  ? "select date"
-                  : dayjs(date.split("T")[0]).format("D MMM YYYY")}
-              </Text>
-            </Pressable>
-            {errors.date ? (
-              <Text style={styles.error}>{errors.date}</Text>
-            ) : null}
-            {isDatePickerVisible && (
-              <DateTimePicker
-                value={new Date()}
-                maximumDate={new Date(2030, 10, 20)}
-                mode="date"
-                onChange={handleConfirmDatePicker}
-                onConfirm={() => setDatePickerVisibility(!isDatePickerVisible)}
-                onCancel={() => setDatePickerVisibility(!isDatePickerVisible)}
-              />
-            )}
+
             <Pressable
               style={loading ? styles.loginButtonDisabled : styles.loginButton}
-              onPress={handleAddToEvent}
+              onPress={handleAddToGallery}
             >
               <Text
                 style={
@@ -428,20 +390,21 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#DFE5F8",
   },
-  datePickerButton: {
-    backgroundColor: "#232F52",
+  loginButton: {
+    backgroundColor: "#07BEB8",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
     paddingTop: pixelSizeVertical(18),
     paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(10),
+    marginTop: pixelSizeVertical(16),
+    marginBottom: pixelSizeVertical(30),
     width: "100%",
     borderRadius: 5,
   },
-  datePickerButtonText: {
-    fontSize: fontPixel(18),
-    fontWeight: "400",
-    color: "#DFE5F8",
+  loginButtonText: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#0C111F",
     textAlign: "center",
   },
   emptyView: {
@@ -533,6 +496,23 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
+  },
+  loginButtonLoadingText: {
+    fontSize: fontPixel(22),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    textAlign: "center",
+  },
+  loginButtonDisabled: {
+    backgroundColor: "#1A2238",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(18),
+    paddingBottom: pixelSizeVertical(18),
+    marginTop: pixelSizeVertical(16),
+    marginBottom: pixelSizeVertical(24),
+    width: "100%",
+    borderRadius: 5,
   },
   tertiaryButton: {
     color: "#A7AFC7",

@@ -204,7 +204,7 @@ export default function (state = initialState, action) {
     case DELETE_GALLERY:
       let deleteGalleryTemp = [...state.clubData.gallery];
       let findDeleteGalleryIndex = deleteGalleryTemp.findIndex(
-        (gallery) => gallery.image === action.payload
+        (gallery) => gallery.galleryID === action.payload
       );
       deleteGalleryTemp.splice(findDeleteGalleryIndex, 1);
       return {

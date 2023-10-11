@@ -51,6 +51,7 @@ export default function AddClubsGallery({ navigation }) {
   );
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
+  const campusID = useSelector((state) => state.data.campus.campusID);
 
   //get current member data from redux
 
@@ -122,6 +123,8 @@ export default function AddClubsGallery({ navigation }) {
         })
         .then((url) => {
           //store in gallery db and update in local
+          const galleryID = Crypto.randomUUID();
+
           dispatch(
             addClubsGallery(
               club.name,
@@ -129,7 +132,9 @@ export default function AddClubsGallery({ navigation }) {
               currentMember.userID,
               url,
               title,
-              content
+              content,
+              campusID,
+              galleryID
             )
           );
 

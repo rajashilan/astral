@@ -316,7 +316,7 @@ export const addClubsGallery =
         });
         Toast.show({
           type: "success",
-          text1: `Added to gallery successfully`,
+          text1: `Submitted gallery request successfully`,
         });
       })
       .catch((error) => {
@@ -375,33 +375,38 @@ export const setClubGalleryToFalse = (clubID, campusID) => (dispatch) => {
     });
 };
 
-export const handleDeleteClubGallery = (image, clubID) => (dispatch) => {
-  dispatch({ type: SET_LOADING_DATA });
-  db.doc(`/gallery/${clubID}`)
-    .get()
-    .then((doc) => {
-      let temp = [...doc.data().gallery];
-      let index = temp.findIndex((gallery) => gallery.image === image);
-      temp.splice(index, 1);
-      return db.doc(`/gallery/${clubID}`).update({ gallery: [...temp] });
-    })
-    .then(() => {
-      dispatch({ type: STOP_LOADING_DATA });
-      dispatch({ type: DELETE_GALLERY, payload: image });
-      Toast.show({
-        type: "success",
-        text1: `Photo deleted successfully`,
+export const handleDeleteClubGallery =
+  (galleryID, clubID, showToastMessage) => (dispatch) => {
+    dispatch({ type: SET_LOADING_DATA });
+    db.doc(`/gallery/${clubID}`)
+      .get()
+      .then((doc) => {
+        let temp = [...doc.data().gallery];
+        let index = temp.findIndex(
+          (gallery) => gallery.galleryID === galleryID
+        );
+        temp.splice(index, 1);
+        return db.doc(`/gallery/${clubID}`).update({ gallery: [...temp] });
+      })
+      .then(() => {
+        dispatch({ type: STOP_LOADING_DATA });
+        dispatch({ type: DELETE_GALLERY, payload: galleryID });
+        if (showToastMessage)
+          Toast.show({
+            type: "success",
+            text1: `Photo deleted successfully`,
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: STOP_LOADING_DATA });
+        if (showToastMessage)
+          Toast.show({
+            type: "error",
+            text1: "Something went wrong",
+          });
       });
-    })
-    .catch((error) => {
-      console.error(error);
-      dispatch({ type: STOP_LOADING_DATA });
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
-    });
-};
+  };
 
 //club event
 
@@ -480,7 +485,7 @@ export const addClubEvent =
         });
         Toast.show({
           type: "success",
-          text1: `Added to events successfully`,
+          text1: `Submitted event request successfully`,
         });
       })
       .catch((error) => {
