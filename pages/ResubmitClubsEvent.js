@@ -18,6 +18,7 @@ import {
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import * as Crypto from "expo-crypto";
+import dayjs from "dayjs";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
@@ -37,6 +38,7 @@ import Header from "../components/Header";
 import { firebase } from "../src/firebase/config";
 import {
   addClubEvent,
+  handleDeleteClubEvent,
   setClubEventToTrue,
 } from "../src/redux/actions/dataActions";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -46,7 +48,9 @@ const db = firebase.firestore();
 
 const { width } = Dimensions.get("window");
 
-export default function AddClubsEvent({ navigation }) {
+export default function ResubmitClubsEvent({ navigation, route }) {
+  const { event } = route.params;
+
   const dispatch = useDispatch();
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
@@ -64,6 +68,7 @@ export default function AddClubsEvent({ navigation }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
+  const [submittedImage, setSubmittedImage] = useState("");
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -80,6 +85,14 @@ export default function AddClubsEvent({ navigation }) {
   const handleNavigateBack = () => {
     navigation.goBack();
   };
+
+  useEffect(() => {
+    setSubmittedImage(event.image);
+    setTitle(event.title);
+    setContent(event.content);
+    setDate(event.date);
+    setImage(event.image);
+  }, []);
 
   const handleAddPhoto = () => {
     ImagePicker.launchImageLibraryAsync({
@@ -121,7 +134,7 @@ export default function AddClubsEvent({ navigation }) {
     if (!errors.title && !errors.content && !errors.date) {
       const eventID = Crypto.randomUUID();
 
-      if (image) {
+      if (image !== "" && image !== submittedImage) {
         dispatch({ type: SET_LOADING_DATA });
 
         const name = Crypto.randomUUID();
@@ -165,7 +178,9 @@ export default function AddClubsEvent({ navigation }) {
             throw error;
           });
       } else {
-        let url = "";
+        let url;
+        if (image !== "") url = image;
+        else url = "";
 
         dispatch(
           addClubEvent(
@@ -191,6 +206,8 @@ export default function AddClubsEvent({ navigation }) {
         //if it is, update clubs.events as true
         if (!club.events) dispatch(setClubEventToTrue(club.clubID));
       }
+      //delete the current event request
+      dispatch(handleDeleteClubEvent(event.eventID, club.clubID, false));
     }
 
     setErrors(errors);
@@ -260,7 +277,7 @@ export default function AddClubsEvent({ navigation }) {
       <ScrollView>
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
-            <Header header={"add an event"} />
+            <Header header={"resubmit event"} />
             <Text style={styles.disclaimer}>{club.name}</Text>
 
             <View
@@ -314,7 +331,11 @@ export default function AddClubsEvent({ navigation }) {
               style={styles.datePickerButton}
               onPress={() => setDatePickerVisibility(!isDatePickerVisible)}
             >
-              <Text style={styles.datePickerButtonText}>select date</Text>
+              <Text style={styles.datePickerButtonText}>
+                {date === ""
+                  ? "select date"
+                  : dayjs(date.split("T")[0]).format("D MMM YYYY")}
+              </Text>
             </Pressable>
             {errors.date ? (
               <Text style={styles.error}>{errors.date}</Text>

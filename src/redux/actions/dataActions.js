@@ -267,13 +267,29 @@ export const getClubGallery = (clubID) => (dispatch) => {
 };
 
 export const addClubsGallery =
-  (clubName, clubID, userID, image, title, content) => (dispatch) => {
+  (clubName, clubID, userID, image, title, content, campusID, galleryID) =>
+  (dispatch) => {
     dispatch({ type: SET_LOADING_DATA });
 
     let data = {
       image,
       title,
       content,
+      approval: "pending",
+      galleryID,
+      rejectionReason: "",
+    };
+
+    let pendingGalleryData = {
+      clubName,
+      clubID,
+      image,
+      title,
+      content,
+      activity: "Gallery",
+      campusID,
+      activityID: "",
+      galleryID,
     };
 
     db.doc(`/gallery/${clubID}`)
@@ -285,8 +301,19 @@ export const addClubsGallery =
         return db.doc(`/gallery/${clubID}`).update({ gallery: [...temp] });
       })
       .then(() => {
+        return db.collection("pendingGallery").add(pendingGalleryData);
+      })
+      .then((data) => {
+        return db
+          .doc(`/pendingGallery/${data.id}`)
+          .update({ activityID: data.id });
+      })
+      .then(() => {
         dispatch({ type: STOP_LOADING_DATA });
-        dispatch({ type: ADD_CLUB_GALLERY, payload: { gallery: { ...data } } });
+        dispatch({
+          type: ADD_CLUB_GALLERY,
+          payload: { gallery: { ...data } },
+        });
         Toast.show({
           type: "success",
           text1: `Added to gallery successfully`,
@@ -402,7 +429,7 @@ export const getClubEvent = (clubID) => (dispatch) => {
 
 //date, image, title, content, eventID
 export const addClubEvent =
-  (clubName, clubID, userID, image, title, content, date, eventID) =>
+  (clubName, clubID, userID, image, title, content, date, eventID, campusID) =>
   (dispatch) => {
     dispatch({ type: SET_LOADING_DATA });
 
@@ -412,6 +439,21 @@ export const addClubEvent =
       content,
       date,
       eventID,
+      approval: "pending",
+      rejectionReason: "",
+    };
+
+    let pendingEventData = {
+      clubName,
+      clubID,
+      image,
+      title,
+      content,
+      date,
+      eventID,
+      activity: "Event",
+      campusID,
+      activityID: "",
     };
 
     db.doc(`/events/${clubID}`)
@@ -423,8 +465,19 @@ export const addClubEvent =
         return db.doc(`/events/${clubID}`).update({ events: [...temp] });
       })
       .then(() => {
+        return db.collection("pendingEvents").add(pendingEventData);
+      })
+      .then((data) => {
+        return db
+          .doc(`/pendingEvents/${data.id}`)
+          .update({ activityID: data.id });
+      })
+      .then(() => {
         dispatch({ type: STOP_LOADING_DATA });
-        dispatch({ type: ADD_CLUB_EVENT, payload: { event: { ...data } } });
+        dispatch({
+          type: ADD_CLUB_EVENT,
+          payload: { event: { ...data } },
+        });
         Toast.show({
           type: "success",
           text1: `Added to events successfully`,
@@ -486,33 +539,36 @@ export const setClubEventToFalse = (clubID, campusID) => (dispatch) => {
     });
 };
 
-export const handleDeleteClubEvent = (eventID, clubID) => (dispatch) => {
-  dispatch({ type: SET_LOADING_DATA });
-  db.doc(`/events/${clubID}`)
-    .get()
-    .then((doc) => {
-      let temp = [...doc.data().events];
-      let index = temp.findIndex((events) => events.eventID === eventID);
-      temp.splice(index, 1);
-      return db.doc(`/events/${clubID}`).update({ events: [...temp] });
-    })
-    .then(() => {
-      dispatch({ type: STOP_LOADING_DATA });
-      dispatch({ type: DELETE_EVENT, payload: eventID });
-      Toast.show({
-        type: "success",
-        text1: `Event deleted successfully`,
+export const handleDeleteClubEvent =
+  (eventID, clubID, showToastMessage) => (dispatch) => {
+    dispatch({ type: SET_LOADING_DATA });
+    db.doc(`/events/${clubID}`)
+      .get()
+      .then((doc) => {
+        let temp = [...doc.data().events];
+        let index = temp.findIndex((events) => events.eventID === eventID);
+        temp.splice(index, 1);
+        return db.doc(`/events/${clubID}`).update({ events: [...temp] });
+      })
+      .then(() => {
+        dispatch({ type: STOP_LOADING_DATA });
+        dispatch({ type: DELETE_EVENT, payload: eventID });
+        if (showToastMessage)
+          Toast.show({
+            type: "success",
+            text1: `Event deleted successfully`,
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: STOP_LOADING_DATA });
+        if (showToastMessage)
+          Toast.show({
+            type: "error",
+            text1: "Something went wrong",
+          });
       });
-    })
-    .catch((error) => {
-      console.error(error);
-      dispatch({ type: STOP_LOADING_DATA });
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
-    });
-};
+  };
 
 //edit details -> update redux locally in clubData.club
 export const handleUpdateClubDetails = (clubID, data) => (dispatch) => {

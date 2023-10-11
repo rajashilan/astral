@@ -55,14 +55,30 @@ export default function ClubsEvents({ navigation }) {
 
   useEffect(() => {
     //perform filtering according to past and future
+    //also perform filtering for approval and member role
     let currentDate = new Date().toISOString();
     currentDate = currentDate.split("T")[0];
     let tempPast = [];
     let tempFuture = [];
 
     events.map((event) => {
-      if (event.date.split("T")[0] < currentDate) tempPast.push(event);
-      else tempFuture.push(event);
+      if (event.date.split("T")[0] < currentDate) {
+        if (event.approval === "approved") tempPast.push(event);
+        else if (
+          event.approval !== "approved" &&
+          !isEmpty(currentMember) &&
+          currentMember.role === "president"
+        )
+          tempPast.push(event);
+      } else {
+        if (event.approval === "approved") tempFuture.push(event);
+        else if (
+          event.approval !== "approved" &&
+          !isEmpty(currentMember) &&
+          currentMember.role === "president"
+        )
+          tempFuture.push(event);
+      }
     });
     setData({
       past: [...tempPast],
@@ -86,7 +102,7 @@ export default function ClubsEvents({ navigation }) {
   };
 
   const handleDeleteEvent = () => {
-    dispatch(handleDeleteClubEvent(eventID, club.clubID));
+    dispatch(handleDeleteClubEvent(eventID, club.clubID, true));
     handleShowDeleteModal();
     //check if event length is 1
     //if it is, update clubs.events as false
@@ -194,29 +210,93 @@ export default function ClubsEvents({ navigation }) {
         useExperimentalSnap={true}
         renderItem={({ item, index }) => (
           <>
-            {item.image && (
-              <Image
-                key={index}
-                style={styles.image}
-                contentFit="cover"
-                source={item.image}
-              />
-            )}
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.date}>
-              {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
-            </Text>
-            {item.content && <Text style={styles.content}>{item.content}</Text>}
-            {!isEmpty(currentMember) && currentMember.role === "president" && (
-              <Pressable
-                style={styles.borderButton}
-                onPress={() => {
-                  handleShowDeleteModal(item.eventID);
-                }}
+            <Pressable
+              onPress={() => {
+                if (item.approval === "rejected")
+                  navigation.navigate("ResubmitClubsEvent", { event: item });
+              }}
+            >
+              {item.image && (
+                <Image
+                  key={index}
+                  style={
+                    item.approval === "approved"
+                      ? styles.image
+                      : [styles.image, { opacity: 0.5 }]
+                  }
+                  contentFit="cover"
+                  source={item.image}
+                />
+              )}
+              <Text
+                style={
+                  item.approval === "approved"
+                    ? styles.title
+                    : item.approval === "rejected"
+                    ? [styles.title, { color: "#A3222D" }]
+                    : [styles.title, { opacity: 0.5 }]
+                }
               >
-                <Text style={styles.borderButtonText}>delete</Text>
-              </Pressable>
-            )}
+                {item.title}
+              </Text>
+              {item.approval === "approved" ? (
+                <>
+                  <Text style={styles.date}>
+                    {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
+                  </Text>
+                  {item.content && (
+                    <Text style={styles.content}>{item.content}</Text>
+                  )}
+                </>
+              ) : null}
+              {!isEmpty(currentMember) &&
+                currentMember.role === "president" &&
+                item.approval === "approved" && (
+                  <Pressable
+                    style={styles.borderButton}
+                    onPress={() => {
+                      handleShowDeleteModal(item.eventID);
+                    }}
+                  >
+                    <Text style={styles.borderButtonText}>delete</Text>
+                  </Pressable>
+                )}
+              {item.approval === "rejected" && (
+                <>
+                  <Text
+                    style={{
+                      fontSize: fontPixel(14),
+                      fontWeight: "400",
+                      color: "#A3222D",
+                    }}
+                  >
+                    rejected
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: fontPixel(14),
+                      fontWeight: "400",
+                      color: "#C6CDE2",
+                      marginTop: pixelSizeVertical(2),
+                    }}
+                  >
+                    {item.rejectionReason}
+                  </Text>
+                </>
+              )}
+              {item.approval === "pending" && (
+                <Text
+                  style={{
+                    fontSize: fontPixel(14),
+                    fontWeight: "400",
+                    color: "#C6CDE2",
+                    marginTop: pixelSizeVertical(2),
+                  }}
+                >
+                  pending approval
+                </Text>
+              )}
+            </Pressable>
           </>
         )}
       />
