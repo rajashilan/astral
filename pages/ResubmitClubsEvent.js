@@ -150,6 +150,9 @@ export default function ResubmitClubsEvent({ navigation, route }) {
           })
           .then((url) => {
             //store in gallery db and update in local
+            let hasEvents = true;
+            if (!club.events) hasEvents = false;
+
             dispatch(
               addClubEvent(
                 club.name,
@@ -160,7 +163,8 @@ export default function ResubmitClubsEvent({ navigation, route }) {
                 content,
                 date,
                 eventID,
-                campusID
+                campusID,
+                hasEvents
               )
             );
 
@@ -172,7 +176,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
 
             //check if clubs.events is false
             //if it is, update clubs.events as true
-            if (!club.events) dispatch(setClubEventToTrue(club.clubID));
+            //if (!club.events) dispatch(setClubEventToTrue(club.clubID));
           })
           .catch((error) => {
             throw error;
@@ -181,6 +185,9 @@ export default function ResubmitClubsEvent({ navigation, route }) {
         let url;
         if (image !== "") url = image;
         else url = "";
+
+        let hasEvents = true;
+        if (!club.events) hasEvents = false;
 
         dispatch(
           addClubEvent(
@@ -192,7 +199,8 @@ export default function ResubmitClubsEvent({ navigation, route }) {
             content,
             date,
             eventID,
-            campusID
+            campusID,
+            hasEvents
           )
         );
 
@@ -204,7 +212,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
 
         //check if clubs.events is false
         //if it is, update clubs.events as true
-        if (!club.events) dispatch(setClubEventToTrue(club.clubID));
+        //if (!club.events) dispatch(setClubEventToTrue(club.clubID));
       }
       //delete the current event request
       dispatch(handleDeleteClubEvent(event.eventID, club.clubID, false));

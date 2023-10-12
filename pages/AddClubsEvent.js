@@ -138,6 +138,13 @@ export default function AddClubsEvent({ navigation }) {
           })
           .then((url) => {
             //store in gallery db and update in local
+
+            //check if clubs.events is false
+            //if it is, update clubs.events as true
+
+            let hasEvents = true;
+            if (!club.events) hasEvents = false;
+
             dispatch(
               addClubEvent(
                 club.name,
@@ -148,7 +155,8 @@ export default function AddClubsEvent({ navigation }) {
                 content,
                 date,
                 eventID,
-                campusID
+                campusID,
+                hasEvents
               )
             );
 
@@ -157,16 +165,15 @@ export default function AddClubsEvent({ navigation }) {
             setTitle("");
             setContent("");
             setDate("");
-
-            //check if clubs.events is false
-            //if it is, update clubs.events as true
-            if (!club.events) dispatch(setClubEventToTrue(club.clubID));
           })
           .catch((error) => {
             throw error;
           });
       } else {
         let url = "";
+
+        let hasEvents = true;
+        if (!club.events) hasEvents = false;
 
         dispatch(
           addClubEvent(
@@ -178,7 +185,8 @@ export default function AddClubsEvent({ navigation }) {
             content,
             date,
             eventID,
-            campusID
+            campusID,
+            hasEvents
           )
         );
 
@@ -190,7 +198,7 @@ export default function AddClubsEvent({ navigation }) {
 
         //check if clubs.events is false
         //if it is, update clubs.events as true
-        if (!club.events) dispatch(setClubEventToTrue(club.clubID));
+        //if (!club.events) dispatch(setClubEventToTrue(club.clubID));
       }
     }
 

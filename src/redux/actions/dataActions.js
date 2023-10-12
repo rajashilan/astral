@@ -267,7 +267,17 @@ export const getClubGallery = (clubID) => (dispatch) => {
 };
 
 export const addClubsGallery =
-  (clubName, clubID, userID, image, title, content, campusID, galleryID) =>
+  (
+    clubName,
+    clubID,
+    userID,
+    image,
+    title,
+    content,
+    campusID,
+    galleryID,
+    hasGallery
+  ) =>
   (dispatch) => {
     dispatch({ type: SET_LOADING_DATA });
 
@@ -290,6 +300,7 @@ export const addClubsGallery =
       campusID,
       activityID: "",
       galleryID,
+      hasGallery,
     };
 
     db.doc(`/gallery/${clubID}`)
@@ -434,7 +445,18 @@ export const getClubEvent = (clubID) => (dispatch) => {
 
 //date, image, title, content, eventID
 export const addClubEvent =
-  (clubName, clubID, userID, image, title, content, date, eventID, campusID) =>
+  (
+    clubName,
+    clubID,
+    userID,
+    image,
+    title,
+    content,
+    date,
+    eventID,
+    campusID,
+    hasEvents
+  ) =>
   (dispatch) => {
     dispatch({ type: SET_LOADING_DATA });
 
@@ -459,6 +481,7 @@ export const addClubEvent =
       activity: "Event",
       campusID,
       activityID: "",
+      hasEvents,
     };
 
     db.doc(`/events/${clubID}`)

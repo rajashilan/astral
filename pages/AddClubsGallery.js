@@ -125,6 +125,9 @@ export default function AddClubsGallery({ navigation }) {
           //store in gallery db and update in local
           const galleryID = Crypto.randomUUID();
 
+          let hasGallery = true;
+          if (!club.gallery) hasGallery = false;
+
           dispatch(
             addClubsGallery(
               club.name,
@@ -134,7 +137,8 @@ export default function AddClubsGallery({ navigation }) {
               title,
               content,
               campusID,
-              galleryID
+              galleryID,
+              hasGallery
             )
           );
 
@@ -145,7 +149,7 @@ export default function AddClubsGallery({ navigation }) {
 
           //check if clubs.gallery is false
           //if it is, update clubs.gallery as true
-          if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
+          //if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
         })
         .catch((error) => {
           throw error;

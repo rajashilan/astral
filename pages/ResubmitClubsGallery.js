@@ -137,6 +137,9 @@ export default function ResubmitClubsGallery({ navigation, route }) {
             //store in gallery db and update in local
             const galleryID = Crypto.randomUUID();
 
+            let hasGallery = true;
+            if (!club.gallery) hasGallery = false;
+
             dispatch(
               addClubsGallery(
                 club.name,
@@ -146,7 +149,8 @@ export default function ResubmitClubsGallery({ navigation, route }) {
                 title,
                 content,
                 campusID,
-                galleryID
+                galleryID,
+                hasGallery
               )
             );
 
@@ -157,7 +161,7 @@ export default function ResubmitClubsGallery({ navigation, route }) {
 
             //check if clubs.gallery is false
             //if it is, update clubs.gallery as true
-            if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
+            //if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
           })
           .catch((error) => {
             Toast.show({
@@ -170,6 +174,9 @@ export default function ResubmitClubsGallery({ navigation, route }) {
         //store in gallery db and update in local
         const galleryID = Crypto.randomUUID();
 
+        let hasGallery = true;
+        if (!club.gallery) hasGallery = false;
+
         dispatch(
           addClubsGallery(
             club.name,
@@ -179,7 +186,8 @@ export default function ResubmitClubsGallery({ navigation, route }) {
             title,
             content,
             campusID,
-            galleryID
+            galleryID,
+            hasGallery
           )
         );
 
@@ -190,7 +198,7 @@ export default function ResubmitClubsGallery({ navigation, route }) {
 
         //check if clubs.gallery is false
         //if it is, update clubs.gallery as true
-        if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
+        //if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
       }
       dispatch(handleDeleteClubGallery(gallery.galleryID, club.clubID, false));
     }
