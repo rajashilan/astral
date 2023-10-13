@@ -14,6 +14,9 @@ import {
 
 import Modal from "react-native-modal";
 
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../utils/toast-config";
+
 import { useSelector, useDispatch } from "react-redux";
 import {
   createNotification,
@@ -340,8 +343,8 @@ export default function ClubsEvents({ navigation }) {
           )}
         </View>
       </Modal>
-
       <View style={styles.emptyView} />
+      <Toast config={toastConfig} />
     </View>
   );
 }

@@ -276,7 +276,8 @@ export const addClubsGallery =
     content,
     campusID,
     galleryID,
-    hasGallery
+    hasGallery,
+    toDeleteGalleryID
   ) =>
   (dispatch) => {
     dispatch({ type: SET_LOADING_DATA });
@@ -320,6 +321,8 @@ export const addClubsGallery =
           .update({ activityID: data.id });
       })
       .then(() => {
+        if (toDeleteGalleryID)
+          dispatch(handleDeleteClubGallery(toDeleteGalleryID, clubID, false));
         dispatch({ type: STOP_LOADING_DATA });
         dispatch({
           type: ADD_CLUB_GALLERY,
@@ -455,7 +458,8 @@ export const addClubEvent =
     date,
     eventID,
     campusID,
-    hasEvents
+    hasEvents,
+    toDeleteEventID
   ) =>
   (dispatch) => {
     dispatch({ type: SET_LOADING_DATA });
@@ -501,6 +505,8 @@ export const addClubEvent =
           .update({ activityID: data.id });
       })
       .then(() => {
+        if (toDeleteEventID)
+          dispatch(handleDeleteClubEvent(toDeleteEventID, clubID, false));
         dispatch({ type: STOP_LOADING_DATA });
         dispatch({
           type: ADD_CLUB_EVENT,

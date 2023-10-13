@@ -150,7 +150,8 @@ export default function ResubmitClubsGallery({ navigation, route }) {
                 content,
                 campusID,
                 galleryID,
-                hasGallery
+                hasGallery,
+                gallery.galleryID
               )
             );
 
@@ -187,7 +188,8 @@ export default function ResubmitClubsGallery({ navigation, route }) {
             content,
             campusID,
             galleryID,
-            hasGallery
+            hasGallery,
+            gallery.galleryID
           )
         );
 
@@ -200,7 +202,8 @@ export default function ResubmitClubsGallery({ navigation, route }) {
         //if it is, update clubs.gallery as true
         //if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
       }
-      dispatch(handleDeleteClubGallery(gallery.galleryID, club.clubID, false));
+      //dispatch(handleDeleteClubGallery(gallery.galleryID, club.clubID, false));
+      navigation.goBack();
     }
 
     setErrors(errors);

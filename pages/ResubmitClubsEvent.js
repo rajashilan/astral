@@ -164,7 +164,8 @@ export default function ResubmitClubsEvent({ navigation, route }) {
                 date,
                 eventID,
                 campusID,
-                hasEvents
+                hasEvents,
+                event.eventID
               )
             );
 
@@ -200,7 +201,8 @@ export default function ResubmitClubsEvent({ navigation, route }) {
             date,
             eventID,
             campusID,
-            hasEvents
+            hasEvents,
+            event.eventID
           )
         );
 
@@ -215,7 +217,8 @@ export default function ResubmitClubsEvent({ navigation, route }) {
         //if (!club.events) dispatch(setClubEventToTrue(club.clubID));
       }
       //delete the current event request
-      dispatch(handleDeleteClubEvent(event.eventID, club.clubID, false));
+      //dispatch(handleDeleteClubEvent(event.eventID, club.clubID, false));
+      navigation.goBack();
     }
 
     setErrors(errors);
