@@ -72,6 +72,8 @@ export default function ResubmitClubsEvent({ navigation, route }) {
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+
   const [errors, setErrors] = useState({
     title: undefined,
     content: undefined,
@@ -263,6 +265,11 @@ export default function ResubmitClubsEvent({ navigation, route }) {
     });
   };
 
+  const handleWithdraw = () => {
+    dispatch(handleDeleteClubEvent(event.eventID, club.clubID, true));
+    handleNavigateBack();
+  };
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -375,12 +382,8 @@ export default function ResubmitClubsEvent({ navigation, route }) {
                 {loading ? "resubmitting..." : "resubmit"}
               </Text>
             </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Text style={styles.secondaryButton}>cancel</Text>
+            <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
+              <Text style={styles.secondaryButton}>withdraw</Text>
             </Pressable>
           </View>
         </View>
@@ -403,6 +406,43 @@ export default function ResubmitClubsEvent({ navigation, route }) {
           currentPage={"clubs"}
           navigation={navigation}
         />
+      </Modal>
+
+      <Modal
+        isVisible={showWithdrawModal}
+        onBackdropPress={() => setShowWithdrawModal(!showWithdrawModal)} // Android back press
+        animationIn="bounceIn" // Has others, we want slide in from the left
+        animationOut="bounceOut" // When discarding the drawer
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
+      >
+        <View style={styles.withdrawMenu}>
+          <Text
+            style={[
+              styles.rejectionReason,
+              { textAlign: "center", marginBottom: pixelSizeHorizontal(8) },
+            ]}
+          >
+            Are you sure to withdraw this event?
+          </Text>
+          <Pressable
+            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            onPress={handleWithdraw}
+          >
+            <Text
+              style={
+                loading ? styles.loginButtonLoadingText : styles.loginButtonText
+              }
+            >
+              {loading ? "withdrawing..." : "withdraw"}
+            </Text>
+          </Pressable>
+          <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
+            <Text style={styles.withdrawButton}>cancel</Text>
+          </Pressable>
+        </View>
       </Modal>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
@@ -615,5 +655,32 @@ const styles = StyleSheet.create({
     color: "#a3222d",
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
+  },
+  withdrawPopupStyle: {
+    margin: 16,
+    width: "auto", // SideMenu width
+    alignSelf: "center",
+  },
+  withdrawMenu: {
+    height: "auto",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    backgroundColor: "#131A2E",
+    display: "flex",
+    borderRadius: 5,
+  },
+  rejectionReason: {
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#DFE5F8",
+  },
+  withdrawButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#A7AFC7",
+    marginTop: pixelSizeVertical(2),
+    textAlign: "center",
   },
 });
