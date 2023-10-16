@@ -22,7 +22,7 @@ import Profile from "./pages/Profile";
 import Stafflist from "./pages/Stafflist";
 import Stafflistpage from "./pages/Stafflistpage";
 import CreateAClub from "./pages/CreateAClub";
-import ClubResubmission from "./pages/ClubResubmisson";
+import ClubResubmission from "./pages/ClubResubmission";
 import ClubsYou from "./pages/ClubsYou";
 import AddClubsGallery from "./pages/AddClubsGallery";
 import AddClubsEvent from "./pages/AddClubsEvent";

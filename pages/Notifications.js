@@ -191,6 +191,8 @@ export default function Notifications({ navigation }) {
                         navigation.navigate("ClubsPages", {
                           clubID: item.sourceID,
                         });
+                      } else if (item.sourceDestination === "Clubs") {
+                        navigation.navigate("Clubs");
                       }
                     }
                   }}
