@@ -93,8 +93,8 @@ export default function AddClubsGallery({ navigation }) {
       .catch((error) => {
         console.error(error);
         Toast.show({
-          type: "success",
-          text1: "",
+          type: "error",
+          text1: "something went wrong",
         });
       });
   };

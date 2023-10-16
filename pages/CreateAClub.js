@@ -20,6 +20,8 @@ import {
 } from "../utils/responsive-font";
 
 import * as Crypto from "expo-crypto";
+import * as WebBrowser from "expo-web-browser";
+import Checkbox from "expo-checkbox";
 
 import IosHeight from "../components/IosHeight";
 import Header from "../components/Header";
@@ -34,7 +36,7 @@ import { firebase } from "../src/firebase/config";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_USER_CLUB } from "../src/redux/type";
-import { event } from "react-native-reanimated";
+import * as DocumentPicker from "expo-document-picker";
 
 const { width } = Dimensions.get("window");
 
@@ -50,228 +52,356 @@ export default function Login({ navigation, route }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [errors, setErrors] = useState({
     name: undefined,
+    document: undefined,
+    checkBox: undefined,
   });
+  const [document, setDocument] = useState(null);
+  const [documentType, setDocumentType] = useState(null);
+  const [mimeType, setMimeType] = useState(null);
+  const [isChecked, setChecked] = useState(false);
+
+  const [step, setStep] = useState("step1");
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+
+  const FPFUrl =
+    "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fforms%2FFPF.docx?alt=media";
+
+  const pickDocument = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: [
+          "application/pdf",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ], // Specify the type of document you want to pick (e.g., PDF)
+      });
+
+      if (result.type === "success") {
+        // User picked an image
+        const uri = result.uri;
+        setDocumentType(uri.split(".")[uri.split(".").length - 1]);
+        setDocument(uri);
+        setMimeType(result.mimeType);
+        Toast.show({
+          type: "success",
+          text1: "file added successfully",
+        });
+        setErrors({
+          name: undefined,
+          document: undefined,
+          checkBox: undefined,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Toast.show({
+        type: "error",
+        text1: "something went wrong",
+      });
+    }
+  };
+
+  const uriToBlob = (uri) => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        // return the blob
+        resolve(xhr.response);
+      };
+
+      xhr.onerror = function () {
+        // something went wrong
+        reject(new Error("uriToBlob failed"));
+      };
+      // this helps us get a blob
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+
+      xhr.send(null);
+    });
+  };
+
+  uploadToFirebase = (blob, imageFileName) => {
+    return new Promise((resolve, reject) => {
+      var storageRef = firebase.storage().ref();
+
+      storageRef
+        .child(`clubs/forms/uploaded/${imageFileName}`)
+        .put(blob, {
+          contentType: mimeType,
+        })
+        .then((snapshot) => {
+          blob.close();
+          resolve(snapshot);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  };
 
   const handleSubmit = () => {
     let errors = [...errors];
 
     if (!name.trim()) errors.name = "Please enter your club's name";
+    if (!document && step === "step2")
+      errors.document = "Please upload your FPF form.";
+    if (!isChecked && step === "step2")
+      errors.checkBox = "Please acknowledge the above.";
 
     if (!errors.name) {
-      setLoading(true);
+      if (step === "step1") {
+        setStep("step2");
+        return;
+      }
+    }
 
+    if (!errors.name && !errors.document) {
       //create a new club
       //first add to clubs
       //then add to clubs overview (campus admin will get data from here)
+
+      let index = user.clubs.findIndex(
+        (club) => club.approval === "pending" && club.createdBy === user.userId
+      );
+
+      if (index !== -1) {
+        Toast.show({
+          type: "error",
+          text1: "you can only create a request for one club at a time.",
+        });
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
 
       const memberID = Crypto.randomUUID();
       let clubID = "";
       const createdAt = new Date();
       const createdBy = user.userId;
 
-      let clubsData = {
-        clubID: "", //get it later after adding
-        name,
-        image:
-          "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.svg?alt=media",
-        gallery: false,
-        events: false,
-        details: {
-          schedule: "",
-          fees: "",
-          misc: "",
-        },
-        numberOfMembers: 1,
-        roles: {
-          president: {
-            memberID, //to be generated
-            userID: createdBy,
-            alternateName: "",
-            name: "president",
-          },
-          vicepresident: {
-            memberID: "", //to be generated
-            userID: "",
-            alternateName: "",
-            name: "vice president",
-          },
-          secretary: {
-            memberID: "", //to be generated
-            userID: "",
-            alternateName: "",
-            name: "secretary",
-          },
-          treasurer: {
-            memberID: "", //to be generated
-            userID: "",
-            alternateName: "",
-            name: "treasurer",
-          },
-          member: {
-            details: [],
-            alternateName: "",
-            name: "member",
-          },
-        },
-        approval: "pending",
-        rejectionReason: "",
-        status: "inactive",
-        membersRequests: [],
-        createdAt,
-        createdBy,
-        campusID: state.campus.campusID,
-      };
+      const nameForDoc = Crypto.randomUUID();
+      let documentName = `${nameForDoc}.${documentType}`;
+      let firebasePath = `clubs/forms/uploaded/${documentName}`;
 
-      let eventData = {
-        events: [],
-        clubID: "",
-        createdBy,
-        campusID: state.campus.campusID,
-      };
-
-      let clubMembers = {
-        campusID: state.campus.campusID,
-        clubID: "",
-        members: [
-          {
-            name: user.name,
-            phone_number: user.phone_number,
-            email: user.email,
-            intake: user.intake,
-            department: user.department,
-            memberID, //to be generated
-            userID: createdBy,
-            role: "president", //by default
+      uriToBlob(document)
+        .then((blob) => {
+          return uploadToFirebase(blob, documentName);
+        })
+        .then((snapshot) => {
+          return firebase.storage().ref(firebasePath).getDownloadURL();
+        })
+        .then((url) => {
+          let clubsData = {
+            clubID: "", //get it later after adding
+            name,
+            image:
+              "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.jpeg?alt=media",
+            gallery: false,
+            events: false,
+            details: {
+              schedule: "",
+              fees: "",
+              misc: "",
+            },
+            numberOfMembers: 1,
+            roles: {
+              president: {
+                memberID, //to be generated
+                userID: createdBy,
+                alternateName: "",
+                name: "president",
+              },
+              vicepresident: {
+                memberID: "", //to be generated
+                userID: "",
+                alternateName: "",
+                name: "vice president",
+              },
+              secretary: {
+                memberID: "", //to be generated
+                userID: "",
+                alternateName: "",
+                name: "secretary",
+              },
+              treasurer: {
+                memberID: "", //to be generated
+                userID: "",
+                alternateName: "",
+                name: "treasurer",
+              },
+              member: {
+                details: [],
+                alternateName: "",
+                name: "member",
+              },
+            },
+            approval: "pending",
+            rejectionReason: "",
+            status: "inactive",
+            membersRequests: [],
             createdAt,
-            profileImage: user.profileImage,
-            bio: "",
-          },
-        ],
-      };
+            createdBy,
+            campusID: state.campus.campusID,
+            fpfForms: [url],
+          };
 
-      let galleryData = {
-        gallery: [],
-        clubID: "",
-        createdBy,
-        campusID: state.campus.campusID,
-      };
+          let eventData = {
+            events: [],
+            clubID: "",
+            createdBy,
+            campusID: state.campus.campusID,
+          };
 
-      let clubsOverviewData = {
-        name,
-        image:
-          "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.svg?alt=media",
-        clubID: "", //to be added later
-        approval: "pending",
-        rejectionReason: "",
-        status: "inactive",
-        createdBy,
-        campusID: state.campus.campusID,
-      };
+          let clubMembers = {
+            campusID: state.campus.campusID,
+            clubID: "",
+            members: [
+              {
+                name: user.name,
+                phone_number: user.phone_number,
+                email: user.email,
+                intake: user.intake,
+                department: user.department,
+                memberID, //to be generated
+                userID: createdBy,
+                role: "president", //by default
+                createdAt,
+                profileImage: user.profileImage,
+                bio: "",
+              },
+            ],
+          };
 
-      let userData = {
-        clubID: "",
-        name,
-        memberID,
-        role: "president",
-        approval: "approved",
-        createdBy,
-        createdAt,
-      };
+          let galleryData = {
+            gallery: [],
+            clubID: "",
+            createdBy,
+            campusID: state.campus.campusID,
+          };
 
-      let index = user.clubs.findIndex(
-        (club) => club.approval === "pending" && club.createdBy === user.userId
-      );
+          let clubsOverviewData = {
+            name,
+            image:
+              "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.jpeg?alt=media",
+            clubID: "", //to be added later
+            approval: "pending",
+            rejectionReason: "",
+            status: "inactive",
+            createdBy,
+            campusID: state.campus.campusID,
+          };
 
-      if (index === -1) {
-        db.collection("clubs")
-          .add(clubsData)
-          .then((data) => {
-            clubID = data.id;
-            return db.doc(`/clubs/${clubID}`).update({ clubID });
-          })
-          .then(() => {
-            clubsOverviewData.clubID = clubID;
-            eventData.clubID = clubID;
-            galleryData.clubID = clubID;
-            clubMembers.clubID = clubID;
+          let userData = {
+            clubID: "",
+            name,
+            memberID,
+            role: "president",
+            approval: "approved",
+            createdBy,
+            createdAt,
+          };
 
-            //first check if the campusID is in clubsOverview collection
-            db.doc(`/clubsOverview/${state.campus.campusID}`)
-              .get()
-              .then((doc) => {
-                if (!doc.exists) {
-                  return db
-                    .collection("clubsOverview")
-                    .doc(state.campus.campusID)
-                    .set({ clubs: [clubsOverviewData] });
-                } else {
-                  let temp = doc.data().clubs;
-                  temp.push(clubsOverviewData);
+          db.collection("clubs")
+            .add(clubsData)
+            .then((data) => {
+              clubID = data.id;
+              return db.doc(`/clubs/${clubID}`).update({ clubID });
+            })
+            .then(() => {
+              clubsOverviewData.clubID = clubID;
+              eventData.clubID = clubID;
+              galleryData.clubID = clubID;
+              clubMembers.clubID = clubID;
 
-                  return db
-                    .doc(`/clubsOverview/${state.campus.campusID}`)
-                    .update({ clubs: [...temp] });
-                }
-              })
-              .then(() => {
-                //then add to the user's clubs list
-
-                userData.clubID = clubID;
-
-                db.doc(`/users/${user.userId}`)
-                  .get()
-                  .then((doc) => {
+              //first check if the campusID is in clubsOverview collection
+              db.doc(`/clubsOverview/${state.campus.campusID}`)
+                .get()
+                .then((doc) => {
+                  if (!doc.exists) {
+                    return db
+                      .collection("clubsOverview")
+                      .doc(state.campus.campusID)
+                      .set({ clubs: [clubsOverviewData] });
+                  } else {
                     let temp = doc.data().clubs;
-                    temp.push(userData);
+                    temp.push(clubsOverviewData);
 
                     return db
-                      .doc(`/users/${user.userId}`)
+                      .doc(`/clubsOverview/${state.campus.campusID}`)
                       .update({ clubs: [...temp] });
-                  })
-                  .then(() => {
-                    //create event details
-                    return db.doc(`/events/${eventData.clubID}`).set(eventData);
-                  })
-                  .then(() => {
-                    //create gallery details
-                    return db
-                      .doc(`/gallery/${galleryData.clubID}`)
-                      .set(galleryData);
-                  })
-                  .then(() => {
-                    //add members details
-                    return db
-                      .doc(`/clubMembers/${clubMembers.clubID}`)
-                      .set(clubMembers);
-                  })
-                  .then(() => {
-                    setLoading(false);
+                  }
+                })
+                .then(() => {
+                  //then add to the user's clubs list
 
-                    //after creating, immediately append to user's local state list of clubs overview
-                    //after creating, add to local states yours list of clubs
+                  userData.clubID = clubID;
 
-                    dispatch({ type: ADD_USER_CLUB, payload: userData });
+                  db.doc(`/users/${user.userId}`)
+                    .get()
+                    .then((doc) => {
+                      let temp = doc.data().clubs;
+                      temp.push(userData);
 
-                    setSuccessMessage(
-                      "Request submitted! Stay tuned for updates"
-                    );
-                    setErrors({
-                      name: undefined,
+                      return db
+                        .doc(`/users/${user.userId}`)
+                        .update({ clubs: [...temp] });
+                    })
+                    .then(() => {
+                      //create event details
+                      return db
+                        .doc(`/events/${eventData.clubID}`)
+                        .set(eventData);
+                    })
+                    .then(() => {
+                      //create gallery details
+                      return db
+                        .doc(`/gallery/${galleryData.clubID}`)
+                        .set(galleryData);
+                    })
+                    .then(() => {
+                      //add members details
+                      return db
+                        .doc(`/clubMembers/${clubMembers.clubID}`)
+                        .set(clubMembers);
+                    })
+                    .then(() => {
+                      setLoading(false);
+
+                      //after creating, immediately append to user's local state list of clubs overview
+                      //after creating, add to local states yours list of clubs
+
+                      dispatch({ type: ADD_USER_CLUB, payload: userData });
+
+                      // setSuccessMessage(
+                      //   "Request submitted! Stay tuned for updates"
+                      // );
+                      Toast.show({
+                        type: "success",
+                        text1: "Request submitted! Stay tuned for updates",
+                      });
+                      navigation.goBack();
+                      setErrors({
+                        name: undefined,
+                        document: undefined,
+                        checkBox: undefined,
+                      });
                     });
-                  });
-              });
-          })
-          .catch((error) => {
-            setLoading(false);
-            console.error(error);
-            dispatch({ type: STOP_LOADING_DATA });
-          });
-      } else {
-        errors.name = "You can only create a request for one club at a time.";
-        setLoading(false);
-      }
+                });
+            })
+            .catch((error) => {
+              setLoading(false);
+              console.error(error);
+              dispatch({ type: STOP_LOADING_DATA });
+            });
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error(error);
+          dispatch({ type: STOP_LOADING_DATA });
+        });
     }
 
     setErrors(errors);
@@ -284,6 +414,152 @@ export default function Login({ navigation, route }) {
   const handleNavigateBack = () => {
     navigation.navigate("Clubs");
   };
+
+  let clubName = (
+    <>
+      <TextInput
+        style={styles.textInput}
+        placeholder="Enter your club's name"
+        placeholderTextColor="#DBDBDB"
+        value={name}
+        editable={!loading}
+        onChangeText={(name) => setName(name)}
+      />
+      {errors.name ? <Text style={styles.error}>{errors.name}</Text> : null}
+      <Text style={styles.disclaimerPadding}>
+        *Your club’s name cannot be changed later on.
+      </Text>
+    </>
+  );
+
+  let fpf = (
+    <>
+      <View
+        style={{
+          flexDirection: "row",
+          marginTop: pixelSizeVertical(-4),
+        }}
+      >
+        <Text
+          style={{
+            flexGrow: 1,
+            flexShrink: 1,
+            lineHeight: 20,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: fontPixel(16),
+              fontWeight: "400",
+              color: "#DFE5F8",
+            }}
+          >
+            Download and complete the{" "}
+          </Text>
+
+          <Text
+            style={{
+              fontSize: fontPixel(16),
+              fontWeight: "500",
+              color: "#07BEB8",
+            }}
+            onPress={async () => await WebBrowser.openBrowserAsync(FPFUrl)}
+          >
+            Affiliate Future Annual Planning form
+          </Text>
+          <Text
+            style={{
+              fontSize: fontPixel(16),
+              fontWeight: "400",
+              color: "#DFE5F8",
+            }}
+          >
+            , then submit it below.
+          </Text>
+        </Text>
+      </View>
+      <View
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: pixelSizeVertical(16),
+        }}
+      >
+        <Pressable onPress={pickDocument} style={styles.imagePicker}>
+          <Text
+            style={{
+              fontSize: fontPixel(16),
+              fontWeight: "400",
+              color: "#DFE5F8",
+            }}
+          >
+            upload FPF form
+          </Text>
+        </Pressable>
+      </View>
+      {errors.document ? (
+        <Text
+          style={{
+            marginTop: pixelSizeVertical(8),
+            marginBottom: pixelSizeVertical(8),
+            fontSize: fontPixel(12),
+            fontWeight: "400",
+            color: "#a3222d",
+            textAlign: "left",
+            width: "100%",
+          }}
+        >
+          {errors.document}
+        </Text>
+      ) : null}
+      <View
+        style={{
+          flexDirection: "row",
+          paddingRight: pixelSizeHorizontal(16),
+          paddingLeft: pixelSizeHorizontal(16),
+          marginTop: pixelSizeVertical(16),
+        }}
+      >
+        <Checkbox
+          style={{
+            marginRight: pixelSizeHorizontal(8),
+            marginTop: pixelSizeVertical(8),
+          }}
+          value={isChecked}
+          onValueChange={setChecked}
+          color={isChecked ? "#07BEB8" : undefined}
+        />
+        <Text
+          style={{
+            fontSize: fontPixel(12),
+            fontWeight: "400",
+            color: "#C6CDE2",
+          }}
+        >
+          I acknowledge that by submitting this request I, as the president of
+          the club have completed the Affiliate Future Annual Planning form and
+          that all the information filled in is correct.
+        </Text>
+      </View>
+      {errors.checkBox ? (
+        <Text
+          style={{
+            marginTop: pixelSizeVertical(8),
+            marginBottom: pixelSizeVertical(8),
+            fontSize: fontPixel(12),
+            fontWeight: "400",
+            color: "#a3222d",
+            textAlign: "left",
+            width: "100%",
+          }}
+        >
+          {errors.checkBox}
+        </Text>
+      ) : null}
+    </>
+  );
 
   return (
     <View style={styles.container}>
@@ -308,23 +584,15 @@ export default function Login({ navigation, route }) {
       </View>
       <View style={{ width: "100%" }}>
         <Header header={"create a club"} />
-        <Text style={styles.disclaimer}>
-          Your club has to be approved by the college before you can continue
-          adding details and list it publicly.
-        </Text>
+        {step === "step1" ? (
+          <Text style={styles.disclaimer}>
+            Your club has to be approved by the college before you can continue
+            adding details and list it publicly.
+          </Text>
+        ) : null}
       </View>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Enter your club's name"
-        placeholderTextColor="#DBDBDB"
-        value={name}
-        editable={!loading}
-        onChangeText={(name) => setName(name)}
-      />
-      {errors.name ? <Text style={styles.error}>{errors.name}</Text> : null}
-      <Text style={styles.disclaimerPadding}>
-        *Your club’s name cannot be changed later on.
-      </Text>
+      {step === "step1" ? clubName : null}
+      {step === "step2" ? fpf : null}
       <Pressable
         style={loading ? styles.loginButtonDisabled : styles.loginButton}
         onPress={handleSubmit}
@@ -334,9 +602,22 @@ export default function Login({ navigation, route }) {
             loading ? styles.loginButtonLoadingText : styles.loginButtonText
           }
         >
-          {loading ? "creating..." : "create request"}
+          {step === "step2"
+            ? loading
+              ? "creating..."
+              : "create request"
+            : "next"}
         </Text>
       </Pressable>
+      {step === "step2" ? (
+        <Pressable
+          onPress={() => {
+            setStep("step1");
+          }}
+        >
+          <Text style={styles.secondaryButton}>back</Text>
+        </Pressable>
+      ) : null}
       {successMessage ? (
         <Text style={styles.successText}>{successMessage}</Text>
       ) : null}
@@ -437,11 +718,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   secondaryButton: {
-    color: "#C4FFF9",
-    fontSize: fontPixel(18),
-    textTransform: "lowercase",
+    fontSize: fontPixel(22),
     fontWeight: "500",
-    textDecorationLine: "underline",
+    color: "#A7AFC7",
+    marginTop: pixelSizeVertical(2),
+    textAlign: "center",
   },
   forgotPasswordButton: {
     color: "#C4FFF9",
@@ -565,5 +846,14 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#C4FFF9",
     marginTop: pixelSizeVertical(2),
+  },
+  imagePicker: {
+    backgroundColor: "#232F52",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    marginBottom: pixelSizeVertical(8),
+    borderRadius: 5,
   },
 });
