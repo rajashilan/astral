@@ -415,7 +415,7 @@ export default function ClubResubmission({ navigation, route }) {
               color: "#DFE5F8",
             }}
           >
-            Download and complete the{" "}
+            Download and view your{" "}
           </Text>
 
           <Text
@@ -424,9 +424,11 @@ export default function ClubResubmission({ navigation, route }) {
               fontWeight: "500",
               color: "#07BEB8",
             }}
-            onPress={async () => await WebBrowser.openBrowserAsync(FPFUrl)}
+            onPress={async () =>
+              await WebBrowser.openBrowserAsync(submittedDocument)
+            }
           >
-            Affiliate Future Annual Planning form
+            previously submitted FPF form
           </Text>
           <Text
             style={{
@@ -435,7 +437,7 @@ export default function ClubResubmission({ navigation, route }) {
               color: "#DFE5F8",
             }}
           >
-            , then submit it below.
+            .
           </Text>
         </Text>
       </View>
