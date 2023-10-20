@@ -42,7 +42,7 @@ const { width } = Dimensions.get("window");
 
 const db = firebase.firestore();
 
-export default function Login({ navigation, route }) {
+export default function CreateAClub({ navigation, route }) {
   const user = useSelector((state) => state.user.credentials);
   const state = useSelector((state) => state.data);
   const dispatch = useDispatch();
@@ -157,7 +157,7 @@ export default function Login({ navigation, route }) {
       }
     }
 
-    if (!errors.name && !errors.document) {
+    if (!errors.name && !errors.document && !errors.checkBox) {
       //create a new club
       //first add to clubs
       //then add to clubs overview (campus admin will get data from here)
@@ -176,6 +176,9 @@ export default function Login({ navigation, route }) {
       }
 
       setLoading(true);
+      errors.name = "";
+      errors.Checkbox = "";
+      errors.document = "";
 
       const memberID = Crypto.randomUUID();
       let clubID = "";

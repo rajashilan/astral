@@ -14,9 +14,11 @@ import { StatusBar } from "expo-status-bar";
 
 import IosHeight from "../components/IosHeight";
 
-import hamburgerIcon from "../assets/hamburger_icon.png";
+// import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
+
+import Hamburger_Icon from "../assets/Hamburger_Icon";
 
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
@@ -107,8 +109,8 @@ export default function Clubs({ navigation }) {
     navigation.navigate("ClubsPages", { clubID });
   };
 
-  const handlePageItemResubmit = (item) => {
-    navigation.navigate("ClubResubmission", { club: item });
+  const handlePageItemResubmit = (clubID) => {
+    navigation.navigate("ClubResubmission", { clubID });
   };
 
   const toggleSideMenu = () => {
@@ -150,7 +152,7 @@ export default function Clubs({ navigation }) {
           ) : (
             <Text style={styles.headerMiniInvisible}>title</Text>
           )}
-          <Pressable
+          {/* <Pressable
             onPress={toggleSideMenu}
             hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
           >
@@ -159,6 +161,12 @@ export default function Clubs({ navigation }) {
               source={hamburgerIcon}
               contentFit="contain"
             />
+          </Pressable> */}
+          <Pressable
+            onPress={toggleSideMenu}
+            hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
+          >
+            <Hamburger_Icon />
           </Pressable>
         </View>
 
@@ -219,7 +227,9 @@ export default function Clubs({ navigation }) {
                   )
                 ) : item.approval === "rejected" ? (
                   item.createdBy === user.userId && (
-                    <Pressable onPress={() => handlePageItemResubmit(item)}>
+                    <Pressable
+                      onPress={() => handlePageItemResubmit(item.clubID)}
+                    >
                       <Image
                         style={styles.imageHalfOpacity}
                         source={item.image}

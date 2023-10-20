@@ -19,6 +19,7 @@ import {
   JOIN_CLUB,
   LOGOUT,
   REJECT_NEW_CLUB_MEMBER,
+  RESET_CLUB_DATA,
   SET_CLUB_EVENT,
   SET_CLUB_EVENT_TO_FALSE,
   SET_CLUB_EVENT_TO_TRUE,
@@ -100,6 +101,17 @@ export default function (state = initialState, action) {
           club: { ...action.payload },
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
+        },
+      };
+    case RESET_CLUB_DATA:
+      return {
+        ...state,
+        clubData: {
+          club: {},
+          members: [],
+          gallery: [],
+          event: [],
+          currentMember: {},
         },
       };
     case SET_CLUB_MEMBERS_DATA:
