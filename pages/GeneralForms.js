@@ -5,6 +5,7 @@ import {
   FlatList,
   Pressable,
   Dimensions,
+  TextInput,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
@@ -25,6 +26,7 @@ import Header from "../components/Header";
 import IosHeight from "../components/IosHeight";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import * as WebBrowser from "expo-web-browser";
 
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
@@ -48,23 +50,27 @@ export default function GeneralForms({ navigation }) {
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
+  const [search, setSearch] = useState("");
+
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    db.doc(`/generalFormsOverview/${campus.campusID}`)
-      .get()
-      .then((doc) => {
-        let temp = doc.data().forms;
-        setData([...temp]);
-      })
-      .catch((error) => {
-        console.error(error);
-        Toast.show({
-          type: "error",
-          text1: "something went wrong",
+    if (campus.campusID) {
+      db.doc(`/generalFormsOverview/${campus.campusID}`)
+        .get()
+        .then((doc) => {
+          let temp = doc.data().forms;
+          setData([...temp]);
+        })
+        .catch((error) => {
+          console.error(error);
+          Toast.show({
+            type: "error",
+            text1: "something went wrong",
+          });
         });
-      });
-  }, []);
+    }
+  }, [campus.campusID]);
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -81,6 +87,39 @@ export default function GeneralForms({ navigation }) {
     else if (scrollHeight < headerHeight && showMiniHeader)
       setShowMiniHeader(false);
   }, [scrollHeight, showMiniHeader]);
+
+  const handleOnPress = (item) => {
+    console.log(item);
+    if (item.type === "easyFill")
+      navigation.navigate("GeneralFormsPage", {
+        id: item.generalFormID,
+      });
+    else WebBrowser.openBrowserAsync(item.link);
+  };
+
+  const clearSearch = () => {
+    setSearch("");
+  };
+
+  let clearButton =
+    search === "" ? null : (
+      <Animated.View
+        entering={FadeIn.duration(200)}
+        exiting={FadeOut.duration(200)}
+      >
+        <Pressable
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            marginTop: pixelSizeVertical(-18),
+          }}
+          onPress={clearSearch}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Text style={styles.filterButton}>clear</Text>
+        </Pressable>
+      </Animated.View>
+    );
 
   return (
     <View style={styles.container}>
@@ -124,22 +163,45 @@ export default function GeneralForms({ navigation }) {
         <View onLayout={onLayout}>
           <Header header={"general forms"} />
         </View>
-
+        {clearButton}
+        <TextInput
+          style={styles.textInput}
+          placeholder="search for forms..."
+          placeholderTextColor="#DBDBDB"
+          onChangeText={(newSearch) => setSearch(newSearch)}
+          value={search}
+        />
         <FlatList
           style={styles.list}
           scrollEnabled={false}
           keyExtractor={(item, index) => index.toString()}
-          data={data}
+          data={
+            search === ""
+              ? data
+              : data.filter((form) =>
+                  form.title.toLowerCase().includes(search.toLowerCase())
+                )
+          }
           renderItem={({ item }) => (
             <>
-              <Pressable
-                onPress={() => {
-                  navigation.navigate("GeneralFormsPage", {
-                    id: item.generalFormID,
-                  });
-                }}
-              >
-                <Text style={styles.pageItems}>{item.title}</Text>
+              <Pressable onPress={() => handleOnPress(item)}>
+                <Text style={styles.pageItems}>
+                  {item.title}{" "}
+                  {item.type === "easyFill" ? (
+                    <Text
+                      style={{
+                        fontSize: fontPixel(16),
+                        fontWeight: "400",
+                        color: "#07BEB8",
+                        marginTop: pixelSizeVertical(-10),
+                        marginBottom: pixelSizeVertical(12),
+                      }}
+                    >
+                      {" "}
+                      easy fill
+                    </Text>
+                  ) : null}
+                </Text>
               </Pressable>
               <View style={styles.divider} />
             </>
@@ -251,5 +313,24 @@ const styles = StyleSheet.create({
   hamburgerIcon: {
     height: pixelSizeVertical(20),
     width: pixelSizeHorizontal(30),
+  },
+  textInput: {
+    backgroundColor: "#1A2238",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    marginTop: pixelSizeVertical(10),
+    marginBottom: pixelSizeVertical(18),
+    fontSize: fontPixel(16),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    width: "100%",
+    borderRadius: 5,
+  },
+  filterButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#C4FFF9",
   },
 });
