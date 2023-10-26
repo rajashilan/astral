@@ -65,7 +65,7 @@ export default function CreateAClub({ navigation, route }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
   const FPFUrl =
-    "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fforms%2FFPF.docx?alt=media";
+    "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fforms%2FFPF.docx?alt=media&token=57914608-4192-47cf-ad75-fdcfb8b3ac9c&_gl=1*1haaz37*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4Mjk5OTg5LjMuMC4w";
 
   const pickDocument = async () => {
     try {
@@ -201,7 +201,7 @@ export default function CreateAClub({ navigation, route }) {
             clubID: "", //get it later after adding
             name,
             image:
-              "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.jpeg?alt=media",
+              "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.jpeg?alt=media&token=8a9c42e0-d937-4389-804f-9fd6953644ac&_gl=1*1c0ck02*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMDYzLjU4LjAuMA..",
             gallery: false,
             events: false,
             details: {
@@ -288,7 +288,7 @@ export default function CreateAClub({ navigation, route }) {
           let clubsOverviewData = {
             name,
             image:
-              "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.jpeg?alt=media",
+              "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.jpeg?alt=media&token=8a9c42e0-d937-4389-804f-9fd6953644ac&_gl=1*1c0ck02*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMDYzLjU4LjAuMA..",
             clubID: "", //to be added later
             approval: "pending",
             rejectionReason: "",

@@ -71,7 +71,7 @@ export default function ClubResubmission({ navigation, route }) {
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
   const FPFUrl =
-    "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fforms%2FFPF.docx?alt=media";
+    "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fforms%2FFPF.docx?alt=media&token=57914608-4192-47cf-ad75-fdcfb8b3ac9c&_gl=1*534clm*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMTQxLjU5LjAuMA..";
 
   useEffect(() => {
     dispatch(getAClub(clubID, user.userId));
