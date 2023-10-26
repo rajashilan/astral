@@ -75,12 +75,14 @@ export default function EditClubRoles({ navigation }) {
   };
 
   useEffect(() => {
-    let temp = [...Object.values(club.roles)];
-    let arr = [...roles];
-    temp.forEach((role) => {
-      if (!roles.includes(role.name)) arr.push(role.name);
-    });
-    setRoles([...arr]);
+    if (club.roles) {
+      let temp = [...Object.values(club.roles)];
+      let arr = [...roles];
+      temp.forEach((role) => {
+        if (!roles.includes(role.name)) arr.push(role.name);
+      });
+      setRoles([...arr]);
+    }
   }, [club]);
 
   useEffect(() => {
