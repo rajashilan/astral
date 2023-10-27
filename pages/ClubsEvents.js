@@ -203,6 +203,32 @@ export default function ClubsEvents({ navigation }) {
         dotsLength={innerTab === "past" ? data.past.length : data.future.length}
         inactiveDotScale={1}
       />
+      {innerTab === "past" && data.past.length === 0 && (
+        <Text
+          style={{
+            fontSize: fontPixel(20),
+            fontWeight: "400",
+            color: "#F5F5F5",
+            marginTop: pixelSizeVertical(12),
+            textAlign: "center",
+          }}
+        >
+          nothing to see here...yet
+        </Text>
+      )}
+      {innerTab === "future" && data.future.length === 0 && (
+        <Text
+          style={{
+            fontSize: fontPixel(20),
+            fontWeight: "400",
+            color: "#F5F5F5",
+            marginTop: pixelSizeVertical(12),
+            textAlign: "center",
+          }}
+        >
+          nothing to see here...yet
+        </Text>
+      )}
       <Carousel
         layout="default"
         data={innerTab === "past" ? data.past : data.future}
