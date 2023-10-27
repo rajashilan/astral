@@ -69,7 +69,7 @@ export default function Login({ navigation, route }) {
           //       "Oops, please verify your email to complete your registration!",
           //   });
           // }
-          dispatch(getAuthenticatedUser(authUser.email));
+          //dispatch(getAuthenticatedUser(authUser.email));
           navigation.dispatch((state) => {
             return CommonActions.reset({
               index: 0,
