@@ -201,7 +201,7 @@ export default function EditClubRoles({ navigation }) {
                   <Pressable
                     disabled={
                       item === "president" ||
-                      item === "vicepresident" ||
+                      item === "vice president" ||
                       item === "treasurer" ||
                       item === "secretary" ||
                       item === "member"
