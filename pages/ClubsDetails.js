@@ -43,9 +43,11 @@ export default function ClubsDetails({ navigation }) {
   }, [data]);
 
   const setDetails = () => {
-    setMeetings(data.schedule);
-    setFees(data.fees);
-    setMore(data.misc);
+    if (data) {
+      setMeetings(data.schedule);
+      setFees(data.fees);
+      setMore(data.misc);
+    }
   };
 
   const handleUpdateDetails = () => {
@@ -145,9 +147,9 @@ export default function ClubsDetails({ navigation }) {
         onChangeText={(more) => setMore(more)}
       />
 
-      {(meetings !== data.schedule ||
-        fees !== data.fees ||
-        more !== data.misc) && (
+      {((data && meetings !== data.schedule) ||
+        (data && fees !== data.fees) ||
+        (data && more !== data.misc)) && (
         <>
           <Pressable
             style={loading ? styles.loginButtonDisabled : styles.loginButton}
