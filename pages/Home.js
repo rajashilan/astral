@@ -40,7 +40,6 @@ export default function Home({ navigation }) {
   const [menuItems] = useState([
     { name: "orientation" },
     { name: "clubs" },
-    { name: "department" },
     { name: "general forms" },
   ]);
 
@@ -57,11 +56,7 @@ export default function Home({ navigation }) {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-      } else {
-        //navigation.replace("Main");
-      }
-
+      console.log(user);
       if (user && isEmpty(state.credentials) && !loading) {
         dispatch(getAuthenticatedUser(user.email));
       }

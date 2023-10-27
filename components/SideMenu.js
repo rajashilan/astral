@@ -154,9 +154,6 @@ const SideMenu = (props) => {
               name: "clubs",
             },
             {
-              name: "department",
-            },
-            {
               name: "general forms",
             },
           ]}
