@@ -36,7 +36,10 @@ import { firebase } from "../src/firebase/config";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_USER_CLUB } from "../src/redux/type";
-import { getAClub } from "../src/redux/actions/dataActions";
+import {
+  getAClub,
+  sendAdminNotification,
+} from "../src/redux/actions/dataActions";
 import * as DocumentPicker from "expo-document-picker";
 
 const { width } = Dimensions.get("window");
@@ -301,6 +304,7 @@ export default function ClubResubmission({ navigation, route }) {
             });
         }
       }
+      dispatch(sendAdminNotification("clubResubmission", name, club.campusID));
     }
 
     setErrors(errors);

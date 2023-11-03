@@ -36,6 +36,8 @@ import {
 import Toast from "react-native-toast-message";
 
 import { firebase } from "../../firebase/config";
+import axios from "axios";
+import { identityMatrix } from "pdf-lib/cjs/types/matrix";
 const db = firebase.firestore();
 
 //get college details
@@ -1125,3 +1127,25 @@ export const setNotificationsRead = (notificationIDs) => (dispatch) => {
     .then(() => {})
     .catch((error) => console.error(error));
 };
+
+export const sendAdminNotification =
+  (type, clubName, campusID) => (dispatch) => {
+    const data = {
+      type,
+      clubName,
+    };
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        user.getIdToken().then((idToken) => {
+          axios
+            .post(
+              `https://asia-southeast1-astral-d3ff5.cloudfunctions.net/api/notification/email/${campusID}`,
+              data,
+              { headers: { Authorization: `Bearer ${idToken}` } }
+            )
+            .then((res) => {})
+            .catch((error) => console.error(error));
+        });
+      }
+    });
+  };

@@ -39,6 +39,7 @@ import { firebase } from "../src/firebase/config";
 import {
   addClubEvent,
   handleDeleteClubEvent,
+  sendAdminNotification,
   setClubEventToTrue,
 } from "../src/redux/actions/dataActions";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -220,6 +221,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
       }
       //delete the current event request
       //dispatch(handleDeleteClubEvent(event.eventID, club.clubID, false));
+      dispatch(sendAdminNotification("eventResubmission", club.name, campusID));
       navigation.goBack();
     }
 

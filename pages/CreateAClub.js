@@ -37,6 +37,7 @@ import { firebase } from "../src/firebase/config";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_USER_CLUB } from "../src/redux/type";
 import * as DocumentPicker from "expo-document-picker";
+import { sendAdminNotification } from "../src/redux/actions/dataActions";
 
 const { width } = Dimensions.get("window");
 
@@ -381,6 +382,13 @@ export default function CreateAClub({ navigation, route }) {
                       // setSuccessMessage(
                       //   "Request submitted! Stay tuned for updates"
                       // );
+                      dispatch(
+                        sendAdminNotification(
+                          "createAClub",
+                          clubsData.name,
+                          state.campus.campusID
+                        )
+                      );
                       Toast.show({
                         type: "success",
                         text1: "Request submitted! Stay tuned for updates",

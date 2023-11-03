@@ -38,6 +38,7 @@ import Header from "../components/Header";
 import { firebase } from "../src/firebase/config";
 import {
   addClubEvent,
+  sendAdminNotification,
   setClubEventToTrue,
 } from "../src/redux/actions/dataActions";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -200,6 +201,7 @@ export default function AddClubsEvent({ navigation }) {
         //if it is, update clubs.events as true
         //if (!club.events) dispatch(setClubEventToTrue(club.clubID));
       }
+      dispatch(sendAdminNotification("createAnEvent", club.name, campusID));
     }
 
     setErrors(errors);

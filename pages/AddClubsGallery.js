@@ -37,6 +37,7 @@ import Header from "../components/Header";
 import { firebase } from "../src/firebase/config";
 import {
   addClubsGallery,
+  sendAdminNotification,
   setClubGalleryToTrue,
 } from "../src/redux/actions/dataActions";
 import { SET_LOADING_DATA } from "../src/redux/type";
@@ -154,6 +155,7 @@ export default function AddClubsGallery({ navigation }) {
         .catch((error) => {
           throw error;
         });
+      dispatch(sendAdminNotification("createAGallery", club.name, campusID));
     }
 
     setErrors(errors);

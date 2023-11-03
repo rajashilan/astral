@@ -38,6 +38,7 @@ import { firebase } from "../src/firebase/config";
 import {
   addClubsGallery,
   handleDeleteClubGallery,
+  sendAdminNotification,
   setClubGalleryToTrue,
 } from "../src/redux/actions/dataActions";
 import { SET_LOADING_DATA } from "../src/redux/type";
@@ -205,6 +206,10 @@ export default function ResubmitClubsGallery({ navigation, route }) {
         //if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
       }
       //dispatch(handleDeleteClubGallery(gallery.galleryID, club.clubID, false));
+      console.log(club.name, campusID);
+      dispatch(
+        sendAdminNotification("galleryResubmission", club.name, campusID)
+      );
       navigation.goBack();
     }
 
