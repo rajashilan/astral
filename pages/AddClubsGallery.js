@@ -155,7 +155,9 @@ export default function AddClubsGallery({ navigation }) {
         .catch((error) => {
           throw error;
         });
-      dispatch(sendAdminNotification("createAGallery", club.name, campusID));
+      dispatch(
+        sendAdminNotification("createAGallery", club.name, "", "", campusID)
+      );
     }
 
     setErrors(errors);

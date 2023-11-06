@@ -221,7 +221,7 @@ export default function Clubs({ navigation }) {
                       />
                       <Text style={styles.pageItemsPending}>{item.name}</Text>
                       <Text style={styles.pageItemSubtitlePending}>
-                        {item.approval}
+                        {item.approvalText}
                       </Text>
                     </>
                   )

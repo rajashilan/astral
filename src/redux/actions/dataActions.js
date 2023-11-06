@@ -1129,10 +1129,12 @@ export const setNotificationsRead = (notificationIDs) => (dispatch) => {
 };
 
 export const sendAdminNotification =
-  (type, clubName, campusID) => (dispatch) => {
+  (type, clubName, sa, saName, campusID) => (dispatch) => {
     const data = {
       type,
       clubName,
+      sa,
+      saName,
     };
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {

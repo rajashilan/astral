@@ -304,7 +304,9 @@ export default function ClubResubmission({ navigation, route }) {
             });
         }
       }
-      dispatch(sendAdminNotification("clubResubmission", name, club.campusID));
+      dispatch(
+        sendAdminNotification("clubResubmission", name, "", "", club.campusID)
+      );
     }
 
     setErrors(errors);

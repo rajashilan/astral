@@ -221,7 +221,9 @@ export default function ResubmitClubsEvent({ navigation, route }) {
       }
       //delete the current event request
       //dispatch(handleDeleteClubEvent(event.eventID, club.clubID, false));
-      dispatch(sendAdminNotification("eventResubmission", club.name, campusID));
+      dispatch(
+        sendAdminNotification("eventResubmission", club.name, "", "", campusID)
+      );
       navigation.goBack();
     }
 

@@ -201,7 +201,9 @@ export default function AddClubsEvent({ navigation }) {
         //if it is, update clubs.events as true
         //if (!club.events) dispatch(setClubEventToTrue(club.clubID));
       }
-      dispatch(sendAdminNotification("createAnEvent", club.name, campusID));
+      dispatch(
+        sendAdminNotification("createAnEvent", club.name, "", "", campusID)
+      );
     }
 
     setErrors(errors);
