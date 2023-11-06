@@ -46,6 +46,7 @@ const db = firebase.firestore();
 export default function CreateAClub({ navigation, route }) {
   const user = useSelector((state) => state.user.credentials);
   const state = useSelector((state) => state.data);
+
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -64,6 +65,25 @@ export default function CreateAClub({ navigation, route }) {
   const [step, setStep] = useState("step1");
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+
+  //create a club -> request viewed by intima -> approve/reject(with feedback) -> viewed by admin
+  //when creating a club, got two tiers of checking, one by intima (SA), one by admim
+
+  //for a campus, have a field named(SA), empty if none
+  //in create a club,
+  //approval(admin), reviewLevel(admin, sa), saFeedback, saApproval
+  //if campus has SA field filled (with email), set reviewLevel="sa"; else, reviewLevel = "admin"
+  //in front end, if reviewLevel = "sa", pending approval from student affairs; "admin", pending approval from Admin
+
+  //for admin notification, if club created, reviewLevel = "sa", only send notification to sa
+  //if club created, reviewLevel = "sa", or clubResubmission, show notfication to all club admins
+
+  //in dashboard, if current user role = sa, only show reviewLevel="sa"
+  //if logged in user role is SA, redirect to saClubs page, only show clubs request with reviewLevel = "sa"
+  //get clubs -> according to sa requirements, function for sa to approve/reject club
+  //else proceed as usual
+  //if sa is filled, and logged in user is admin, everything else as usual, but clubs request only show reviewLevel = "admin"
+  //in request show feedback from SA if rejected
 
   const FPFUrl =
     "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fforms%2FFPF.docx?alt=media&token=57914608-4192-47cf-ad75-fdcfb8b3ac9c&_gl=1*1haaz37*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4Mjk5OTg5LjMuMC4w";
@@ -243,6 +263,13 @@ export default function CreateAClub({ navigation, route }) {
               },
             },
             approval: "pending",
+            approvalText:
+              state.campus.sa === ""
+                ? "pending approval from Admin"
+                : `pending approval from ${state.campus.saName}`,
+            reviewLevel: state.campus.sa === "" ? "admin" : "sa",
+            saFeedback: "",
+            saApproval: "",
             rejectionReason: "",
             status: "inactive",
             membersRequests: [],
@@ -292,6 +319,13 @@ export default function CreateAClub({ navigation, route }) {
               "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.jpeg?alt=media&token=8a9c42e0-d937-4389-804f-9fd6953644ac&_gl=1*1c0ck02*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMDYzLjU4LjAuMA..",
             clubID: "", //to be added later
             approval: "pending",
+            approvalText:
+              state.campus.sa === ""
+                ? "pending approval from Admin"
+                : `pending approval from ${state.campus.saName}`,
+            reviewLevel: state.campus.sa === "" ? "admin" : "sa",
+            saFeedback: "",
+            saApproval: "",
             rejectionReason: "",
             status: "inactive",
             createdBy,
@@ -386,6 +420,8 @@ export default function CreateAClub({ navigation, route }) {
                         sendAdminNotification(
                           "createAClub",
                           clubsData.name,
+                          state.campus.sa,
+                          state.campus.saName,
                           state.campus.campusID
                         )
                       );
