@@ -39,9 +39,7 @@ const db = firebase.firestore();
 const { width } = Dimensions.get("window");
 
 export default function GeneralForms({ navigation }) {
-  const orientation = useSelector((state) => state.data.orientation);
   const campus = useSelector((state) => state.data.campus);
-  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);

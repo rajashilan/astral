@@ -85,11 +85,17 @@ export default function GeneralFormsPage({ navigation, route }) {
         let temp = {};
         let tempFields = {};
         doc.data().fields.forEach((field) => {
-          temp[field.fieldName] = undefined;
-          tempFields[field.fieldName] = "";
+          if (field.fieldName === "matriculationNo") {
+            temp[field.fieldName] = undefined;
+            tempFields[field.fieldName] = user.email.split("@")[0];
+          } else {
+            temp[field.fieldName] = undefined;
+            tempFields[field.fieldName] = "";
+          }
         });
         setErrors({ ...temp });
         setFieldValues({ ...tempFields });
+        console.log(formData);
       })
       .catch((error) => {
         console.error(error);
@@ -183,7 +189,8 @@ export default function GeneralFormsPage({ navigation, route }) {
       ? formData.map((field, index) => {
           return (
             <View key={index}>
-              {field.fieldType !== "todayDate" ? (
+              {field.fieldType !== "todayDate" &&
+              field.fieldName !== "matriculationNo" ? (
                 <TextInput
                   style={styles.textInput}
                   placeholder={field.placeHolder}
@@ -197,6 +204,16 @@ export default function GeneralFormsPage({ navigation, route }) {
                       [field.fieldName]: text,
                     }));
                   }}
+                />
+              ) : field.fieldType !== "todayDate" &&
+                field.fieldName === "matriculationNo" ? (
+                <TextInput
+                  style={styles.textInput}
+                  placeholder={field.placeHolder}
+                  editable={false}
+                  placeholderTextColor={"#A7AFC7"}
+                  value={fieldValues[field.fieldName] || ""}
+                  multiline={field.fieldType === "multiline"}
                 />
               ) : null}
               {!isEmpty(errors) ? (
