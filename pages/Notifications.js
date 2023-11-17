@@ -32,6 +32,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Header from "../components/Header";
 
+import { Bounce } from "react-native-animated-spinkit";
+
 const { width } = Dimensions.get("window");
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -49,9 +51,9 @@ export default function Notifications({ navigation }) {
   dayjs.extend(relativeTime);
 
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.data.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
   const user = useSelector((state) => state.user.credentials);
+  const [loading, setLoading] = useState(true);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
@@ -64,6 +66,7 @@ export default function Notifications({ navigation }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
     db.collection("notifications")
       .where("userID", "==", user.userId)
       .orderBy("createdAt", "desc")
@@ -74,6 +77,7 @@ export default function Notifications({ navigation }) {
           temp.push({ ...doc.data() });
         });
         setData([...temp]);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
@@ -81,6 +85,7 @@ export default function Notifications({ navigation }) {
           type: "error",
           text1: "Something went wrong",
         });
+        setLoading(false);
       });
   }, []);
 
@@ -134,6 +139,156 @@ export default function Notifications({ navigation }) {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
+  let UI = loading ? (
+    <View style={{ marginTop: pixelSizeVertical(60) }}>
+      <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
+    </View>
+  ) : (
+    <ScrollView
+      scrollEventThrottle={16}
+      stickyHeaderIndices={[1]}
+      onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <View style={{ width: "100%", flexDirection: "column" }}>
+        <View style={styles.paddingContainer}>
+          <View onLayout={onLayout}>
+            <Header header={"notifications"} />
+          </View>
+        </View>
+        {data.length > 0 ? (
+          <FlatList
+            style={{ marginBottom: pixelSizeVertical(32) }}
+            keyExtractor={(item, index) => index.toString()}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            scrollEnabled={false}
+            data={data}
+            renderItem={({ item, index }) => (
+              <Pressable
+                onPress={() => {
+                  if (item.sourceDestination) {
+                    if (item.sourceDestination === "ClubsPages") {
+                      navigation.navigate("ClubsPages", {
+                        clubID: item.sourceID,
+                      });
+                    } else if (item.sourceDestination === "Clubs") {
+                      navigation.navigate("Clubs");
+                    }
+                  }
+                }}
+              >
+                <View
+                  style={
+                    item.read
+                      ? styles.notificationContainerRead
+                      : styles.notificationContainerUnread
+                  }
+                >
+                  <Image
+                    style={styles.image}
+                    contentFit="cover"
+                    source={item.sourceImage}
+                  />
+                  {item.defaultText ? (
+                    <Text
+                      style={{
+                        flexGrow: 1,
+                        flexShrink: 1,
+                        lineHeight: 20,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: fontPixel(14),
+                          fontWeight: "400",
+                          color: "#DFE5F8",
+                        }}
+                      >
+                        {item.defaultText}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: fontPixel(12),
+                          fontWeight: "400",
+                          color: "#A7AFC7",
+                        }}
+                      >
+                        {" "}
+                        {dayjs(item.createdAt.split("T")[0]).fromNow()}
+                      </Text>
+                    </Text>
+                  ) : (
+                    <Text
+                      style={{ lineHeight: 20, flexGrow: 1, flexShrink: 1 }}
+                    >
+                      {item.preText && (
+                        <Text
+                          style={{
+                            fontSize: fontPixel(14),
+                            fontWeight: "400",
+                            color: "#DFE5F8",
+                          }}
+                        >
+                          {item.preText}{" "}
+                        </Text>
+                      )}
+                      <Text
+                        style={{
+                          fontSize: fontPixel(14),
+                          fontWeight: "600",
+                          color: "#07BEB8",
+                        }}
+                      >
+                        {item.sourceName}
+                      </Text>
+                      {item.postText && (
+                        <Text
+                          style={{
+                            fontSize: fontPixel(14),
+                            fontWeight: "400",
+                            color: "#DFE5F8",
+                          }}
+                        >
+                          {" "}
+                          {item.postText}
+                        </Text>
+                      )}
+                      <Text
+                        style={{
+                          fontSize: fontPixel(12),
+                          fontWeight: "400",
+                          color: "#A7AFC7",
+                        }}
+                      >
+                        {" "}
+                        {dayjs(new Date(item.createdAt).toString()).fromNow()}
+                      </Text>
+                    </Text>
+                  )}
+                </View>
+              </Pressable>
+            )}
+          />
+        ) : (
+          <Text
+            style={{
+              fontSize: fontPixel(16),
+              fontWeight: "400",
+              color: "#DFE5F8",
+              paddingRight: pixelSizeHorizontal(16),
+              paddingLeft: pixelSizeHorizontal(16),
+            }}
+          >
+            no notifications yet
+          </Text>
+        )}
+      </View>
+    </ScrollView>
+  );
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -161,149 +316,7 @@ export default function Notifications({ navigation }) {
           />
         </Pressable>
       </View>
-      <ScrollView
-        scrollEventThrottle={16}
-        stickyHeaderIndices={[1]}
-        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        <View style={{ width: "100%", flexDirection: "column" }}>
-          <View style={styles.paddingContainer}>
-            <View onLayout={onLayout}>
-              <Header header={"notifications"} />
-            </View>
-          </View>
-          {data.length > 0 ? (
-            <FlatList
-              style={{ marginBottom: pixelSizeVertical(32) }}
-              keyExtractor={(item, index) => index.toString()}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              scrollEnabled={false}
-              data={data}
-              renderItem={({ item, index }) => (
-                <Pressable
-                  onPress={() => {
-                    if (item.sourceDestination) {
-                      if (item.sourceDestination === "ClubsPages") {
-                        navigation.navigate("ClubsPages", {
-                          clubID: item.sourceID,
-                        });
-                      } else if (item.sourceDestination === "Clubs") {
-                        navigation.navigate("Clubs");
-                      }
-                    }
-                  }}
-                >
-                  <View
-                    style={
-                      item.read
-                        ? styles.notificationContainerRead
-                        : styles.notificationContainerUnread
-                    }
-                  >
-                    <Image
-                      style={styles.image}
-                      contentFit="cover"
-                      source={item.sourceImage}
-                    />
-                    {item.defaultText ? (
-                      <Text
-                        style={{
-                          flexGrow: 1,
-                          flexShrink: 1,
-                          lineHeight: 20,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: fontPixel(14),
-                            fontWeight: "400",
-                            color: "#DFE5F8",
-                          }}
-                        >
-                          {item.defaultText}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: fontPixel(12),
-                            fontWeight: "400",
-                            color: "#A7AFC7",
-                          }}
-                        >
-                          {" "}
-                          {dayjs(item.createdAt.split("T")[0]).fromNow()}
-                        </Text>
-                      </Text>
-                    ) : (
-                      <Text
-                        style={{ lineHeight: 20, flexGrow: 1, flexShrink: 1 }}
-                      >
-                        {item.preText && (
-                          <Text
-                            style={{
-                              fontSize: fontPixel(14),
-                              fontWeight: "400",
-                              color: "#DFE5F8",
-                            }}
-                          >
-                            {item.preText}{" "}
-                          </Text>
-                        )}
-                        <Text
-                          style={{
-                            fontSize: fontPixel(14),
-                            fontWeight: "600",
-                            color: "#07BEB8",
-                          }}
-                        >
-                          {item.sourceName}
-                        </Text>
-                        {item.postText && (
-                          <Text
-                            style={{
-                              fontSize: fontPixel(14),
-                              fontWeight: "400",
-                              color: "#DFE5F8",
-                            }}
-                          >
-                            {" "}
-                            {item.postText}
-                          </Text>
-                        )}
-                        <Text
-                          style={{
-                            fontSize: fontPixel(12),
-                            fontWeight: "400",
-                            color: "#A7AFC7",
-                          }}
-                        >
-                          {" "}
-                          {dayjs(new Date(item.createdAt).toString()).fromNow()}
-                        </Text>
-                      </Text>
-                    )}
-                  </View>
-                </Pressable>
-              )}
-            />
-          ) : (
-            <Text
-              style={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                paddingRight: pixelSizeHorizontal(16),
-                paddingLeft: pixelSizeHorizontal(16),
-              }}
-            >
-              no notifications yet
-            </Text>
-          )}
-        </View>
-      </ScrollView>
+      {UI}
 
       <Modal
         isVisible={isSideMenuVisible}

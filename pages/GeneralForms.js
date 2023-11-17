@@ -17,6 +17,8 @@ import {
 } from "../utils/responsive-font";
 import { StatusBar } from "expo-status-bar";
 
+import { Bounce } from "react-native-animated-spinkit";
+
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
@@ -40,6 +42,7 @@ const { width } = Dimensions.get("window");
 
 export default function GeneralForms({ navigation }) {
   const campus = useSelector((state) => state.data.campus);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -53,12 +56,14 @@ export default function GeneralForms({ navigation }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
     if (campus.campusID) {
       db.doc(`/generalFormsOverview/${campus.campusID}`)
         .get()
         .then((doc) => {
           let temp = doc.data().forms;
           setData([...temp]);
+          setLoading(false);
         })
         .catch((error) => {
           console.error(error);
@@ -66,6 +71,7 @@ export default function GeneralForms({ navigation }) {
             type: "error",
             text1: "something went wrong",
           });
+          setLoading(false);
         });
     }
   }, [campus.campusID]);
@@ -119,6 +125,67 @@ export default function GeneralForms({ navigation }) {
       </Animated.View>
     );
 
+  let UI = loading ? (
+    <View style={{ marginTop: pixelSizeVertical(60) }}>
+      <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
+    </View>
+  ) : (
+    <ScrollView
+      scrollEventThrottle={16}
+      onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      showsVerticalScrollIndicator={false}
+    >
+      <View onLayout={onLayout}>
+        <Header header={"general forms"} />
+      </View>
+      {clearButton}
+      <TextInput
+        style={styles.textInput}
+        placeholder="search for forms..."
+        placeholderTextColor="#DBDBDB"
+        onChangeText={(newSearch) => setSearch(newSearch)}
+        value={search}
+      />
+      <FlatList
+        style={styles.list}
+        scrollEnabled={false}
+        keyExtractor={(item, index) => index.toString()}
+        data={
+          search === ""
+            ? data
+            : data.filter((form) =>
+                form.title.toLowerCase().includes(search.toLowerCase())
+              )
+        }
+        renderItem={({ item }) => (
+          <>
+            <Pressable onPress={() => handleOnPress(item)}>
+              <Text style={styles.pageItems}>
+                {item.title}{" "}
+                {item.type === "easyFill" ? (
+                  <Text
+                    style={{
+                      fontSize: fontPixel(16),
+                      fontWeight: "400",
+                      color: "#07BEB8",
+                      marginTop: pixelSizeVertical(-10),
+                      marginBottom: pixelSizeVertical(12),
+                    }}
+                  >
+                    {" "}
+                    easy fill
+                  </Text>
+                ) : null}
+              </Text>
+            </Pressable>
+            <View style={styles.divider} />
+          </>
+        )}
+      />
+      <View style={styles.emptyView}></View>
+    </ScrollView>
+  );
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -152,62 +219,7 @@ export default function GeneralForms({ navigation }) {
           />
         </Pressable>
       </View>
-
-      <ScrollView
-        scrollEventThrottle={16}
-        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
-        showsVerticalScrollIndicator={false}
-      >
-        <View onLayout={onLayout}>
-          <Header header={"general forms"} />
-        </View>
-        {clearButton}
-        <TextInput
-          style={styles.textInput}
-          placeholder="search for forms..."
-          placeholderTextColor="#DBDBDB"
-          onChangeText={(newSearch) => setSearch(newSearch)}
-          value={search}
-        />
-        <FlatList
-          style={styles.list}
-          scrollEnabled={false}
-          keyExtractor={(item, index) => index.toString()}
-          data={
-            search === ""
-              ? data
-              : data.filter((form) =>
-                  form.title.toLowerCase().includes(search.toLowerCase())
-                )
-          }
-          renderItem={({ item }) => (
-            <>
-              <Pressable onPress={() => handleOnPress(item)}>
-                <Text style={styles.pageItems}>
-                  {item.title}{" "}
-                  {item.type === "easyFill" ? (
-                    <Text
-                      style={{
-                        fontSize: fontPixel(16),
-                        fontWeight: "400",
-                        color: "#07BEB8",
-                        marginTop: pixelSizeVertical(-10),
-                        marginBottom: pixelSizeVertical(12),
-                      }}
-                    >
-                      {" "}
-                      easy fill
-                    </Text>
-                  ) : null}
-                </Text>
-              </Pressable>
-              <View style={styles.divider} />
-            </>
-          )}
-        />
-        <View style={styles.emptyView}></View>
-      </ScrollView>
-
+      {UI}
       <Modal
         isVisible={isSideMenuVisible}
         onBackdropPress={toggleSideMenu} // Android back press

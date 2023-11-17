@@ -12,6 +12,8 @@ import React, { useState, useEffect } from "react";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 
+import { Bounce } from "react-native-animated-spinkit";
+
 import IosHeight from "../components/IosHeight";
 
 // import hamburgerIcon from "../assets/hamburger_icon.png";
@@ -45,6 +47,7 @@ import {
 export default function Clubs({ navigation }) {
   const user = useSelector((state) => state.user.credentials);
   const state = useSelector((state) => state.data);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -65,27 +68,35 @@ export default function Clubs({ navigation }) {
 
   useEffect(() => {
     //get clubs from clubs overview
+    setLoading(true);
     db.doc(`/clubsOverview/${state.campus.campusID}`)
       .get()
       .then((doc) => {
         if (doc.data()) setAll(doc.data().clubs);
+        setLoading(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, [state.campus.campusID]);
 
   const onRefresh = React.useCallback(() => {
     //get clubs from clubs overview
     setRefreshing(true);
+    setLoading(true);
     dispatch(getAuthenticatedUser(user.email));
     db.doc(`/clubsOverview/${state.campus.campusID}`)
       .get()
       .then((doc) => {
         if (doc.data()) setAll(doc.data().clubs);
         setRefreshing(false);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
         setRefreshing(false);
+        setLoading(false);
       });
   }, []);
 
@@ -129,6 +140,169 @@ export default function Clubs({ navigation }) {
       setShowMiniHeader(false);
   }, [scrollHeight, showMiniHeader]);
 
+  let UI = loading ? (
+    <View style={{ marginTop: pixelSizeVertical(60) }}>
+      <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
+    </View>
+  ) : (
+    <ScrollView
+      scrollEventThrottle={16}
+      onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <View
+        onLayout={onLayout}
+        style={{ display: "flex", flexDirection: "row" }}
+      >
+        <Pressable onPress={() => setTab("all clubs")}>
+          <Text
+            style={tab === "all clubs" ? styles.tabActive : styles.tabInactive}
+          >
+            all clubs
+          </Text>
+        </Pressable>
+        <Pressable onPress={() => setTab("yours")}>
+          <Text style={tab === "yours" ? styles.tabActive : styles.tabInactive}>
+            yours
+          </Text>
+        </Pressable>
+      </View>
+
+      <FlatList
+        keyExtractor={(item, index) => index.toString()}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        scrollEnabled={false}
+        data={tab === "all clubs" ? all : yours}
+        renderItem={({ item }) => (
+          <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
+            {item.approval === "pending" ? (
+              item.createdBy === user.userId && (
+                <>
+                  <Image
+                    style={styles.imageHalfOpacity}
+                    source={item.image}
+                    contentFit="cover"
+                    transition={1000}
+                  />
+                  <Text style={styles.pageItemsPending}>{item.name}</Text>
+                  <Text style={styles.pageItemSubtitlePending}>
+                    {item.approvalText}
+                  </Text>
+                </>
+              )
+            ) : item.approval === "rejected" ? (
+              item.createdBy === user.userId && (
+                <Pressable onPress={() => handlePageItemResubmit(item.clubID)}>
+                  <Image
+                    style={styles.imageHalfOpacity}
+                    source={item.image}
+                    contentFit="cover"
+                    transition={1000}
+                  />
+                  <Text style={styles.pageItemsPending}>{item.name}</Text>
+                  <Text style={styles.pageItemSubtitleSuspendedSmaller}>
+                    {item.approval}
+                  </Text>
+                  <Text style={styles.pageItemSubtitleRejected}>
+                    {item.rejectionReason}
+                  </Text>
+                </Pressable>
+              )
+            ) : item.status === "inactive" ? (
+              item.createdBy === user.userId && (
+                <Pressable onPress={() => handlePageItemPress(item.clubID)}>
+                  <Image
+                    style={styles.imageHalfOpacity}
+                    source={item.image}
+                    contentFit="cover"
+                    transition={1000}
+                  />
+                  <Text style={styles.pageItemsInactive}>{item.name}</Text>
+                  <Text style={styles.pageItemSubtitleInactive}>
+                    {item.status}
+                  </Text>
+                </Pressable>
+              )
+            ) : item.status === "suspended" ? (
+              item.createdBy === user.userId && (
+                <>
+                  <Image
+                    style={styles.imageHalfOpacity}
+                    source={item.image}
+                    contentFit="cover"
+                    transition={1000}
+                  />
+                  <Text style={styles.pageItemsSuspended}>{item.name}</Text>
+                  <Text style={styles.pageItemSubtitleSuspendedSmaller}>
+                    {item.status}
+                  </Text>
+                </>
+              )
+            ) : item.status === "deactivated" ? (
+              item.createdBy === user.userId && (
+                <Pressable onPress={() => handlePageItemPress(item.clubID)}>
+                  <Image
+                    style={styles.imageHalfOpacity}
+                    source={item.image}
+                    contentFit="cover"
+                    transition={1000}
+                  />
+                  <Text style={styles.pageItemsInactive}>{item.name}</Text>
+                  <Text style={styles.pageItemSubtitleInactive}>
+                    {item.status}
+                  </Text>
+                </Pressable>
+              )
+            ) : (
+              <Pressable onPress={() => handlePageItemPress(item.clubID)}>
+                <Image
+                  style={styles.image}
+                  source={item.image}
+                  contentFit="cover"
+                  transition={1000}
+                />
+                <Text style={styles.pageItems}>{item.name}</Text>
+              </Pressable>
+            )}
+          </View>
+        )}
+      />
+      {tab === "yours" && yours.length === 0 ? (
+        <View style={styles.joinClubContainer}>
+          <View style={styles.joinClubInnerContainer}>
+            <Pressable onPress={() => setTab("all clubs")}>
+              <Text style={styles.joinClubButton}>Find your club,</Text>
+            </Pressable>
+            <Text style={styles.joinClubText}>
+              make friends, and share your passion!
+            </Text>
+          </View>
+
+          <View style={styles.joinClubInnerContainer}>
+            <Text style={styles.joinClubText}>
+              Can't find the perfect club?
+            </Text>
+            <Pressable onPress={() => navigation.navigate("CreateAClub")}>
+              <Text style={styles.joinClubButton}>Create your own!</Text>
+            </Pressable>
+          </View>
+        </View>
+      ) : (
+        <Pressable
+          onPress={() => navigation.navigate("CreateAClub")}
+          style={{ alignItems: "center" }}
+        >
+          <Text style={styles.joinClubSmallButton}>Create your own club</Text>
+        </Pressable>
+      )}
+      <View style={styles.emptyView}></View>
+    </ScrollView>
+  );
+
   return (
     <>
       <View style={styles.container}>
@@ -170,172 +344,7 @@ export default function Clubs({ navigation }) {
           </Pressable>
         </View>
 
-        <ScrollView
-          scrollEventThrottle={16}
-          onScroll={(event) =>
-            setScrollHeight(event.nativeEvent.contentOffset.y)
-          }
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          <View
-            onLayout={onLayout}
-            style={{ display: "flex", flexDirection: "row" }}
-          >
-            <Pressable onPress={() => setTab("all clubs")}>
-              <Text
-                style={
-                  tab === "all clubs" ? styles.tabActive : styles.tabInactive
-                }
-              >
-                all clubs
-              </Text>
-            </Pressable>
-            <Pressable onPress={() => setTab("yours")}>
-              <Text
-                style={tab === "yours" ? styles.tabActive : styles.tabInactive}
-              >
-                yours
-              </Text>
-            </Pressable>
-          </View>
-
-          <FlatList
-            keyExtractor={(item, index) => index.toString()}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            scrollEnabled={false}
-            data={tab === "all clubs" ? all : yours}
-            renderItem={({ item }) => (
-              <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
-                {item.approval === "pending" ? (
-                  item.createdBy === user.userId && (
-                    <>
-                      <Image
-                        style={styles.imageHalfOpacity}
-                        source={item.image}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                      <Text style={styles.pageItemsPending}>{item.name}</Text>
-                      <Text style={styles.pageItemSubtitlePending}>
-                        {item.approvalText}
-                      </Text>
-                    </>
-                  )
-                ) : item.approval === "rejected" ? (
-                  item.createdBy === user.userId && (
-                    <Pressable
-                      onPress={() => handlePageItemResubmit(item.clubID)}
-                    >
-                      <Image
-                        style={styles.imageHalfOpacity}
-                        source={item.image}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                      <Text style={styles.pageItemsPending}>{item.name}</Text>
-                      <Text style={styles.pageItemSubtitleSuspendedSmaller}>
-                        {item.approval}
-                      </Text>
-                      <Text style={styles.pageItemSubtitleRejected}>
-                        {item.rejectionReason}
-                      </Text>
-                    </Pressable>
-                  )
-                ) : item.status === "inactive" ? (
-                  item.createdBy === user.userId && (
-                    <Pressable onPress={() => handlePageItemPress(item.clubID)}>
-                      <Image
-                        style={styles.imageHalfOpacity}
-                        source={item.image}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                      <Text style={styles.pageItemsInactive}>{item.name}</Text>
-                      <Text style={styles.pageItemSubtitleInactive}>
-                        {item.status}
-                      </Text>
-                    </Pressable>
-                  )
-                ) : item.status === "suspended" ? (
-                  item.createdBy === user.userId && (
-                    <>
-                      <Image
-                        style={styles.imageHalfOpacity}
-                        source={item.image}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                      <Text style={styles.pageItemsSuspended}>{item.name}</Text>
-                      <Text style={styles.pageItemSubtitleSuspendedSmaller}>
-                        {item.status}
-                      </Text>
-                    </>
-                  )
-                ) : item.status === "deactivated" ? (
-                  item.createdBy === user.userId && (
-                    <Pressable onPress={() => handlePageItemPress(item.clubID)}>
-                      <Image
-                        style={styles.imageHalfOpacity}
-                        source={item.image}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                      <Text style={styles.pageItemsInactive}>{item.name}</Text>
-                      <Text style={styles.pageItemSubtitleInactive}>
-                        {item.status}
-                      </Text>
-                    </Pressable>
-                  )
-                ) : (
-                  <Pressable onPress={() => handlePageItemPress(item.clubID)}>
-                    <Image
-                      style={styles.image}
-                      source={item.image}
-                      contentFit="cover"
-                      transition={1000}
-                    />
-                    <Text style={styles.pageItems}>{item.name}</Text>
-                  </Pressable>
-                )}
-              </View>
-            )}
-          />
-          {tab === "yours" && yours.length === 0 ? (
-            <View style={styles.joinClubContainer}>
-              <View style={styles.joinClubInnerContainer}>
-                <Pressable onPress={() => setTab("all clubs")}>
-                  <Text style={styles.joinClubButton}>Find your club,</Text>
-                </Pressable>
-                <Text style={styles.joinClubText}>
-                  make friends, and share your passion!
-                </Text>
-              </View>
-
-              <View style={styles.joinClubInnerContainer}>
-                <Text style={styles.joinClubText}>
-                  Can't find the perfect club?
-                </Text>
-                <Pressable onPress={() => navigation.navigate("CreateAClub")}>
-                  <Text style={styles.joinClubButton}>Create your own!</Text>
-                </Pressable>
-              </View>
-            </View>
-          ) : (
-            <Pressable
-              onPress={() => navigation.navigate("CreateAClub")}
-              style={{ alignItems: "center" }}
-            >
-              <Text style={styles.joinClubSmallButton}>
-                Create your own club
-              </Text>
-            </Pressable>
-          )}
-          <View style={styles.emptyView}></View>
-        </ScrollView>
+        {UI}
       </View>
       <Modal
         isVisible={isSideMenuVisible}

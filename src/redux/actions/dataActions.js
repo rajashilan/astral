@@ -26,7 +26,9 @@ import {
   SET_CLUB_GALLERY_TO_TRUE,
   SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
+  SET_UI_LOADING,
   STOP_LOADING_DATA,
+  STOP_UI_LOADING,
   UPDATE_CLUB_DETAILS,
   UPDATE_CLUB_IMAGE,
   UPDATE_CLUB_MEMBER_BIO,
@@ -136,17 +138,17 @@ export const getOrientationPage = (orientationPageID) => (dispatch) => {
 };
 
 export const getAClub = (clubID, userID) => (dispatch) => {
-  dispatch({ type: SET_LOADING_DATA });
+  dispatch({ type: SET_UI_LOADING });
 
   db.doc(`/clubs/${clubID}`)
     .get()
     .then((doc) => {
-      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: STOP_UI_LOADING });
       dispatch({ type: GET_A_CLUB_DATA, payload: { ...doc.data() } });
       dispatch(getClubMembers(clubID, userID));
     })
     .catch((error) => {
-      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: STOP_UI_LOADING });
       Toast.show({
         type: "error",
         text1: "Something went wrong",
@@ -155,12 +157,12 @@ export const getAClub = (clubID, userID) => (dispatch) => {
 };
 
 export const getClubMembers = (clubID, userID) => (dispatch) => {
-  dispatch({ type: SET_LOADING_DATA });
+  dispatch({ type: SET_UI_LOADING });
 
   db.doc(`/clubMembers/${clubID}`)
     .get()
     .then((doc) => {
-      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: STOP_UI_LOADING });
       dispatch({
         type: SET_CLUB_MEMBERS_DATA,
         payload: { members: [...doc.data().members], userID },
@@ -168,7 +170,7 @@ export const getClubMembers = (clubID, userID) => (dispatch) => {
     })
     .catch((error) => {
       console.error(error);
-      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: STOP_UI_LOADING });
       Toast.show({
         type: "error",
         text1: "Something went wrong",

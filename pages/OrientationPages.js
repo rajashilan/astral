@@ -22,6 +22,7 @@ import Modal from "react-native-modal";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { Bounce } from "react-native-animated-spinkit";
 
 import * as WebBrowser from "expo-web-browser";
 
@@ -116,6 +117,96 @@ export default function OrientationPages({ navigation, route }) {
       setShowMiniHeader(false);
   }, [scrollHeight, showMiniHeader]);
 
+  let UI = loading ? (
+    <View style={{ marginTop: pixelSizeVertical(60) }}>
+      <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
+    </View>
+  ) : (
+    <FlatList
+      scrollEventThrottle={16}
+      onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
+      style={styles.list}
+      keyExtractor={(data, index) => index.toString()}
+      data={data}
+      renderItem={({ item }) => (
+        <>
+          <View onLayout={onLayout}>
+            <Text style={styles.header}>{item.title}</Text>
+          </View>
+          {item.header && <Text style={styles.title}>{item.header}</Text>}
+          {item.content && <Text style={styles.content}>{item.content}</Text>}
+          {item.subcontent &&
+            item.subcontent.map((content, index) => {
+              return (
+                <View style={styles.contentContainer}>
+                  <Text style={styles.subtitle}>{content.title}</Text>
+                  {content.content && (
+                    <Text style={styles.contentNoPadding}>
+                      {content.content}
+                    </Text>
+                  )}
+                  {content.image && (
+                    <>
+                      <Carousel
+                        layout="default"
+                        data={content.image}
+                        disableIntervalMomentum={true}
+                        useExperimentalSnap={true}
+                        onSnapToItem={(index) => onSelect(index)}
+                        sliderWidth={width - 32}
+                        itemWidth={width - 32}
+                        renderItem={({ item, index }) => (
+                          <>
+                            <Image
+                              key={index}
+                              style={styles.image}
+                              resizeMode="cover"
+                              source={item}
+                            />
+                          </>
+                        )}
+                      />
+                      <Pagination
+                        inactiveDotColor="#546593"
+                        dotColor={"#C4FFF9"}
+                        activeDotIndex={indexSelected}
+                        containerStyle={{
+                          paddingTop: 0,
+                          paddingRight: pixelSizeHorizontal(16),
+                          paddingLeft: pixelSizeHorizontal(16),
+                          paddingBottom: 0,
+                          marginBottom: pixelSizeVertical(12),
+                        }}
+                        dotsLength={content.image.length}
+                        inactiveDotScale={1}
+                      />
+                    </>
+                  )}
+                  {content.files &&
+                    content.files.map((file) => {
+                      return (
+                        <>
+                          <Pressable
+                            onPress={async () =>
+                              await WebBrowser.openBrowserAsync(file.url)
+                            }
+                          >
+                            <Text style={styles.file}>{file.filename}</Text>
+                          </Pressable>
+                        </>
+                      );
+                    })}
+                </View>
+              );
+            })}
+          <View style={styles.emptyView}></View>
+        </>
+      )}
+    />
+  );
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -154,89 +245,8 @@ export default function OrientationPages({ navigation, route }) {
         </Pressable>
       </View>
 
-      <FlatList
-        scrollEventThrottle={16}
-        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        style={styles.list}
-        keyExtractor={(data, index) => index.toString()}
-        data={data}
-        renderItem={({ item }) => (
-          <>
-            <View onLayout={onLayout}>
-              <Text style={styles.header}>{item.title}</Text>
-            </View>
-            {item.header && <Text style={styles.title}>{item.header}</Text>}
-            {item.content && <Text style={styles.content}>{item.content}</Text>}
-            {item.subcontent &&
-              item.subcontent.map((content, index) => {
-                return (
-                  <View style={styles.contentContainer}>
-                    <Text style={styles.subtitle}>{content.title}</Text>
-                    {content.content && (
-                      <Text style={styles.contentNoPadding}>
-                        {content.content}
-                      </Text>
-                    )}
-                    {content.image && (
-                      <>
-                        <Carousel
-                          layout="default"
-                          data={content.image}
-                          disableIntervalMomentum={true}
-                          useExperimentalSnap={true}
-                          onSnapToItem={(index) => onSelect(index)}
-                          sliderWidth={width - 32}
-                          itemWidth={width - 32}
-                          renderItem={({ item, index }) => (
-                            <>
-                              <Image
-                                key={index}
-                                style={styles.image}
-                                resizeMode="cover"
-                                source={item}
-                              />
-                            </>
-                          )}
-                        />
-                        <Pagination
-                          inactiveDotColor="#546593"
-                          dotColor={"#C4FFF9"}
-                          activeDotIndex={indexSelected}
-                          containerStyle={{
-                            paddingTop: 0,
-                            paddingRight: pixelSizeHorizontal(16),
-                            paddingLeft: pixelSizeHorizontal(16),
-                            paddingBottom: 0,
-                            marginBottom: pixelSizeVertical(12),
-                          }}
-                          dotsLength={content.image.length}
-                          inactiveDotScale={1}
-                        />
-                      </>
-                    )}
-                    {content.files &&
-                      content.files.map((file) => {
-                        return (
-                          <>
-                            <Pressable
-                              onPress={async () =>
-                                await WebBrowser.openBrowserAsync(file.url)
-                              }
-                            >
-                              <Text style={styles.file}>{file.filename}</Text>
-                            </Pressable>
-                          </>
-                        );
-                      })}
-                  </View>
-                );
-              })}
-            <View style={styles.emptyView}></View>
-          </>
-        )}
-      />
+      {UI}
+
       <Modal
         isVisible={isSideMenuVisible}
         onBackdropPress={toggleSideMenu} // Android back press

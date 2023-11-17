@@ -20,8 +20,7 @@ import {
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 
-import DateTimePicker from "@react-native-community/datetimepicker";
-import dayjs from "dayjs";
+import { Bounce } from "react-native-animated-spinkit";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
@@ -50,7 +49,6 @@ export default function GeneralFormsPage({ navigation, route }) {
 
   const dispatch = useDispatch();
   const club = useSelector((state) => state.data.clubData.club);
-  const loading = useSelector((state) => state.data.loading);
   const user = useSelector((state) => state.user.credentials);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -64,6 +62,7 @@ export default function GeneralFormsPage({ navigation, route }) {
   const [errors, setErrors] = useState({});
 
   const [loadingAxios, setLoadingAxios] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState("");
 
   const [data, setData] = useState({
@@ -73,6 +72,7 @@ export default function GeneralFormsPage({ navigation, route }) {
   });
 
   useEffect(() => {
+    setLoading(true);
     db.doc(`/generalForms/${id}`)
       .get()
       .then((doc) => {
@@ -95,7 +95,7 @@ export default function GeneralFormsPage({ navigation, route }) {
         });
         setErrors({ ...temp });
         setFieldValues({ ...tempFields });
-        console.log(formData);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
@@ -103,6 +103,7 @@ export default function GeneralFormsPage({ navigation, route }) {
           type: "error",
           text1: "something went wrong",
         });
+        setLoading(false);
       });
   }, []);
 
@@ -226,6 +227,49 @@ export default function GeneralFormsPage({ navigation, route }) {
         })
       : null;
 
+  let UI = loading ? (
+    <View style={{ marginTop: pixelSizeVertical(60) }}>
+      <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
+    </View>
+  ) : (
+    <ScrollView
+      scrollEventThrottle={16}
+      stickyHeaderIndices={[1]}
+      onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+    >
+      <View style={styles.paddingContainer}>
+        <View style={{ width: "100%", flexDirection: "column" }}>
+          <View onLayout={onLayout}>
+            <Header header={data.title} />
+          </View>
+          <Text
+            style={[styles.disclaimer, { marginBottom: pixelSizeVertical(28) }]}
+          >
+            fill in the required fields and download the generated pdf
+          </Text>
+          {TextFields}
+          <Pressable
+            style={
+              loadingAxios ? styles.loginButtonDisabled : styles.loginButton
+            }
+            onPress={handleSubmit}
+          >
+            <Text
+              style={
+                loadingAxios
+                  ? styles.loginButtonLoadingText
+                  : styles.loginButtonText
+              }
+            >
+              {loadingAxios ? "saving..." : "save"}
+            </Text>
+          </Pressable>
+          <View style={styles.emptyView}></View>
+        </View>
+      </View>
+    </ScrollView>
+  );
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -259,45 +303,7 @@ export default function GeneralFormsPage({ navigation, route }) {
           />
         </Pressable>
       </View>
-      <ScrollView
-        scrollEventThrottle={16}
-        stickyHeaderIndices={[1]}
-        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
-      >
-        <View style={styles.paddingContainer}>
-          <View style={{ width: "100%", flexDirection: "column" }}>
-            <View onLayout={onLayout}>
-              <Header header={data.title} />
-            </View>
-            <Text
-              style={[
-                styles.disclaimer,
-                { marginBottom: pixelSizeVertical(28) },
-              ]}
-            >
-              fill in the required fields and download the generated pdf
-            </Text>
-            {TextFields}
-            <Pressable
-              style={
-                loadingAxios ? styles.loginButtonDisabled : styles.loginButton
-              }
-              onPress={handleSubmit}
-            >
-              <Text
-                style={
-                  loadingAxios
-                    ? styles.loginButtonLoadingText
-                    : styles.loginButtonText
-                }
-              >
-                {loadingAxios ? "saving..." : "save"}
-              </Text>
-            </Pressable>
-            <View style={styles.emptyView}></View>
-          </View>
-        </View>
-      </ScrollView>
+      {UI}
       <Modal
         isVisible={isSideMenuVisible}
         onBackdropPress={toggleSideMenu} // Android back press

@@ -18,6 +18,8 @@ import { StatusBar } from "expo-status-bar";
 import { ResizeMode } from "expo-av";
 import VideoPlayer from "expo-video-player";
 
+import { Bounce } from "react-native-animated-spinkit";
+
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
@@ -37,6 +39,7 @@ export default function Orientation({ navigation }) {
   const orientation = useSelector((state) => state.data.orientation);
   const state = useSelector((state) => state.data);
   const user = useSelector((state) => state.user);
+  const loading = useSelector((state) => state.data.loading);
   const dispatch = useDispatch();
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -77,6 +80,54 @@ export default function Orientation({ navigation }) {
       setShowMiniHeader(false);
   }, [scrollHeight, showMiniHeader]);
 
+  let UI = loading ? (
+    <View style={{ marginTop: pixelSizeVertical(60) }}>
+      <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
+    </View>
+  ) : (
+    <ScrollView
+      scrollEventThrottle={16}
+      onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      showsVerticalScrollIndicator={false}
+    >
+      <View onLayout={onLayout}>
+        <Header header={"orientation"} />
+      </View>
+      {overview.video && (
+        <VideoPlayer
+          style={styles.video}
+          videoProps={{
+            resizeMode: ResizeMode.CONTAIN,
+            source: {
+              uri: overview.videos[0],
+            },
+          }}
+        />
+      )}
+
+      <Text style={styles.title}>{overview.title}</Text>
+
+      <FlatList
+        style={styles.list}
+        scrollEnabled={false}
+        keyExtractor={(item, index) => index.toString()}
+        data={overview.pages}
+        renderItem={({ item }) => (
+          <>
+            <Pressable
+              onPress={() => {
+                handlePageItemPress(item.orientationPageID);
+              }}
+            >
+              <Text style={styles.pageItems}>{item.title}</Text>
+            </Pressable>
+            <View style={styles.divider} />
+          </>
+        )}
+      />
+    </ScrollView>
+  );
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -111,47 +162,7 @@ export default function Orientation({ navigation }) {
         </Pressable>
       </View>
 
-      <ScrollView
-        scrollEventThrottle={16}
-        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
-        showsVerticalScrollIndicator={false}
-      >
-        <View onLayout={onLayout}>
-          <Header header={"orientation"} />
-        </View>
-        {overview.video && (
-          <VideoPlayer
-            style={styles.video}
-            videoProps={{
-              resizeMode: ResizeMode.CONTAIN,
-              source: {
-                uri: overview.videos[0],
-              },
-            }}
-          />
-        )}
-
-        <Text style={styles.title}>{overview.title}</Text>
-
-        <FlatList
-          style={styles.list}
-          scrollEnabled={false}
-          keyExtractor={(item, index) => index.toString()}
-          data={overview.pages}
-          renderItem={({ item }) => (
-            <>
-              <Pressable
-                onPress={() => {
-                  handlePageItemPress(item.orientationPageID);
-                }}
-              >
-                <Text style={styles.pageItems}>{item.title}</Text>
-              </Pressable>
-              <View style={styles.divider} />
-            </>
-          )}
-        />
-      </ScrollView>
+      {UI}
 
       <Modal
         isVisible={isSideMenuVisible}
