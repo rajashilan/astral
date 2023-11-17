@@ -21,7 +21,9 @@
     "expo": "~48.0.10",
     "expo-app-loading": "^2.1.1",
     "expo-av": "~13.2.1",
+    "expo-checkbox": "~2.3.1",
     "expo-crypto": "~12.2.1",
+    "expo-document-picker": "~11.2.2",
     "expo-file-system": "~15.2.2",
     "expo-font": "~11.1.1",
     "expo-image": "~1.0.2",
@@ -37,6 +39,7 @@
     "react-native": "0.71.13",
     "react-native-blob-util": "^0.19.1",
     "react-native-button-spinner": "^0.1.4",
+    "react-native-easy-content-loader": "^0.3.2",
     "react-native-fetch-blob": "^0.10.8",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.9.0",
@@ -49,6 +52,7 @@
     "react-native-segmented-picker": "^2.0.2",
     "react-native-select-dropdown": "^3.3.3",
     "react-native-snap-carousel": "^4.0.0-beta.6",
+    "react-native-spinkit": "^1.5.1",
     "react-native-svg": "13.4.0",
     "react-native-tab-view": "^3.5.1",
     "react-native-toast-message": "^2.1.6",
@@ -57,9 +61,7 @@
     "react-native-wheel-picker-expo": "^0.5.4",
     "react-redux": "^8.1.1",
     "redux": "^4.2.1",
-    "redux-thunk": "^2.4.2",
-    "expo-document-picker": "~11.2.2",
-    "expo-checkbox": "~2.3.1"
+    "redux-thunk": "^2.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

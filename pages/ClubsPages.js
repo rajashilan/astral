@@ -10,6 +10,8 @@ import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import * as Crypto from "expo-crypto";
 
+import { Bounce } from "react-native-animated-spinkit";
+
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
@@ -57,6 +59,7 @@ export default function ClubsPages({ navigation, route }) {
   const user = useSelector((state) => state.user.credentials);
   const data = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
+  const UIloading = useSelector((state) => state.UI.loading);
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
   );
@@ -184,6 +187,105 @@ export default function ClubsPages({ navigation, route }) {
     return Object.keys(obj).length === 0;
   }
 
+  let UI = UIloading ? (
+    <View style={{ marginTop: pixelSizeVertical(60) }}>
+      <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
+    </View>
+  ) : (
+    <ScrollView
+      scrollEventThrottle={16}
+      stickyHeaderIndices={[2]}
+      onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      style={StyleSheet.create({
+        flex: 1,
+        marginTop: pixelSizeVertical(10),
+      })}
+    >
+      {data && (
+        <View onLayout={onLayout}>
+          <ImageBackground
+            source={{ uri: data.image }}
+            style={styles.imageHeaderContainer}
+          >
+            <View style={styles.overlayContainer}>
+              <Text style={styles.header}>{data.name}</Text>
+            </View>
+          </ImageBackground>
+        </View>
+      )}
+
+      <View
+        style={{
+          paddingRight: pixelSizeHorizontal(16),
+          paddingLeft: pixelSizeHorizontal(16),
+        }}
+      >
+        {isEmpty(currentMember) && !hasRequested && (
+          <Pressable
+            onPress={() => setShowAgreementPopUp(!showAgreementPopUp)}
+            style={styles.loginButton}
+          >
+            <Text style={styles.loginButtonText}>join</Text>
+          </Pressable>
+        )}
+      </View>
+
+      <View
+        style={{
+          paddingRight: pixelSizeHorizontal(16),
+          paddingLeft: pixelSizeHorizontal(16),
+          backgroundColor: "#0C111F",
+          paddingBottom: pixelSizeVertical(12),
+        }}
+      >
+        <View style={styles.navigationContainer}>
+          {navigations.navigations.length > 0 &&
+            navigations.navigations.map((link) => {
+              return (
+                <Pressable
+                  onPress={() => setTab(link.name)}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <Text
+                    style={
+                      link.name === tab
+                        ? styles.navigationLinkActive
+                        : styles.navigationLinkInactive
+                    }
+                  >
+                    {link.name}
+                  </Text>
+                  <View
+                    style={
+                      link.name === tab ? styles.navigationBorderActive : null
+                    }
+                  />
+                </Pressable>
+              );
+            })}
+        </View>
+        <View style={styles.navigationBorderInactive} />
+      </View>
+
+      <View
+        style={{
+          paddingRight: pixelSizeHorizontal(16),
+          paddingLeft: pixelSizeHorizontal(16),
+        }}
+      >
+        {tab === "members" ? (
+          <ClubsMembers />
+        ) : tab === "gallery" ? (
+          <ClubsGallery navigation={navigation} />
+        ) : tab === "events" ? (
+          <ClubsEvents navigation={navigation} />
+        ) : tab === "details" ? (
+          <ClubsDetails />
+        ) : null}
+      </View>
+    </ScrollView>
+  );
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -206,16 +308,18 @@ export default function ClubsPages({ navigation, route }) {
         ) : (
           <Text style={styles.headerMiniInvisible}>title</Text>
         )}
-        {!isEmpty(currentMember) && (
+        {!isEmpty(currentMember) && !UIloading && (
           <Pressable onPress={handleYou} style={styles.youButton}>
             <Text style={styles.youText}>you</Text>
           </Pressable>
         )}
-        {!isEmpty(currentMember) && currentMember.role === "president" && (
-          <Pressable onPress={handleEditClub} style={styles.youButtonNoAuto}>
-            <Text style={styles.youText}>club</Text>
-          </Pressable>
-        )}
+        {!isEmpty(currentMember) &&
+          currentMember.role === "president" &&
+          !UIloading && (
+            <Pressable onPress={handleEditClub} style={styles.youButtonNoAuto}>
+              <Text style={styles.youText}>club</Text>
+            </Pressable>
+          )}
         <Pressable
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
@@ -228,99 +332,7 @@ export default function ClubsPages({ navigation, route }) {
         </Pressable>
       </View>
 
-      <ScrollView
-        scrollEventThrottle={16}
-        stickyHeaderIndices={[2]}
-        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
-        style={StyleSheet.create({
-          flex: 1,
-          marginTop: pixelSizeVertical(10),
-        })}
-      >
-        {data && (
-          <View onLayout={onLayout}>
-            <ImageBackground
-              source={{ uri: data.image }}
-              style={styles.imageHeaderContainer}
-            >
-              <View style={styles.overlayContainer}>
-                <Text style={styles.header}>{data.name}</Text>
-              </View>
-            </ImageBackground>
-          </View>
-        )}
-
-        <View
-          style={{
-            paddingRight: pixelSizeHorizontal(16),
-            paddingLeft: pixelSizeHorizontal(16),
-          }}
-        >
-          {isEmpty(currentMember) && !hasRequested && (
-            <Pressable
-              onPress={() => setShowAgreementPopUp(!showAgreementPopUp)}
-              style={styles.loginButton}
-            >
-              <Text style={styles.loginButtonText}>join</Text>
-            </Pressable>
-          )}
-        </View>
-
-        <View
-          style={{
-            paddingRight: pixelSizeHorizontal(16),
-            paddingLeft: pixelSizeHorizontal(16),
-            backgroundColor: "#0C111F",
-            paddingBottom: pixelSizeVertical(12),
-          }}
-        >
-          <View style={styles.navigationContainer}>
-            {navigations.navigations.length > 0 &&
-              navigations.navigations.map((link) => {
-                return (
-                  <Pressable
-                    onPress={() => setTab(link.name)}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                  >
-                    <Text
-                      style={
-                        link.name === tab
-                          ? styles.navigationLinkActive
-                          : styles.navigationLinkInactive
-                      }
-                    >
-                      {link.name}
-                    </Text>
-                    <View
-                      style={
-                        link.name === tab ? styles.navigationBorderActive : null
-                      }
-                    />
-                  </Pressable>
-                );
-              })}
-          </View>
-          <View style={styles.navigationBorderInactive} />
-        </View>
-
-        <View
-          style={{
-            paddingRight: pixelSizeHorizontal(16),
-            paddingLeft: pixelSizeHorizontal(16),
-          }}
-        >
-          {tab === "members" ? (
-            <ClubsMembers />
-          ) : tab === "gallery" ? (
-            <ClubsGallery navigation={navigation} />
-          ) : tab === "events" ? (
-            <ClubsEvents navigation={navigation} />
-          ) : tab === "details" ? (
-            <ClubsDetails />
-          ) : null}
-        </View>
-      </ScrollView>
-
+      {UI}
       <Modal
         isVisible={isSideMenuVisible}
         onBackdropPress={toggleSideMenu} // Android back press
