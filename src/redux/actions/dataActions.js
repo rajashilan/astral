@@ -807,7 +807,7 @@ export const rejectNewMember = (userID, clubID) => (dispatch) => {
   //just keep reason first for now
   //add data to club's membersRequests
 
-  dispatch({ type: SET_LOADING_DATA });
+  dispatch({ type: SET_UI_LOADING });
 
   db.doc(`/clubs/${clubID}`)
     .get()
@@ -829,7 +829,7 @@ export const rejectNewMember = (userID, clubID) => (dispatch) => {
       return db.doc(`/users/${userID}`).update({ clubs: [...temp] });
     })
     .then(() => {
-      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: STOP_UI_LOADING });
       dispatch({ type: REJECT_NEW_CLUB_MEMBER, payload: userID });
       Toast.show({
         type: "success",
@@ -838,7 +838,7 @@ export const rejectNewMember = (userID, clubID) => (dispatch) => {
     })
     .catch((error) => {
       console.error(error);
-      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: STOP_UI_LOADING });
       Toast.show({
         type: "error",
         text1: "Something went wrong",

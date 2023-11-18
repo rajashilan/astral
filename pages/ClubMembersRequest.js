@@ -46,6 +46,7 @@ export default function ClubMembersRequest({ navigation }) {
   );
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
+  const rejectLoading = useSelector((state) => state.UI.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
   const membersRequests = useSelector(
     (state) => state.data.clubData.club.membersRequests
@@ -183,9 +184,9 @@ export default function ClubMembersRequest({ navigation }) {
                         currentMember.role === "president" && (
                           <>
                             <Pressable
-                              disabled={loading}
+                              disabled={loading || rejectLoading}
                               style={
-                                loading
+                                loading || rejectLoading
                                   ? styles.loginButtonDisabled
                                   : styles.loginButton
                               }
@@ -193,7 +194,7 @@ export default function ClubMembersRequest({ navigation }) {
                             >
                               <Text
                                 style={
-                                  loading
+                                  loading || rejectLoading
                                     ? styles.loginButtonLoadingText
                                     : styles.loginButtonText
                                 }
@@ -203,12 +204,13 @@ export default function ClubMembersRequest({ navigation }) {
                             </Pressable>
                             {!loading && (
                               <Pressable
+                                disabled={rejectLoading}
                                 onPress={() =>
                                   handleAcceptMember(item.userID, false)
                                 }
                               >
                                 <Text style={styles.withdrawButton}>
-                                  reject
+                                  {rejectLoading ? "rejecting..." : "reject"}
                                 </Text>
                               </Pressable>
                             )}
