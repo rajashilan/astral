@@ -83,13 +83,7 @@ const SideMenu = (props) => {
         </View>
 
         <Text style={styles.college}>{user.campus}</Text>
-        <View
-          style={
-            props.currentPage === "profile"
-              ? styles.userDetailsContainerBorder
-              : styles.userDetailsContainer
-          }
-        >
+        <View style={styles.userDetailsContainer}>
           <Pressable onPress={handleNavigateToProfile}>
             <Image
               style={styles.image}
