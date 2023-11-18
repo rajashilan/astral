@@ -64,9 +64,7 @@ export default function ClubsMembers(props) {
               contentFit="cover"
               source={item.profileImage}
             />
-            {!isEmpty(currentMember) && currentMember && (
-              <Text style={styles.role}>{item.role}</Text>
-            )}
+            <Text style={styles.role}>{item.role}</Text>
             <Text style={styles.name}>
               {item.name} - Intake {item.intake}, {item.department}
             </Text>
