@@ -43,9 +43,7 @@ import {
 
 export default function EditClubRoles({ navigation }) {
   const dispatch = useDispatch();
-  const currentMember = useSelector(
-    (state) => state.data.clubData.currentMember
-  );
+  const members = useSelector((state) => state.data.clubData.members);
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
@@ -65,6 +63,8 @@ export default function EditClubRoles({ navigation }) {
 
   const [showDeletePopUp, setShowDeletePopUp] = useState(false);
   const [showAddPopUp, setShowAddPopUp] = useState(false);
+  const [showWarningPopUp, setShowWarningPopUp] = useState(false);
+  const [warningPopUpData, setWarningPopUpData] = useState("");
   const [newRole, setNewRole] = useState("");
   const [errors, setErrors] = useState({ role: undefined });
   const [deleteRole, setDeleteRole] = useState("");
@@ -109,13 +109,35 @@ export default function EditClubRoles({ navigation }) {
     if (item) setDeleteRole(item);
     else setDeleteRole("");
   };
+  const handleShowWarningPopUp = (item) => {
+    setShowWarningPopUp(!showWarningPopUp);
+    if (item) {
+      setWarningPopUpData(item);
+    } else setWarningPopUpData("");
+  };
 
   const handleDeleteRole = () => {
     let temp = deleteRole.split(" ").join("");
-    dispatch(deleteClubRole(temp, club.clubID));
 
-    handleShowDeletePopUp();
-    setDeleteRole("");
+    //check if role to delete has a member in it
+    //if yes, cancel out and show pop up
+
+    let warning = false;
+
+    members.forEach((member) => {
+      if (member.role === deleteRole) {
+        handleShowWarningPopUp(member.name);
+        handleShowDeletePopUp();
+        warning = true;
+      }
+    });
+
+    if (!warning) {
+      dispatch(deleteClubRole(temp, club.clubID));
+
+      handleShowDeletePopUp();
+      setDeleteRole("");
+    }
   };
 
   const handleAddRole = () => {
@@ -384,6 +406,45 @@ export default function EditClubRoles({ navigation }) {
               <Text style={styles.withdrawButton}>cancel</Text>
             </Pressable>
           )}
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={showWarningPopUp}
+        onBackdropPress={handleShowWarningPopUp} // Android back press
+        animationIn="bounceIn" // Has others, we want slide in from the left
+        animationOut="bounceOut" // When discarding the drawer
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
+      >
+        <View style={styles.withdrawMenu}>
+          <Text
+            style={{
+              fontSize: fontPixel(20),
+              fontWeight: "400",
+              color: "#DFE5F8",
+              marginBottom: pixelSizeVertical(12),
+              textAlign: "center",
+            }}
+          >
+            {`Role currently assigned to ${warningPopUpData}. Reassign them as a regular member before deleting this role.`}
+          </Text>
+
+          <Pressable
+            disabled={loading}
+            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            onPress={handleShowWarningPopUp}
+          >
+            <Text
+              style={
+                loading ? styles.loginButtonLoadingText : styles.loginButtonText
+              }
+            >
+              ok
+            </Text>
+          </Pressable>
         </View>
       </Modal>
       <Toast config={toastConfig} />

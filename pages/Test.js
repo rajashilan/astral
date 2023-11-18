@@ -32,13 +32,11 @@ export default function App() {
         isScrolling.value
       ) {
         translateY.value = 100;
-        console.log("scrolling up");
       } else if (
         lastContentOffset.value < event.contentOffset.y &&
         isScrolling.value
       ) {
         translateY.value = -100;
-        console.log("scrolling down");
       }
       lastContentOffset.value = event.contentOffset.y;
     },

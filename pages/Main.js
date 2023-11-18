@@ -75,6 +75,7 @@ export default function Main({ navigation }) {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         //get user details
+        console.log("FIX THE BUG BY USING user.emailVerified");
         dispatch(getAuthenticatedUser(user.email));
         navigation.replace("Home");
       }

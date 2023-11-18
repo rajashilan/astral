@@ -156,6 +156,9 @@ const SideMenu = (props) => {
             {
               name: "general forms",
             },
+            {
+              name: "profile",
+            },
           ]}
           renderItem={({ item }) => (
             <>
