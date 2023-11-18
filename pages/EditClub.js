@@ -42,6 +42,7 @@ import {
   handleDeactivateClub,
   updateClubImage,
 } from "../src/redux/actions/dataActions";
+import { SET_UI_LOADING, STOP_UI_LOADING } from "../src/redux/type";
 const db = firebase.firestore();
 
 const { width } = Dimensions.get("window");
@@ -53,6 +54,7 @@ export default function EditClub({ navigation }) {
   );
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
+  const imageLoading = useSelector((state) => state.UI.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
 
   //view existing members
@@ -165,6 +167,7 @@ export default function EditClub({ navigation }) {
         }
       })
       .then((blob) => {
+        dispatch({ type: SET_UI_LOADING });
         return uploadToFirebase(blob, imageFileName);
       })
       .then((snapshot) => {
@@ -180,6 +183,7 @@ export default function EditClub({ navigation }) {
             type: "error",
             text1: "Something went wrong",
           });
+        dispatch({ type: STOP_UI_LOADING });
       });
   };
 
@@ -218,6 +222,7 @@ export default function EditClub({ navigation }) {
         })
         .catch((error) => {
           reject(error);
+          dispatch({ type: STOP_UI_LOADING });
         });
     });
   };
@@ -250,13 +255,26 @@ export default function EditClub({ navigation }) {
             <Header header={"edit club's details"} />
             <Text style={styles.disclaimer}>{club.name}</Text>
 
-            <Pressable onPress={handleUpdatePhoto}>
-              <Image
-                style={styles.image}
-                contentFit="cover"
-                source={club.image}
+            {!imageLoading ? (
+              <Pressable onPress={handleUpdatePhoto}>
+                <Image
+                  style={styles.image}
+                  contentFit="cover"
+                  source={club.image}
+                />
+              </Pressable>
+            ) : (
+              <View
+                style={{
+                  width: "100%",
+                  backgroundColor: "#495986",
+                  height: heightPixel(150),
+                  marginTop: pixelSizeVertical(24),
+                  marginBottom: pixelSizeVertical(10),
+                  borderRadius: 5,
+                }}
               />
-            </Pressable>
+            )}
 
             <SelectDropdown
               search={true}

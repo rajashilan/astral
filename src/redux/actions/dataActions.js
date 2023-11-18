@@ -26,8 +26,10 @@ import {
   SET_CLUB_GALLERY_TO_TRUE,
   SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
+  SET_LOADING_USER,
   SET_UI_LOADING,
   STOP_LOADING_DATA,
+  STOP_LOADING_USER,
   STOP_UI_LOADING,
   UPDATE_CLUB_DETAILS,
   UPDATE_CLUB_IMAGE,
@@ -214,8 +216,6 @@ export const updateClubMemberBio =
 
 export const updateClubMemberPhoto =
   (clubName, clubID, userID, photoUrl) => (dispatch) => {
-    dispatch({ type: SET_LOADING_DATA });
-
     db.doc(`/clubMembers/${clubID}`)
       .get()
       .then((doc) => {
@@ -226,7 +226,7 @@ export const updateClubMemberPhoto =
         return db.doc(`/clubMembers/${clubID}`).update({ members: [...temp] });
       })
       .then(() => {
-        dispatch({ type: STOP_LOADING_DATA });
+        dispatch({ type: STOP_LOADING_USER });
         dispatch({
           type: UPDATE_CLUB_MEMBER_PHOTO,
           payload: { userID, photoUrl },
@@ -238,7 +238,7 @@ export const updateClubMemberPhoto =
       })
       .catch((error) => {
         console.error(error);
-        dispatch({ type: STOP_LOADING_DATA });
+        dispatch({ type: STOP_LOADING_USER });
         Toast.show({
           type: "error",
           text1: "Something went wrong",
@@ -1042,8 +1042,6 @@ export const deactivateClubMember = (userID, clubID) => (dispatch) => {
 };
 
 export const updateClubImage = (clubID, photoUrl, campusID) => (dispatch) => {
-  dispatch({ type: SET_LOADING_DATA });
-
   db.doc(`/clubs/${clubID}`)
     .update({ image: photoUrl })
     .then(() => {
@@ -1057,7 +1055,7 @@ export const updateClubImage = (clubID, photoUrl, campusID) => (dispatch) => {
       return db.doc(`/clubsOverview/${campusID}`).update({ clubs: [...temp] });
     })
     .then(() => {
-      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: STOP_UI_LOADING });
       dispatch({ type: UPDATE_CLUB_IMAGE, payload: photoUrl });
       Toast.show({
         type: "success",
@@ -1066,7 +1064,7 @@ export const updateClubImage = (clubID, photoUrl, campusID) => (dispatch) => {
     })
     .catch((error) => {
       console.error(error);
-      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: STOP_UI_LOADING });
       Toast.show({
         type: "error",
         text1: "Something went wrong",

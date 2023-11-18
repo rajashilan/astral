@@ -43,6 +43,7 @@ import {
   updateUserBio,
   updateUserPhoto,
 } from "../src/redux/actions/userActions";
+import { SET_LOADING_USER, STOP_LOADING_USER } from "../src/redux/type";
 
 export default function ClubCurrentMembers({ navigation }) {
   const dispatch = useDispatch();
@@ -51,7 +52,8 @@ export default function ClubCurrentMembers({ navigation }) {
   );
   const user = useSelector((state) => state.user.credentials);
   const club = useSelector((state) => state.data.clubData.club);
-  const loading = useSelector((state) => state.user.loading);
+  const loading = useSelector((state) => state.data.loading);
+  const imageLoading = useSelector((state) => state.user.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -112,6 +114,7 @@ export default function ClubCurrentMembers({ navigation }) {
         }
       })
       .then((blob) => {
+        dispatch({ type: SET_LOADING_USER });
         return uploadToFirebase(blob, imageFileName);
       })
       .then((snapshot) => {
@@ -127,6 +130,7 @@ export default function ClubCurrentMembers({ navigation }) {
             type: "error",
             text1: "Something went wrong",
           });
+        dispatch({ type: STOP_LOADING_USER });
       });
   };
 
@@ -165,6 +169,7 @@ export default function ClubCurrentMembers({ navigation }) {
         })
         .catch((error) => {
           reject(error);
+          dispatch({ type: STOP_LOADING_USER });
         });
     });
   };
@@ -207,13 +212,25 @@ export default function ClubCurrentMembers({ navigation }) {
               <Header header={"profile"} />
             </View>
 
-            <Pressable onPress={handleUpdatePhoto}>
-              <Image
-                style={styles.image}
-                contentFit="cover"
-                source={user.profileImage}
+            {!imageLoading ? (
+              <Pressable onPress={handleUpdatePhoto}>
+                <Image
+                  style={styles.image}
+                  contentFit="cover"
+                  source={user.profileImage}
+                />
+              </Pressable>
+            ) : (
+              <View
+                style={{
+                  width: "100%",
+                  height: heightPixel(280),
+                  backgroundColor: "#495986",
+                  marginBottom: pixelSizeVertical(12),
+                  borderRadius: 5,
+                }}
               />
-            </Pressable>
+            )}
 
             <Text style={styles.name}>
               {user.name} - Intake {user.intake}, {user.department}

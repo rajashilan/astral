@@ -37,6 +37,7 @@ import {
   updateClubMemberBio,
   updateClubMemberPhoto,
 } from "../src/redux/actions/dataActions";
+import { SET_LOADING_USER, STOP_LOADING_USER } from "../src/redux/type";
 const db = firebase.firestore();
 
 const { width } = Dimensions.get("window");
@@ -50,6 +51,7 @@ export default function ClubsYou({ navigation }) {
   const club = useSelector((state) => state.data.clubData.club);
 
   const loading = useSelector((state) => state.data.loading);
+  const imageLoading = useSelector((state) => state.user.loading);
 
   //get current member data from redux
 
@@ -97,6 +99,7 @@ export default function ClubsYou({ navigation }) {
         }
       })
       .then((blob) => {
+        dispatch({ type: SET_LOADING_USER });
         return uploadToFirebase(blob, imageFileName);
       })
       .then((snapshot) => {
@@ -114,6 +117,7 @@ export default function ClubsYou({ navigation }) {
             type: "error",
             text1: "Something went wrong",
           });
+        dispatch({ type: STOP_LOADING_USER });
       });
   };
 
@@ -152,6 +156,7 @@ export default function ClubsYou({ navigation }) {
         })
         .catch((error) => {
           reject(error);
+          dispatch({ type: STOP_LOADING_USER });
         });
     });
   };
@@ -180,13 +185,25 @@ export default function ClubsYou({ navigation }) {
       </View>
       <ScrollView>
         <View style={styles.paddingContainer}>
-          <Pressable onPress={handleUpdatePhoto}>
-            <Image
-              style={styles.image}
-              contentFit="cover"
-              source={currentMember.profileImage}
+          {!imageLoading ? (
+            <Pressable onPress={handleUpdatePhoto}>
+              <Image
+                style={styles.image}
+                contentFit="cover"
+                source={currentMember.profileImage}
+              />
+            </Pressable>
+          ) : (
+            <View
+              style={{
+                width: "100%",
+                height: heightPixel(280),
+                backgroundColor: "#495986",
+                marginBottom: pixelSizeVertical(12),
+                borderRadius: 5,
+              }}
             />
-          </Pressable>
+          )}
           {currentMember && (
             <Text style={styles.role}>{currentMember.role}</Text>
           )}

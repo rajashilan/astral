@@ -1,6 +1,8 @@
 import {
   GET_AUTHENTICATED_USER,
+  SET_LOADING_DATA,
   SET_LOADING_USER,
+  STOP_LOADING_DATA,
   STOP_LOADING_USER,
   UPDATE_USER_BIO,
   UPDATE_USER_PHOTO,
@@ -50,8 +52,6 @@ export const getAuthenticatedUser = (email) => (dispatch) => {
 };
 
 export const updateUserPhoto = (userID, photoUrl) => (dispatch) => {
-  dispatch({ type: SET_LOADING_USER });
-
   db.doc(`/users/${userID}`)
     .update({ profileImage: photoUrl })
     .then(() => {
@@ -73,12 +73,12 @@ export const updateUserPhoto = (userID, photoUrl) => (dispatch) => {
 };
 
 export const updateUserBio = (userID, bio) => (dispatch) => {
-  dispatch({ type: SET_LOADING_USER });
+  dispatch({ type: SET_LOADING_DATA });
 
   db.doc(`/users/${userID}`)
     .update({ bio })
     .then(() => {
-      dispatch({ type: STOP_LOADING_USER });
+      dispatch({ type: STOP_LOADING_DATA });
       dispatch({ type: UPDATE_USER_BIO, payload: bio });
       Toast.show({
         type: "success",
@@ -87,7 +87,7 @@ export const updateUserBio = (userID, bio) => (dispatch) => {
     })
     .catch((error) => {
       console.error(error);
-      dispatch({ type: STOP_LOADING_USER });
+      dispatch({ type: STOP_LOADING_DATA });
       Toast.show({
         type: "error",
         text1: "Something went wrong",
