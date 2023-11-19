@@ -161,6 +161,7 @@ export default function ClubsEvents({ navigation }) {
           <Pressable
             onPress={() => {
               setInnerTab("past");
+              setIndexSelected(0);
             }}
           >
             <Text
@@ -182,6 +183,7 @@ export default function ClubsEvents({ navigation }) {
               }
               onPress={() => {
                 setInnerTab("future");
+                setIndexSelected(0);
               }}
             >
               future
@@ -229,78 +231,92 @@ export default function ClubsEvents({ navigation }) {
           nothing to see here...yet
         </Text>
       )}
-      <Carousel
-        layout="default"
-        data={innerTab === "past" ? data.past : data.future}
-        onSnapToItem={(index) => onSelect(index)}
-        sliderWidth={width - 32}
-        itemWidth={width - 32}
-        disableIntervalMomentum={true}
-        useExperimentalSnap={true}
-        renderItem={({ item, index }) => (
-          <>
-            <Pressable
-              onPress={() => {
-                if (item.approval === "rejected")
-                  navigation.navigate("ResubmitClubsEvent", { event: item });
-              }}
-            >
-              {item.image && (
-                <Image
-                  key={index}
+      {innerTab === "past" ? (
+        <Carousel
+          layout="default"
+          data={data.past}
+          onSnapToItem={(index) => onSelect(index)}
+          sliderWidth={width - 32}
+          itemWidth={width - 32}
+          disableIntervalMomentum={true}
+          useExperimentalSnap={true}
+          renderItem={({ item, index }) => (
+            <>
+              <Pressable
+                onPress={() => {
+                  if (item.approval === "rejected")
+                    navigation.navigate("ResubmitClubsEvent", { event: item });
+                }}
+              >
+                {item.image && (
+                  <Image
+                    key={index}
+                    style={
+                      item.approval === "approved"
+                        ? styles.image
+                        : [styles.image, { opacity: 0.5 }]
+                    }
+                    contentFit="cover"
+                    source={item.image}
+                  />
+                )}
+                <Text
                   style={
                     item.approval === "approved"
-                      ? styles.image
-                      : [styles.image, { opacity: 0.5 }]
+                      ? styles.title
+                      : item.approval === "rejected"
+                      ? [styles.title, { color: "#A3222D" }]
+                      : [styles.title, { opacity: 0.5 }]
                   }
-                  contentFit="cover"
-                  source={item.image}
-                />
-              )}
-              <Text
-                style={
-                  item.approval === "approved"
-                    ? styles.title
-                    : item.approval === "rejected"
-                    ? [styles.title, { color: "#A3222D" }]
-                    : [styles.title, { opacity: 0.5 }]
-                }
-              >
-                {item.title}
-              </Text>
-              {item.approval === "approved" ? (
-                <>
-                  <Text style={styles.date}>
-                    {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
-                  </Text>
-                  {item.content && (
-                    <Text style={styles.content}>{item.content}</Text>
+                >
+                  {item.title}
+                </Text>
+                {item.approval === "approved" ? (
+                  <>
+                    <Text style={styles.date}>
+                      {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
+                    </Text>
+                    {item.content && (
+                      <Text style={styles.content}>{item.content}</Text>
+                    )}
+                  </>
+                ) : null}
+                {!isEmpty(currentMember) &&
+                  currentMember.role === "president" &&
+                  item.approval === "approved" && (
+                    <Pressable
+                      style={styles.borderButton}
+                      onPress={() => {
+                        handleShowDeleteModal(item.eventID);
+                      }}
+                    >
+                      <Text style={styles.borderButtonText}>delete</Text>
+                    </Pressable>
                   )}
-                </>
-              ) : null}
-              {!isEmpty(currentMember) &&
-                currentMember.role === "president" &&
-                item.approval === "approved" && (
-                  <Pressable
-                    style={styles.borderButton}
-                    onPress={() => {
-                      handleShowDeleteModal(item.eventID);
-                    }}
-                  >
-                    <Text style={styles.borderButtonText}>delete</Text>
-                  </Pressable>
+                {item.approval === "rejected" && (
+                  <>
+                    <Text
+                      style={{
+                        fontSize: fontPixel(16),
+                        fontWeight: "400",
+                        color: "#A3222D",
+                      }}
+                    >
+                      rejected
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: fontPixel(16),
+                        fontWeight: "400",
+                        color: "#C6CDE2",
+                        marginTop: pixelSizeVertical(2),
+                      }}
+                    >
+                      {item.rejectionReason}
+                    </Text>
+                  </>
                 )}
-              {item.approval === "rejected" && (
-                <>
-                  <Text
-                    style={{
-                      fontSize: fontPixel(16),
-                      fontWeight: "400",
-                      color: "#A3222D",
-                    }}
-                  >
-                    rejected
-                  </Text>
+                {item.approval === "pending" && (
                   <Text
                     style={{
                       fontSize: fontPixel(16),
@@ -309,26 +325,116 @@ export default function ClubsEvents({ navigation }) {
                       marginTop: pixelSizeVertical(2),
                     }}
                   >
-                    {item.rejectionReason}
+                    pending approval
                   </Text>
-                </>
-              )}
-              {item.approval === "pending" && (
+                )}
+              </Pressable>
+            </>
+          )}
+        />
+      ) : null}
+      {innerTab === "future" ? (
+        <Carousel
+          layout="default"
+          data={data.future}
+          onSnapToItem={(index) => onSelect(index)}
+          sliderWidth={width - 32}
+          itemWidth={width - 32}
+          disableIntervalMomentum={true}
+          useExperimentalSnap={true}
+          renderItem={({ item, index }) => (
+            <>
+              <Pressable
+                onPress={() => {
+                  if (item.approval === "rejected")
+                    navigation.navigate("ResubmitClubsEvent", { event: item });
+                }}
+              >
+                {item.image && (
+                  <Image
+                    key={index}
+                    style={
+                      item.approval === "approved"
+                        ? styles.image
+                        : [styles.image, { opacity: 0.5 }]
+                    }
+                    contentFit="cover"
+                    source={item.image}
+                  />
+                )}
                 <Text
-                  style={{
-                    fontSize: fontPixel(16),
-                    fontWeight: "400",
-                    color: "#C6CDE2",
-                    marginTop: pixelSizeVertical(2),
-                  }}
+                  style={
+                    item.approval === "approved"
+                      ? styles.title
+                      : item.approval === "rejected"
+                      ? [styles.title, { color: "#A3222D" }]
+                      : [styles.title, { opacity: 0.5 }]
+                  }
                 >
-                  pending approval
+                  {item.title}
                 </Text>
-              )}
-            </Pressable>
-          </>
-        )}
-      />
+                {item.approval === "approved" ? (
+                  <>
+                    <Text style={styles.date}>
+                      {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
+                    </Text>
+                    {item.content && (
+                      <Text style={styles.content}>{item.content}</Text>
+                    )}
+                  </>
+                ) : null}
+                {!isEmpty(currentMember) &&
+                  currentMember.role === "president" &&
+                  item.approval === "approved" && (
+                    <Pressable
+                      style={styles.borderButton}
+                      onPress={() => {
+                        handleShowDeleteModal(item.eventID);
+                      }}
+                    >
+                      <Text style={styles.borderButtonText}>delete</Text>
+                    </Pressable>
+                  )}
+                {item.approval === "rejected" && (
+                  <>
+                    <Text
+                      style={{
+                        fontSize: fontPixel(16),
+                        fontWeight: "400",
+                        color: "#A3222D",
+                      }}
+                    >
+                      rejected
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: fontPixel(16),
+                        fontWeight: "400",
+                        color: "#C6CDE2",
+                        marginTop: pixelSizeVertical(2),
+                      }}
+                    >
+                      {item.rejectionReason}
+                    </Text>
+                  </>
+                )}
+                {item.approval === "pending" && (
+                  <Text
+                    style={{
+                      fontSize: fontPixel(16),
+                      fontWeight: "400",
+                      color: "#C6CDE2",
+                      marginTop: pixelSizeVertical(2),
+                    }}
+                  >
+                    pending approval
+                  </Text>
+                )}
+              </Pressable>
+            </>
+          )}
+        />
+      ) : null}
       <Modal
         isVisible={showDeleteModal}
         onBackdropPress={() => setShowDeleteModal(!showDeleteModal)} // Android back press
