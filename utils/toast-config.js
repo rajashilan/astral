@@ -18,6 +18,7 @@ const toastConfig = {
         paddingHorizontal: pixelSizeHorizontal(16),
         backgroundColor: "#5A8B6F",
       }}
+      text1NumberOfLines={5}
       text1Style={{
         fontSize: fontPixel(14),
         fontWeight: "400",
@@ -41,6 +42,7 @@ const toastConfig = {
         fontWeight: "400",
         color: "#DFE5F8",
       }}
+      text1NumberOfLines={5}
     />
   ),
   neutral: (props) => (
@@ -59,7 +61,7 @@ const toastConfig = {
         fontWeight: "400",
         color: "#DFE5F8",
       }}
-      text1NumberOfLines={2}
+      text1NumberOfLines={5}
     />
   ),
 };

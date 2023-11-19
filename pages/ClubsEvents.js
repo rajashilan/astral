@@ -54,6 +54,11 @@ export default function ClubsEvents({ navigation }) {
 
   useEffect(() => {
     dispatch(getClubEvent(club.clubID));
+    Toast.show({
+      type: "success",
+      text1:
+        "Testing toast message to ensure it can actually legitimately go for multiple lines without any issues whatsoever",
+    });
   }, []);
 
   useEffect(() => {
