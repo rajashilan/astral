@@ -10,9 +10,10 @@ import {
 
 import Toast from "react-native-toast-message";
 
-import { firebase } from "../../firebase/config";
+import firestore from "@react-native-firebase/firestore";
+import auth from "@react-native-firebase/auth";
 import { getUserCampus, getUserCollege } from "./dataActions";
-const db = firebase.firestore();
+const db = firestore();
 
 export const getAuthenticatedUser = (email) => (dispatch) => {
   dispatch({ type: SET_LOADING_USER });
@@ -24,7 +25,7 @@ export const getAuthenticatedUser = (email) => (dispatch) => {
         if (data.length === 0) {
           signOutUser = async () => {
             try {
-              await firebase.auth().signOut();
+              auth().signOut();
             } catch (e) {
               console.error(e);
             }
@@ -52,7 +53,8 @@ export const getAuthenticatedUser = (email) => (dispatch) => {
 };
 
 export const updateUserPhoto = (userID, photoUrl) => (dispatch) => {
-  db.doc(`/users/${userID}`)
+  db.collection("users")
+    .doc(userID)
     .update({ profileImage: photoUrl })
     .then(() => {
       dispatch({ type: STOP_LOADING_USER });
@@ -75,7 +77,8 @@ export const updateUserPhoto = (userID, photoUrl) => (dispatch) => {
 export const updateUserBio = (userID, bio) => (dispatch) => {
   dispatch({ type: SET_LOADING_DATA });
 
-  db.doc(`/users/${userID}`)
+  db.collection("users")
+    .doc(userID)
     .update({ bio })
     .then(() => {
       dispatch({ type: STOP_LOADING_DATA });

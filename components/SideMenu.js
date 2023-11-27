@@ -19,7 +19,7 @@ import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { firebase } from "../src/firebase/config";
+import auth from "@react-native-firebase/auth";
 import closeIcon from "../assets/close_icon.png";
 import notificationIcon from "../assets/notification_icon.png";
 import { LOGOUT } from "../src/redux/type";
@@ -51,8 +51,7 @@ const SideMenu = (props) => {
   };
 
   const signOutUser = () => {
-    firebase
-      .auth()
+    auth()
       .signOut()
       .then(() => {
         props.callParentScreenFunction();
