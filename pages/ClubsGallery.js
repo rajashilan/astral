@@ -20,14 +20,14 @@ const { width } = Dimensions.get("window");
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { firebase } from "../src/firebase/config";
+import firestore from "@react-native-firebase/firestore";
 import {
   createNotification,
   getClubGallery,
   handleDeleteClubGallery,
   setClubGalleryToFalse,
 } from "../src/redux/actions/dataActions";
-const db = firebase.firestore();
+const db = firestore();
 
 export default function ClubsGallery({ navigation }) {
   const dispatch = useDispatch();

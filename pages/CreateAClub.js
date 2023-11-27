@@ -32,8 +32,8 @@ import Modal from "react-native-modal";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
-import { firebase } from "../src/firebase/config";
-
+import firestore from "@react-native-firebase/firestore";
+import storage from "@react-native-firebase/storage";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_USER_CLUB } from "../src/redux/type";
 import * as DocumentPicker from "expo-document-picker";
@@ -41,7 +41,7 @@ import { sendAdminNotification } from "../src/redux/actions/dataActions";
 
 const { width } = Dimensions.get("window");
 
-const db = firebase.firestore();
+const db = firestore();
 
 export default function CreateAClub({ navigation, route }) {
   const user = useSelector((state) => state.user.credentials);
@@ -145,13 +145,11 @@ export default function CreateAClub({ navigation, route }) {
 
   uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = firebase.storage().ref();
+      var storageRef = storage().ref();
 
       storageRef
         .child(`clubs/forms/uploaded/${imageFileName}`)
-        .put(blob, {
-          contentType: mimeType,
-        })
+        .put(blob)
         .then((snapshot) => {
           blob.close();
           resolve(snapshot);
@@ -215,7 +213,7 @@ export default function CreateAClub({ navigation, route }) {
           return uploadToFirebase(blob, documentName);
         })
         .then((snapshot) => {
-          return firebase.storage().ref(firebasePath).getDownloadURL();
+          return storage().ref(firebasePath).getDownloadURL();
         })
         .then((url) => {
           let clubsData = {
@@ -346,7 +344,7 @@ export default function CreateAClub({ navigation, route }) {
             .add(clubsData)
             .then((data) => {
               clubID = data.id;
-              return db.doc(`/clubs/${clubID}`).update({ clubID });
+              return db.collection("clubs").doc(clubID).update({ clubID });
             })
             .then(() => {
               clubsOverviewData.clubID = clubID;
@@ -355,7 +353,8 @@ export default function CreateAClub({ navigation, route }) {
               clubMembers.clubID = clubID;
 
               //first check if the campusID is in clubsOverview collection
-              db.doc(`/clubsOverview/${state.campus.campusID}`)
+              db.collection("clubsOverview")
+                .doc(state.campus.campusID)
                 .get()
                 .then((doc) => {
                   if (!doc.exists) {
@@ -377,7 +376,8 @@ export default function CreateAClub({ navigation, route }) {
 
                   userData.clubID = clubID;
 
-                  db.doc(`/users/${user.userId}`)
+                  db.collection("users")
+                    .doc(user.userId)
                     .get()
                     .then((doc) => {
                       let temp = doc.data().clubs;

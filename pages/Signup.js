@@ -24,11 +24,11 @@ import { toastConfig } from "../utils/toast-config";
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
-import { firebase } from "../src/firebase/config";
+import firestore from "@react-native-firebase/firestore";
 
 import IosHeight from "../components/IosHeight";
 
-const db = firebase.firestore();
+const db = firestore();
 
 export default function Signup({ navigation }) {
   const [email, setEmail] = useState("");

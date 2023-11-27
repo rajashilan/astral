@@ -43,14 +43,14 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
-import { firebase } from "../src/firebase/config";
+import firestore from "@react-native-firebase/firestore";
 import {
   createNotification,
   getAClub,
   getClubMembers,
   joinClub,
 } from "../src/redux/actions/dataActions";
-const db = firebase.firestore();
+const db = firestore();
 
 export default function ClubsPages({ navigation, route }) {
   const { clubID } = route.params;

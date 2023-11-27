@@ -21,7 +21,7 @@ import notificationIcon from "../assets/notification_icon.png";
 
 import IosHeight from "../components/IosHeight";
 
-import { firebase } from "../src/firebase/config";
+import auth from "@react-native-firebase/auth";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -56,7 +56,7 @@ export default function Home({ navigation }) {
   }
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
+    auth().onAuthStateChanged((user) => {
       if (user && isEmpty(state.credentials) && !loading) {
         dispatch(getAuthenticatedUser(user.email));
       }

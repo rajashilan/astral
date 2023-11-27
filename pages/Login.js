@@ -26,7 +26,7 @@ import IosHeight from "../components/IosHeight";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
-import { firebase } from "../src/firebase/config";
+import auth from "@react-native-firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGOUT } from "../src/redux/type";
 import { getAuthenticatedUser } from "../src/redux/actions/userActions";
@@ -57,8 +57,7 @@ export default function Login({ navigation, route }) {
     if (!errors.email && !errors.password) {
       setLoading(true);
 
-      firebase
-        .auth()
+      auth()
         .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
         .then((authUser) => {
           // if (authUser.user.emailVerified) {

@@ -36,7 +36,7 @@ import Header from "../components/Header";
 
 const { width } = Dimensions.get("window");
 
-import { firebase } from "../src/firebase/config";
+import storage from "@react-native-firebase/storage";
 
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import {
@@ -118,7 +118,7 @@ export default function ClubCurrentMembers({ navigation }) {
         return uploadToFirebase(blob, imageFileName);
       })
       .then((snapshot) => {
-        return firebase.storage().ref(firebasePath).getDownloadURL();
+        return storage().ref(firebasePath).getDownloadURL();
       })
       .then((url) => {
         //update in users
@@ -156,13 +156,11 @@ export default function ClubCurrentMembers({ navigation }) {
 
   uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = firebase.storage().ref();
+      var storageRef = storage().ref();
 
       storageRef
         .child(`users/profileImage/${imageFileName}`)
-        .put(blob, {
-          contentType: `image/${imageType}`,
-        })
+        .put(blob)
         .then((snapshot) => {
           blob.close();
           resolve(snapshot);

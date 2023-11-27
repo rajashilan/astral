@@ -9,8 +9,6 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import img1 from "../assets/club1.png";
-import img2 from "../assets/club2.png";
 
 import DepartmentAll from "./DepartmentAll";
 import DepartmentFeatured from "./DepartmentFeatured";

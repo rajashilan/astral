@@ -10,8 +10,6 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import img1 from "../assets/club1.png";
-import img2 from "../assets/club2.png";
 import { ScrollView } from "react-native-gesture-handler";
 
 const urlRegex =
@@ -30,7 +28,6 @@ export default function DepartmentAll(props) {
         {
           content:
             "Hello all, please feel free to join us for the IBM bootcamp this Saturday at 5pm!",
-          image: img1,
           id: 2,
         },
         {
@@ -46,7 +43,6 @@ export default function DepartmentAll(props) {
         },
         {
           content: "Welcome January intake students!",
-          image: img2,
           id: 5,
         },
       ],

@@ -35,7 +35,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Header from "../components/Header";
 
-import { firebase } from "../src/firebase/config";
+import storage from "@react-native-firebase/storage";
 import {
   createNotification,
   handleActivateClub,
@@ -43,7 +43,6 @@ import {
   updateClubImage,
 } from "../src/redux/actions/dataActions";
 import { SET_UI_LOADING, STOP_UI_LOADING } from "../src/redux/type";
-const db = firebase.firestore();
 
 const { width } = Dimensions.get("window");
 
@@ -171,7 +170,7 @@ export default function EditClub({ navigation }) {
         return uploadToFirebase(blob, imageFileName);
       })
       .then((snapshot) => {
-        return firebase.storage().ref(firebasePath).getDownloadURL();
+        return storage().ref(firebasePath).getDownloadURL();
       })
       .then((url) => {
         //store in clubmembers db and update in redux
@@ -209,13 +208,11 @@ export default function EditClub({ navigation }) {
 
   uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = firebase.storage().ref();
+      var storageRef = storage().ref();
 
       storageRef
         .child(`clubs/photos/${imageFileName}`)
-        .put(blob, {
-          contentType: `image/${imageType}`,
-        })
+        .put(blob)
         .then((snapshot) => {
           blob.close();
           resolve(snapshot);

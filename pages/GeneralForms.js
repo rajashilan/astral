@@ -35,8 +35,8 @@ import { toastConfig } from "../utils/toast-config";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { firebase } from "../src/firebase/config";
-const db = firebase.firestore();
+import firestore from "@react-native-firebase/firestore";
+const db = firestore();
 
 const { width } = Dimensions.get("window");
 
@@ -58,7 +58,8 @@ export default function GeneralForms({ navigation }) {
   useEffect(() => {
     setLoading(true);
     if (campus.campusID) {
-      db.doc(`/generalFormsOverview/${campus.campusID}`)
+      db.collection("generalFormsOverview")
+        .doc(campus.campusID)
         .get()
         .then((doc) => {
           let temp = doc.data().forms;

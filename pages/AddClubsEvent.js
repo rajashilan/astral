@@ -35,7 +35,8 @@ import * as ImagePicker from "expo-image-picker";
 
 import Header from "../components/Header";
 
-import { firebase } from "../src/firebase/config";
+import firestore from "@react-native-firebase/firestore";
+import storage from "@react-native-firebase/storage";
 import {
   addClubEvent,
   sendAdminNotification,
@@ -44,7 +45,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SET_LOADING_DATA } from "../src/redux/type";
 
-const db = firebase.firestore();
+const db = firestore();
 
 const { width } = Dimensions.get("window");
 
@@ -135,7 +136,7 @@ export default function AddClubsEvent({ navigation }) {
             return uploadToFirebase(blob, imageFileName);
           })
           .then((snapshot) => {
-            return firebase.storage().ref(firebasePath).getDownloadURL();
+            return storage().ref(firebasePath).getDownloadURL();
           })
           .then((url) => {
             //store in gallery db and update in local
@@ -231,13 +232,11 @@ export default function AddClubsEvent({ navigation }) {
 
   uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = firebase.storage().ref();
+      var storageRef = storage().ref();
 
       storageRef
         .child(`clubs/events/photos/${imageFileName}`)
-        .put(blob, {
-          contentType: `image/${imageType}`,
-        })
+        .put(blob)
         .then((snapshot) => {
           blob.close();
           resolve(snapshot);

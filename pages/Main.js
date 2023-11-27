@@ -31,7 +31,7 @@ import {
 } from "../utils/responsive-font";
 import { TouchableWithoutFeedback } from "react-native-web";
 
-import { firebase } from "../src/firebase/config";
+import auth from "@react-native-firebase/auth";
 
 import { useDispatch, useSelector } from "react-redux";
 import { getAuthenticatedUser } from "../src/redux/actions/userActions";
@@ -72,7 +72,7 @@ export default function Main({ navigation }) {
   ]);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
+    auth().onAuthStateChanged((user) => {
       if (user) {
         //get user details
         console.log("FIX THE BUG BY USING user.emailVerified");

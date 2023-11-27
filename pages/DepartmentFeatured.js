@@ -10,8 +10,6 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 
-import img1 from "../assets/club1.png";
-
 export default function DepartmentFeatured(props) {
   const [data, setData] = useState([
     {
@@ -25,7 +23,6 @@ export default function DepartmentFeatured(props) {
         {
           content:
             "Hello all, please feel free to join us for the IBM bootcamp this Saturday at 5pm!",
-          image: img1,
           id: 2,
         },
         {

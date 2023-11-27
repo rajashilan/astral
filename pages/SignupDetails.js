@@ -22,11 +22,14 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import passwordShow from "../assets/password_show.png";
 import passwordHide from "../assets/password_hide.png";
 import dayjs from "dayjs";
-import { firebase } from "../src/firebase/config";
+import firestore from "@react-native-firebase/firestore";
+import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
 import IosHeight from "../components/IosHeight";
+
+const db = firestore();
 
 export default function SignupDetails({ navigation, route }) {
   const { college, campus, department, intake, suffix } = route.params;
@@ -95,9 +98,7 @@ export default function SignupDetails({ navigation, route }) {
       setLoading(true);
 
       //first check for email
-      firebase
-        .firestore()
-        .collection("users")
+      db.collection("users")
         .where("email", "==", email.toLowerCase())
         .get()
         .then((data) => {
@@ -106,9 +107,7 @@ export default function SignupDetails({ navigation, route }) {
             setLoading(false);
           } else {
             //then check for username
-            firebase
-              .firestore()
-              .collection("users")
+            db.collection("users")
               .where("username", "==", username.toLowerCase())
               .get()
               .then((data) => {
@@ -136,8 +135,7 @@ export default function SignupDetails({ navigation, route }) {
                     createdAt: new Date(),
                   };
 
-                  firebase
-                    .auth()
+                  auth()
                     .createUserWithEmailAndPassword(data.email, password)
                     .then((res) => {
                       data.userId = res.user.uid;
@@ -145,9 +143,7 @@ export default function SignupDetails({ navigation, route }) {
                       res.user
                         .sendEmailVerification()
                         .then(() => {
-                          firebase
-                            .firestore()
-                            .collection("users")
+                          db.collection("users")
                             .doc(data.userId)
                             .set(data)
                             .then(() => {

@@ -41,8 +41,8 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 import axios from "axios";
 
-import { firebase } from "../src/firebase/config";
-const db = firebase.firestore();
+import firestore from "@react-native-firebase/firestore";
+const db = firestore();
 
 export default function GeneralFormsPage({ navigation, route }) {
   const { id } = route.params;
@@ -73,7 +73,8 @@ export default function GeneralFormsPage({ navigation, route }) {
 
   useEffect(() => {
     setLoading(true);
-    db.doc(`/generalForms/${id}`)
+    db.collection("generalForms")
+      .doc(id)
       .get()
       .then((doc) => {
         setData({

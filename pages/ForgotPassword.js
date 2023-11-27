@@ -25,7 +25,7 @@ import IosHeight from "../components/IosHeight";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
-import { firebase } from "../src/firebase/config";
+import auth from "@react-native-firebase/auth";
 
 export default function ForgotPassword({ navigation, route }) {
   const [loading, setLoading] = useState(false);
@@ -47,9 +47,7 @@ export default function ForgotPassword({ navigation, route }) {
 
     if (!errors.email) {
       setLoading(true);
-
-      firebase
-        .auth()
+      auth()
         .sendPasswordResetEmail(email.trim().toLowerCase())
         .then(() => {
           setLoading(false);

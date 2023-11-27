@@ -9,8 +9,6 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import img1 from "../assets/club1.png";
-import img2 from "../assets/club2.png";
 
 export default function DepartmentFiles(props) {
   const [data, setData] = useState([

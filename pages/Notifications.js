@@ -43,9 +43,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 
-import { firebase } from "../src/firebase/config";
+import firestore from "@react-native-firebase/firestore";
 import { setNotificationsRead } from "../src/redux/actions/dataActions";
-const db = firebase.firestore();
+const db = firestore();
 
 export default function Notifications({ navigation }) {
   dayjs.extend(relativeTime);

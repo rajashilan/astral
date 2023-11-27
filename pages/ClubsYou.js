@@ -32,13 +32,14 @@ import { useDispatch, useSelector } from "react-redux";
 
 import * as ImagePicker from "expo-image-picker";
 
-import { firebase } from "../src/firebase/config";
+import firestore from "@react-native-firebase/firestore";
+import storage from "@react-native-firebase/storage";
 import {
   updateClubMemberBio,
   updateClubMemberPhoto,
 } from "../src/redux/actions/dataActions";
 import { SET_LOADING_USER, STOP_LOADING_USER } from "../src/redux/type";
-const db = firebase.firestore();
+const db = firestore();
 
 const { width } = Dimensions.get("window");
 
@@ -93,6 +94,7 @@ export default function ClubsYou({ navigation }) {
           // User picked an image
           const uri = result.assets[0].uri;
           setImageType(uri.split(".")[uri.split(".").length - 1]);
+          console.log("uri: ", uri);
           return uriToBlob(uri);
         } else {
           return Promise.reject("cancelled");
@@ -103,7 +105,8 @@ export default function ClubsYou({ navigation }) {
         return uploadToFirebase(blob, imageFileName);
       })
       .then((snapshot) => {
-        return firebase.storage().ref(firebasePath).getDownloadURL();
+        console.log("snapshot");
+        return storage().ref(firebasePath).getDownloadURL();
       })
       .then((url) => {
         //store in clubmembers db and update in redux
@@ -143,19 +146,16 @@ export default function ClubsYou({ navigation }) {
 
   uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = firebase.storage().ref();
-
+      var storageRef = storage().ref();
       storageRef
         .child(`clubs/members/photos/${imageFileName}`)
-        .put(blob, {
-          contentType: `image/${imageType}`,
-        })
+        .put(blob)
         .then((snapshot) => {
           blob.close();
           resolve(snapshot);
         })
         .catch((error) => {
-          reject(error);
+          console.error(error);
           dispatch({ type: STOP_LOADING_USER });
         });
     });

@@ -7,8 +7,6 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import img1 from "../assets/example-img-1.png";
-import img2 from "../assets/member2.png";
 import React, { useState, useEffect } from "react";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";

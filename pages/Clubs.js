@@ -33,8 +33,8 @@ import { getAuthenticatedUser } from "../src/redux/actions/userActions";
 
 const { width } = Dimensions.get("window");
 
-import { firebase } from "../src/firebase/config";
-const db = firebase.firestore();
+import firestore from "@react-native-firebase/firestore";
+const db = firestore();
 
 import {
   fontPixel,
@@ -69,7 +69,8 @@ export default function Clubs({ navigation }) {
   useEffect(() => {
     //get clubs from clubs overview
     setLoading(true);
-    db.doc(`/clubsOverview/${state.campus.campusID}`)
+    db.collection("clubsOverview")
+      .doc(state.campus.campusID)
       .get()
       .then((doc) => {
         if (doc.data()) setAll(doc.data().clubs);
@@ -86,7 +87,8 @@ export default function Clubs({ navigation }) {
     setRefreshing(true);
     setLoading(true);
     dispatch(getAuthenticatedUser(user.email));
-    db.doc(`/clubsOverview/${state.campus.campusID}`)
+    db.collection("clubsOverview")
+      .doc(state.campus.campusID)
       .get()
       .then((doc) => {
         if (doc.data()) setAll(doc.data().clubs);

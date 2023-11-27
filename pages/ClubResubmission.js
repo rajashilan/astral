@@ -32,10 +32,9 @@ import Modal from "react-native-modal";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
-import { firebase } from "../src/firebase/config";
-
+import firestore from "@react-native-firebase/firestore";
+import storage from "@react-native-firebase/storage";
 import { useDispatch, useSelector } from "react-redux";
-import { ADD_USER_CLUB } from "../src/redux/type";
 import {
   getAClub,
   sendAdminNotification,
@@ -44,7 +43,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 const { width } = Dimensions.get("window");
 
-const db = firebase.firestore();
+const db = firestore();
 
 export default function ClubResubmission({ navigation, route }) {
   const { clubID } = route.params;
@@ -145,13 +144,11 @@ export default function ClubResubmission({ navigation, route }) {
 
   uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = firebase.storage().ref();
+      var storageRef = storage().ref();
 
       storageRef
         .child(`clubs/forms/uploaded/${imageFileName}`)
-        .put(blob, {
-          contentType: mimeType,
-        })
+        .put(blob)
         .then((snapshot) => {
           blob.close();
           resolve(snapshot);
@@ -190,7 +187,8 @@ export default function ClubResubmission({ navigation, route }) {
 
       if (submittedDocument === document) {
         //update in users
-        db.doc(`/users/${user.userId}`)
+        db.collection("users")
+          .doc(user.userId)
           .get()
           .then((doc) => {
             let temp = [...doc.data().clubs];
@@ -200,11 +198,14 @@ export default function ClubResubmission({ navigation, route }) {
             temp[index].name = name;
             temp[index].approval = "pending";
 
-            return db.doc(`/users/${user.userId}`).update({ clubs: [...temp] });
+            return db
+              .collection("users")
+              .doc(user.userId)
+              .update({ clubs: [...temp] });
           })
           .then(() => {
             //update in clubsOverview
-            return db.doc(`/clubsOverview/${club.campusID}`).get();
+            return db.collection("clubsOverview").doc(club.campusID).get();
           })
           .then((doc) => {
             let temp = [...doc.data().clubs];
@@ -247,10 +248,11 @@ export default function ClubResubmission({ navigation, route }) {
               return uploadToFirebase(blob, documentName);
             })
             .then((snapshot) => {
-              return firebase.storage().ref(firebasePath).getDownloadURL();
+              return storage().ref(firebasePath).getDownloadURL();
             })
             .then((url) => {
-              db.doc(`/users/${user.userId}`)
+              db.collection("users")
+                .doc(user.userId)
                 .get()
                 .then((doc) => {
                   let temp = [...doc.data().clubs];
@@ -266,7 +268,10 @@ export default function ClubResubmission({ navigation, route }) {
                 })
                 .then(() => {
                   //update in clubsOverview
-                  return db.doc(`/clubsOverview/${club.campusID}`).get();
+                  return db
+                    .collection("clubsOverview")
+                    .doc(club.campusID)
+                    .get();
                 })
                 .then((doc) => {
                   let temp = [...doc.data().clubs];
@@ -318,7 +323,8 @@ export default function ClubResubmission({ navigation, route }) {
 
     setLoading(true);
 
-    db.doc(`/users/${user.userId}`)
+    db.collection("users")
+      .doc(user.userId)
       .get()
       .then((doc) => {
         let temp = [...doc.data().clubs];
@@ -327,11 +333,14 @@ export default function ClubResubmission({ navigation, route }) {
         );
         temp.splice(index, 1);
 
-        return db.doc(`/users/${user.userId}`).update({ clubs: [...temp] });
+        return db
+          .collection("users")
+          .doc(user.userId)
+          .update({ clubs: [...temp] });
       })
       .then(() => {
         //update in clubsOverview
-        return db.doc(`/clubsOverview/${club.campusID}`).get();
+        return db.collection("clubsOverview").doc(club.campusID).get();
       })
       .then((doc) => {
         let temp = [...doc.data().clubs];
@@ -346,19 +355,19 @@ export default function ClubResubmission({ navigation, route }) {
       })
       .then(() => {
         //update in clubs
-        return db.doc(`/clubs/${club.clubID}`).delete();
+        return db.collection("clubs").doc(club.clubID).delete();
       })
       .then(() => {
         //delete from events
-        return db.doc(`/events/${club.clubID}`).delete();
+        return db.collection("events").doc(club.clubID).delete();
       })
       .then(() => {
         //delete from gallery
-        return db.doc(`/gallery/${club.clubID}`).delete();
+        return db.collection("gallery").doc(club.clubID).delete();
       })
       .then(() => {
         //delete from clubMembers
-        return db.doc(`/clubMembers/${club.clubID}`).delete();
+        return db.collection("clubMembers").doc(club.clubID).delete();
       })
       .then(() => {
         setLoading(false);
