@@ -71,69 +71,109 @@ export default function Home({ navigation }) {
       });
   }, [user]);
 
+  let userProfileDisplay = loading ? (
+    <View
+      style={{
+        flexDirection: "row",
+        marginBottom: pixelSizeVertical(24),
+        paddingRight: pixelSizeHorizontal(16),
+        paddingLeft: pixelSizeHorizontal(16),
+        paddingTop: pixelSizeVertical(12),
+        paddingBottom: pixelSizeVertical(12),
+        alignSelf: "center",
+      }}
+    >
+      <View
+        style={{
+          width: widthPixel(32),
+          height: heightPixel(32),
+          backgroundColor: "#242997",
+          marginRight: pixelSizeHorizontal(16),
+        }}
+      ></View>
+      <View
+        style={{
+          width: widthPixel(32),
+          height: heightPixel(32),
+          backgroundColor: "#242997",
+          marginRight: pixelSizeHorizontal(16),
+        }}
+      ></View>
+      <View
+        style={{
+          width: widthPixel(32),
+          height: heightPixel(32),
+          backgroundColor: "#242997",
+        }}
+      ></View>
+    </View>
+  ) : (
+    <View
+      style={{
+        flexDirection: "row",
+        marginBottom: pixelSizeVertical(24),
+        backgroundColor: "#242997",
+        paddingRight: pixelSizeHorizontal(16),
+        paddingLeft: pixelSizeHorizontal(16),
+        paddingTop: pixelSizeVertical(12),
+        paddingBottom: pixelSizeVertical(12),
+      }}
+    >
+      <Pressable onPress={() => navigation.replace("Profile")}>
+        <Image
+          style={styles.image}
+          contentFit="cover"
+          source={user.profileImage}
+        />
+      </Pressable>
+      <Pressable
+        style={{
+          marginRight: pixelSizeHorizontal(10),
+          marginLeft: pixelSizeHorizontal(10),
+        }}
+        onPress={() => navigation.replace("Profile")}
+      >
+        <Text
+          style={{
+            color: "#DFE5F8",
+            fontSize: fontPixel(22),
+            marginBottom: pixelSizeVertical(2),
+            fontWeight: "500",
+          }}
+        >
+          {user.name}
+        </Text>
+        <Text
+          style={{
+            color: "#C6CDE2",
+            fontSize: fontPixel(14),
+            fontWeight: "400",
+          }}
+        >
+          {user.intake}, {user.department}
+        </Text>
+      </Pressable>
+      <Pressable
+        style={{
+          marginLeft: "auto",
+        }}
+        onPress={() => navigation.replace("Notifications")}
+      >
+        <Image
+          style={styles.notificationIcon}
+          contentFit="contain"
+          source={notificationIcon}
+        />
+      </Pressable>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <IosHeight />
       <View style={styles.list}>
         <Text style={styles.college}>{user.campus}</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            marginBottom: pixelSizeVertical(24),
-            backgroundColor: "#242997",
-            paddingRight: pixelSizeHorizontal(16),
-            paddingLeft: pixelSizeHorizontal(16),
-            paddingTop: pixelSizeVertical(12),
-            paddingBottom: pixelSizeVertical(12),
-          }}
-        >
-          <Pressable onPress={() => navigation.replace("Profile")}>
-            <Image
-              style={styles.image}
-              contentFit="cover"
-              source={user.profileImage}
-            />
-          </Pressable>
-          <Pressable
-            style={{
-              marginRight: pixelSizeHorizontal(10),
-              marginLeft: pixelSizeHorizontal(10),
-            }}
-            onPress={() => navigation.replace("Profile")}
-          >
-            <Text
-              style={{
-                color: "#DFE5F8",
-                fontSize: fontPixel(22),
-                marginBottom: pixelSizeVertical(2),
-                fontWeight: "500",
-              }}
-            >
-              {user.name}
-            </Text>
-            <Text
-              style={{
-                color: "#C6CDE2",
-                fontSize: fontPixel(14),
-                fontWeight: "400",
-              }}
-            >
-              {user.intake}, {user.department}
-            </Text>
-          </Pressable>
-          <Pressable
-            style={{
-              marginLeft: "auto",
-            }}
-            onPress={() => navigation.replace("Notifications")}
-          >
-            <Image
-              style={styles.notificationIcon}
-              contentFit="contain"
-              source={notificationIcon}
-            />
-          </Pressable>
-        </View>
+        {userProfileDisplay}
         <FlatList
           style={{
             paddingRight: pixelSizeHorizontal(16),
