@@ -40,7 +40,50 @@ import ResubmitClubsGallery from "./pages/ResubmitClubsGallery";
 import { Provider } from "react-redux";
 import { store } from "./src/redux/store";
 
+import { firebase } from "@react-native-firebase/app-check";
+
 const Stack = createStackNavigator();
+
+const firebaseAppCheckToken = async () => {
+  try {
+    const appCheck = await firebase.appCheck();
+
+    const rnfbProvider = appCheck.newReactNativeFirebaseAppCheckProvider();
+
+    rnfbProvider.configure({
+      android: {
+        provider: __DEV__ ? "debug" : "playIntegrity",
+        debugToken: "FC26A58E-03DE-4B9A-A1AE-6ED5C12C1606",
+      },
+      apple: {
+        provider: __DEV__ ? "debug" : "appAttestWithDeviceCheckFallback",
+        debugToken: "xxxx-xxxx-xxxx",
+      },
+    });
+
+    await appCheck.initializeAppCheck({
+      provider: rnfbProvider,
+      isTokenAutoRefreshEnabled: true,
+    });
+
+    const appCheckTokenFB = await appCheck.getToken();
+
+    const [{ isTokenValid }] = await sendTokenToApi({
+      appCheckToken: appCheckTokenFB.token,
+    });
+
+    if (isTokenValid) {
+      // Perform Action for the legal device
+    } else {
+      // Perform Action for illegal device
+    }
+  } catch (e) {
+    // Handle Errors which can happen during token generation
+    console.log(e);
+  }
+};
+
+firebaseAppCheckToken();
 
 const animationConfig = {
   animation: "timing",

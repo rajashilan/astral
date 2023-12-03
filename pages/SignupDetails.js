@@ -97,95 +97,90 @@ export default function SignupDetails({ navigation, route }) {
     ) {
       setLoading(true);
 
-      //first check for email
+      // check for username
       db.collection("users")
-        .where("email", "==", email.toLowerCase())
+        .where("username", "==", username.toLowerCase())
         .get()
         .then((data) => {
           if (!data.empty) {
-            errors.email = "Account already exists";
+            errors.username = "Username already exists";
+            Toast.show({
+              type: "error",
+              text1: "Username already exists",
+            });
             setLoading(false);
           } else {
-            //then check for username
-            db.collection("users")
-              .where("username", "==", username.toLowerCase())
-              .get()
-              .then((data) => {
-                if (!data.empty) {
-                  errors.username = "Username already exists";
-                  setLoading(false);
-                } else {
-                  //if both email and username is cleared, then register user
-                  const data = {
-                    email: email.trim().toLowerCase(),
-                    name: capitalize(name),
-                    username: username.trim().toLowerCase(),
-                    gender: selectedGender,
-                    birthday: birthday,
-                    profileImage:
-                      "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/users%2FprofileImage%2Fuser_default_gradient.jpeg?alt=media&token=c9078223-b50d-44db-b861-ea63ca0ed83e&_gl=1*h7xjl7*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMTc3LjIzLjAuMA..",
-                    bio: "",
-                    userId: "",
-                    college: college,
-                    department: department,
-                    campus: campus,
-                    intake: intake,
-                    clubs: [],
-                    phone_number: "",
-                    createdAt: new Date(),
-                  };
+            // if both email and username is cleared, then register user
+            const data = {
+              email: email.trim().toLowerCase(),
+              name: capitalize(name),
+              username: username.trim().toLowerCase(),
+              gender: selectedGender,
+              birthday: birthday,
+              profileImage:
+                "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/users%2FprofileImage%2Fuser_default_gradient.jpeg?alt=media&token=c9078223-b50d-44db-b861-ea63ca0ed83e&_gl=1*h7xjl7*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMTc3LjIzLjAuMA..",
+              bio: "",
+              userId: "",
+              college: college,
+              department: department,
+              campus: campus,
+              intake: intake,
+              clubs: [],
+              phone_number: "",
+              createdAt: new Date(),
+            };
 
-                  auth()
-                    .createUserWithEmailAndPassword(data.email, password)
-                    .then((res) => {
-                      data.userId = res.user.uid;
+            auth()
+              .createUserWithEmailAndPassword(data.email, password)
+              .then((res) => {
+                data.userId = res.user.uid;
+                console.log(res);
 
-                      res.user
-                        .sendEmailVerification()
-                        .then(() => {
-                          db.collection("users")
-                            .doc(data.userId)
-                            .set(data)
-                            .then(() => {
-                              setLoading(false);
-                              navigation.replace("Login", {
-                                signedUp: true,
-                              });
-                            })
-                            .catch((error) => {
-                              setLoading(false);
-                              Toast.show({
-                                type: "error",
-                                text1: "Something went wrong",
-                              });
-                              console.error(error);
-                            });
-                        })
-                        .catch((error) => {
-                          setLoading(false);
-                          Toast.show({
-                            type: "error",
-                            text1: "Something went wrong",
-                          });
-                          console.error(error);
+                res.user
+                  .sendEmailVerification()
+                  .then(() => {
+                    db.collection("users")
+                      .doc(data.userId)
+                      .set(data)
+                      .then(() => {
+                        setLoading(false);
+                        navigation.replace("Login", {
+                          signedUp: true,
                         });
-                    })
-                    .catch((error) => {
-                      setLoading(false);
-                      Toast.show({
-                        type: "error",
-                        text1: "Something went wrong",
+                      })
+                      .catch((error) => {
+                        setLoading(false);
+                        Toast.show({
+                          type: "error",
+                          text1: "Something went wrong",
+                        });
+                        console.error("error: ", error);
                       });
-                      console.error(error);
+                  })
+                  .catch((error) => {
+                    setLoading(false);
+                    Toast.show({
+                      type: "error",
+                      text1: "Something went wrong",
                     });
-                }
+                    console.error("error: ", error);
+                  });
               })
               .catch((error) => {
-                Toast.show({
-                  type: "error",
-                  text1: "Something went wrong",
-                });
-                console.error(error);
+                console.error("error: ", error.code);
+                setLoading(false);
+                if (error.code === "auth/email-already-in-use") {
+                  errors.email = "Email is already in use";
+                  Toast.show({
+                    type: "error",
+                    text1: "Email is already in use",
+                  });
+                } else {
+                  Toast.show({
+                    type: "error",
+                    text1: "Something went wrong",
+                  });
+                }
               });
           }
         })
