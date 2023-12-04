@@ -42,6 +42,7 @@ import Toast from "react-native-toast-message";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import axios from "axios";
+import { DrawerContentScrollView } from "@react-navigation/drawer";
 const db = firestore();
 
 //get college details
@@ -337,7 +338,8 @@ export const addClubsGallery =
       })
       .then((data) => {
         return db
-          .doc(`/pendingGallery/${data.id}`)
+          .collection("pendingGallery")
+          .doc(data.id)
           .update({ activityID: data.id });
       })
       .then(() => {
@@ -535,7 +537,8 @@ export const addClubEvent =
       })
       .then((data) => {
         return db
-          .doc(`/pendingEvents/${data.id}`)
+          .collection("pendingEvents")
+          .doc(data.id)
           .update({ activityID: data.id });
       })
       .then(() => {
@@ -722,7 +725,8 @@ export const handleDeactivateClub =
         temp[index].status = "inactive";
 
         return db
-          .doc(`/clubsOverview/${campusID}`)
+          .collection("clubsOverview")
+          .doc(campusID)
           .update({ clubs: [...temp] });
       })
       .then(() => {
@@ -960,7 +964,8 @@ export const assignNewClubRole =
         temp[index].role = role;
 
         return db
-          .doc(`/users/${newMember.userID}`)
+          .collection("users")
+          .doc(newMember.userID)
           .update({ clubs: [...temp] });
       })
       .then(() => {
@@ -1195,7 +1200,6 @@ export const updateClubImage = (clubID, photoUrl, campusID) => (dispatch) => {
 //   notificationID: "",
 export const createNotification = (notification, userIDs) => (dispatch) => {
   //userIDs type array
-  console.log("Called");
   let batch = db.batch();
 
   userIDs.forEach((userID) => {

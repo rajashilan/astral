@@ -204,7 +204,6 @@ export default function ResubmitClubsGallery({ navigation, route }) {
         //if (!club.gallery) dispatch(setClubGalleryToTrue(club.clubID));
       }
       //dispatch(handleDeleteClubGallery(gallery.galleryID, club.clubID, false));
-      console.log(club.name, campusID);
       dispatch(
         sendAdminNotification(
           "galleryResubmission",
