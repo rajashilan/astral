@@ -101,7 +101,7 @@ export default function ClubCurrentMembers({ navigation }) {
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: "Images",
       allowsEditing: true,
-      quality: 1,
+      quality: 0.8,
     })
       .then((result) => {
         if (!result.canceled) {

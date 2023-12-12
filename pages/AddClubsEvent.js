@@ -88,8 +88,7 @@ export default function AddClubsEvent({ navigation }) {
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: "Images",
       allowsEditing: true,
-      aspect: [3, 2],
-      quality: 1,
+      quality: 0.8,
     })
       .then((result) => {
         if (!result.canceled) {

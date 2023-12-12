@@ -91,8 +91,7 @@ export default function ResubmitClubsGallery({ navigation, route }) {
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: "Images",
       allowsEditing: true,
-      aspect: [3, 2],
-      quality: 1,
+      quality: 0.8,
     })
       .then((result) => {
         if (!result.canceled) {
