@@ -19,7 +19,7 @@ import {
   handleUpdateClubDetails,
 } from "../src/redux/actions/dataActions";
 
-export default function ClubsDetails({ navigation }) {
+export default ClubsDetails = React.memo(({ navigation }) => {
   const dispatch = useDispatch();
 
   const club = useSelector((state) => state.data.clubData.club);
@@ -185,7 +185,7 @@ export default function ClubsDetails({ navigation }) {
       <View style={styles.emptyView} />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

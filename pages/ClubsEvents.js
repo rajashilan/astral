@@ -27,7 +27,7 @@ import {
 
 const { width } = Dimensions.get("window");
 
-export default function ClubsEvents({ navigation }) {
+export default ClubsEvents = React.memo(({ navigation }) => {
   //can have image, must have title, must have date, can have text
 
   const [innerTab, setInnerTab] = useState("past");
@@ -479,7 +479,7 @@ export default function ClubsEvents({ navigation }) {
       <Toast config={toastConfig} />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

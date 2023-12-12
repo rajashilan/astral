@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 
 const { width } = Dimensions.get("window");
 
-export default function ClubsMembers(props) {
+export default ClubsMembers = React.memo((props) => {
   const members = useSelector((state) => state.data.clubData.members);
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
@@ -75,7 +75,7 @@ export default function ClubsMembers(props) {
       <View style={styles.emptyView} />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

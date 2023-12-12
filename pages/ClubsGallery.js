@@ -29,7 +29,7 @@ import {
 } from "../src/redux/actions/dataActions";
 const db = firestore();
 
-export default function ClubsGallery({ navigation }) {
+export default ClubsGallery = React.memo(({ navigation }) => {
   const dispatch = useDispatch();
   const club = useSelector((state) => state.data.clubData.club);
   const campusID = useSelector((state) => state.data.campus.campusID);
@@ -289,7 +289,7 @@ export default function ClubsGallery({ navigation }) {
       <Toast config={toastConfig} />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
