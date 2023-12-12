@@ -306,6 +306,7 @@ export const addClubsGallery =
       approval: "pending",
       galleryID,
       rejectionReason: "",
+      createdAt: new Date().toISOString(),
     };
 
     let pendingGalleryData = {
@@ -319,6 +320,7 @@ export const addClubsGallery =
       activityID: "",
       galleryID,
       hasGallery,
+      createdAt: new Date().toISOString(),
     };
 
     db.collection("gallery")
@@ -504,6 +506,7 @@ export const addClubEvent =
       eventID,
       approval: "pending",
       rejectionReason: "",
+      createdAt: new Date().toISOString(),
     };
 
     let pendingEventData = {
@@ -518,6 +521,7 @@ export const addClubEvent =
       campusID,
       activityID: "",
       hasEvents,
+      createdAt: new Date().toISOString(),
     };
 
     db.collection("events")
