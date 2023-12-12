@@ -66,7 +66,7 @@ export default function DepartmentAll(props) {
               <Image
                 key={index}
                 style={styles.image}
-                resizeMode="cover"
+                contentFit="cover"
                 source={item.image}
               />
             )}

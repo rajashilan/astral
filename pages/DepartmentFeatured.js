@@ -51,7 +51,7 @@ export default function DepartmentFeatured(props) {
               <Image
                 key={index}
                 style={styles.image}
-                resizeMode="cover"
+                contentFit="cover"
                 source={item.image}
               />
             )}
