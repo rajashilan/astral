@@ -5,6 +5,7 @@ import {
   FlatList,
   Pressable,
   Dimensions,
+  TextInput,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
@@ -49,6 +50,7 @@ export default function Orientation({ navigation }) {
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
   const [overview, setOverview] = useState({});
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (user.authenticated) dispatch(getOrientation(state.campus.campusID));
@@ -57,6 +59,12 @@ export default function Orientation({ navigation }) {
   useEffect(() => {
     setOverview({ ...orientation.overview });
   }, [orientation.overview]);
+
+  useEffect(() => {
+    return () => {
+      setSearch("");
+    };
+  }, []);
 
   const handlePageItemPress = (orientationPageID) => {
     navigation.navigate("OrientationPages", {
@@ -87,13 +95,14 @@ export default function Orientation({ navigation }) {
   ) : (
     <ScrollView
       scrollEventThrottle={16}
+      stickyHeaderIndices={[2]}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
       showsVerticalScrollIndicator={false}
     >
       <View onLayout={onLayout}>
         <Header header={"orientation"} />
       </View>
-      {overview.video && (
+      {/* {overview.video && (
         <VideoPlayer
           style={styles.video}
           videoProps={{
@@ -103,9 +112,23 @@ export default function Orientation({ navigation }) {
             },
           }}
         />
-      )}
+      )} */}
 
       <Text style={styles.title}>{overview.title}</Text>
+
+      <View
+        style={{
+          backgroundColor: "#0C111F",
+        }}
+      >
+        <TextInput
+          style={styles.textInput}
+          placeholder="Search orientation pages"
+          placeholderTextColor="#DBDBDB"
+          value={search}
+          onChangeText={(newSearch) => setSearch(newSearch)}
+        />
+      </View>
 
       <FlatList
         style={styles.list}
@@ -113,7 +136,12 @@ export default function Orientation({ navigation }) {
         keyExtractor={(item, index) => index.toString()}
         initialNumToRender={10}
         maxToRenderPerBatch={10}
-        data={overview.pages}
+        data={
+          overview.pages &&
+          overview.pages.filter((page) =>
+            page.title.toLowerCase().includes(search.toLowerCase())
+          )
+        }
         renderItem={({ item }) => (
           <>
             <Pressable
@@ -201,7 +229,7 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#DFE5F8",
-    marginTop: pixelSizeVertical(18),
+    // marginTop: pixelSizeVertical(18),
     marginBottom: pixelSizeVertical(26),
   },
   headerMini: {
@@ -268,5 +296,18 @@ const styles = StyleSheet.create({
   hamburgerIcon: {
     height: pixelSizeVertical(20),
     width: pixelSizeHorizontal(30),
+  },
+  textInput: {
+    backgroundColor: "#1A2238",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    marginBottom: pixelSizeVertical(18),
+    fontSize: fontPixel(16),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    width: "100%",
+    borderRadius: 5,
   },
 });
