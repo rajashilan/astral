@@ -151,6 +151,8 @@ export default function GeneralForms({ navigation }) {
         style={styles.list}
         scrollEnabled={false}
         keyExtractor={(item, index) => index.toString()}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
         data={
           search === ""
             ? data

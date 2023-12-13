@@ -112,6 +112,8 @@ export default function ClubCurrentMembers({ navigation }) {
             <FlatList
               style={{ marginTop: pixelSizeVertical(24) }}
               keyExtractor={(item, index) => index.toString()}
+              initialNumToRender={10}
+              maxToRenderPerBatch={10}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               scrollEnabled={false}

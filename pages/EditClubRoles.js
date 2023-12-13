@@ -215,6 +215,8 @@ export default function EditClubRoles({ navigation }) {
             <FlatList
               scrollEnabled={false}
               keyExtractor={(item, index) => index.toString()}
+              initialNumToRender={10}
+              maxToRenderPerBatch={10}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               data={roles}

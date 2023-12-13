@@ -123,6 +123,8 @@ export default function OrientationPages({ navigation, route }) {
     <FlatList
       scrollEventThrottle={16}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
       style={styles.list}

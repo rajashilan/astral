@@ -175,6 +175,8 @@ export default function Clubs({ navigation }) {
 
       <FlatList
         keyExtractor={(item, index) => index.toString()}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         scrollEnabled={false}

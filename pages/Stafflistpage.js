@@ -65,6 +65,8 @@ export default function Stafflistpage({ navigation, route }) {
 
       <FlatList
         keyExtractor={(item, index) => index.toString()}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         data={contact}

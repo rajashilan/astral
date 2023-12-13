@@ -111,6 +111,8 @@ export default function Orientation({ navigation }) {
         style={styles.list}
         scrollEnabled={false}
         keyExtractor={(item, index) => index.toString()}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
         data={overview.pages}
         renderItem={({ item }) => (
           <>

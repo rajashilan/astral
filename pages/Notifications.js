@@ -162,6 +162,8 @@ export default function Notifications({ navigation }) {
           <FlatList
             style={{ marginBottom: pixelSizeVertical(32) }}
             keyExtractor={(item, index) => index.toString()}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             scrollEnabled={false}
