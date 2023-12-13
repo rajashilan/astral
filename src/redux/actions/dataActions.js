@@ -1225,7 +1225,7 @@ export const setNotificationsRead = (notificationIDs) => (dispatch) => {
   let batch = db.batch();
 
   notificationIDs.forEach((notificationID) => {
-    const notification = db.collection("notifiations").doc(notificationID);
+    const notification = db.collection("notifications").doc(notificationID);
     batch.update(notification, { read: true });
   });
   batch

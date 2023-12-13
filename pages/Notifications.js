@@ -64,20 +64,34 @@ export default function Notifications({ navigation }) {
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
   const [data, setData] = useState([]);
+  const [lastDoc, setLastDoc] = useState(null);
 
-  useEffect(() => {
-    setLoading(true);
-    db.collection("notifications")
+  const fetchClubs = () => {
+    if (!lastDoc) setLoading(true);
+
+    let query = db
+      .collection("notifications")
       .where("userID", "==", user.userId)
       .orderBy("createdAt", "desc")
+      .limit(12);
+
+    if (lastDoc) query = query.startAfter(lastDoc);
+
+    query
       .get()
-      .then((data) => {
+      .then((dbData) => {
         let temp = [];
-        data.forEach((doc) => {
+        dbData.forEach((doc) => {
           temp.push({ ...doc.data() });
         });
-        setData([...temp]);
+        if (temp.length > 0) {
+          setLastDoc(dbData.docs[dbData.docs.length - 1]);
+          if (data.length > 0) {
+            setData([...data, ...temp]);
+          } else setData([...temp]);
+        }
         setLoading(false);
+        setRefreshing(false);
       })
       .catch((error) => {
         console.error(error);
@@ -86,12 +100,22 @@ export default function Notifications({ navigation }) {
           text1: "Something went wrong",
         });
         setLoading(false);
+        setRefreshing(false);
       });
+  };
+
+  useEffect(() => {
+    fetchClubs();
+    return () => {
+      setLastDoc(null);
+      setData([]);
+    };
   }, []);
 
   useEffect(() => {
     if (data.length > 0) {
       let notificationIDs = [];
+      let temp = data.slice(-12);
       data.forEach((notification) => {
         notificationIDs.push(notification.notificationID);
       });
@@ -101,27 +125,20 @@ export default function Notifications({ navigation }) {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    db.collection("notifications")
-      .where("userID", "==", user.userId)
-      .orderBy("createdAt", "desc")
-      .get()
-      .then((data) => {
-        let temp = [];
-        data.forEach((doc) => {
-          temp.push({ ...doc.data() });
-        });
-        setData([...temp]);
-        setRefreshing(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        Toast.show({
-          type: "error",
-          text1: "Something went wrong",
-        });
-        setRefreshing(false);
-      });
+    setLastDoc(null);
+    fetchClubs();
   }, []);
+
+  const handleScroll = ({ nativeEvent }) => {
+    const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+
+    const isCloseToBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+
+    if (isCloseToBottom) {
+      fetchClubs();
+    }
+  };
 
   const onLayout = (event) => {
     const { x, y, height, width } = event.nativeEvent.layout;
@@ -147,7 +164,10 @@ export default function Notifications({ navigation }) {
     <ScrollView
       scrollEventThrottle={16}
       stickyHeaderIndices={[1]}
-      onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      onScroll={(event) => {
+        setScrollHeight(event.nativeEvent.contentOffset.y);
+        handleScroll(event);
+      }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
