@@ -6,6 +6,7 @@ import {
   RefreshControl,
   Pressable,
   Dimensions,
+  TextInput,
   ScrollView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
@@ -59,12 +60,10 @@ export default function Clubs({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
 
   const [tab, setTab] = useState("all clubs");
-
   const [all, setAll] = useState([]);
-
   const [yours, setYours] = useState([]);
 
-  //set and get data from redux
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     //get clubs from clubs overview
@@ -118,6 +117,12 @@ export default function Clubs({ navigation }) {
     setYours([...temp]);
   }, [all]);
 
+  useEffect(() => {
+    return () => {
+      setSearch("");
+    };
+  }, []);
+
   const handlePageItemPress = (clubID) => {
     navigation.navigate("ClubsPages", { clubID });
   };
@@ -148,6 +153,7 @@ export default function Clubs({ navigation }) {
     </View>
   ) : (
     <ScrollView
+      stickyHeaderIndices={[1]}
       scrollEventThrottle={16}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
       showsVerticalScrollIndicator={false}
@@ -172,7 +178,23 @@ export default function Clubs({ navigation }) {
           </Text>
         </Pressable>
       </View>
-
+      {tab !== "yours" || yours.length > 2 ? (
+        <View
+          style={{
+            backgroundColor: "#0C111F",
+          }}
+        >
+          <TextInput
+            style={styles.textInput}
+            placeholder={
+              tab === "all clubs" ? "Search for clubs" : "Search for your clubs"
+            }
+            placeholderTextColor="#DBDBDB"
+            value={search}
+            onChangeText={(newSearch) => setSearch(newSearch)}
+          />
+        </View>
+      ) : null}
       <FlatList
         keyExtractor={(item, index) => index.toString()}
         initialNumToRender={10}
@@ -180,7 +202,15 @@ export default function Clubs({ navigation }) {
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         scrollEnabled={false}
-        data={tab === "all clubs" ? all : yours}
+        data={
+          tab === "all clubs"
+            ? all.filter((club) =>
+                club.name.toLowerCase().includes(search.toLowerCase())
+              )
+            : yours.filter((club) =>
+                club.name.toLowerCase().includes(search.toLowerCase())
+              )
+        }
         renderItem={({ item }) => (
           <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
             {item.approval === "pending" ? (
@@ -600,5 +630,19 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(20),
     fontWeight: "400",
     color: "#DFE5F8",
+  },
+  textInput: {
+    backgroundColor: "#1A2238",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    marginTop: pixelSizeVertical(10),
+    marginBottom: pixelSizeVertical(18),
+    fontSize: fontPixel(16),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    width: "100%",
+    borderRadius: 5,
   },
 });
