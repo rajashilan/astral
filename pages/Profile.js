@@ -487,4 +487,10 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
     marginTop: pixelSizeVertical(8),
   },
+  altButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#07BEB8",
+    marginTop: pixelSizeVertical(8),
+  },
 });

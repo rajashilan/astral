@@ -122,7 +122,7 @@ export default function OrientationPages({ navigation, route }) {
       keyExtractor={(data, index) => index.toString()}
       data={data}
       renderItem={({ item }) => (
-        <>
+        <React.Fragment>
           <View onLayout={onLayout}>
             <Text style={styles.header}>{item.title}</Text>
           </View>
@@ -131,7 +131,10 @@ export default function OrientationPages({ navigation, route }) {
           {item.subcontent &&
             item.subcontent.map((content, index) => {
               return (
-                <View style={styles.contentContainer}>
+                <View
+                  key={(index * 321).toString()}
+                  style={styles.contentContainer}
+                >
                   <Text style={styles.subtitle}>{content.title}</Text>
                   {content.content && (
                     <Text style={styles.contentNoPadding}>
@@ -149,13 +152,13 @@ export default function OrientationPages({ navigation, route }) {
                         sliderWidth={width - 32}
                         itemWidth={width - 32}
                         renderItem={({ item, index }) => (
-                          <>
+                          <React.Fragment>
                             <Image
                               style={styles.image}
                               contentFit="cover"
                               source={item}
                             />
-                          </>
+                          </React.Fragment>
                         )}
                       />
                       <Pagination
@@ -177,7 +180,7 @@ export default function OrientationPages({ navigation, route }) {
                   {content.files &&
                     content.files.map((file) => {
                       return (
-                        <>
+                        <React.Fragment key={file.url}>
                           <Pressable
                             onPress={async () =>
                               await WebBrowser.openBrowserAsync(file.url)
@@ -185,14 +188,14 @@ export default function OrientationPages({ navigation, route }) {
                           >
                             <Text style={styles.file}>{file.filename}</Text>
                           </Pressable>
-                        </>
+                        </React.Fragment>
                       );
                     })}
                 </View>
               );
             })}
           <View style={styles.emptyView} />
-        </>
+        </React.Fragment>
       )}
     />
   );
