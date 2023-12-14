@@ -201,7 +201,7 @@ export default function ClubsPages({ navigation, route }) {
         marginTop: pixelSizeVertical(10),
       })}
     >
-      {data && (
+      {data && data.image && (
         <View onLayout={onLayout}>
           <ImageBackground
             source={{ uri: data.image }}
