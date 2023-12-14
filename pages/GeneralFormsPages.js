@@ -499,4 +499,10 @@ const styles = StyleSheet.create({
     marginTop: pixelSizeVertical(8),
     opacity: 0.5,
   },
+  loginButtonText: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#0C111F",
+    textAlign: "center",
+  },
 });

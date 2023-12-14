@@ -125,20 +125,27 @@ export default function GeneralForms({ navigation }) {
   ) : (
     <ScrollView
       scrollEventThrottle={16}
+      stickyHeaderIndices={[1]}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
       showsVerticalScrollIndicator={false}
     >
       <View onLayout={onLayout}>
         <Header header="general forms" />
       </View>
-      {clearButton}
-      <TextInput
-        style={styles.textInput}
-        placeholder="search for forms..."
-        placeholderTextColor="#DBDBDB"
-        onChangeText={(newSearch) => setSearch(newSearch)}
-        value={search}
-      />
+      {/* {clearButton} */}
+      <View
+        style={{
+          backgroundColor: "#0C111F",
+        }}
+      >
+        <TextInput
+          style={styles.textInput}
+          placeholder="search for forms..."
+          placeholderTextColor="#DBDBDB"
+          onChangeText={(newSearch) => setSearch(newSearch)}
+          value={search}
+        />
+      </View>
       <FlatList
         style={styles.list}
         scrollEnabled={false}
