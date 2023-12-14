@@ -1,27 +1,26 @@
+import auth from "@react-native-firebase/auth";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState, useEffect } from "react";
 import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
   Dimensions,
   ScrollView,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
-import logo from "../assets/logo.png";
-import { Image } from "expo-image";
 import Carousel, { Pagination } from "react-native-snap-carousel";
-const { width } = Dimensions.get("window");
+import { useDispatch } from "react-redux";
 
-import IosHeight from "../components/IosHeight";
-
-import welcome from "../assets/welcome.png";
-import orientation from "../assets/orientation.png";
 import clubs from "../assets/clubs.png";
 import departments from "../assets/departments.png";
 import lecturers from "../assets/lecturers.png";
-
+import logo from "../assets/logo.png";
+import orientation from "../assets/orientation.png";
+import welcome from "../assets/welcome.png";
+import IosHeight from "../components/IosHeight";
+import { getAuthenticatedUser } from "../src/redux/actions/userActions";
 import {
   fontPixel,
   widthPixel,
@@ -29,12 +28,8 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { TouchableWithoutFeedback } from "react-native-web";
 
-import auth from "@react-native-firebase/auth";
-
-import { useDispatch, useSelector } from "react-redux";
-import { getAuthenticatedUser } from "../src/redux/actions/userActions";
+const { width } = Dimensions.get("window");
 
 export default function Main({ navigation }) {
   const dispatch = useDispatch();
@@ -90,7 +85,6 @@ export default function Main({ navigation }) {
     navigation.replace("Signup");
   };
 
-  const [email, setEmail] = useState("");
   const [indexSelected, setIndexSelected] = useState(0);
 
   const onSelect = (indexSelected) => {
@@ -115,11 +109,11 @@ export default function Main({ navigation }) {
           <Carousel
             layout="default"
             data={data}
-            disableIntervalMomentum={true}
+            disableIntervalMomentum
             onSnapToItem={(index) => onSelect(index)}
             sliderWidth={width - 32}
             itemWidth={width - 32}
-            useExperimentalSnap={true}
+            useExperimentalSnap
             renderItem={({ item, index }) => (
               <>
                 <Image
@@ -136,7 +130,7 @@ export default function Main({ navigation }) {
           />
           <Pagination
             inactiveDotColor="#546593"
-            dotColor={"#C4FFF9"}
+            dotColor="#C4FFF9"
             activeDotIndex={indexSelected}
             containerStyle={{
               paddingTop: 0,
@@ -159,7 +153,7 @@ export default function Main({ navigation }) {
             backgroundColor="#0C111F"
           />
         </View>
-        <View style={styles.emptyView}></View>
+        <View style={styles.emptyView} />
       </ScrollView>
     </View>
   );

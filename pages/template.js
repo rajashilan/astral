@@ -1,46 +1,40 @@
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
   Pressable,
-  TextInput,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import Modal from "react-native-modal";
+import Toast from "react-native-toast-message";
+//import { useDispatch, useSelector } from "react-redux";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   fontPixel,
-  widthPixel,
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import Header from "../components/Header";
 
 const { width } = Dimensions.get("window");
 
 export default function ClubCurrentMembers({ navigation }) {
-  const dispatch = useDispatch();
-  const currentMember = useSelector(
-    (state) => state.data.clubData.currentMember
-  );
-  const club = useSelector((state) => state.data.clubData.club);
-  const loading = useSelector((state) => state.data.loading);
-  const campusID = useSelector((state) => state.data.campus.campusID);
+  // const dispatch = useDispatch();
+  // const currentMember = useSelector(
+  //   (state) => state.data.clubData.currentMember,
+  // );
+  // const club = useSelector((state) => state.data.clubData.club);
+  // const loading = useSelector((state) => state.data.loading);
+  // const campusID = useSelector((state) => state.data.campus.campusID);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
@@ -77,7 +71,7 @@ export default function ClubCurrentMembers({ navigation }) {
       <ScrollView>
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
-            <Header header={"current members"} />
+            <Header header="current members" />
             <Text style={styles.disclaimer}>view and edit your members</Text>
           </View>
         </View>
@@ -97,7 +91,7 @@ export default function ClubCurrentMembers({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>
@@ -134,23 +128,6 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(34),
     fontWeight: "500",
     color: "#DFE5F8",
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(30),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
   },
   emptyView: {
     flex: 1,
@@ -242,23 +219,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
   tertiaryButton: {
     color: "#A7AFC7",
     fontSize: fontPixel(22),
@@ -290,29 +250,6 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(24),
     width: "100%",
     borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   secondaryButton: {
     fontSize: fontPixel(22),

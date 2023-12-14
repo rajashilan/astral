@@ -1,3 +1,9 @@
+import storage from "@react-native-firebase/storage";
+import * as Crypto from "expo-crypto";
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,39 +13,25 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-import * as Crypto from "expo-crypto";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useDispatch, useSelector } from "react-redux";
 
-import * as ImagePicker from "expo-image-picker";
-
-import firestore from "@react-native-firebase/firestore";
-import storage from "@react-native-firebase/storage";
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   updateClubMemberBio,
   updateClubMemberPhoto,
 } from "../src/redux/actions/dataActions";
 import { SET_LOADING_USER, STOP_LOADING_USER } from "../src/redux/type";
-const db = firestore();
+import {
+  fontPixel,
+  heightPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
 
 const { width } = Dimensions.get("window");
 
@@ -81,8 +73,8 @@ export default function ClubsYou({ navigation }) {
 
   const handleUpdatePhoto = () => {
     const name = Crypto.randomUUID();
-    let imageFileName = `${name}.${imageType}`;
-    let firebasePath = `clubs/members/photos/${imageFileName}`;
+    const imageFileName = `${name}.${imageType}`;
+    const firebasePath = `clubs/members/photos/${imageFileName}`;
 
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: "Images",
@@ -96,8 +88,6 @@ export default function ClubsYou({ navigation }) {
           setImageType(uri.split(".")[uri.split(".").length - 1]);
           console.log("uri: ", uri);
           return uriToBlob(uri);
-        } else {
-          return Promise.reject("cancelled");
         }
       })
       .then((blob) => {
@@ -144,9 +134,9 @@ export default function ClubsYou({ navigation }) {
     });
   };
 
-  uploadToFirebase = (blob, imageFileName) => {
+  const uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = storage().ref();
+      const storageRef = storage().ref();
       storageRef
         .child(`clubs/members/photos/${imageFileName}`)
         .put(blob)
@@ -267,7 +257,7 @@ export default function ClubsYou({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>

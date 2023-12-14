@@ -1,15 +1,14 @@
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  ScrollView,
-} from "react-native";
+import firestore from "@react-native-firebase/firestore";
+import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useRef } from "react";
+import { Pressable, StyleSheet, Text, View, ScrollView } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import SelectDropdown from "react-native-select-dropdown";
+import Toast from "react-native-toast-message";
+
 import logo from "../assets/logo.png";
-import { Image } from "expo-image";
+import IosHeight from "../components/IosHeight";
 import {
   fontPixel,
   widthPixel,
@@ -17,22 +16,11 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { TouchableWithoutFeedback } from "react-native-web";
-import SelectDropdown from "react-native-select-dropdown";
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
-
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-
-import firestore from "@react-native-firebase/firestore";
-
-import IosHeight from "../components/IosHeight";
 
 const db = firestore();
 
 export default function Signup({ navigation }) {
-  const [email, setEmail] = useState("");
-
   const [colleges, setColleges] = useState([]);
   const [selectedCollege, setSelectedCollege] = useState("");
 
@@ -94,7 +82,7 @@ export default function Signup({ navigation }) {
     db.collection("colleges")
       .get()
       .then((data) => {
-        let colleges = [];
+        const colleges = [];
         data.forEach((doc) => {
           colleges.push(doc.data().name);
         });
@@ -128,7 +116,7 @@ export default function Signup({ navigation }) {
           .where("college", "==", selectedCollege)
           .get()
           .then((data) => {
-            let campuses = [];
+            const campuses = [];
             data.forEach((doc) => {
               campuses.push(doc.data().name);
             });
@@ -163,8 +151,8 @@ export default function Signup({ navigation }) {
       .where("name", "==", selectedCampus)
       .get()
       .then((data) => {
-        let departments = [];
-        let intakes = [];
+        const departments = [];
+        const intakes = [];
 
         data.forEach((doc) => {
           doc.data().departments.forEach((department) => {
@@ -209,7 +197,7 @@ export default function Signup({ navigation }) {
         style={{ width: "100%" }}
       >
         <SelectDropdown
-          search={true}
+          search
           searchInputStyle={{
             backgroundColor: "#232D4A",
           }}
@@ -219,7 +207,7 @@ export default function Signup({ navigation }) {
           defaultButtonText={
             loadingColleges ? "Loading colleges..." : "Select your college"
           }
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator
           buttonStyle={{
             backgroundColor: "#1A2238",
             marginTop: pixelSizeVertical(10),
@@ -268,14 +256,14 @@ export default function Signup({ navigation }) {
             exiting={FadeOut.duration(300)}
           >
             <SelectDropdown
-              search={true}
+              search
               searchInputStyle={{
                 backgroundColor: "#232D4A",
               }}
               ref={campusDropDownRef}
               searchPlaceHolder="Search campuses..."
               searchInputTxtColor="#DFE5F8"
-              showsVerticalScrollIndicator={true}
+              showsVerticalScrollIndicator
               disabled={loadingCampuses}
               defaultButtonText={
                 loadingCampuses ? "Loading campuses..." : "Select your campus"
@@ -331,14 +319,14 @@ export default function Signup({ navigation }) {
             exiting={FadeOut.duration(300)}
           >
             <SelectDropdown
-              search={true}
+              search
               searchInputStyle={{
                 backgroundColor: "#232D4A",
               }}
               ref={departmentDropDownRef}
               searchPlaceHolder="Search departments..."
               searchInputTxtColor="#DFE5F8"
-              showsVerticalScrollIndicator={true}
+              showsVerticalScrollIndicator
               disabled={loadingCampusDetails}
               defaultButtonText={
                 loadingCampusDetails
@@ -400,8 +388,8 @@ export default function Signup({ navigation }) {
             exiting={FadeOut.duration(300)}
           >
             <SelectDropdown
-              showsVerticalScrollIndicator={true}
-              defaultButtonText={"Intake month"}
+              showsVerticalScrollIndicator
+              defaultButtonText="Intake month"
               buttonStyle={{
                 backgroundColor: "#1A2238",
                 marginTop: pixelSizeVertical(10),
@@ -444,8 +432,8 @@ export default function Signup({ navigation }) {
               }}
             />
             <SelectDropdown
-              showsVerticalScrollIndicator={true}
-              defaultButtonText={"Intake year"}
+              showsVerticalScrollIndicator
+              defaultButtonText="Intake year"
               buttonStyle={{
                 backgroundColor: "#1A2238",
                 marginTop: pixelSizeVertical(10),

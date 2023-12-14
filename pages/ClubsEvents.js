@@ -1,33 +1,28 @@
-import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Image } from "expo-image";
-import Carousel, { Pagination } from "react-native-snap-carousel";
 import dayjs from "dayjs";
-
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-
+import { Image } from "expo-image";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
 import Modal from "react-native-modal";
-
+import Carousel, { Pagination } from "react-native-snap-carousel";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useSelector, useDispatch } from "react-redux";
+
 import {
   createNotification,
   getClubEvent,
   handleDeleteClubEvent,
   setClubEventToFalse,
 } from "../src/redux/actions/dataActions";
+import {
+  fontPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
 
 const { width } = Dimensions.get("window");
 
-export default ClubsEvents = React.memo(({ navigation }) => {
+const ClubsEvents = React.memo(({ navigation }) => {
   //can have image, must have title, must have date, can have text
 
   const [innerTab, setInnerTab] = useState("past");
@@ -61,8 +56,8 @@ export default ClubsEvents = React.memo(({ navigation }) => {
     //also perform filtering for approval and member role
     let currentDate = new Date().toISOString();
     currentDate = currentDate.split("T")[0];
-    let tempPast = [];
-    let tempFuture = [];
+    const tempPast = [];
+    const tempFuture = [];
 
     events.map((event) => {
       if (event.date.split("T")[0] < currentDate) {
@@ -112,7 +107,7 @@ export default ClubsEvents = React.memo(({ navigation }) => {
     if (data.past.length + data.future.length === 1) {
       if (club.status === "active") {
         dispatch(setClubEventToFalse(club.clubID, campusID));
-        let notification = {
+        const notification = {
           preText: "",
           postText: "has been deactivated due to insufficient details.",
           sourceID: club.clubID,
@@ -125,8 +120,8 @@ export default ClubsEvents = React.memo(({ navigation }) => {
           createdAt: new Date().toISOString(),
           notificationID: "",
         };
-        let userIDs = [];
-        let temp = Object.values(club.roles);
+        const userIDs = [];
+        const temp = Object.values(club.roles);
         temp.forEach((role) => {
           if (role.userID && role.userID !== "") userIDs.push(role.userID);
         });
@@ -193,7 +188,7 @@ export default ClubsEvents = React.memo(({ navigation }) => {
       )}
       <Pagination
         inactiveDotColor="#546593"
-        dotColor={"#C4FFF9"}
+        dotColor="#C4FFF9"
         activeDotIndex={indexSelected}
         containerStyle={{
           paddingTop: 0,
@@ -238,8 +233,8 @@ export default ClubsEvents = React.memo(({ navigation }) => {
           onSnapToItem={(index) => onSelect(index)}
           sliderWidth={width - 32}
           itemWidth={width - 32}
-          disableIntervalMomentum={true}
-          useExperimentalSnap={true}
+          disableIntervalMomentum
+          useExperimentalSnap
           renderItem={({ item, index }) => (
             <>
               <Pressable
@@ -265,8 +260,8 @@ export default ClubsEvents = React.memo(({ navigation }) => {
                     item.approval === "approved"
                       ? styles.title
                       : item.approval === "rejected"
-                      ? [styles.title, { color: "#A3222D" }]
-                      : [styles.title, { opacity: 0.5 }]
+                        ? [styles.title, { color: "#A3222D" }]
+                        : [styles.title, { opacity: 0.5 }]
                   }
                 >
                   {item.title}
@@ -340,8 +335,8 @@ export default ClubsEvents = React.memo(({ navigation }) => {
           onSnapToItem={(index) => onSelect(index)}
           sliderWidth={width - 32}
           itemWidth={width - 32}
-          disableIntervalMomentum={true}
-          useExperimentalSnap={true}
+          disableIntervalMomentum
+          useExperimentalSnap
           renderItem={({ item, index }) => (
             <>
               <Pressable
@@ -367,8 +362,8 @@ export default ClubsEvents = React.memo(({ navigation }) => {
                     item.approval === "approved"
                       ? styles.title
                       : item.approval === "rejected"
-                      ? [styles.title, { color: "#A3222D" }]
-                      : [styles.title, { opacity: 0.5 }]
+                        ? [styles.title, { color: "#A3222D" }]
+                        : [styles.title, { opacity: 0.5 }]
                   }
                 >
                   {item.title}
@@ -612,3 +607,5 @@ const styles = StyleSheet.create({
     color: "#C8A427",
   },
 });
+
+export default ClubsEvents;

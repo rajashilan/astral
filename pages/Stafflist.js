@@ -1,3 +1,6 @@
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,26 +11,18 @@ import {
   FlatList,
   ScrollView,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
+import Modal from "react-native-modal";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import SegmentedPicker from "react-native-segmented-picker";
 
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   fontPixel,
-  widthPixel,
-  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-import { Image } from "expo-image";
-
-import IosHeight from "../components/IosHeight";
-
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
@@ -41,7 +36,7 @@ export default function Stafflist({ navigation }) {
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
-  const [departments, setDepartments] = useState([
+  const [departments] = useState([
     {
       name: "Engineering and IT",
     },
@@ -56,7 +51,7 @@ export default function Stafflist({ navigation }) {
     },
   ]);
 
-  const [staffList, setStaffList] = useState([
+  const [staffList] = useState([
     {
       name: "Ms. Koo Lee Chun",
       department: "Engineering and IT",
@@ -266,7 +261,7 @@ export default function Stafflist({ navigation }) {
     setFilterBy("");
   };
 
-  let filterButton =
+  const filterButton =
     filterBy === "" ? (
       <Pressable
         onPress={toggleFilterMenu}
@@ -284,7 +279,7 @@ export default function Stafflist({ navigation }) {
     );
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -363,16 +358,16 @@ export default function Stafflist({ navigation }) {
             filterBy === "" && search === ""
               ? staffList
               : filterBy !== "" && search === ""
-              ? staffList.filter((s) => s.department === filterBy)
-              : filterBy === "" && search !== ""
-              ? staffList.filter((s) =>
-                  s.name.toLowerCase().includes(search.toLowerCase())
-                )
-              : staffList.filter(
-                  (s) =>
-                    s.department === filterBy &&
-                    s.name.toLowerCase().includes(search.toLowerCase())
-                )
+                ? staffList.filter((s) => s.department === filterBy)
+                : filterBy === "" && search !== ""
+                  ? staffList.filter((s) =>
+                      s.name.toLowerCase().includes(search.toLowerCase())
+                    )
+                  : staffList.filter(
+                      (s) =>
+                        s.department === filterBy &&
+                        s.name.toLowerCase().includes(search.toLowerCase())
+                    )
           }
           renderItem={({ item }) => (
             <>
@@ -393,7 +388,7 @@ export default function Stafflist({ navigation }) {
         />
       </ScrollView>
 
-      <View style={styles.emptyView}></View>
+      <View style={styles.emptyView} />
       <Modal
         isVisible={isSideMenuVisible}
         onBackdropPress={toggleSideMenu} // Android back press
@@ -408,7 +403,7 @@ export default function Stafflist({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"staff list"}
+          currentPage="staff list"
           navigation={navigation}
         />
       </Modal>

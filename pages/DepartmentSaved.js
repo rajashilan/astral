@@ -1,17 +1,15 @@
-import { StyleSheet, Text, View, FlatList, Pressable } from "react-native";
-import React, { useState } from "react";
 import { Image } from "expo-image";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, FlatList, Pressable } from "react-native";
 
 import {
   fontPixel,
-  widthPixel,
-  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 
 export default function DepartmentSaved(props) {
-  const [data, setData] = useState([
+  const [data] = useState([
     {
       department: "Department of Computing and Engineering",
       saved: [

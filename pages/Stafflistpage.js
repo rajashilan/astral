@@ -1,3 +1,6 @@
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,23 +9,16 @@ import {
   Pressable,
   FlatList,
 } from "react-native";
-import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
+import Modal from "react-native-modal";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
+import IosHeight from "../components/IosHeight";
 import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-import { Image } from "expo-image";
-
 import {
   fontPixel,
-  widthPixel,
-  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-
-import IosHeight from "../components/IosHeight";
 
 const { width } = Dimensions.get("window");
 export default function Stafflistpage({ navigation, route }) {
@@ -102,7 +98,7 @@ export default function Stafflistpage({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"staff list"}
+          currentPage="staff list"
           navigation={navigation}
         />
       </Modal>

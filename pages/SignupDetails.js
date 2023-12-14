@@ -1,3 +1,10 @@
+import DateTimePicker from "@react-native-community/datetimepicker";
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
+import dayjs from "dayjs";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -6,10 +13,13 @@ import {
   View,
   ScrollView,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import SelectDropdown from "react-native-select-dropdown";
+import Toast from "react-native-toast-message";
+
 import logo from "../assets/logo.png";
-import { Image } from "expo-image";
+import passwordHide from "../assets/password_hide.png";
+import passwordShow from "../assets/password_show.png";
+import IosHeight from "../components/IosHeight";
 import {
   fontPixel,
   widthPixel,
@@ -17,17 +27,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import SelectDropdown from "react-native-select-dropdown";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import passwordShow from "../assets/password_show.png";
-import passwordHide from "../assets/password_hide.png";
-import dayjs from "dayjs";
-import firestore from "@react-native-firebase/firestore";
-import auth from "@react-native-firebase/auth";
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
-
-import IosHeight from "../components/IosHeight";
 
 const db = firestore();
 
@@ -68,7 +68,7 @@ export default function SignupDetails({ navigation, route }) {
   };
 
   const handleNext = () => {
-    let errors = [...errors];
+    const errors = [...errors];
     if (!email.trim()) errors.email = "Please enter your email address";
     else if (email && !email.match(emailRegex))
       errors.email = "Please enter a valid email address";
@@ -116,15 +116,15 @@ export default function SignupDetails({ navigation, route }) {
               name: capitalize(name),
               username: username.trim().toLowerCase(),
               gender: selectedGender,
-              birthday: birthday,
+              birthday,
               profileImage:
                 "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/users%2FprofileImage%2Fuser_default_gradient.jpeg?alt=media&token=c9078223-b50d-44db-b861-ea63ca0ed83e&_gl=1*h7xjl7*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMTc3LjIzLjAuMA..",
               bio: "",
               userId: "",
-              college: college,
-              department: department,
-              campus: campus,
-              intake: intake,
+              college,
+              department,
+              campus,
+              intake,
               clubs: [],
               phone_number: "",
               createdAt: new Date(),
@@ -206,7 +206,7 @@ export default function SignupDetails({ navigation, route }) {
     const birthday = dayjs(selectedDate);
     const now = dayjs(new Date());
 
-    let errors = [...errors];
+    const errors = [...errors];
 
     if (now.diff(birthday, "year") < 16) {
       errors.birthday =
@@ -283,7 +283,7 @@ export default function SignupDetails({ navigation, route }) {
         </Text>
 
         <SelectDropdown
-          defaultButtonText={"Gender"}
+          defaultButtonText="Gender"
           disabled={loading}
           buttonStyle={{
             backgroundColor: "#1A2238",
@@ -452,7 +452,7 @@ export default function SignupDetails({ navigation, route }) {
             <Text style={styles.tertiaryButton}>back</Text>
           </Pressable>
         ) : null}
-        <View style={styles.emptyView}></View>
+        <View style={styles.emptyView} />
       </ScrollView>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />

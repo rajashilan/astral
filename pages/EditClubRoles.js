@@ -1,3 +1,6 @@
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,45 +11,34 @@ import {
   ScrollView,
   TextInput,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useDispatch, useSelector } from "react-redux";
 
+import hamburgerIcon from "../assets/hamburger_icon.png";
 import Header from "../components/Header";
-
-const { width } = Dimensions.get("window");
-
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { useNavigationState } from "@react-navigation/native";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   addNewClubRole,
   deleteClubRole,
 } from "../src/redux/actions/dataActions";
+import {
+  fontPixel,
+  heightPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
+
+const { width } = Dimensions.get("window");
 
 export default function EditClubRoles({ navigation }) {
   const dispatch = useDispatch();
   const members = useSelector((state) => state.data.clubData.members);
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
-  const campusID = useSelector((state) => state.data.campus.campusID);
   const [roles, setRoles] = useState([
     "president",
     "vice president",
@@ -70,14 +62,14 @@ export default function EditClubRoles({ navigation }) {
   const [deleteRole, setDeleteRole] = useState("");
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
   useEffect(() => {
     if (club.roles) {
-      let temp = [...Object.values(club.roles)];
-      let arr = [...roles];
+      const temp = [...Object.values(club.roles)];
+      const arr = [...roles];
       temp.forEach((role) => {
         if (!roles.includes(role.name)) arr.push(role.name);
       });
@@ -117,7 +109,7 @@ export default function EditClubRoles({ navigation }) {
   };
 
   const handleDeleteRole = () => {
-    let temp = deleteRole.split(" ").join("");
+    const temp = deleteRole.split(" ").join("");
 
     //check if role to delete has a member in it
     //if yes, cancel out and show pop up
@@ -143,7 +135,7 @@ export default function EditClubRoles({ navigation }) {
   const handleAddRole = () => {
     let temp = newRole.toLowerCase();
     temp = temp.split(" ").join("");
-    let errors = [...errors];
+    const errors = [...errors];
 
     if (temp === "") errors.role = "please enter a new role";
     if (roles.includes(temp))
@@ -198,7 +190,7 @@ export default function EditClubRoles({ navigation }) {
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
             <View onLayout={onLayout}>
-              <Header header={"edit roles"} />
+              <Header header="edit roles" />
             </View>
             <Text style={styles.disclaimer}>{club.name}</Text>
             <Text
@@ -310,7 +302,7 @@ export default function EditClubRoles({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>
@@ -483,23 +475,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#DFE5F8",
   },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(30),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
   emptyView: {
     flex: 1,
     height: pixelSizeVertical(32),
@@ -590,23 +565,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
   tertiaryButton: {
     color: "#A7AFC7",
     fontSize: fontPixel(22),
@@ -638,29 +596,6 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(24),
     width: "100%",
     borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   secondaryButton: {
     fontSize: fontPixel(22),

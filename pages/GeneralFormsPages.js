@@ -1,3 +1,8 @@
+import firestore from "@react-native-firebase/firestore";
+import axios from "axios";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,49 +11,32 @@ import {
   Pressable,
   TextInput,
   ScrollView,
-  Linking,
 } from "react-native";
+import { Bounce } from "react-native-animated-spinkit";
+import Modal from "react-native-modal";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
 import WebView from "react-native-webview";
-import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   fontPixel,
-  widthPixel,
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-
-import { Bounce } from "react-native-animated-spinkit";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
-import { useDispatch, useSelector } from "react-redux";
-
-import Header from "../components/Header";
-
 const { width } = Dimensions.get("window");
-
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-
-import axios from "axios";
-
-import firestore from "@react-native-firebase/firestore";
 const db = firestore();
 
 export default function GeneralFormsPage({ navigation, route }) {
   const { id } = route.params;
 
-  const dispatch = useDispatch();
-  const club = useSelector((state) => state.data.clubData.club);
   const user = useSelector((state) => state.user.credentials);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -83,8 +71,8 @@ export default function GeneralFormsPage({ navigation, route }) {
           link: doc.data().link,
         });
         setFormData([...doc.data().fields]);
-        let temp = {};
-        let tempFields = {};
+        const temp = {};
+        const tempFields = {};
         doc.data().fields.forEach((field) => {
           if (field.fieldName === "matriculationNo") {
             temp[field.fieldName] = undefined;
@@ -109,7 +97,7 @@ export default function GeneralFormsPage({ navigation, route }) {
   }, []);
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -129,7 +117,7 @@ export default function GeneralFormsPage({ navigation, route }) {
   };
 
   const handleSubmit = () => {
-    var isError = false;
+    let isError = false;
 
     formData.map((field) => {
       if (!fieldValues[field.fieldName] && field.fieldName !== "dateSigned") {
@@ -148,14 +136,14 @@ export default function GeneralFormsPage({ navigation, route }) {
     console.log(isError);
     if (!isError) {
       setLoadingAxios(true);
-      let pdfData = {
+      const pdfData = {
         title: data.title,
         link: data.link,
         matriculationNo: user.email.split("@")[0],
         fields: [],
       };
       formData.forEach((field) => {
-        let tempField = { ...field };
+        const tempField = { ...field };
         tempField.value = fieldValues[field.fieldName.toString()];
         pdfData.fields.push({ ...tempField });
       });
@@ -167,7 +155,7 @@ export default function GeneralFormsPage({ navigation, route }) {
         )
         .then((res) => {
           console.log(res);
-          let link = res.data.link;
+          const link = res.data.link;
           setLoadingAxios(false);
           setUrl(link);
         })
@@ -186,7 +174,7 @@ export default function GeneralFormsPage({ navigation, route }) {
     return Object.keys(obj).length === 0;
   }
 
-  let TextFields =
+  const TextFields =
     !isEmpty(formData) && formData
       ? formData.map((field, index) => {
           return (
@@ -196,7 +184,7 @@ export default function GeneralFormsPage({ navigation, route }) {
                 <TextInput
                   style={styles.textInput}
                   placeholder={field.placeHolder}
-                  placeholderTextColor={"#A7AFC7"}
+                  placeholderTextColor="#A7AFC7"
                   value={fieldValues[field.fieldName] || ""}
                   multiline={field.fieldType === "multiline"}
                   numberOfLines={field.fieldType === "multiline" ? 3 : 1}
@@ -213,7 +201,7 @@ export default function GeneralFormsPage({ navigation, route }) {
                   style={styles.textInput}
                   placeholder={field.placeHolder}
                   editable={false}
-                  placeholderTextColor={"#A7AFC7"}
+                  placeholderTextColor="#A7AFC7"
                   value={fieldValues[field.fieldName] || ""}
                   multiline={field.fieldType === "multiline"}
                 />
@@ -228,7 +216,7 @@ export default function GeneralFormsPage({ navigation, route }) {
         })
       : null;
 
-  let UI = loading ? (
+  const UI = loading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
       <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
     </View>
@@ -265,7 +253,7 @@ export default function GeneralFormsPage({ navigation, route }) {
               {loadingAxios ? "saving..." : "save"}
             </Text>
           </Pressable>
-          <View style={styles.emptyView}></View>
+          <View style={styles.emptyView} />
         </View>
       </View>
     </ScrollView>
@@ -319,7 +307,7 @@ export default function GeneralFormsPage({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"general forms"}
+          currentPage="general forms"
           navigation={navigation}
         />
       </Modal>
@@ -359,23 +347,6 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(34),
     fontWeight: "500",
     color: "#DFE5F8",
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(30),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
   },
   emptyView: {
     flex: 1,
@@ -467,23 +438,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
   tertiaryButton: {
     color: "#A7AFC7",
     fontSize: fontPixel(22),
@@ -515,29 +469,6 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(24),
     width: "100%",
     borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   secondaryButton: {
     fontSize: fontPixel(22),

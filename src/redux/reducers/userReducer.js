@@ -27,22 +27,24 @@ export default function (state = initialState, action) {
       return {
         ...state,
       };
-    case UPDATE_USER_PHOTO:
-      let userPhoto = { ...state.credentials };
+    case UPDATE_USER_PHOTO: {
+      const userPhoto = { ...state.credentials };
       userPhoto.profileImage = action.payload;
 
       return {
         ...state,
         credentials: { ...userPhoto },
       };
-    case UPDATE_USER_BIO:
-      let userBio = { ...state.credentials };
+    }
+    case UPDATE_USER_BIO: {
+      const userBio = { ...state.credentials };
       userBio.bio = action.payload;
 
       return {
         ...state,
         credentials: { ...userBio },
       };
+    }
     case LOGOUT:
       return initialState;
     case SET_LOADING_USER:

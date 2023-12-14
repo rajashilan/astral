@@ -1,46 +1,44 @@
 import "react-native-gesture-handler";
-import { StyleSheet, Text } from "react-native";
-import React, { useState } from "react";
+import { firebase } from "@react-native-firebase/app-check";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { TransitionPresets } from "@react-navigation/stack";
-import Login from "./pages/Login";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
+import React from "react";
+import { Provider } from "react-redux";
+
+import AddClubsEvent from "./pages/AddClubsEvent";
+import AddClubsGallery from "./pages/AddClubsGallery";
+import ClubCurrentMembers from "./pages/ClubCurrentMembers";
+import ClubMembersRequest from "./pages/ClubMembersRequest";
+import ClubResubmission from "./pages/ClubResubmission";
+import Clubs from "./pages/Clubs";
+import ClubsPages from "./pages/ClubsPages";
+import ClubsYou from "./pages/ClubsYou";
+import CreateAClub from "./pages/CreateAClub";
+import Department from "./pages/Department";
+import EditClub from "./pages/EditClub";
+import EditClubMember from "./pages/EditClubMember";
+import EditClubRoles from "./pages/EditClubRoles";
+import ForgotPassword from "./pages/ForgotPassword";
+import GeneralForms from "./pages/GeneralForms";
+import GeneralFormsPage from "./pages/GeneralFormsPages";
 import Home from "./pages/Home";
-import Test from "./pages/Test";
+import Login from "./pages/Login";
 import Main from "./pages/Main";
+import Notifications from "./pages/Notifications";
+import Orientation from "./pages/Orientation";
+import OrientationPages from "./pages/OrientationPages";
+import Profile from "./pages/Profile";
+import ResubmitClubsEvent from "./pages/ResubmitClubsEvent";
+import ResubmitClubsGallery from "./pages/ResubmitClubsGallery";
 import Signup from "./pages/Signup";
 import SignupDetails from "./pages/SignupDetails";
 import SignupExtra from "./pages/SignupExtra";
-import ForgotPassword from "./pages/ForgotPassword";
-
-import Orientation from "./pages/Orientation";
-import OrientationPages from "./pages/OrientationPages";
-import Clubs from "./pages/Clubs";
-import ClubsPages from "./pages/ClubsPages";
-import Department from "./pages/Department";
-import Profile from "./pages/Profile";
 import Stafflist from "./pages/Stafflist";
 import Stafflistpage from "./pages/Stafflistpage";
-import CreateAClub from "./pages/CreateAClub";
-import ClubResubmission from "./pages/ClubResubmission";
-import ClubsYou from "./pages/ClubsYou";
-import AddClubsGallery from "./pages/AddClubsGallery";
-import AddClubsEvent from "./pages/AddClubsEvent";
-import EditClub from "./pages/EditClub";
-import ClubCurrentMembers from "./pages/ClubCurrentMembers";
-import ClubMembersRequest from "./pages/ClubMembersRequest";
-import EditClubMember from "./pages/EditClubMember";
-import EditClubRoles from "./pages/EditClubRoles";
-import Notifications from "./pages/Notifications";
-import GeneralForms from "./pages/GeneralForms";
-import GeneralFormsPage from "./pages/GeneralFormsPages";
-import ResubmitClubsEvent from "./pages/ResubmitClubsEvent";
-import ResubmitClubsGallery from "./pages/ResubmitClubsGallery";
-
-import { Provider } from "react-redux";
 import { store } from "./src/redux/store";
-
-import { firebase } from "@react-native-firebase/app-check";
 
 const Stack = createStackNavigator();
 
@@ -66,16 +64,14 @@ const firebaseAppCheckToken = async () => {
       isTokenAutoRefreshEnabled: true,
     });
 
-    const appCheckTokenFB = await appCheck.getToken();
+    try {
+      const { token } = await appCheck.getToken(true);
 
-    const [{ isTokenValid }] = await sendTokenToApi({
-      appCheckToken: appCheckTokenFB.token,
-    });
-
-    if (isTokenValid) {
-      // Perform Action for the legal device
-    } else {
-      // Perform Action for illegal device
+      if (token.length > 0) {
+        console.log("AppCheck verification passed");
+      }
+    } catch (error) {
+      console.log("AppCheck verification failed", error);
     }
   } catch (e) {
     // Handle Errors which can happen during token generation
@@ -360,18 +356,8 @@ export default function App() {
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
-          <Stack.Screen
-            name="Test"
-            component={Test}
-            options={{
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({});

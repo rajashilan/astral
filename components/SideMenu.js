@@ -1,4 +1,8 @@
-import React, { useEffect } from "react";
+import auth from "@react-native-firebase/auth";
+import { useNavigation } from "@react-navigation/native";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React from "react";
 import {
   SafeAreaView,
   Text,
@@ -6,8 +10,12 @@ import {
   FlatList,
   StyleSheet,
   Pressable,
-  PixelRatio,
 } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+
+import Notification_Icon from "../assets/Notification_Icon";
+import closeIcon from "../assets/close_icon.png";
+import { LOGOUT } from "../src/redux/type";
 import {
   fontPixel,
   widthPixel,
@@ -15,16 +23,6 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { StatusBar } from "expo-status-bar";
-import { Image } from "expo-image";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
-import auth from "@react-native-firebase/auth";
-import closeIcon from "../assets/close_icon.png";
-import notificationIcon from "../assets/notification_icon.png";
-import { LOGOUT } from "../src/redux/type";
-
-import Notification_Icon from "../assets/Notification_Icon";
 
 const SideMenu = (props) => {
   const navigation = useNavigation();
@@ -166,7 +164,7 @@ const SideMenu = (props) => {
                   {item.name}
                 </Text>
               </Pressable>
-              <View style={styles.emptyView}></View>
+              <View style={styles.emptyView} />
             </>
           )}
         />

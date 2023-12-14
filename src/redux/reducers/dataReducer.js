@@ -114,8 +114,8 @@ export default function (state = initialState, action) {
           currentMember: {},
         },
       };
-    case SET_CLUB_MEMBERS_DATA:
-      let currentMember = action.payload.members.findIndex(
+    case SET_CLUB_MEMBERS_DATA: {
+      const currentMember = action.payload.members.findIndex(
         (member) => member.userID === action.payload.userID
       );
       return {
@@ -128,12 +128,12 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
-    case UPDATE_CLUB_MEMBER_BIO:
-      let currentMemberBioUpdateIndex = state.clubData.members.findIndex(
+    }
+    case UPDATE_CLUB_MEMBER_BIO: {
+      const currentMember = state.clubData.members.findIndex(
         (member) => member.userID === action.payload.userID
       );
-      state.clubData.members[currentMemberBioUpdateIndex].bio =
-        action.payload.bio;
+      state.clubData.members[currentMember].bio = action.payload.bio;
       state.clubData.currentMember.bio = action.payload.bio;
       return {
         ...state,
@@ -145,11 +145,12 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
-    case UPDATE_CLUB_MEMBER_PHOTO:
-      let currentMemberPhotoUpdateIndex = state.clubData.members.findIndex(
+    }
+    case UPDATE_CLUB_MEMBER_PHOTO: {
+      const currentMember = state.clubData.members.findIndex(
         (member) => member.userID === action.payload.userID
       );
-      state.clubData.members[currentMemberPhotoUpdateIndex].profileImage =
+      state.clubData.members[currentMember].profileImage =
         action.payload.photoUrl;
       state.clubData.currentMember.profileImage = action.payload.photoUrl;
       return {
@@ -162,33 +163,36 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
-    case SET_CLUB_GALLERY_TO_TRUE:
-      let clubGalleryTrue = { ...state.clubData.club };
-      clubGalleryTrue.gallery = true;
+    }
+    case SET_CLUB_GALLERY_TO_TRUE: {
+      const club = { ...state.clubData.club };
+      club.gallery = true;
       return {
         ...state,
         clubData: {
-          club: { ...clubGalleryTrue },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
-    case SET_CLUB_GALLERY_TO_FALSE:
-      let clubGalleryFalse = { ...state.clubData.club };
-      clubGalleryFalse.gallery = false;
-      clubGalleryFalse.status = "inactive";
+    }
+    case SET_CLUB_GALLERY_TO_FALSE: {
+      const club = { ...state.clubData.club };
+      club.gallery = false;
+      club.status = "inactive";
       return {
         ...state,
         clubData: {
-          club: { ...clubGalleryFalse },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
+    }
     case SET_CLUB_GALLERY:
       return {
         ...state,
@@ -200,63 +204,67 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
-    case ADD_CLUB_GALLERY:
-      let addClubGalleryTemp = [...state.clubData.gallery];
-      addClubGalleryTemp.unshift(action.payload.gallery);
+    case ADD_CLUB_GALLERY: {
+      const gallery = [...state.clubData.gallery];
+      gallery.unshift(action.payload.gallery);
       return {
         ...state,
         clubData: {
           club: { ...state.clubData.club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
-          gallery: [...addClubGalleryTemp],
+          gallery: [...gallery],
           event: [...state.clubData.event],
         },
       };
-    case DELETE_GALLERY:
-      let deleteGalleryTemp = [...state.clubData.gallery];
-      let findDeleteGalleryIndex = deleteGalleryTemp.findIndex(
+    }
+    case DELETE_GALLERY: {
+      const gallery = [...state.clubData.gallery];
+      const index = gallery.findIndex(
         (gallery) => gallery.galleryID === action.payload
       );
-      deleteGalleryTemp.splice(findDeleteGalleryIndex, 1);
+      gallery.splice(index, 1);
       return {
         ...state,
         clubData: {
           club: { ...state.clubData.club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
-          gallery: [...deleteGalleryTemp],
+          gallery: [...gallery],
           event: [...state.clubData.event],
         },
       };
-    case SET_CLUB_EVENT_TO_TRUE:
-      let clubEventTrue = { ...state.clubData.club };
-      clubEventTrue.event = true;
+    }
+    case SET_CLUB_EVENT_TO_TRUE: {
+      const club = { ...state.clubData.club };
+      club.event = true;
       return {
         ...state,
         clubData: {
-          club: { ...clubEventTrue },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
-    case SET_CLUB_EVENT_TO_FALSE:
-      let clubEventFalse = { ...state.clubData.club };
-      clubEventFalse.event = false;
-      clubEventFalse.status = "inactive";
+    }
+    case SET_CLUB_EVENT_TO_FALSE: {
+      const club = { ...state.clubData.club };
+      club.event = false;
+      club.status = "inactive";
       return {
         ...state,
         clubData: {
-          club: { ...clubEventFalse },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
-    case SET_CLUB_EVENT:
+    }
+    case SET_CLUB_EVENT: {
       return {
         ...state,
         clubData: {
@@ -267,9 +275,10 @@ export default function (state = initialState, action) {
           event: [...action.payload.event],
         },
       };
-    case ADD_CLUB_EVENT:
-      let addClubEventTemp = [...state.clubData.event];
-      addClubEventTemp.unshift(action.payload.event);
+    }
+    case ADD_CLUB_EVENT: {
+      const event = [...state.clubData.event];
+      event.unshift(action.payload.event);
       return {
         ...state,
         clubData: {
@@ -277,15 +286,16 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
-          event: [...addClubEventTemp],
+          event: [...event],
         },
       };
-    case DELETE_EVENT:
-      let deleteEventTemp = [...state.clubData.event];
-      let findDeleteEventIndex = deleteEventTemp.findIndex(
+    }
+    case DELETE_EVENT: {
+      const event = [...state.clubData.event];
+      const index = event.findIndex(
         (event) => event.eventID === action.payload
       );
-      deleteEventTemp.splice(findDeleteEventIndex, 1);
+      event.splice(index, 1);
       return {
         ...state,
         clubData: {
@@ -293,12 +303,13 @@ export default function (state = initialState, action) {
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
-          event: [...deleteEventTemp],
+          event: [...event],
         },
       };
-    case UPDATE_CLUB_DETAILS:
-      let tempClubDetails = { ...state.clubData.club };
-      tempClubDetails.details = action.payload;
+    }
+    case UPDATE_CLUB_DETAILS: {
+      const club = { ...state.clubData.club };
+      club.details = action.payload;
       return {
         ...state,
         clubData: {
@@ -306,96 +317,99 @@ export default function (state = initialState, action) {
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
-          club: { ...tempClubDetails },
+          club: { ...club },
         },
       };
-    case ACTIVATE_CLUB:
-      let activateClub = { ...state.clubData.club };
-      activateClub.status = "active";
+    }
+    case ACTIVATE_CLUB: {
+      const club = { ...state.clubData.club };
+      club.status = "active";
       return {
         ...state,
         clubData: {
-          club: { ...activateClub },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
-    case DEACTIVATE_CLUB:
-      let deactivateClub = { ...state.clubData.club };
-      deactivateClub.status = "inactive";
+    }
+    case DEACTIVATE_CLUB: {
+      const club = { ...state.clubData.club };
+      club.status = "inactive";
       return {
         ...state,
         clubData: {
-          club: { ...deactivateClub },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
-    case ACCEPT_NEW_CLUB_MEMBER:
-      let acceptNewClubMemberList = [...state.clubData.members];
+    }
+    case ACCEPT_NEW_CLUB_MEMBER: {
+      const acceptNewClubMemberList = [...state.clubData.members];
       acceptNewClubMemberList.push(action.payload);
       //also remove from membersrequests
-      let removeMemberRequestAccept = { ...state.clubData.club };
-      let removeMemberRequestAcceptIndex =
-        removeMemberRequestAccept.membersRequests.findIndex(
+      const removeMemberRequest = { ...state.clubData.club };
+      const removeMemberRequestIndex =
+        removeMemberRequest.membersRequests.findIndex(
           (member) => member.userID === action.payload.userID
         );
-      removeMemberRequestAccept.membersRequests.splice(
-        removeMemberRequestAcceptIndex,
-        1
-      );
+      removeMemberRequest.membersRequests.splice(removeMemberRequestIndex, 1);
       return {
         ...state,
         clubData: {
-          club: { ...removeMemberRequestAccept },
+          club: { ...removeMemberRequest },
           currentMember: { ...state.clubData.currentMember },
           members: [...acceptNewClubMemberList],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
-    case JOIN_CLUB:
+    }
+    case JOIN_CLUB: {
       //push to membersRequests
-      let tempMembersRequestsClub = { ...state.clubData.club };
-      tempMembersRequestsClub.membersRequests.push(action.payload);
+      const club = { ...state.clubData.club };
+      club.membersRequests.push(action.payload);
 
       return {
         ...state,
         clubData: {
-          club: { ...tempMembersRequestsClub },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
-    case REJECT_NEW_CLUB_MEMBER:
-      let rejectClubMember = { ...state.clubData.club };
-      let rejectClubMemberIndex = rejectClubMember.membersRequests.findIndex(
+    }
+    case REJECT_NEW_CLUB_MEMBER: {
+      const club = { ...state.clubData.club };
+      const index = club.membersRequests.findIndex(
         (member) => member.userID === action.payload
       );
-      rejectClubMember.membersRequests.splice(rejectClubMemberIndex, 1);
+      club.membersRequests.splice(index, 1);
 
       return {
         ...state,
         clubData: {
-          club: { ...rejectClubMember },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
-    case ASSIGN_NEW_CLUB_ROLE:
+    }
+    case ASSIGN_NEW_CLUB_ROLE: {
       //update in clubs, clubMembers and currentMember if currentMember userID === previousMember.userID
-      let newRoleClub = { ...state.clubData.club };
-      let newRoleMembers = [...state.clubData.members];
+      const newRoleClub = { ...state.clubData.club };
+      const newRoleMembers = [...state.clubData.members];
       let newRoleMembersIndex;
-      let newRoleCurrentMember = { ...state.clubData.currentMember };
+      const newRoleCurrentMember = { ...state.clubData.currentMember };
 
       //if previous member exists, set the previous member's role to "member" in clubData.members
       if (action.payload.previousMember) {
@@ -440,9 +454,10 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
-    case ADD_NEW_CLUB_ROLE:
-      let addNewRoleClub = { ...state.clubData.club };
-      addNewRoleClub.roles[action.payload.roleID] = {
+    }
+    case ADD_NEW_CLUB_ROLE: {
+      const club = { ...state.clubData.club };
+      club.roles[action.payload.roleID] = {
         memberID: "",
         userID: "",
         alternateName: "",
@@ -452,30 +467,32 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...addNewRoleClub },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
-    case DELETE_CLUB_ROLE:
-      let deleteRoleClub = { ...state.clubData.club };
-      delete deleteRoleClub.roles[action.payload];
+    }
+    case DELETE_CLUB_ROLE: {
+      const club = { ...state.clubData.club };
+      delete club.roles[action.payload];
 
       return {
         ...state,
         clubData: {
-          club: { ...deleteRoleClub },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
-    case DEACTIVATE_CLUB_MEMBER:
-      let deactivateMembers = [...state.clubData.members];
-      let deactivateMembersIndex = deactivateMembers.findIndex(
+    }
+    case DEACTIVATE_CLUB_MEMBER: {
+      const deactivateMembers = [...state.clubData.members];
+      const deactivateMembersIndex = deactivateMembers.findIndex(
         (member) => member.userID === action.payload
       );
       deactivateMembers.splice(deactivateMembersIndex, 1);
@@ -490,20 +507,22 @@ export default function (state = initialState, action) {
           event: [...state.clubData.event],
         },
       };
-    case UPDATE_CLUB_IMAGE:
-      let updateImageClub = { ...state.clubData.club };
-      updateImageClub.image = action.payload;
+    }
+    case UPDATE_CLUB_IMAGE: {
+      const club = { ...state.clubData.club };
+      club.image = action.payload;
 
       return {
         ...state,
         clubData: {
-          club: { ...updateImageClub },
+          club: { ...club },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
           event: [...state.clubData.event],
         },
       };
+    }
     case LOGOUT:
       return initialState;
     case SET_LOADING_DATA:

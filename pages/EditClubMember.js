@@ -1,45 +1,37 @@
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
   Pressable,
-  TextInput,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import SelectDropdown from "react-native-select-dropdown";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useDispatch, useSelector } from "react-redux";
 
-import SelectDropdown from "react-native-select-dropdown";
-
+import hamburgerIcon from "../assets/hamburger_icon.png";
 import Header from "../components/Header";
-
-const { width } = Dimensions.get("window");
-
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   assignNewClubRole,
   deactivateClubMember,
 } from "../src/redux/actions/dataActions";
+import {
+  fontPixel,
+  heightPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
+
+const { width } = Dimensions.get("window");
 
 export default function EditClubMember({ navigation, route }) {
   const { member } = route.params;
@@ -49,13 +41,12 @@ export default function EditClubMember({ navigation, route }) {
   );
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
-  const campusID = useSelector((state) => state.data.campus.campusID);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState("");
-  const [errors, setErrors] = useState({ role: undefined });
+  const [errors] = useState({ role: undefined });
 
   const [headerHeight, setHeaderHeight] = useState(300);
   const [scrollHeight, setScrollHeight] = useState(0);
@@ -68,8 +59,8 @@ export default function EditClubMember({ navigation, route }) {
     useState(false);
 
   useEffect(() => {
-    let temp = [...Object.values(club.roles)];
-    let arr = [];
+    const temp = [...Object.values(club.roles)];
+    const arr = [];
     temp.forEach((role) => {
       arr.push(role.name);
     });
@@ -77,7 +68,7 @@ export default function EditClubMember({ navigation, route }) {
   }, [club.roles]);
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -105,11 +96,11 @@ export default function EditClubMember({ navigation, route }) {
 
   const handleAssignRole = () => {
     //if role being assigned belongs to another member, show warning message
-    let role = selectedRole.split(" ").join("");
+    const role = selectedRole.split(" ").join("");
     if (selectedRole !== "member" && club.roles[role].userID !== "")
       handleShowRoleWarningPopUp();
     else {
-      let newMember = {
+      const newMember = {
         userID: member.userID,
         memberID: member.memberID,
       };
@@ -146,12 +137,12 @@ export default function EditClubMember({ navigation, route }) {
   };
 
   const handleAssignCommitteeRole = () => {
-    let newMember = {
+    const newMember = {
       userID: member.userID,
       memberID: member.memberID,
     };
-    let role = selectedRole.split(" ").join("");
-    let prevMember = {
+    const role = selectedRole.split(" ").join("");
+    const prevMember = {
       userID: club.roles[role].userID,
       memberID: club.roles[role].memberID,
     };
@@ -179,7 +170,7 @@ export default function EditClubMember({ navigation, route }) {
   const handleDeactivateMember = () => {
     //if the member's role is not member, set the role to member
     if (member.role !== "member") {
-      let newMember = {
+      const newMember = {
         userID: member.userID,
         memberID: member.memberID,
       };
@@ -311,7 +302,7 @@ export default function EditClubMember({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>
@@ -339,7 +330,7 @@ export default function EditClubMember({ navigation, route }) {
             {`Assign new role for ${member.name}`}
           </Text>
           <SelectDropdown
-            search={true}
+            search
             searchInputStyle={{
               backgroundColor: "#232D4A",
             }}
@@ -347,7 +338,7 @@ export default function EditClubMember({ navigation, route }) {
             searchPlaceHolder="select new role"
             searchInputTxtColor="#DFE5F8"
             defaultButtonText={`current role: ${member.role}`}
-            showsVerticalScrollIndicator={true}
+            showsVerticalScrollIndicator
             buttonStyle={{
               backgroundColor: "#1A2238",
               marginTop: pixelSizeVertical(10),
@@ -540,23 +531,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#DFE5F8",
   },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(30),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
   emptyView: {
     flex: 1,
     height: pixelSizeVertical(32),
@@ -648,17 +622,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
   tertiaryButton: {
     color: "#A7AFC7",
     fontSize: fontPixel(22),
@@ -690,23 +653,6 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(24),
     width: "100%",
     borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
   },
   loginButtonLoadingText: {
     fontSize: fontPixel(22),

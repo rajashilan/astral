@@ -1,3 +1,6 @@
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,32 +10,22 @@ import {
   Dimensions,
   TextInput,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import { Bounce } from "react-native-animated-spinkit";
+import { ScrollView } from "react-native-gesture-handler";
+import Modal from "react-native-modal";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { useDispatch, useSelector } from "react-redux";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
+import { getOrientation } from "../src/redux/actions/dataActions";
 import {
   fontPixel,
-  widthPixel,
-  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { StatusBar } from "expo-status-bar";
-import { ResizeMode } from "expo-av";
-import VideoPlayer from "expo-video-player";
-
-import { Bounce } from "react-native-animated-spinkit";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-import { Image } from "expo-image";
-
-import Header from "../components/Header";
-import IosHeight from "../components/IosHeight";
-import { ScrollView } from "react-native-gesture-handler";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-
-import { useDispatch, useSelector } from "react-redux";
-import { getOrientation } from "../src/redux/actions/dataActions";
 
 const { width } = Dimensions.get("window");
 
@@ -77,7 +70,7 @@ export default function Orientation({ navigation }) {
   };
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -88,7 +81,7 @@ export default function Orientation({ navigation }) {
       setShowMiniHeader(false);
   }, [scrollHeight, showMiniHeader]);
 
-  let UI = loading ? (
+  const UI = loading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
       <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
     </View>
@@ -100,7 +93,7 @@ export default function Orientation({ navigation }) {
       showsVerticalScrollIndicator={false}
     >
       <View onLayout={onLayout}>
-        <Header header={"orientation"} />
+        <Header header="orientation" />
       </View>
       {/* {overview.video && (
         <VideoPlayer
@@ -208,7 +201,7 @@ export default function Orientation({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"orientation"}
+          currentPage="orientation"
           navigation={navigation}
         />
       </Modal>

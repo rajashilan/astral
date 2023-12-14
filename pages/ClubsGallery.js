@@ -1,35 +1,27 @@
-import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
-import Carousel, { Pagination } from "react-native-snap-carousel";
-
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-
-import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
 import Modal from "react-native-modal";
-
-const { width } = Dimensions.get("window");
-
+import Carousel, { Pagination } from "react-native-snap-carousel";
+import Toast from "react-native-toast-message";
 import { useSelector, useDispatch } from "react-redux";
 
-import firestore from "@react-native-firebase/firestore";
 import {
   createNotification,
   getClubGallery,
   handleDeleteClubGallery,
   setClubGalleryToFalse,
 } from "../src/redux/actions/dataActions";
-const db = firestore();
+import {
+  fontPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
 
-export default ClubsGallery = React.memo(({ navigation }) => {
+const { width } = Dimensions.get("window");
+
+const ClubsGallery = React.memo(({ navigation }) => {
   const dispatch = useDispatch();
   const club = useSelector((state) => state.data.clubData.club);
   const campusID = useSelector((state) => state.data.campus.campusID);
@@ -51,7 +43,7 @@ export default ClubsGallery = React.memo(({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    let temp = [];
+    const temp = [];
     gallery.map((g) => {
       if (g.approval === "approved") temp.push(g);
       else if (
@@ -88,7 +80,7 @@ export default ClubsGallery = React.memo(({ navigation }) => {
     if (data.length === 1) {
       if (club.status === "active") {
         dispatch(setClubGalleryToFalse(club.clubID, campusID));
-        let notification = {
+        const notification = {
           preText: "",
           postText: "has been deactivated due to insufficient details.",
           sourceID: club.clubID,
@@ -101,8 +93,8 @@ export default ClubsGallery = React.memo(({ navigation }) => {
           createdAt: new Date().toISOString(),
           notificationID: "",
         };
-        let userIDs = [];
-        let temp = Object.values(club.roles);
+        const userIDs = [];
+        const temp = Object.values(club.roles);
         temp.forEach((role) => {
           if (role.userID && role.userID !== "") userIDs.push(role.userID);
         });
@@ -134,7 +126,7 @@ export default ClubsGallery = React.memo(({ navigation }) => {
         )}
       <Pagination
         inactiveDotColor="#546593"
-        dotColor={"#C4FFF9"}
+        dotColor="#C4FFF9"
         activeDotIndex={indexSelected}
         containerStyle={{
           paddingTop: 0,
@@ -149,8 +141,8 @@ export default ClubsGallery = React.memo(({ navigation }) => {
       <Carousel
         layout="default"
         data={data}
-        disableIntervalMomentum={true}
-        useExperimentalSnap={true}
+        disableIntervalMomentum
+        useExperimentalSnap
         onSnapToItem={(index) => onSelect(index)}
         sliderWidth={width - 32}
         itemWidth={width - 32}
@@ -180,8 +172,8 @@ export default ClubsGallery = React.memo(({ navigation }) => {
                     item.approval === "approved"
                       ? styles.title
                       : item.approval === "rejected"
-                      ? [styles.title, { color: "#A3222D" }]
-                      : [styles.title, { opacity: 0.5 }]
+                        ? [styles.title, { color: "#A3222D" }]
+                        : [styles.title, { opacity: 0.5 }]
                   }
                 >
                   {item.title}
@@ -392,3 +384,5 @@ const styles = StyleSheet.create({
     color: "#C8A427",
   },
 });
+
+export default ClubsGallery;

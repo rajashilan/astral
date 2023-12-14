@@ -1,3 +1,7 @@
+import firestore from "@react-native-firebase/firestore";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,41 +13,27 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-
 import { Bounce } from "react-native-animated-spinkit";
-
-import IosHeight from "../components/IosHeight";
-
-// import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
-
-import Hamburger_Icon from "../assets/Hamburger_Icon";
-
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useDispatch, useSelector } from "react-redux";
 
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-
+import Hamburger_Icon from "../assets/Hamburger_Icon";
+import IosHeight from "../components/IosHeight";
+// import hamburgerIcon from "../assets/hamburger_icon.png";
+import SideMenu from "../components/SideMenu";
 import { getAuthenticatedUser } from "../src/redux/actions/userActions";
-
-const { width } = Dimensions.get("window");
-
-import firestore from "@react-native-firebase/firestore";
-const db = firestore();
-
 import {
   fontPixel,
-  widthPixel,
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
+
+const { width } = Dimensions.get("window");
+const db = firestore();
 
 export default function Clubs({ navigation }) {
   const user = useSelector((state) => state.user.credentials);
@@ -102,10 +92,10 @@ export default function Clubs({ navigation }) {
   }, []);
 
   useEffect(() => {
-    let temp = [];
+    const temp = [];
     if (all && all.length > 0 && user.clubs.length > 0) {
       user.clubs.map((club) => {
-        let index = all.findIndex((all) => all.clubID === club.clubID);
+        const index = all.findIndex((all) => all.clubID === club.clubID);
         if (index !== -1) {
           temp.push({
             ...all[index],
@@ -136,7 +126,7 @@ export default function Clubs({ navigation }) {
   };
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -147,7 +137,7 @@ export default function Clubs({ navigation }) {
       setShowMiniHeader(false);
   }, [scrollHeight, showMiniHeader]);
 
-  let UI = loading ? (
+  const UI = loading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
       <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
     </View>
@@ -333,7 +323,7 @@ export default function Clubs({ navigation }) {
           <Text style={styles.joinClubSmallButton}>Create your own club</Text>
         </Pressable>
       )}
-      <View style={styles.emptyView}></View>
+      <View style={styles.emptyView} />
     </ScrollView>
   );
 
@@ -394,7 +384,7 @@ export default function Clubs({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>

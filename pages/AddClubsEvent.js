@@ -1,3 +1,11 @@
+import DateTimePicker from "@react-native-community/datetimepicker";
+import storage from "@react-native-firebase/storage";
+import dayjs from "dayjs";
+import * as Crypto from "expo-crypto";
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,45 +15,26 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import Modal from "react-native-modal";
+import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
+import {
+  addClubEvent,
+  sendAdminNotification,
+} from "../src/redux/actions/dataActions";
+import { SET_LOADING_DATA } from "../src/redux/type";
 import {
   fontPixel,
-  widthPixel,
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-import * as Crypto from "expo-crypto";
-import dayjs from "dayjs";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import * as ImagePicker from "expo-image-picker";
-
-import Header from "../components/Header";
-
-import firestore from "@react-native-firebase/firestore";
-import storage from "@react-native-firebase/storage";
-import {
-  addClubEvent,
-  sendAdminNotification,
-  setClubEventToTrue,
-} from "../src/redux/actions/dataActions";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { SET_LOADING_DATA } from "../src/redux/type";
-
-const db = firestore();
 
 const { width } = Dimensions.get("window");
 
@@ -114,7 +103,7 @@ export default function AddClubsEvent({ navigation }) {
 
   const handleAddToEvent = () => {
     //verify image and title
-    let errors = [...errors];
+    const errors = [...errors];
 
     if (!title.trim()) errors.title = "Please enter a title for your event.";
     if (!content) errors.content = "Please explain about your event.";
@@ -127,8 +116,8 @@ export default function AddClubsEvent({ navigation }) {
         dispatch({ type: SET_LOADING_DATA });
 
         const name = Crypto.randomUUID();
-        let imageFileName = `${name}.${imageType}`;
-        let firebasePath = `clubs/events/photos/${imageFileName}`;
+        const imageFileName = `${name}.${imageType}`;
+        const firebasePath = `clubs/events/photos/${imageFileName}`;
         //first upload image and get url
         uriToBlob(image)
           .then((blob) => {
@@ -171,7 +160,7 @@ export default function AddClubsEvent({ navigation }) {
             throw error;
           });
       } else {
-        let url = "";
+        const url = "";
 
         let hasEvents = true;
         if (!club.events) hasEvents = false;
@@ -229,9 +218,9 @@ export default function AddClubsEvent({ navigation }) {
     });
   };
 
-  uploadToFirebase = (blob, imageFileName) => {
+  const uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = storage().ref();
+      const storageRef = storage().ref();
 
       storageRef
         .child(`clubs/events/photos/${imageFileName}`)
@@ -271,7 +260,7 @@ export default function AddClubsEvent({ navigation }) {
       <ScrollView>
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
-            <Header header={"add an event"} />
+            <Header header="add an event" />
             <Text style={styles.disclaimer}>{club.name}</Text>
 
             <View
@@ -383,7 +372,7 @@ export default function AddClubsEvent({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>

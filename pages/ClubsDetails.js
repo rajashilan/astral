@@ -1,25 +1,21 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
-
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-
+import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useSelector, useDispatch } from "react-redux";
+
 import {
   createNotification,
   handleDeactivateClub,
   handleUpdateClubDetails,
 } from "../src/redux/actions/dataActions";
+import {
+  fontPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
 
-export default ClubsDetails = React.memo(({ navigation }) => {
+const ClubsDetails = React.memo(({ navigation }) => {
   const dispatch = useDispatch();
 
   const club = useSelector((state) => state.data.clubData.club);
@@ -51,7 +47,7 @@ export default ClubsDetails = React.memo(({ navigation }) => {
   };
 
   const handleUpdateDetails = () => {
-    let data = {
+    const data = {
       schedule: meetings,
       fees,
       misc: more,
@@ -59,7 +55,7 @@ export default ClubsDetails = React.memo(({ navigation }) => {
     dispatch(handleUpdateClubDetails(club.clubID, data));
     if (club.status === "active") {
       dispatch(handleDeactivateClub(club.clubID, campusID, false));
-      let notification = {
+      const notification = {
         preText: "",
         postText: "has been deactivated due to insufficient details.",
         sourceID: club.clubID,
@@ -72,8 +68,8 @@ export default ClubsDetails = React.memo(({ navigation }) => {
         createdAt: new Date().toISOString(),
         notificationID: "",
       };
-      let userIDs = [];
-      let temp = Object.values(club.roles);
+      const userIDs = [];
+      const temp = Object.values(club.roles);
       temp.forEach((role) => {
         if (role.userID && role.userID !== "") userIDs.push(role.userID);
       });
@@ -85,7 +81,7 @@ export default ClubsDetails = React.memo(({ navigation }) => {
   //show normal view if user is other than president
   //show edit view if user is presient
 
-  let normalView = (
+  const normalView = (
     <>
       {meetings && <Text style={styles.title}>Meetings</Text>}
       {meetings && <Text style={styles.content}>{meetings}</Text>}
@@ -96,7 +92,7 @@ export default ClubsDetails = React.memo(({ navigation }) => {
     </>
   );
 
-  let editView = (
+  const editView = (
     <>
       {(!loading && meetings === "") || (!loading && fees === "") ? (
         <Text style={styles.warningText}>
@@ -277,3 +273,5 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(32),
   },
 });
+
+export default ClubsDetails;

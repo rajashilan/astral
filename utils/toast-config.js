@@ -1,10 +1,11 @@
-import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import { Platform } from "react-native";
+import { BaseToast } from "react-native-toast-message";
+
 import {
   fontPixel,
   pixelSizeHorizontal,
   pixelSizeVertical,
 } from "./responsive-font";
-import { Platform } from "react-native";
 
 const toastConfig = {
   success: (props) => (

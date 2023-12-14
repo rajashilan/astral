@@ -1,3 +1,8 @@
+import firestore from "@react-native-firebase/firestore";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import * as WebBrowser from "expo-web-browser";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,35 +12,23 @@ import {
   Dimensions,
   TextInput,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import { Bounce } from "react-native-animated-spinkit";
+import { ScrollView } from "react-native-gesture-handler";
+import Modal from "react-native-modal";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import { useSelector } from "react-redux";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   fontPixel,
-  widthPixel,
-  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { StatusBar } from "expo-status-bar";
-
-import { Bounce } from "react-native-animated-spinkit";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-import { Image } from "expo-image";
-
-import Header from "../components/Header";
-import IosHeight from "../components/IosHeight";
-import { ScrollView } from "react-native-gesture-handler";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import * as WebBrowser from "expo-web-browser";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import firestore from "@react-native-firebase/firestore";
 const db = firestore();
 
 const { width } = Dimensions.get("window");
@@ -43,7 +36,6 @@ const { width } = Dimensions.get("window");
 export default function GeneralForms({ navigation }) {
   const campus = useSelector((state) => state.data.campus);
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
@@ -62,7 +54,7 @@ export default function GeneralForms({ navigation }) {
         .doc(campus.campusID)
         .get()
         .then((doc) => {
-          let temp = doc.data().forms;
+          const temp = doc.data().forms;
           setData([...temp]);
           setLoading(false);
         })
@@ -82,7 +74,7 @@ export default function GeneralForms({ navigation }) {
   };
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -106,7 +98,7 @@ export default function GeneralForms({ navigation }) {
     setSearch("");
   };
 
-  let clearButton =
+  const clearButton =
     search === "" ? null : (
       <Animated.View
         entering={FadeIn.duration(200)}
@@ -126,7 +118,7 @@ export default function GeneralForms({ navigation }) {
       </Animated.View>
     );
 
-  let UI = loading ? (
+  const UI = loading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
       <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
     </View>
@@ -137,7 +129,7 @@ export default function GeneralForms({ navigation }) {
       showsVerticalScrollIndicator={false}
     >
       <View onLayout={onLayout}>
-        <Header header={"general forms"} />
+        <Header header="general forms" />
       </View>
       {clearButton}
       <TextInput
@@ -185,7 +177,7 @@ export default function GeneralForms({ navigation }) {
           </>
         )}
       />
-      <View style={styles.emptyView}></View>
+      <View style={styles.emptyView} />
     </ScrollView>
   );
 
@@ -237,7 +229,7 @@ export default function GeneralForms({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"general forms"}
+          currentPage="general forms"
           navigation={navigation}
         />
       </Modal>

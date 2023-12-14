@@ -1,17 +1,21 @@
+import auth from "@react-native-firebase/auth";
+import { CommonActions } from "@react-navigation/native";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
-  SafeAreaView,
   ImageBackground,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
+import Toast from "react-native-toast-message";
+
 import logo from "../assets/logo.png";
 import rocketBg from "../assets/rocket_background.png";
-import { Image } from "expo-image";
+import IosHeight from "../components/IosHeight";
 import {
   fontPixel,
   widthPixel,
@@ -19,20 +23,9 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { CommonActions } from "@react-navigation/native";
-
-import IosHeight from "../components/IosHeight";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
-import auth from "@react-native-firebase/auth";
-import { useDispatch, useSelector } from "react-redux";
-import { LOGOUT } from "../src/redux/type";
-import { getAuthenticatedUser } from "../src/redux/actions/userActions";
-
 export default function Login({ navigation, route }) {
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +39,7 @@ export default function Login({ navigation, route }) {
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;
 
   const handleLogin = () => {
-    let errors = [...errors];
+    const errors = [...errors];
 
     if (!email.trim()) errors.email = "Please enter your email address";
     else if (email.trim() && !email.trim().match(emailRegex))
@@ -108,7 +101,7 @@ export default function Login({ navigation, route }) {
   //   });
   // }, []);
 
-  let loginInputs = (
+  const loginInputs = (
     <>
       <TextInput
         style={styles.textInput}
@@ -123,7 +116,7 @@ export default function Login({ navigation, route }) {
       <TextInput
         style={styles.textInput}
         placeholder="Password"
-        secureTextEntry={true}
+        secureTextEntry
         placeholderTextColor="#DBDBDB"
         value={password}
         editable={!loading}
@@ -158,7 +151,7 @@ export default function Login({ navigation, route }) {
     </>
   );
 
-  let loginDisplay = route.params?.signedUp ? (
+  const loginDisplay = route.params?.signedUp ? (
     <ImageBackground
       source={rocketBg}
       style={styles.imageBackground}
@@ -217,7 +210,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
-    backgroundColor: "#0C111F",
   },
   image: {
     width: widthPixel(177),

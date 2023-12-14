@@ -1,16 +1,32 @@
+import firestore from "@react-native-firebase/firestore";
+import storage from "@react-native-firebase/storage";
+import Checkbox from "expo-checkbox";
+import * as Crypto from "expo-crypto";
+import * as DocumentPicker from "expo-document-picker";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import * as WebBrowser from "expo-web-browser";
+import React, { useState, useEffect } from "react";
 import {
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
-  SafeAreaView,
-  ImageBackground,
   Dimensions,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
-import { Image } from "expo-image";
+import Modal from "react-native-modal";
+import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
+import {
+  getAClub,
+  sendAdminNotification,
+} from "../src/redux/actions/dataActions";
 import {
   fontPixel,
   widthPixel,
@@ -18,28 +34,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-
-import * as Crypto from "expo-crypto";
-import * as WebBrowser from "expo-web-browser";
-import Checkbox from "expo-checkbox";
-
-import IosHeight from "../components/IosHeight";
-import Header from "../components/Header";
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
-
-import firestore from "@react-native-firebase/firestore";
-import storage from "@react-native-firebase/storage";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getAClub,
-  sendAdminNotification,
-} from "../src/redux/actions/dataActions";
-import * as DocumentPicker from "expo-document-picker";
 
 const { width } = Dimensions.get("window");
 
@@ -54,7 +49,7 @@ export default function ClubResubmission({ navigation, route }) {
 
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage] = useState("");
   const [errors, setErrors] = useState({
     name: undefined,
     document: undefined,
@@ -63,7 +58,6 @@ export default function ClubResubmission({ navigation, route }) {
   const [document, setDocument] = useState(null);
   const [documentType, setDocumentType] = useState(null);
   const [submittedDocument, setSubmittedDocument] = useState(null);
-  const [mimeType, setMimeType] = useState(null);
   const [isChecked, setChecked] = useState(false);
 
   const [step, setStep] = useState("step1");
@@ -71,9 +65,6 @@ export default function ClubResubmission({ navigation, route }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
-
-  const FPFUrl =
-    "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fforms%2FFPF.docx?alt=media&token=57914608-4192-47cf-ad75-fdcfb8b3ac9c&_gl=1*534clm*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMTQxLjU5LjAuMA..";
 
   useEffect(() => {
     dispatch(getAClub(clubID, user.userId));
@@ -102,7 +93,6 @@ export default function ClubResubmission({ navigation, route }) {
         const uri = result.uri;
         setDocumentType(uri.split(".")[uri.split(".").length - 1]);
         setDocument(uri);
-        setMimeType(result.mimeType);
         Toast.show({
           type: "success",
           text1: "file added successfully",
@@ -142,9 +132,9 @@ export default function ClubResubmission({ navigation, route }) {
     });
   };
 
-  uploadToFirebase = (blob, imageFileName) => {
+  const uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = storage().ref();
+      const storageRef = storage().ref();
 
       storageRef
         .child(`clubs/forms/uploaded/${imageFileName}`)
@@ -160,7 +150,7 @@ export default function ClubResubmission({ navigation, route }) {
   };
 
   const handleSubmit = () => {
-    let errors = [...errors];
+    const errors = [...errors];
 
     if (!name.trim()) errors.name = "Please enter your club's name";
     if (!document && step === "step2")
@@ -191,8 +181,8 @@ export default function ClubResubmission({ navigation, route }) {
           .doc(user.userId)
           .get()
           .then((doc) => {
-            let temp = [...doc.data().clubs];
-            let index = temp.findIndex(
+            const temp = [...doc.data().clubs];
+            const index = temp.findIndex(
               (tempClub) => tempClub.clubID === club.clubID
             );
             temp[index].name = name;
@@ -208,8 +198,8 @@ export default function ClubResubmission({ navigation, route }) {
             return db.collection("clubsOverview").doc(club.campusID).get();
           })
           .then((doc) => {
-            let temp = [...doc.data().clubs];
-            let index = temp.findIndex(
+            const temp = [...doc.data().clubs];
+            const index = temp.findIndex(
               (tempClub) => tempClub.clubID === club.clubID
             );
             temp[index].name = name;
@@ -239,8 +229,8 @@ export default function ClubResubmission({ navigation, route }) {
       } else {
         if (document) {
           const nameForDoc = Crypto.randomUUID();
-          let documentName = `${nameForDoc}.${documentType}`;
-          let firebasePath = `clubs/forms/uploaded/${documentName}`;
+          const documentName = `${nameForDoc}.${documentType}`;
+          const firebasePath = `clubs/forms/uploaded/${documentName}`;
           console.log(documentName);
 
           uriToBlob(document)
@@ -255,8 +245,8 @@ export default function ClubResubmission({ navigation, route }) {
                 .doc(user.userId)
                 .get()
                 .then((doc) => {
-                  let temp = [...doc.data().clubs];
-                  let index = temp.findIndex(
+                  const temp = [...doc.data().clubs];
+                  const index = temp.findIndex(
                     (tempClub) => tempClub.clubID === club.clubID
                   );
                   temp[index].name = name;
@@ -274,8 +264,8 @@ export default function ClubResubmission({ navigation, route }) {
                     .get();
                 })
                 .then((doc) => {
-                  let temp = [...doc.data().clubs];
-                  let index = temp.findIndex(
+                  const temp = [...doc.data().clubs];
+                  const index = temp.findIndex(
                     (tempClub) => tempClub.clubID === club.clubID
                   );
                   temp[index].name = name;
@@ -327,8 +317,8 @@ export default function ClubResubmission({ navigation, route }) {
       .doc(user.userId)
       .get()
       .then((doc) => {
-        let temp = [...doc.data().clubs];
-        let index = temp.findIndex(
+        const temp = [...doc.data().clubs];
+        const index = temp.findIndex(
           (tempClub) => tempClub.clubID === club.clubID
         );
         temp.splice(index, 1);
@@ -343,8 +333,8 @@ export default function ClubResubmission({ navigation, route }) {
         return db.collection("clubsOverview").doc(club.campusID).get();
       })
       .then((doc) => {
-        let temp = [...doc.data().clubs];
-        let index = temp.findIndex(
+        const temp = [...doc.data().clubs];
+        const index = temp.findIndex(
           (tempClub) => tempClub.clubID === club.clubID
         );
         temp.splice(index, 1);
@@ -391,7 +381,7 @@ export default function ClubResubmission({ navigation, route }) {
     navigation.navigate("Clubs");
   };
 
-  let clubName = (
+  const clubName = (
     <>
       <TextInput
         style={styles.textInput}
@@ -408,7 +398,7 @@ export default function ClubResubmission({ navigation, route }) {
     </>
   );
 
-  let fpf = (
+  const fpf = (
     <>
       <View
         style={{
@@ -611,7 +601,7 @@ export default function ClubResubmission({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>
@@ -671,7 +661,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
-    backgroundColor: "#0C111F",
   },
   image: {
     width: widthPixel(177),

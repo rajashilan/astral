@@ -1,17 +1,10 @@
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  SafeAreaView,
-  ImageBackground,
-} from "react-native";
+import auth from "@react-native-firebase/auth";
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
-import logo from "../assets/logo.png";
-import rocketBg from "../assets/rocket_background.png";
-import { Image } from "expo-image";
+import React, { useState } from "react";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import Toast from "react-native-toast-message";
+
+import IosHeight from "../components/IosHeight";
 import {
   fontPixel,
   widthPixel,
@@ -19,13 +12,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-
-import IosHeight from "../components/IosHeight";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
-
-import auth from "@react-native-firebase/auth";
 
 export default function ForgotPassword({ navigation, route }) {
   const [loading, setLoading] = useState(false);
@@ -39,7 +26,7 @@ export default function ForgotPassword({ navigation, route }) {
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;
 
   const handleSubmit = () => {
-    let errors = [...errors];
+    const errors = [...errors];
 
     if (!email.trim()) errors.email = "Please enter your email address";
     else if (email && !email.match(emailRegex))
@@ -133,7 +120,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
-    backgroundColor: "#0C111F",
   },
   image: {
     width: widthPixel(177),

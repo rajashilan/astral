@@ -1,3 +1,9 @@
+import storage from "@react-native-firebase/storage";
+import * as Crypto from "expo-crypto";
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,42 +13,26 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import Modal from "react-native-modal";
+import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
+import {
+  addClubsGallery,
+  sendAdminNotification,
+} from "../src/redux/actions/dataActions";
+import { SET_LOADING_DATA } from "../src/redux/type";
 import {
   fontPixel,
-  widthPixel,
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-import * as Crypto from "expo-crypto";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import * as ImagePicker from "expo-image-picker";
-
-import Header from "../components/Header";
-
-import firestore from "@react-native-firebase/firestore";
-import storage from "@react-native-firebase/storage";
-import {
-  addClubsGallery,
-  sendAdminNotification,
-  setClubGalleryToTrue,
-} from "../src/redux/actions/dataActions";
-import { SET_LOADING_DATA } from "../src/redux/type";
-const db = firestore();
 
 const { width } = Dimensions.get("window");
 
@@ -102,7 +92,7 @@ export default function AddClubsGallery({ navigation }) {
 
   const handleAddToGallery = () => {
     //verify image and title
-    let errors = [...errors];
+    const errors = [...errors];
 
     if (!title.trim()) errors.title = "Please enter a title for your photo.";
     if (!image) errors.image = "Please choose a photo to add.";
@@ -111,8 +101,8 @@ export default function AddClubsGallery({ navigation }) {
       dispatch({ type: SET_LOADING_DATA });
 
       const name = Crypto.randomUUID();
-      let imageFileName = `${name}.${imageType}`;
-      let firebasePath = `clubs/gallery/photos/${imageFileName}`;
+      const imageFileName = `${name}.${imageType}`;
+      const firebasePath = `clubs/gallery/photos/${imageFileName}`;
 
       //first upload image and get url
       uriToBlob(image)
@@ -183,9 +173,9 @@ export default function AddClubsGallery({ navigation }) {
     });
   };
 
-  uploadToFirebase = (blob, imageFileName) => {
+  const uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = storage().ref();
+      const storageRef = storage().ref();
 
       storageRef
         .child(`clubs/gallery/photos/${imageFileName}`)
@@ -225,7 +215,7 @@ export default function AddClubsGallery({ navigation }) {
       <ScrollView>
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
-            <Header header={"add a photo"} />
+            <Header header="add a photo" />
             <Text style={styles.disclaimer}>{club.name}</Text>
 
             <View
@@ -314,7 +304,7 @@ export default function AddClubsGallery({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>
@@ -352,23 +342,6 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(34),
     fontWeight: "500",
     color: "#DFE5F8",
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(30),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
   },
   emptyView: {
     flex: 1,
@@ -460,23 +433,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
   tertiaryButton: {
     color: "#A7AFC7",
     fontSize: fontPixel(22),
@@ -508,29 +464,6 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(24),
     width: "100%",
     borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   secondaryButton: {
     fontSize: fontPixel(22),

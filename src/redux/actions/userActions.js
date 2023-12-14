@@ -1,3 +1,8 @@
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
+import Toast from "react-native-toast-message";
+
+import { getUserCampus, getUserCollege } from "./dataActions";
 import {
   GET_AUTHENTICATED_USER,
   SET_LOADING_DATA,
@@ -7,12 +12,6 @@ import {
   UPDATE_USER_BIO,
   UPDATE_USER_PHOTO,
 } from "../type";
-
-import Toast from "react-native-toast-message";
-
-import firestore from "@react-native-firebase/firestore";
-import auth from "@react-native-firebase/auth";
-import { getUserCampus, getUserCollege } from "./dataActions";
 const db = firestore();
 
 export const getAuthenticatedUser = (email) => (dispatch) => {
@@ -23,16 +22,17 @@ export const getAuthenticatedUser = (email) => (dispatch) => {
       .get()
       .then((data) => {
         if (data.length === 0) {
-          signOutUser = async () => {
+          const signOutUser = async () => {
             try {
               auth().signOut();
             } catch (e) {
               console.error(e);
             }
           };
+          signOutUser();
         } else {
           data.forEach((doc) => {
-            let data = { ...doc.data() };
+            const data = { ...doc.data() };
             dispatch({
               type: GET_AUTHENTICATED_USER,
               payload: data,

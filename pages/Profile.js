@@ -1,3 +1,9 @@
+import storage from "@react-native-firebase/storage";
+import * as Crypto from "expo-crypto";
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,54 +13,35 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-
-import * as Crypto from "expo-crypto";
-import * as ImagePicker from "expo-image-picker";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useDispatch, useSelector } from "react-redux";
 
+import hamburgerIcon from "../assets/hamburger_icon.png";
 import Header from "../components/Header";
-
-const { width } = Dimensions.get("window");
-
-import storage from "@react-native-firebase/storage";
-
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   updateUserBio,
   updateUserPhoto,
 } from "../src/redux/actions/userActions";
 import { SET_LOADING_USER, STOP_LOADING_USER } from "../src/redux/type";
+import {
+  fontPixel,
+  heightPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
+
+const { width } = Dimensions.get("window");
 
 export default function ClubCurrentMembers({ navigation }) {
   const dispatch = useDispatch();
-  const currentMember = useSelector(
-    (state) => state.data.clubData.currentMember
-  );
   const user = useSelector((state) => state.user.credentials);
-  const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
   const imageLoading = useSelector((state) => state.user.loading);
-  const campusID = useSelector((state) => state.data.campus.campusID);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
@@ -66,7 +53,7 @@ export default function ClubCurrentMembers({ navigation }) {
   const [imageType, setImageType] = useState("");
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -85,18 +72,14 @@ export default function ClubCurrentMembers({ navigation }) {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
-  const handleNavigateBack = () => {
-    navigation.goBack();
-  };
-
   const handleUpdateBio = () => {
     dispatch(updateUserBio(user.userId, bio));
   };
 
   const handleUpdatePhoto = () => {
     const name = Crypto.randomUUID();
-    let imageFileName = `${name}.${imageType}`;
-    let firebasePath = `users/profileImage/${imageFileName}`;
+    const imageFileName = `${name}.${imageType}`;
+    const firebasePath = `users/profileImage/${imageFileName}`;
 
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: "Images",
@@ -109,8 +92,6 @@ export default function ClubCurrentMembers({ navigation }) {
           const uri = result.assets[0].uri;
           setImageType(uri.split(".")[uri.split(".").length - 1]);
           return uriToBlob(uri);
-        } else {
-          return Promise.reject("cancelled");
         }
       })
       .then((blob) => {
@@ -154,9 +135,9 @@ export default function ClubCurrentMembers({ navigation }) {
     });
   };
 
-  uploadToFirebase = (blob, imageFileName) => {
+  const uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = storage().ref();
+      const storageRef = storage().ref();
 
       storageRef
         .child(`users/profileImage/${imageFileName}`)
@@ -207,7 +188,7 @@ export default function ClubCurrentMembers({ navigation }) {
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
             <View onLayout={onLayout}>
-              <Header header={"profile"} />
+              <Header header="profile" />
             </View>
 
             {!imageLoading ? (
@@ -276,6 +257,7 @@ export default function ClubCurrentMembers({ navigation }) {
               user.clubs.map((club) => {
                 return (
                   <View
+                    key={club.clubID}
                     style={{
                       flexDirection: "row",
                       marginTop: pixelSizeVertical(16),
@@ -316,7 +298,7 @@ export default function ClubCurrentMembers({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"profile"}
+          currentPage="profile"
           navigation={navigation}
         />
       </Modal>
@@ -353,23 +335,6 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(34),
     fontWeight: "500",
     color: "#DFE5F8",
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(30),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
   },
   emptyView: {
     flex: 1,
@@ -461,23 +426,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
   tertiaryButton: {
     color: "#A7AFC7",
     fontSize: fontPixel(22),
@@ -510,29 +458,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 5,
   },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
   secondaryButton: {
     fontSize: fontPixel(22),
     fontWeight: "500",
@@ -549,24 +474,12 @@ const styles = StyleSheet.create({
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
   },
-  altButton: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#07BEB8",
-    marginTop: pixelSizeVertical(8),
-  },
   altButtonInactive: {
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#07BEB8",
     marginTop: pixelSizeVertical(8),
     opacity: 0.5,
-  },
-  altButton: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#07BEB8",
-    marginTop: pixelSizeVertical(8),
   },
   altText: {
     fontSize: fontPixel(22),

@@ -1,3 +1,8 @@
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
+import axios from "axios";
+import Toast from "react-native-toast-message";
+
 import {
   ACCEPT_NEW_CLUB_MEMBER,
   ACTIVATE_CLUB,
@@ -26,7 +31,6 @@ import {
   SET_CLUB_GALLERY_TO_TRUE,
   SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
-  SET_LOADING_USER,
   SET_UI_LOADING,
   STOP_LOADING_DATA,
   STOP_LOADING_USER,
@@ -36,13 +40,6 @@ import {
   UPDATE_CLUB_MEMBER_BIO,
   UPDATE_CLUB_MEMBER_PHOTO,
 } from "../type";
-
-import Toast from "react-native-toast-message";
-
-import firestore from "@react-native-firebase/firestore";
-import auth from "@react-native-firebase/auth";
-import axios from "axios";
-import { DrawerContentScrollView } from "@react-navigation/drawer";
 const db = firestore();
 
 //get college details
@@ -54,7 +51,7 @@ export const getUserCollege = (college) => (dispatch) => {
     .then((data) => {
       dispatch({ type: STOP_LOADING_DATA });
       data.forEach((doc) => {
-        let payload = { ...doc.data(), collegeID: doc.id };
+        const payload = { ...doc.data(), collegeID: doc.id };
         dispatch({ type: GET_USER_COLLEGE, payload: { ...payload } });
       });
     })
@@ -74,7 +71,7 @@ export const getUserCampus = (campus) => (dispatch) => {
     .then((data) => {
       dispatch({ type: STOP_LOADING_DATA });
       data.forEach((doc) => {
-        let payload = { ...doc.data(), campusID: doc.id };
+        const payload = { ...doc.data(), campusID: doc.id };
         dispatch({ type: GET_USER_CAMPUS, payload: { ...payload } });
       });
     })
@@ -92,7 +89,7 @@ export const getOrientation = (campusID) => (dispatch) => {
     .then((data) => {
       dispatch({ type: STOP_LOADING_DATA });
       data.forEach((doc) => {
-        let payload = { ...doc.data(), orientationID: doc.id };
+        const payload = { ...doc.data(), orientationID: doc.id };
         dispatch({
           type: GET_ORIENTATION_OVERVIEW,
           payload: { ...payload },
@@ -113,7 +110,7 @@ export const getAllOrientationPages = (orientationID) => (dispatch) => {
     .get()
     .then((data) => {
       dispatch({ type: STOP_LOADING_DATA });
-      let pages = [];
+      const pages = [];
       data.forEach((doc) => {
         pages.push({ ...doc.data(), orientationPageID: doc.id });
       });
@@ -158,6 +155,7 @@ export const getAClub = (clubID, userID) => (dispatch) => {
         type: "error",
         text1: "Something went wrong",
       });
+      console.error(error);
     });
 };
 
@@ -192,8 +190,8 @@ export const updateClubMemberBio =
       .doc(clubID)
       .get()
       .then((doc) => {
-        let temp = [...doc.data().members];
-        let index = temp.findIndex((member) => member.userID === userID);
+        const temp = [...doc.data().members];
+        const index = temp.findIndex((member) => member.userID === userID);
         temp[index].bio = bio;
 
         return db
@@ -228,8 +226,8 @@ export const updateClubMemberPhoto =
       .doc(clubID)
       .get()
       .then((doc) => {
-        let temp = [...doc.data().members];
-        let index = temp.findIndex((member) => member.userID === userID);
+        const temp = [...doc.data().members];
+        const index = temp.findIndex((member) => member.userID === userID);
         temp[index].profileImage = photoUrl;
 
         return db
@@ -299,7 +297,7 @@ export const addClubsGallery =
   (dispatch) => {
     dispatch({ type: SET_LOADING_DATA });
 
-    let data = {
+    const data = {
       image,
       title,
       content,
@@ -309,7 +307,7 @@ export const addClubsGallery =
       createdAt: new Date().toISOString(),
     };
 
-    let pendingGalleryData = {
+    const pendingGalleryData = {
       clubName,
       clubID,
       image,
@@ -327,7 +325,7 @@ export const addClubsGallery =
       .doc(clubID)
       .get()
       .then((doc) => {
-        let temp = [...doc.data().gallery];
+        const temp = [...doc.data().gallery];
         temp.unshift(data);
 
         return db
@@ -395,8 +393,8 @@ export const setClubGalleryToFalse = (clubID, campusID) => (dispatch) => {
       return db.collection("clubsOverview").doc(campusID).get();
     })
     .then((doc) => {
-      let temp = [...doc.data().clubs];
-      let index = temp.findIndex((club) => club.clubID === clubID);
+      const temp = [...doc.data().clubs];
+      const index = temp.findIndex((club) => club.clubID === clubID);
       temp[index].status = "inactive";
 
       return db
@@ -425,8 +423,8 @@ export const handleDeleteClubGallery =
       .doc(clubID)
       .get()
       .then((doc) => {
-        let temp = [...doc.data().gallery];
-        let index = temp.findIndex(
+        const temp = [...doc.data().gallery];
+        const index = temp.findIndex(
           (gallery) => gallery.galleryID === galleryID
         );
         temp.splice(index, 1);
@@ -498,7 +496,7 @@ export const addClubEvent =
   (dispatch) => {
     dispatch({ type: SET_LOADING_DATA });
 
-    let data = {
+    const data = {
       image,
       title,
       content,
@@ -509,7 +507,7 @@ export const addClubEvent =
       createdAt: new Date().toISOString(),
     };
 
-    let pendingEventData = {
+    const pendingEventData = {
       clubName,
       clubID,
       image,
@@ -528,7 +526,7 @@ export const addClubEvent =
       .doc(clubID)
       .get()
       .then((doc) => {
-        let temp = [...doc.data().events];
+        const temp = [...doc.data().events];
         temp.unshift(data);
 
         return db
@@ -596,8 +594,8 @@ export const setClubEventToFalse = (clubID, campusID) => (dispatch) => {
       return db.collection("clubsOverview").doc(campusID).get();
     })
     .then((doc) => {
-      let temp = [...doc.data().clubs];
-      let index = temp.findIndex((club) => club.clubID === clubID);
+      const temp = [...doc.data().clubs];
+      const index = temp.findIndex((club) => club.clubID === clubID);
       temp[index].status = "inactive";
 
       return db
@@ -626,8 +624,8 @@ export const handleDeleteClubEvent =
       .doc(clubID)
       .get()
       .then((doc) => {
-        let temp = [...doc.data().events];
-        let index = temp.findIndex((events) => events.eventID === eventID);
+        const temp = [...doc.data().events];
+        const index = temp.findIndex((events) => events.eventID === eventID);
         temp.splice(index, 1);
         return db
           .collection("events")
@@ -687,8 +685,8 @@ export const handleActivateClub = (clubID, campusID) => (dispatch) => {
       return db.collection("clubsOverview").doc(campusID).get();
     })
     .then((doc) => {
-      let temp = [...doc.data().clubs];
-      let index = temp.findIndex((club) => club.clubID === clubID);
+      const temp = [...doc.data().clubs];
+      const index = temp.findIndex((club) => club.clubID === clubID);
       temp[index].status = "active";
 
       return db
@@ -724,8 +722,8 @@ export const handleDeactivateClub =
         return db.collection("clubsOverview").doc(campusID).get();
       })
       .then((doc) => {
-        let temp = [...doc.data().clubs];
-        let index = temp.findIndex((club) => club.clubID === clubID);
+        const temp = [...doc.data().clubs];
+        const index = temp.findIndex((club) => club.clubID === clubID);
         temp[index].status = "inactive";
 
         return db
@@ -763,7 +761,7 @@ export const acceptNewMember = (data, clubID) => (dispatch) => {
     .doc(clubID)
     .get()
     .then((doc) => {
-      let temp = [...doc.data().members];
+      const temp = [...doc.data().members];
       temp.push(data);
       return db
         .collection("clubMembers")
@@ -775,8 +773,8 @@ export const acceptNewMember = (data, clubID) => (dispatch) => {
       return db.collection("users").doc(data.userID).get();
     })
     .then((doc) => {
-      let temp = [...doc.data().clubs];
-      let index = temp.findIndex((club) => club.clubID === clubID);
+      const temp = [...doc.data().clubs];
+      const index = temp.findIndex((club) => club.clubID === clubID);
       temp[index].approval = "approved";
 
       return db
@@ -789,8 +787,8 @@ export const acceptNewMember = (data, clubID) => (dispatch) => {
       return db.collection("clubs").doc(clubID).get();
     })
     .then((doc) => {
-      let temp = [...doc.data().membersRequests];
-      let index = temp.findIndex((member) => member.userID === data.userID);
+      const temp = [...doc.data().membersRequests];
+      const index = temp.findIndex((member) => member.userID === data.userID);
       temp.splice(index, 1);
 
       return db
@@ -827,7 +825,7 @@ export const joinClub = (data, userClubData, clubID) => (dispatch) => {
     .doc(clubID)
     .get()
     .then((doc) => {
-      let temp = [...doc.data().membersRequests];
+      const temp = [...doc.data().membersRequests];
       temp.push(data);
 
       return db
@@ -839,8 +837,8 @@ export const joinClub = (data, userClubData, clubID) => (dispatch) => {
       return db.collection("users").doc(data.userID).get();
     })
     .then((doc) => {
-      let temp = [...doc.data().clubs];
-      let index = temp.findIndex((club) => club.clubID === clubID);
+      const temp = [...doc.data().clubs];
+      const index = temp.findIndex((club) => club.clubID === clubID);
       if (index !== -1) temp.splice(index, 1);
       temp.push(userClubData);
 
@@ -883,8 +881,8 @@ export const rejectNewMember = (userID, clubID) => (dispatch) => {
     .doc(clubID)
     .get()
     .then((doc) => {
-      let temp = [...doc.data().membersRequests];
-      let index = temp.findIndex((club) => club.userID === userID);
+      const temp = [...doc.data().membersRequests];
+      const index = temp.findIndex((club) => club.userID === userID);
       temp.splice(index, 1);
 
       return db
@@ -896,8 +894,8 @@ export const rejectNewMember = (userID, clubID) => (dispatch) => {
       return db.collection("users").doc(userID).get();
     })
     .then((doc) => {
-      let temp = [...doc.data().clubs];
-      let index = temp.findIndex((club) => club.userID === userID);
+      const temp = [...doc.data().clubs];
+      const index = temp.findIndex((club) => club.userID === userID);
       temp[index].approval = "rejected";
 
       return db
@@ -936,8 +934,8 @@ export const assignNewClubRole =
       .get()
       .then((doc) => {
         if (role === "member" && prevRole) {
-          let temp = { ...doc.data().roles };
-          let tempRole = prevRole.split(" ").join("");
+          const temp = { ...doc.data().roles };
+          const tempRole = prevRole.split(" ").join("");
           temp[tempRole].userID = "";
           temp[tempRole].memberID = "";
           return db
@@ -945,10 +943,9 @@ export const assignNewClubRole =
             .doc(clubID)
             .update({ roles: { ...temp } });
         } else if (role === "member" && !prevRole) {
-          return;
         } else {
-          let temp = { ...doc.data().roles };
-          let tempRole = role.split(" ").join("");
+          const temp = { ...doc.data().roles };
+          const tempRole = role.split(" ").join("");
           temp[tempRole].userID = newMember.userID;
           temp[tempRole].memberID = newMember.memberID;
 
@@ -963,8 +960,8 @@ export const assignNewClubRole =
         return db.collection("users").doc(newMember.userID).get();
       })
       .then((doc) => {
-        let temp = [...doc.data().clubs];
-        let index = temp.findIndex((club) => club.clubID === clubID);
+        const temp = [...doc.data().clubs];
+        const index = temp.findIndex((club) => club.clubID === clubID);
         temp[index].role = role;
 
         return db
@@ -977,8 +974,10 @@ export const assignNewClubRole =
         return db.collection("clubMembers").doc(clubID).get();
       })
       .then((doc) => {
-        let temp = [...doc.data().members];
-        let index = temp.findIndex((user) => user.userID === newMember.userID);
+        const temp = [...doc.data().members];
+        const index = temp.findIndex(
+          (user) => user.userID === newMember.userID
+        );
         temp[index].role = role;
 
         return db
@@ -1031,7 +1030,7 @@ export const addNewClubRole = (roleID, roleName, clubID) => (dispatch) => {
     .doc(clubID)
     .get()
     .then((doc) => {
-      let temp = { ...doc.data().roles };
+      const temp = { ...doc.data().roles };
       temp[roleID] = {
         memberID: "",
         userID: "",
@@ -1069,7 +1068,7 @@ export const deleteClubRole = (roleID, clubID) => (dispatch) => {
     .doc(clubID)
     .get()
     .then((doc) => {
-      let temp = { ...doc.data().roles };
+      const temp = { ...doc.data().roles };
       delete temp[roleID];
 
       return db
@@ -1104,8 +1103,8 @@ export const deactivateClubMember = (userID, clubID) => (dispatch) => {
     .doc(clubID)
     .get()
     .then((doc) => {
-      let temp = [...doc.data().members];
-      let index = temp.findIndex((member) => member.userID === userID);
+      const temp = [...doc.data().members];
+      const index = temp.findIndex((member) => member.userID === userID);
       temp.splice(index, 1);
 
       return db
@@ -1117,8 +1116,8 @@ export const deactivateClubMember = (userID, clubID) => (dispatch) => {
       return db.collection("users").doc(userID).get();
     })
     .then((doc) => {
-      let temp = [...doc.data().clubs];
-      let index = temp.findIndex((club) => club.clubID === clubID);
+      const temp = [...doc.data().clubs];
+      const index = temp.findIndex((club) => club.clubID === clubID);
       temp.splice(index, 1);
 
       return db
@@ -1152,8 +1151,8 @@ export const updateClubImage = (clubID, photoUrl, campusID) => (dispatch) => {
       return db.collection("clubsOverview").doc(campusID).get();
     })
     .then((doc) => {
-      let temp = [...doc.data().clubs];
-      let index = temp.findIndex((club) => club.clubID === clubID);
+      const temp = [...doc.data().clubs];
+      const index = temp.findIndex((club) => club.clubID === clubID);
       temp[index].image = photoUrl;
 
       return db
@@ -1204,7 +1203,7 @@ export const updateClubImage = (clubID, photoUrl, campusID) => (dispatch) => {
 //   notificationID: "",
 export const createNotification = (notification, userIDs) => (dispatch) => {
   //userIDs type array
-  let batch = db.batch();
+  const batch = db.batch();
 
   userIDs.forEach((userID) => {
     const ref = db.collection("notifications").doc();
@@ -1222,7 +1221,7 @@ export const createNotification = (notification, userIDs) => (dispatch) => {
 //update in redux as well
 //receive notification IDs from frontEnd
 export const setNotificationsRead = (notificationIDs) => (dispatch) => {
-  let batch = db.batch();
+  const batch = db.batch();
 
   notificationIDs.forEach((notificationID) => {
     const notification = db.collection("notifications").doc(notificationID);

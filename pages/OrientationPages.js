@@ -1,40 +1,31 @@
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import * as WebBrowser from "expo-web-browser";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
   View,
   FlatList,
   Pressable,
-  TouchableOpacity,
   Dimensions,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-
-import IosHeight from "../components/IosHeight";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-
-import Carousel, { Pagination } from "react-native-snap-carousel";
-
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { Bounce } from "react-native-animated-spinkit";
-
-import * as WebBrowser from "expo-web-browser";
-
+import Modal from "react-native-modal";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Carousel, { Pagination } from "react-native-snap-carousel";
 import { useDispatch, useSelector } from "react-redux";
 
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
+import { getOrientationPage } from "../src/redux/actions/dataActions";
 import {
   fontPixel,
-  widthPixel,
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { getOrientationPage } from "../src/redux/actions/dataActions";
-import { render } from "react-dom";
 
 const { width } = Dimensions.get("window");
 
@@ -55,8 +46,8 @@ export default function OrientationPages({ navigation, route }) {
 
   const [data, setData] = useState([]);
 
-  const [focusImage, setFocusImage] = useState("");
-  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+  // const [focusImage, setFocusImage] = useState("");
+  // const [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [goBack, setGoBack] = useState(false);
 
@@ -90,7 +81,7 @@ export default function OrientationPages({ navigation, route }) {
   }, [rendered, goBack]);
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -98,15 +89,15 @@ export default function OrientationPages({ navigation, route }) {
     setIndexSelected(indexSelected);
   };
 
-  const handleFocusImage = (image) => {
-    if (image) {
-      setFocusImage(image);
-      setIsImageModalVisible(!isImageModalVisible);
-    } else {
-      setFocusImage("");
-      setIsImageModalVisible(!isImageModalVisible);
-    }
-  };
+  // const handleFocusImage = (image) => {
+  //   if (image) {
+  //     setFocusImage(image);
+  //     setIsImageModalVisible(!isImageModalVisible);
+  //   } else {
+  //     setFocusImage("");
+  //     setIsImageModalVisible(!isImageModalVisible);
+  //   }
+  // };
 
   useEffect(() => {
     //if scroll height is more than header height and the header is not shown, show
@@ -115,7 +106,7 @@ export default function OrientationPages({ navigation, route }) {
       setShowMiniHeader(false);
   }, [scrollHeight, showMiniHeader]);
 
-  let UI = loading ? (
+  const UI = loading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
       <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
     </View>
@@ -152,15 +143,14 @@ export default function OrientationPages({ navigation, route }) {
                       <Carousel
                         layout="default"
                         data={content.image}
-                        disableIntervalMomentum={true}
-                        useExperimentalSnap={true}
+                        disableIntervalMomentum
+                        useExperimentalSnap
                         onSnapToItem={(index) => onSelect(index)}
                         sliderWidth={width - 32}
                         itemWidth={width - 32}
                         renderItem={({ item, index }) => (
                           <>
                             <Image
-                              key={index}
                               style={styles.image}
                               contentFit="cover"
                               source={item}
@@ -170,7 +160,7 @@ export default function OrientationPages({ navigation, route }) {
                       />
                       <Pagination
                         inactiveDotColor="#546593"
-                        dotColor={"#C4FFF9"}
+                        dotColor="#C4FFF9"
                         activeDotIndex={indexSelected}
                         containerStyle={{
                           paddingTop: 0,
@@ -201,7 +191,7 @@ export default function OrientationPages({ navigation, route }) {
                 </View>
               );
             })}
-          <View style={styles.emptyView}></View>
+          <View style={styles.emptyView} />
         </>
       )}
     />
@@ -261,7 +251,7 @@ export default function OrientationPages({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"orientation"}
+          currentPage="orientation"
           navigation={navigation}
         />
       </Modal>
@@ -403,7 +393,7 @@ const styles = StyleSheet.create({
   },
   focusImageModal: {
     margin: 0,
-    width: width, // SideMenu width
+    width, // SideMenu width
     alignSelf: "center",
     paddingTop: pixelSizeVertical(16),
     paddingBottom: pixelSizeVertical(16),

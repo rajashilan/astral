@@ -1,3 +1,7 @@
+import * as Crypto from "expo-crypto";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,51 +10,33 @@ import {
   Pressable,
   ImageBackground,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
-import * as Crypto from "expo-crypto";
-
 import { Bounce } from "react-native-animated-spinkit";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
+import { ScrollView } from "react-native-gesture-handler";
 import Modal from "react-native-modal";
-import { Image } from "expo-image";
-
-import IosHeight from "../components/IosHeight";
-
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useDispatch, useSelector } from "react-redux";
 
-const { width } = Dimensions.get("window");
-
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-
-import ClubsGallery from "./ClubsGallery";
-import ClubsEvents from "./ClubsEvents";
 import ClubsDetails from "./ClubsDetails";
+import ClubsEvents from "./ClubsEvents";
+import ClubsGallery from "./ClubsGallery";
 import ClubsMembers from "./ClubsMembers";
-
-import { ScrollView } from "react-native-gesture-handler";
-
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-
-import firestore from "@react-native-firebase/firestore";
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   createNotification,
   getAClub,
-  getClubMembers,
   joinClub,
 } from "../src/redux/actions/dataActions";
-const db = firestore();
+import {
+  fontPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
+
+const { width } = Dimensions.get("window");
 
 export default function ClubsPages({ navigation, route }) {
   const { clubID } = route.params;
@@ -91,8 +77,8 @@ export default function ClubsPages({ navigation, route }) {
 
   useEffect(() => {
     if (!isEmpty(data)) {
-      let temp = [...data.membersRequests];
-      let index = temp.findIndex((member) => member.userID === user.userId);
+      const temp = [...data.membersRequests];
+      const index = temp.findIndex((member) => member.userID === user.userId);
       if (index !== -1)
         if (temp[index].approval !== "rejected") setHasRequested(true);
     }
@@ -126,9 +112,9 @@ export default function ClubsPages({ navigation, route }) {
   const handleJoin = () => {
     setShowAgreementPopUp(!showAgreementPopUp);
     const memberID = Crypto.randomUUID();
-    createdAt = new Date();
+    const createdAt = new Date();
 
-    let joinData = {
+    const joinData = {
       name: user.name,
       phone: user.phone_number,
       email: user.email,
@@ -142,7 +128,7 @@ export default function ClubsPages({ navigation, route }) {
       bio: "",
     };
 
-    let clubsData = {
+    const clubsData = {
       clubID: data.clubID,
       userID: user.userId,
       memberID,
@@ -151,7 +137,7 @@ export default function ClubsPages({ navigation, route }) {
       approval: "pending",
     };
 
-    let notification = {
+    const notification = {
       preText: "New member request for",
       postText: "",
       sourceID: data.clubID,
@@ -165,14 +151,14 @@ export default function ClubsPages({ navigation, route }) {
       notificationID: "",
     };
 
-    let userIDs = [data.roles.president.userID];
+    const userIDs = [data.roles.president.userID];
 
     dispatch(joinClub(joinData, clubsData, data.clubID));
     dispatch(createNotification(notification, userIDs));
   };
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -183,11 +169,7 @@ export default function ClubsPages({ navigation, route }) {
       setShowMiniHeader(false);
   }, [scrollHeight, showMiniHeader]);
 
-  function isEmpty(obj) {
-    return Object.keys(obj).length === 0;
-  }
-
-  let UI = UIloading ? (
+  const UI = UIloading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
       <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
     </View>
@@ -243,6 +225,7 @@ export default function ClubsPages({ navigation, route }) {
             navigations.navigations.map((link) => {
               return (
                 <Pressable
+                  key={link.name}
                   onPress={() => setTab(link.name)}
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
@@ -347,7 +330,7 @@ export default function ClubsPages({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>

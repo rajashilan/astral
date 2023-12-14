@@ -1,41 +1,35 @@
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
   Pressable,
-  TextInput,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-import Carousel, { Pagination } from "react-native-snap-carousel";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
+import Carousel, { Pagination } from "react-native-snap-carousel";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useDispatch, useSelector } from "react-redux";
 
+import hamburgerIcon from "../assets/hamburger_icon.png";
 import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   acceptNewMember,
   createNotification,
   rejectNewMember,
 } from "../src/redux/actions/dataActions";
+import {
+  fontPixel,
+  heightPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
 
 const { width } = Dimensions.get("window");
 
@@ -47,7 +41,6 @@ export default function ClubMembersRequest({ navigation }) {
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
   const rejectLoading = useSelector((state) => state.UI.loading);
-  const campusID = useSelector((state) => state.data.campus.campusID);
   const membersRequests = useSelector(
     (state) => state.data.clubData.club.membersRequests
   );
@@ -75,7 +68,7 @@ export default function ClubMembersRequest({ navigation }) {
   const handleAcceptMember = (item, accepted) => {
     if (accepted) {
       dispatch(acceptNewMember(item, club.clubID));
-      let notification = {
+      const notification = {
         preText: "Your request to join",
         postText: "has been approved",
         sourceID: club.clubID,
@@ -88,11 +81,11 @@ export default function ClubMembersRequest({ navigation }) {
         createdAt: new Date().toISOString(),
         notificationID: "",
       };
-      let userIDs = [item.userID];
+      const userIDs = [item.userID];
       dispatch(createNotification(notification, userIDs));
     } else {
       dispatch(rejectNewMember(item, club.clubID));
-      let notification = {
+      const notification = {
         preText: "Your request to join",
         postText: "was denied. Please feel free to reapply.",
         sourceID: club.clubID,
@@ -105,7 +98,7 @@ export default function ClubMembersRequest({ navigation }) {
         createdAt: new Date().toISOString(),
         notificationID: "",
       };
-      let userIDs = [item];
+      const userIDs = [item];
       dispatch(createNotification(notification, userIDs));
     }
   };
@@ -141,7 +134,7 @@ export default function ClubMembersRequest({ navigation }) {
               <>
                 <Pagination
                   inactiveDotColor="#546593"
-                  dotColor={"#C4FFF9"}
+                  dotColor="#C4FFF9"
                   activeDotIndex={indexSelected}
                   containerStyle={{
                     paddingTop: 0,
@@ -157,8 +150,8 @@ export default function ClubMembersRequest({ navigation }) {
                 <Carousel
                   layout="default"
                   data={membersRequests}
-                  disableIntervalMomentum={true}
-                  useExperimentalSnap={true}
+                  disableIntervalMomentum
+                  useExperimentalSnap
                   onSnapToItem={(index) => onSelect(index)}
                   sliderWidth={width - 32}
                   itemWidth={width - 32}
@@ -252,7 +245,7 @@ export default function ClubMembersRequest({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>
@@ -289,23 +282,6 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(34),
     fontWeight: "500",
     color: "#DFE5F8",
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(30),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
   },
   emptyView: {
     flex: 1,
@@ -397,23 +373,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
   tertiaryButton: {
     color: "#A7AFC7",
     fontSize: fontPixel(22),
@@ -445,29 +404,6 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(24),
     width: "100%",
     borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   secondaryButton: {
     fontSize: fontPixel(22),

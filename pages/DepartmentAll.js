@@ -1,22 +1,19 @@
-import { StyleSheet, Text, View, FlatList, Pressable } from "react-native";
-import React, { useState } from "react";
 import { Image } from "expo-image";
-import { Link } from "@react-navigation/native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, FlatList, Pressable } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import {
   fontPixel,
-  widthPixel,
-  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { ScrollView } from "react-native-gesture-handler";
 
 const urlRegex =
   /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
 
 export default function DepartmentAll(props) {
-  const [data, setData] = useState([
+  const [data] = useState([
     {
       department: "Department of Computing and Engineering",
       all: [
@@ -56,7 +53,7 @@ export default function DepartmentAll(props) {
         keyExtractor={(item, index) => index.toString()}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        nestedScrollEnabled={true}
+        nestedScrollEnabled
         scrollEnabled={false}
         data={data[0].all}
         renderItem={({ item, index }) => (
@@ -80,7 +77,7 @@ export default function DepartmentAll(props) {
                 <FlatList
                   data={item.content.match(urlRegex)}
                   numColumns={item.content.match(urlRegex).length}
-                  scrollEnabled={true}
+                  scrollEnabled
                   renderItem={({ item, index }) => (
                     <View style={styles.linkContainer}>
                       <Text style={styles.linkContent}>{item}</Text>

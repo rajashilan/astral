@@ -1,15 +1,11 @@
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Button,
-} from "react-native";
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
-import logo from "../assets/logo.png";
 import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+
+import logo from "../assets/logo.png";
+import IosHeight from "../components/IosHeight";
 import {
   fontPixel,
   widthPixel,
@@ -17,24 +13,18 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { TouchableWithoutFeedback } from "react-native-web";
-import * as ImagePicker from "expo-image-picker";
-import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
-import IosHeight from "../components/IosHeight";
 
 export default function SignupExtra({ navigation }) {
   const handleNext = () => {
     navigation.navigate("SignupDetails");
   };
 
-  const [email, setEmail] = useState("");
-  const [image, setImage] = useState(null);
+  // const [email, setEmail] = useState("");
+  // const [image, setImage] = useState(null);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [1, 1],
@@ -42,7 +32,7 @@ export default function SignupExtra({ navigation }) {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      //setImage(result.assets[0].uri);
     }
   };
 

@@ -1,12 +1,14 @@
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-} from "react-native";
+import auth from "@react-native-firebase/auth";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
+
+import notificationIcon from "../assets/notification_icon.png";
+import IosHeight from "../components/IosHeight";
+import { getAuthenticatedUser } from "../src/redux/actions/userActions";
 import {
   fontPixel,
   widthPixel,
@@ -14,20 +16,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { StatusBar } from "expo-status-bar";
-import { Image } from "expo-image";
-
-import notificationIcon from "../assets/notification_icon.png";
-
-import IosHeight from "../components/IosHeight";
-
-import auth from "@react-native-firebase/auth";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
-import { getAuthenticatedUser } from "../src/redux/actions/userActions";
 
 export default function Home({ navigation }) {
   const dispatch = useDispatch();
@@ -71,7 +60,7 @@ export default function Home({ navigation }) {
       });
   }, [user]);
 
-  let userProfileDisplay = loading ? (
+  const userProfileDisplay = loading ? (
     <View
       style={{
         flexDirection: "row",
@@ -90,7 +79,7 @@ export default function Home({ navigation }) {
           backgroundColor: "#242997",
           marginRight: pixelSizeHorizontal(16),
         }}
-      ></View>
+      />
       <View
         style={{
           width: widthPixel(32),
@@ -98,14 +87,14 @@ export default function Home({ navigation }) {
           backgroundColor: "#242997",
           marginRight: pixelSizeHorizontal(16),
         }}
-      ></View>
+      />
       <View
         style={{
           width: widthPixel(32),
           height: heightPixel(32),
           backgroundColor: "#242997",
         }}
-      ></View>
+      />
     </View>
   ) : (
     <View

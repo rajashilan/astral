@@ -1,3 +1,9 @@
+import firestore from "@react-native-firebase/firestore";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,7 +14,17 @@ import {
   ScrollView,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import { Bounce } from "react-native-animated-spinkit";
+import Modal from "react-native-modal";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
+import { setNotificationsRead } from "../src/redux/actions/dataActions";
 import {
   fontPixel,
   widthPixel,
@@ -16,42 +32,15 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 
-import { useDispatch, useSelector } from "react-redux";
-
-import Header from "../components/Header";
-
-import { Bounce } from "react-native-animated-spinkit";
-
 const { width } = Dimensions.get("window");
-
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-
-import firestore from "@react-native-firebase/firestore";
-import { setNotificationsRead } from "../src/redux/actions/dataActions";
 const db = firestore();
 
 export default function Notifications({ navigation }) {
   dayjs.extend(relativeTime);
 
   const dispatch = useDispatch();
-  const campusID = useSelector((state) => state.data.campus.campusID);
   const user = useSelector((state) => state.user.credentials);
   const [loading, setLoading] = useState(true);
 
@@ -80,7 +69,7 @@ export default function Notifications({ navigation }) {
     query
       .get()
       .then((dbData) => {
-        let temp = [];
+        const temp = [];
         dbData.forEach((doc) => {
           temp.push({ ...doc.data() });
         });
@@ -114,9 +103,9 @@ export default function Notifications({ navigation }) {
 
   useEffect(() => {
     if (data.length > 0) {
-      let notificationIDs = [];
-      let temp = data.slice(-12);
-      data.forEach((notification) => {
+      const notificationIDs = [];
+      const temp = data.slice(-12);
+      temp.forEach((notification) => {
         notificationIDs.push(notification.notificationID);
       });
       dispatch(setNotificationsRead(notificationIDs));
@@ -141,7 +130,7 @@ export default function Notifications({ navigation }) {
   };
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -156,7 +145,7 @@ export default function Notifications({ navigation }) {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
-  let UI = loading ? (
+  const UI = loading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
       <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
     </View>
@@ -175,7 +164,7 @@ export default function Notifications({ navigation }) {
       <View style={{ width: "100%", flexDirection: "column" }}>
         <View style={styles.paddingContainer}>
           <View onLayout={onLayout}>
-            <Header header={"notifications"} />
+            <Header header="notifications" />
           </View>
         </View>
         {data.length > 0 ? (
@@ -354,7 +343,7 @@ export default function Notifications({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"notifications"}
+          currentPage="notifications"
           navigation={navigation}
         />
       </Modal>
@@ -391,23 +380,6 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(34),
     fontWeight: "500",
     color: "#DFE5F8",
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(30),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
   },
   sideMenuStyle: {
     margin: 0,
@@ -495,23 +467,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
   tertiaryButton: {
     color: "#A7AFC7",
     fontSize: fontPixel(22),
@@ -543,29 +498,6 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(24),
     width: "100%",
     borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   secondaryButton: {
     fontSize: fontPixel(22),

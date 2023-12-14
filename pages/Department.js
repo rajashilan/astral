@@ -1,36 +1,29 @@
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
   Pressable,
-  FlatList,
   ScrollView,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
+import Modal from "react-native-modal";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 import DepartmentAll from "./DepartmentAll";
 import DepartmentFeatured from "./DepartmentFeatured";
 import DepartmentFiles from "./DepartmentFiles";
 import DepartmentSaved from "./DepartmentSaved";
-
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   fontPixel,
-  widthPixel,
-  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-
-import IosHeight from "../components/IosHeight";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-import { Image } from "expo-image";
-
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
@@ -43,7 +36,7 @@ export default function Department({ navigation }) {
 
   const [tab, setTab] = useState("all");
 
-  const [data, setData] = useState([
+  const [data] = useState([
     {
       department: "Department of Computing and Engineering",
       navigations: [
@@ -60,7 +53,7 @@ export default function Department({ navigation }) {
   };
 
   const onLayout = (event) => {
-    const { x, y, height, width } = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
   };
 
@@ -192,7 +185,7 @@ export default function Department({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"department"}
+          currentPage="department"
           navigation={navigation}
         />
       </Modal>

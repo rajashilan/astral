@@ -1,31 +1,23 @@
-import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
+import { Image } from "expo-image";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
+import Carousel, { Pagination } from "react-native-snap-carousel";
+import { useSelector } from "react-redux";
+
 import {
   fontPixel,
-  widthPixel,
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import { Image } from "expo-image";
-import Carousel, { Pagination } from "react-native-snap-carousel";
-
-import { useSelector } from "react-redux";
 
 const { width } = Dimensions.get("window");
 
-export default ClubsMembers = React.memo((props) => {
+const ClubsMembers = React.memo((props) => {
   const members = useSelector((state) => state.data.clubData.members);
-  const currentMember = useSelector(
-    (state) => state.data.clubData.currentMember
-  );
   const numberOfMembers = `${members.length} members`;
 
   const [indexSelected, setIndexSelected] = useState(0);
-
-  function isEmpty(obj) {
-    return Object.keys(obj).length === 0;
-  }
 
   const onSelect = (indexSelected) => {
     setIndexSelected(indexSelected);
@@ -36,7 +28,7 @@ export default ClubsMembers = React.memo((props) => {
       {numberOfMembers && <Text style={styles.header}>{numberOfMembers}</Text>}
       <Pagination
         inactiveDotColor="#546593"
-        dotColor={"#C4FFF9"}
+        dotColor="#C4FFF9"
         activeDotIndex={indexSelected}
         containerStyle={{
           paddingTop: 0,
@@ -51,8 +43,8 @@ export default ClubsMembers = React.memo((props) => {
       <Carousel
         layout="default"
         data={members && members}
-        disableIntervalMomentum={true}
-        useExperimentalSnap={true}
+        disableIntervalMomentum
+        useExperimentalSnap
         onSnapToItem={(index) => onSelect(index)}
         sliderWidth={width - 32}
         itemWidth={width - 32}
@@ -123,3 +115,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#0C111F",
   },
 });
+
+export default ClubsMembers;

@@ -1,16 +1,30 @@
+import firestore from "@react-native-firebase/firestore";
+import storage from "@react-native-firebase/storage";
+import Checkbox from "expo-checkbox";
+import * as Crypto from "expo-crypto";
+import * as DocumentPicker from "expo-document-picker";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import * as WebBrowser from "expo-web-browser";
+import React, { useState } from "react";
 import {
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
-  SafeAreaView,
-  ImageBackground,
   Dimensions,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
-import { Image } from "expo-image";
+import Modal from "react-native-modal";
+import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
+
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import Header from "../components/Header";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
+import { sendAdminNotification } from "../src/redux/actions/dataActions";
+import { ADD_USER_CLUB, STOP_LOADING_DATA } from "../src/redux/type";
 import {
   fontPixel,
   widthPixel,
@@ -18,26 +32,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-
-import * as Crypto from "expo-crypto";
-import * as WebBrowser from "expo-web-browser";
-import Checkbox from "expo-checkbox";
-
-import IosHeight from "../components/IosHeight";
-import Header from "../components/Header";
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
-import Modal from "react-native-modal";
-
-import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
-
-import firestore from "@react-native-firebase/firestore";
-import storage from "@react-native-firebase/storage";
-import { useDispatch, useSelector } from "react-redux";
-import { ADD_USER_CLUB } from "../src/redux/type";
-import * as DocumentPicker from "expo-document-picker";
-import { sendAdminNotification } from "../src/redux/actions/dataActions";
 
 const { width } = Dimensions.get("window");
 
@@ -51,7 +46,7 @@ export default function CreateAClub({ navigation, route }) {
 
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage] = useState("");
   const [errors, setErrors] = useState({
     name: undefined,
     document: undefined,
@@ -59,7 +54,6 @@ export default function CreateAClub({ navigation, route }) {
   });
   const [document, setDocument] = useState(null);
   const [documentType, setDocumentType] = useState(null);
-  const [mimeType, setMimeType] = useState(null);
   const [isChecked, setChecked] = useState(false);
 
   const [step, setStep] = useState("step1");
@@ -103,7 +97,6 @@ export default function CreateAClub({ navigation, route }) {
         const uri = result.uri;
         setDocumentType(uri.split(".")[uri.split(".").length - 1]);
         setDocument(uri);
-        setMimeType(result.mimeType);
         Toast.show({
           type: "success",
           text1: "file added successfully",
@@ -143,9 +136,9 @@ export default function CreateAClub({ navigation, route }) {
     });
   };
 
-  uploadToFirebase = (blob, imageFileName) => {
+  const uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = storage().ref();
+      const storageRef = storage().ref();
 
       storageRef
         .child(`clubs/forms/uploaded/${imageFileName}`)
@@ -161,7 +154,7 @@ export default function CreateAClub({ navigation, route }) {
   };
 
   const handleSubmit = () => {
-    let errors = [...errors];
+    const errors = [...errors];
 
     if (!name.trim()) errors.name = "Please enter your club's name";
     if (!document && step === "step2")
@@ -181,7 +174,7 @@ export default function CreateAClub({ navigation, route }) {
       //first add to clubs
       //then add to clubs overview (campus admin will get data from here)
 
-      let index = user.clubs.findIndex(
+      const index = user.clubs.findIndex(
         (club) => club.approval === "pending" && club.createdBy === user.userId
       );
 
@@ -205,8 +198,8 @@ export default function CreateAClub({ navigation, route }) {
       const createdBy = user.userId;
 
       const nameForDoc = Crypto.randomUUID();
-      let documentName = `${nameForDoc}.${documentType}`;
-      let firebasePath = `clubs/forms/uploaded/${documentName}`;
+      const documentName = `${nameForDoc}.${documentType}`;
+      const firebasePath = `clubs/forms/uploaded/${documentName}`;
 
       uriToBlob(document)
         .then((blob) => {
@@ -216,7 +209,7 @@ export default function CreateAClub({ navigation, route }) {
           return storage().ref(firebasePath).getDownloadURL();
         })
         .then((url) => {
-          let clubsData = {
+          const clubsData = {
             clubID: "", //get it later after adding
             name,
             image:
@@ -277,14 +270,14 @@ export default function CreateAClub({ navigation, route }) {
             fpfForms: [url],
           };
 
-          let eventData = {
+          const eventData = {
             events: [],
             clubID: "",
             createdBy,
             campusID: state.campus.campusID,
           };
 
-          let clubMembers = {
+          const clubMembers = {
             campusID: state.campus.campusID,
             clubID: "",
             members: [
@@ -304,14 +297,14 @@ export default function CreateAClub({ navigation, route }) {
             ],
           };
 
-          let galleryData = {
+          const galleryData = {
             gallery: [],
             clubID: "",
             createdBy,
             campusID: state.campus.campusID,
           };
 
-          let clubsOverviewData = {
+          const clubsOverviewData = {
             name,
             image:
               "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.jpeg?alt=media&token=8a9c42e0-d937-4389-804f-9fd6953644ac&_gl=1*1c0ck02*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMDYzLjU4LjAuMA..",
@@ -330,7 +323,7 @@ export default function CreateAClub({ navigation, route }) {
             campusID: state.campus.campusID,
           };
 
-          let userData = {
+          const userData = {
             clubID: "",
             name,
             memberID,
@@ -363,7 +356,7 @@ export default function CreateAClub({ navigation, route }) {
                       .doc(state.campus.campusID)
                       .set({ clubs: [clubsOverviewData] });
                   } else {
-                    let temp = doc.data().clubs;
+                    const temp = doc.data().clubs;
                     temp.push(clubsOverviewData);
 
                     return db
@@ -380,7 +373,7 @@ export default function CreateAClub({ navigation, route }) {
                     .doc(user.userId)
                     .get()
                     .then((doc) => {
-                      let temp = doc.data().clubs;
+                      const temp = doc.data().clubs;
                       temp.push(userData);
 
                       return db
@@ -462,7 +455,7 @@ export default function CreateAClub({ navigation, route }) {
     navigation.navigate("Clubs");
   };
 
-  let clubName = (
+  const clubName = (
     <>
       <TextInput
         style={styles.textInput}
@@ -479,7 +472,7 @@ export default function CreateAClub({ navigation, route }) {
     </>
   );
 
-  let fpf = (
+  const fpf = (
     <>
       <View
         style={{
@@ -630,7 +623,7 @@ export default function CreateAClub({ navigation, route }) {
         </Pressable>
       </View>
       <View style={{ width: "100%" }}>
-        <Header header={"create a club"} />
+        <Header header="create a club" />
         {step === "step1" ? (
           <Text style={styles.disclaimer}>
             Your club has to be approved by the college before you can continue
@@ -683,7 +676,7 @@ export default function CreateAClub({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>
@@ -707,7 +700,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
-    backgroundColor: "#0C111F",
   },
   image: {
     width: widthPixel(177),

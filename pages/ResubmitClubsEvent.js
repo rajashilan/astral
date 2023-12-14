@@ -1,3 +1,11 @@
+import DateTimePicker from "@react-native-community/datetimepicker";
+import storage from "@react-native-firebase/storage";
+import dayjs from "dayjs";
+import * as Crypto from "expo-crypto";
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,43 +15,27 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-import * as Crypto from "expo-crypto";
-import dayjs from "dayjs";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
-
-import IosHeight from "../components/IosHeight";
-
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useDispatch, useSelector } from "react-redux";
 
-import * as ImagePicker from "expo-image-picker";
-
+import hamburgerIcon from "../assets/hamburger_icon.png";
 import Header from "../components/Header";
-
-import storage from "@react-native-firebase/storage";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   addClubEvent,
   handleDeleteClubEvent,
   sendAdminNotification,
-  setClubEventToTrue,
 } from "../src/redux/actions/dataActions";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { SET_LOADING_DATA } from "../src/redux/type";
+import {
+  fontPixel,
+  heightPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
 
 const { width } = Dimensions.get("window");
 
@@ -125,7 +117,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
 
   const handleAddToEvent = () => {
     //verify image and title
-    let errors = [...errors];
+    const errors = [...errors];
 
     if (!title.trim()) errors.title = "Please enter a title for your event.";
     if (!content) errors.content = "Please explain about your event.";
@@ -138,8 +130,8 @@ export default function ResubmitClubsEvent({ navigation, route }) {
         dispatch({ type: SET_LOADING_DATA });
 
         const name = Crypto.randomUUID();
-        let imageFileName = `${name}.${imageType}`;
-        let firebasePath = `clubs/events/photos/${imageFileName}`;
+        const imageFileName = `${name}.${imageType}`;
+        const firebasePath = `clubs/events/photos/${imageFileName}`;
         //first upload image and get url
         uriToBlob(image)
           .then((blob) => {
@@ -247,9 +239,9 @@ export default function ResubmitClubsEvent({ navigation, route }) {
     });
   };
 
-  uploadToFirebase = (blob, imageFileName) => {
+  const uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = storage().ref();
+      const storageRef = storage().ref();
 
       storageRef
         .child(`clubs/events/photos/${imageFileName}`)
@@ -294,7 +286,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
       <ScrollView>
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
-            <Header header={"resubmit event"} />
+            <Header header="resubmit event" />
             <Text style={styles.disclaimer}>{club.name}</Text>
 
             <View
@@ -402,7 +394,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>

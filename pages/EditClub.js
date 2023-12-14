@@ -1,41 +1,26 @@
+import storage from "@react-native-firebase/storage";
+import * as Crypto from "expo-crypto";
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
   Pressable,
-  TextInput,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import {
-  fontPixel,
-  widthPixel,
-  heightPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-} from "../utils/responsive-font";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-import * as ImagePicker from "expo-image-picker";
-import * as Crypto from "expo-crypto";
-
-import hamburgerIcon from "../assets/hamburger_icon.png";
-import SideMenu from "../components/SideMenu";
 import Modal from "react-native-modal";
-
 import SelectDropdown from "react-native-select-dropdown";
-
-import IosHeight from "../components/IosHeight";
-
 import Toast from "react-native-toast-message";
-import { toastConfig } from "../utils/toast-config";
-
 import { useDispatch, useSelector } from "react-redux";
 
+import hamburgerIcon from "../assets/hamburger_icon.png";
 import Header from "../components/Header";
-
-import storage from "@react-native-firebase/storage";
+import IosHeight from "../components/IosHeight";
+import SideMenu from "../components/SideMenu";
 import {
   createNotification,
   handleActivateClub,
@@ -43,14 +28,18 @@ import {
   updateClubImage,
 } from "../src/redux/actions/dataActions";
 import { SET_UI_LOADING, STOP_UI_LOADING } from "../src/redux/type";
+import {
+  fontPixel,
+  heightPixel,
+  pixelSizeVertical,
+  pixelSizeHorizontal,
+} from "../utils/responsive-font";
+import { toastConfig } from "../utils/toast-config";
 
 const { width } = Dimensions.get("window");
 
 export default function EditClub({ navigation }) {
   const dispatch = useDispatch();
-  const currentMember = useSelector(
-    (state) => state.data.clubData.currentMember
-  );
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
   const imageLoading = useSelector((state) => state.UI.loading);
@@ -61,7 +50,7 @@ export default function EditClub({ navigation }) {
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
-  const [activeStatus, setActiveStatus] = useState(club.status);
+  const [activeStatus] = useState(club.status);
   const [activeSelection] = useState(["activate", "deactivate"]);
   const [selectedActive, setSelectedActive] = useState("");
 
@@ -80,7 +69,7 @@ export default function EditClub({ navigation }) {
   };
 
   const handleEditActiveStatus = () => {
-    let errors = [...errors];
+    const errors = [...errors];
 
     if (
       (!club.gallery ||
@@ -95,7 +84,7 @@ export default function EditClub({ navigation }) {
       if (selectedActive === "activate") {
         dispatch(handleActivateClub(club.clubID, campusID));
 
-        let notification = {
+        const notification = {
           preText: "",
           postText: "has been activated by President.",
           sourceID: club.clubID,
@@ -108,8 +97,8 @@ export default function EditClub({ navigation }) {
           createdAt: new Date().toISOString(),
           notificationID: "",
         };
-        let userIDs = [];
-        let temp = Object.values(club.roles);
+        const userIDs = [];
+        const temp = Object.values(club.roles);
         temp.forEach((role) => {
           if (role.userID && role.userID !== "") userIDs.push(role.userID);
         });
@@ -119,7 +108,7 @@ export default function EditClub({ navigation }) {
       if (selectedActive === "deactivate") {
         dispatch(handleDeactivateClub(club.clubID, campusID, true));
 
-        let notification = {
+        const notification = {
           preText: "",
           postText: "has been deactivated by President",
           sourceID: club.clubID,
@@ -132,8 +121,8 @@ export default function EditClub({ navigation }) {
           createdAt: new Date().toISOString(),
           notificationID: "",
         };
-        let userIDs = [];
-        let temp = Object.values(club.roles);
+        const userIDs = [];
+        const temp = Object.values(club.roles);
         temp.forEach((role) => {
           if (role.userID && role.userID !== "") userIDs.push(role.userID);
         });
@@ -147,8 +136,8 @@ export default function EditClub({ navigation }) {
 
   const handleUpdatePhoto = () => {
     const name = Crypto.randomUUID();
-    let imageFileName = `${name}.${imageType}`;
-    let firebasePath = `clubs/photos/${imageFileName}`;
+    const imageFileName = `${name}.${imageType}`;
+    const firebasePath = `clubs/photos/${imageFileName}`;
 
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: "Images",
@@ -161,8 +150,6 @@ export default function EditClub({ navigation }) {
           const uri = result.assets[0].uri;
           setImageType(uri.split(".")[uri.split(".").length - 1]);
           return uriToBlob(uri);
-        } else {
-          return Promise.reject("cancelled");
         }
       })
       .then((blob) => {
@@ -206,9 +193,9 @@ export default function EditClub({ navigation }) {
     });
   };
 
-  uploadToFirebase = (blob, imageFileName) => {
+  const uploadToFirebase = (blob, imageFileName) => {
     return new Promise((resolve, reject) => {
-      var storageRef = storage().ref();
+      const storageRef = storage().ref();
 
       storageRef
         .child(`clubs/photos/${imageFileName}`)
@@ -274,7 +261,7 @@ export default function EditClub({ navigation }) {
             )}
 
             <SelectDropdown
-              search={true}
+              search
               searchInputStyle={{
                 backgroundColor: "#232D4A",
               }}
@@ -282,7 +269,7 @@ export default function EditClub({ navigation }) {
               searchPlaceHolder="select active status"
               searchInputTxtColor="#DFE5F8"
               defaultButtonText={`current status: ${activeStatus}`}
-              showsVerticalScrollIndicator={true}
+              showsVerticalScrollIndicator
               buttonStyle={{
                 backgroundColor: "#1A2238",
                 marginTop: pixelSizeVertical(10),
@@ -396,7 +383,7 @@ export default function EditClub({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage={"clubs"}
+          currentPage="clubs"
           navigation={navigation}
         />
       </Modal>
@@ -433,23 +420,6 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(34),
     fontWeight: "500",
     color: "#DFE5F8",
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(30),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
   },
   emptyView: {
     flex: 1,
@@ -542,23 +512,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
   tertiaryButton: {
     color: "#A7AFC7",
     fontSize: fontPixel(22),
@@ -590,29 +543,6 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(24),
     width: "100%",
     borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   secondaryButton: {
     fontSize: fontPixel(22),

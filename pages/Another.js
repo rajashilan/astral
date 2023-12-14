@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
 import { StatusBar } from "expo-status-bar";
+import React, { useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -29,7 +29,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={() => animateElement()}>
-        <Animated.View style={[styles.box, opacityStyle]}></Animated.View>
+        <Animated.View style={[styles.box, opacityStyle]} />
       </TouchableWithoutFeedback>
 
       <StatusBar style="auto" />
