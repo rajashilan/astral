@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import Carousel, { Pagination } from "react-native-snap-carousel";
@@ -50,11 +50,14 @@ const ClubsMembers = React.memo((props) => {
         itemWidth={width - 32}
         renderItem={({ item, index }) => (
           <>
-            <Image
+            <FastImage
               key={index}
               style={styles.image}
-              contentFit="cover"
-              source={item.profileImage}
+              resizeMode="cover"
+              source={{ uri: item.profileImage }}
+              progressiveRenderingEnabled={true}
+              cache={FastImage.cacheControl.immutable}
+              priority={FastImage.priority.normal}
             />
             <Text style={styles.role}>{item.role}</Text>
             <Text style={styles.name}>

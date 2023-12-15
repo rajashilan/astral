@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
@@ -48,10 +48,10 @@ export default function Stafflistpage({ navigation, route }) {
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
         >
-          <Image
+          <FastImage
             style={styles.hamburgerIcon}
             source={hamburgerIcon}
-            contentFit="contain"
+            resizeMode="contain"
           />
         </Pressable>
       </View>

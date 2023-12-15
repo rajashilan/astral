@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
 import Modal from "react-native-modal";
@@ -156,15 +156,18 @@ const ClubsGallery = React.memo(({ navigation }) => {
                   });
               }}
             >
-              <Image
+              <FastImage
                 key={index}
                 style={
                   item.approval === "approved"
                     ? styles.image
                     : [styles.image, { opacity: 0.5 }]
                 }
-                contentFit="cover"
-                source={item.image}
+                resizeMode="cover"
+                source={{ uri: item.image }}
+                progressiveRenderingEnabled={true}
+                cache={FastImage.cacheControl.immutable}
+                priority={FastImage.priority.normal}
               />
               {item.title && (
                 <Text

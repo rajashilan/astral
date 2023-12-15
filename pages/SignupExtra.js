@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
@@ -39,10 +39,10 @@ export default function SignupExtra({ navigation }) {
   return (
     <View style={styles.container}>
       <IosHeight />
-      <Image
+      <FastImage
         style={styles.image}
         source={logo}
-        contentFit="cover"
+        resizeMode="cover"
         transition={1000}
       />
       <View style={styles.progressContainer}>
@@ -90,7 +90,7 @@ export default function SignupExtra({ navigation }) {
       </View>
 
       {/* {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+        <FastImage source={{ uri: image }} style={{ width: 200, height: 200 }} />
       )} */}
       <TextInput
         style={styles.textInput}

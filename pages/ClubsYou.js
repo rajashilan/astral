@@ -1,6 +1,6 @@
 import storage from "@react-native-firebase/storage";
 import * as Crypto from "expo-crypto";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
@@ -166,10 +166,10 @@ export default function ClubsYou({ navigation }) {
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
         >
-          <Image
+          <FastImage
             style={styles.hamburgerIcon}
             source={hamburgerIcon}
-            contentFit="contain"
+            resizeMode="contain"
           />
         </Pressable>
       </View>
@@ -177,10 +177,13 @@ export default function ClubsYou({ navigation }) {
         <View style={styles.paddingContainer}>
           {!imageLoading ? (
             <Pressable onPress={handleUpdatePhoto}>
-              <Image
+              <FastImage
                 style={styles.image}
-                contentFit="cover"
-                source={currentMember.profileImage}
+                resizeMode="cover"
+                source={{ uri: currentMember.profileImage }}
+                progressiveRenderingEnabled={true}
+                cache={FastImage.cacheControl.immutable}
+                priority={FastImage.priority.normal}
               />
             </Pressable>
           ) : (

@@ -1,6 +1,6 @@
 import auth from "@react-native-firebase/auth";
 import { CommonActions } from "@react-navigation/native";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
@@ -158,10 +158,10 @@ export default function Login({ navigation, route }) {
       transition={3000}
     >
       <IosHeight />
-      <Image
+      <FastImage
         style={styles.image}
         source={logo}
-        contentFit="cover"
+        resizeMode="cover"
         transition={1000}
       />
       <Text style={styles.welcomeTitle}>
@@ -179,10 +179,10 @@ export default function Login({ navigation, route }) {
   ) : (
     <View style={styles.container}>
       <IosHeight />
-      <Image
+      <FastImage
         style={styles.image}
         source={logo}
-        contentFit="cover"
+        resizeMode="cover"
         transition={1000}
       />
       {loginInputs}

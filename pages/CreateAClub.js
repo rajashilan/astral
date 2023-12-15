@@ -3,7 +3,7 @@ import storage from "@react-native-firebase/storage";
 import Checkbox from "expo-checkbox";
 import * as Crypto from "expo-crypto";
 import * as DocumentPicker from "expo-document-picker";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
@@ -615,10 +615,10 @@ export default function CreateAClub({ navigation, route }) {
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
         >
-          <Image
+          <FastImage
             style={styles.hamburgerIcon}
             source={hamburgerIcon}
-            contentFit="contain"
+            resizeMode="contain"
           />
         </Pressable>
       </View>

@@ -1,5 +1,5 @@
 import auth from "@react-native-firebase/auth";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import {
@@ -99,10 +99,10 @@ export default function Main({ navigation }) {
         showsVerticalScrollIndicator={false}
         style={{ width: "100%" }}
       >
-        <Image
+        <FastImage
           style={styles.image}
           source={logo}
-          contentFit="contain"
+          resizeMode="contain"
           transition={1000}
         />
         <View>
@@ -116,12 +116,15 @@ export default function Main({ navigation }) {
             useExperimentalSnap
             renderItem={({ item, index }) => (
               <>
-                <Image
+                <FastImage
                   key={index}
                   style={styles.displayImage}
-                  contentFit="contain"
-                  source={item.image}
                   transition={1000}
+                  resizeMode="contain"
+                  source={item.image}
+                  progressiveRenderingEnabled={true}
+                  cache={FastImage.cacheControl.immutable}
+                  priority={FastImage.priority.normal}
                 />
                 <Text style={styles.title}>{item.title}</Text>
                 <Text style={styles.content}>{item.subtitle}</Text>

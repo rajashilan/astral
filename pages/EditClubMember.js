@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -216,10 +216,10 @@ export default function EditClubMember({ navigation, route }) {
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
         >
-          <Image
+          <FastImage
             style={styles.hamburgerIcon}
             source={hamburgerIcon}
-            contentFit="contain"
+            resizeMode="contain"
           />
         </Pressable>
       </View>
@@ -234,10 +234,13 @@ export default function EditClubMember({ navigation, route }) {
               <Header header={member.name} />
             </View>
             <Text style={styles.disclaimer}>{member.role}</Text>
-            <Image
+            <FastImage
               style={styles.image}
-              contentFit="cover"
-              source={member.profileImage}
+              resizeMode="cover"
+              source={{ uri: member.profileImage }}
+              progressiveRenderingEnabled={true}
+              cache={FastImage.cacheControl.immutable}
+              priority={FastImage.priority.normal}
             />
             <Text
               style={{

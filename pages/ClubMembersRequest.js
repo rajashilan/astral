@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
@@ -118,10 +118,10 @@ export default function ClubMembersRequest({ navigation }) {
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
         >
-          <Image
+          <FastImage
             style={styles.hamburgerIcon}
             source={hamburgerIcon}
-            contentFit="contain"
+            resizeMode="contain"
           />
         </Pressable>
       </View>
@@ -157,7 +157,7 @@ export default function ClubMembersRequest({ navigation }) {
                   itemWidth={width - 32}
                   renderItem={({ item, index }) => (
                     <>
-                      <Image
+                      <FastImage
                         key={index}
                         style={
                           membersRequests.length > 1
@@ -167,8 +167,11 @@ export default function ClubMembersRequest({ navigation }) {
                                 { marginTop: pixelSizeVertical(24) },
                               ]
                         }
-                        contentFit="cover"
-                        source={item.profileImage}
+                        resizeMode="contain"
+                        source={{ uri: item.profileImage }}
+                        progressiveRenderingEnabled={true}
+                        cache={FastImage.cacheControl.immutable}
+                        priority={FastImage.priority.normal}
                       />
                       <Text style={styles.title}>
                         {item.name} - Intake {item.intake}, {item.department}

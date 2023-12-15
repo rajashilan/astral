@@ -2,7 +2,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import dayjs from "dayjs";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
@@ -221,10 +221,10 @@ export default function SignupDetails({ navigation, route }) {
   return (
     <View style={styles.container}>
       <IosHeight />
-      <Image
+      <FastImage
         style={styles.image}
         source={logo}
-        contentFit="cover"
+        resizeMode="cover"
         transition={1000}
       />
       <View style={styles.progressContainer}>
@@ -386,10 +386,10 @@ export default function SignupDetails({ navigation, route }) {
             onPress={() => setPasswordInvisibile(!passwordInvisible)}
             hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
           >
-            <Image
+            <FastImage
               style={styles.passwordIcon}
               source={passwordInvisible ? passwordShow : passwordHide}
-              contentFit="contain"
+              resizeMode="contain"
             />
           </Pressable>
         </View>

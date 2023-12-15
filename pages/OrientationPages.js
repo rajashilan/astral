@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import React, { useState, useEffect } from "react";
@@ -29,7 +29,7 @@ import {
 
 const { width } = Dimensions.get("window");
 
-export default function OrientationPages({ navigation, route }) {
+export default React.memo(function OrientationPages({ navigation, route }) {
   const { orientationPageID } = route.params;
 
   const page = useSelector((state) => state.data.orientation.currentPage);
@@ -112,6 +112,7 @@ export default function OrientationPages({ navigation, route }) {
     </View>
   ) : (
     <FlatList
+      removeClippedSubviews={true}
       scrollEventThrottle={16}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
       initialNumToRender={10}
@@ -153,10 +154,13 @@ export default function OrientationPages({ navigation, route }) {
                         itemWidth={width - 32}
                         renderItem={({ item, index }) => (
                           <React.Fragment>
-                            <Image
+                            <FastImage
                               style={styles.image}
-                              contentFit="cover"
-                              source={item}
+                              resizeMode="cover"
+                              source={{ uri: item }}
+                              progressiveRenderingEnabled={true}
+                              cache={FastImage.cacheControl.immutable}
+                              priority={FastImage.priority.normal}
                             />
                           </React.Fragment>
                         )}
@@ -230,10 +234,10 @@ export default function OrientationPages({ navigation, route }) {
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
         >
-          <Image
+          <FastImage
             style={styles.hamburgerIcon}
             source={hamburgerIcon}
-            contentFit="contain"
+            resizeMode="contain"
           />
         </Pressable>
       </View>
@@ -261,8 +265,7 @@ export default function OrientationPages({ navigation, route }) {
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
   );
-}
-
+});
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,5 +1,5 @@
 import firestore from "@react-native-firebase/firestore";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useRef } from "react";
 import { Pressable, StyleSheet, Text, View, ScrollView } from "react-native";
@@ -180,10 +180,10 @@ export default function Signup({ navigation }) {
   return (
     <View style={styles.container}>
       <IosHeight />
-      <Image
+      <FastImage
         style={styles.image}
         source={logo}
-        contentFit="cover"
+        resizeMode="cover"
         transition={1000}
       />
       <View style={styles.progressContainer}>

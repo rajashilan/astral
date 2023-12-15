@@ -1,5 +1,5 @@
 import firestore from "@react-native-firebase/firestore";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import {
@@ -35,7 +35,7 @@ import { toastConfig } from "../utils/toast-config";
 const { width } = Dimensions.get("window");
 const db = firestore();
 
-export default function Clubs({ navigation }) {
+export default React.memo(function Clubs({ navigation }) {
   const user = useSelector((state) => state.user.credentials);
   const state = useSelector((state) => state.data);
   const [loading, setLoading] = useState(false);
@@ -187,6 +187,7 @@ export default function Clubs({ navigation }) {
       ) : null}
       <FlatList
         keyExtractor={(item, index) => index.toString()}
+        removeClippedSubviews={true}
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         showsVerticalScrollIndicator={false}
@@ -206,11 +207,14 @@ export default function Clubs({ navigation }) {
             {item.approval === "pending" ? (
               item.createdBy === user.userId && (
                 <>
-                  <Image
+                  <FastImage
                     style={styles.imageHalfOpacity}
-                    source={item.image}
-                    contentFit="cover"
+                    source={{ uri: item.image }}
+                    resizeMode="cover"
                     transition={1000}
+                    progressiveRenderingEnabled={true}
+                    cache={FastImage.cacheControl.immutable}
+                    priority={FastImage.priority.normal}
                   />
                   <Text style={styles.pageItemsPending}>{item.name}</Text>
                   <Text style={styles.pageItemSubtitlePending}>
@@ -221,11 +225,14 @@ export default function Clubs({ navigation }) {
             ) : item.approval === "rejected" ? (
               item.createdBy === user.userId && (
                 <Pressable onPress={() => handlePageItemResubmit(item.clubID)}>
-                  <Image
+                  <FastImage
                     style={styles.imageHalfOpacity}
-                    source={item.image}
-                    contentFit="cover"
+                    source={{ uri: item.image }}
+                    resizeMode="cover"
                     transition={1000}
+                    progressiveRenderingEnabled={true}
+                    cache={FastImage.cacheControl.immutable}
+                    priority={FastImage.priority.normal}
                   />
                   <Text style={styles.pageItemsPending}>{item.name}</Text>
                   <Text style={styles.pageItemSubtitleSuspendedSmaller}>
@@ -239,11 +246,14 @@ export default function Clubs({ navigation }) {
             ) : item.status === "inactive" ? (
               item.createdBy === user.userId && (
                 <Pressable onPress={() => handlePageItemPress(item.clubID)}>
-                  <Image
+                  <FastImage
                     style={styles.imageHalfOpacity}
-                    source={item.image}
-                    contentFit="cover"
+                    source={{ uri: item.image }}
+                    resizeMode="cover"
                     transition={1000}
+                    progressiveRenderingEnabled={true}
+                    cache={FastImage.cacheControl.immutable}
+                    priority={FastImage.priority.normal}
                   />
                   <Text style={styles.pageItemsInactive}>{item.name}</Text>
                   <Text style={styles.pageItemSubtitleInactive}>
@@ -254,11 +264,14 @@ export default function Clubs({ navigation }) {
             ) : item.status === "suspended" ? (
               item.createdBy === user.userId && (
                 <>
-                  <Image
+                  <FastImage
                     style={styles.imageHalfOpacity}
-                    source={item.image}
-                    contentFit="cover"
+                    source={{ uri: item.image }}
+                    resizeMode="cover"
                     transition={1000}
+                    progressiveRenderingEnabled={true}
+                    cache={FastImage.cacheControl.immutable}
+                    priority={FastImage.priority.normal}
                   />
                   <Text style={styles.pageItemsSuspended}>{item.name}</Text>
                   <Text style={styles.pageItemSubtitleSuspendedSmaller}>
@@ -269,11 +282,14 @@ export default function Clubs({ navigation }) {
             ) : item.status === "deactivated" ? (
               item.createdBy === user.userId && (
                 <Pressable onPress={() => handlePageItemPress(item.clubID)}>
-                  <Image
+                  <FastImage
                     style={styles.imageHalfOpacity}
-                    source={item.image}
-                    contentFit="cover"
+                    source={{ uri: item.image }}
+                    resizeMode="cover"
                     transition={1000}
+                    progressiveRenderingEnabled={true}
+                    cache={FastImage.cacheControl.immutable}
+                    priority={FastImage.priority.normal}
                   />
                   <Text style={styles.pageItemsInactive}>{item.name}</Text>
                   <Text style={styles.pageItemSubtitleInactive}>
@@ -283,11 +299,14 @@ export default function Clubs({ navigation }) {
               )
             ) : (
               <Pressable onPress={() => handlePageItemPress(item.clubID)}>
-                <Image
+                <FastImage
                   style={styles.image}
-                  source={item.image}
-                  contentFit="cover"
+                  source={{ uri: item.image }}
+                  resizeMode="cover"
                   transition={1000}
+                  progressiveRenderingEnabled={true}
+                  cache={FastImage.cacheControl.immutable}
+                  priority={FastImage.priority.normal}
                 />
                 <Text style={styles.pageItems}>{item.name}</Text>
               </Pressable>
@@ -354,10 +373,10 @@ export default function Clubs({ navigation }) {
             onPress={toggleSideMenu}
             hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
           >
-            <Image
+            <FastImage
               style={styles.hamburgerIcon}
               source={hamburgerIcon}
-              contentFit="contain"
+              resizeMode="contain"
             />
           </Pressable> */}
           <Pressable
@@ -393,8 +412,7 @@ export default function Clubs({ navigation }) {
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </>
   );
-}
-
+});
 const styles = StyleSheet.create({
   container: {
     flex: 1,

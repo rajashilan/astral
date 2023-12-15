@@ -1,6 +1,6 @@
 import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
@@ -71,10 +71,10 @@ const SideMenu = (props) => {
             style={styles.paddingContainer}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
-            <Image
+            <FastImage
               style={styles.closeIcon}
               source={closeIcon}
-              contentFit="contain"
+              resizeMode="contain"
             />
           </Pressable>
         </View>
@@ -82,10 +82,13 @@ const SideMenu = (props) => {
         <Text style={styles.college}>{user.campus}</Text>
         <View style={styles.userDetailsContainer}>
           <Pressable onPress={handleNavigateToProfile}>
-            <Image
+            <FastImage
               style={styles.image}
-              contentFit="cover"
-              source={user.profileImage}
+              resizeMode="cover"
+              source={{ uri: user.profileImage }}
+              progressiveRenderingEnabled={true}
+              cache={FastImage.cacheControl.immutable}
+              priority={FastImage.priority.normal}
             />
           </Pressable>
           <Pressable
@@ -123,7 +126,7 @@ const SideMenu = (props) => {
             }}
             onPress={handleNavigateToNotifications}
           >
-            {/* <Image
+            {/* <FastImage
               style={styles.notificationIcon}
               contentFit="contain"
               source={notificationIcon}

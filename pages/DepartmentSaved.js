@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import React, { useState } from "react";
 import { StyleSheet, Text, View, FlatList, Pressable } from "react-native";
 
@@ -41,11 +41,14 @@ export default function DepartmentSaved(props) {
           <View style={styles.contentContainer}>
             {item.content && <Text style={styles.content}>{item.content}</Text>}
             {item.image && (
-              <Image
+              <FastImage
                 key={index}
                 style={styles.image}
                 resizeMode="cover"
-                source={item.image}
+                source={{ uri: item.image }}
+                progressiveRenderingEnabled={true}
+                cache={FastImage.cacheControl.immutable}
+                priority={FastImage.priority.normal}
               />
             )}
             {item.file && (

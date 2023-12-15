@@ -1,5 +1,5 @@
 import auth from "@react-native-firebase/auth";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
@@ -109,10 +109,13 @@ export default function Home({ navigation }) {
       }}
     >
       <Pressable onPress={() => navigation.replace("Profile")}>
-        <Image
+        <FastImage
           style={styles.image}
-          contentFit="cover"
-          source={user.profileImage}
+          resizeMode="cover"
+          source={{ uri: user.profileImage }}
+          progressiveRenderingEnabled={true}
+          cache={FastImage.cacheControl.immutable}
+          priority={FastImage.priority.normal}
         />
       </Pressable>
       <Pressable
@@ -148,9 +151,9 @@ export default function Home({ navigation }) {
         }}
         onPress={() => navigation.replace("Notifications")}
       >
-        <Image
+        <FastImage
           style={styles.notificationIcon}
-          contentFit="contain"
+          resizeMode="contain"
           source={notificationIcon}
         />
       </Pressable>
