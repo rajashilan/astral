@@ -5,6 +5,7 @@ import {
   pixelSizeHorizontal,
   pixelSizeVertical,
   fontPixel,
+  heightPixel,
 } from "../utils/responsive-font";
 
 const PrimaryButton = ({
@@ -44,11 +45,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#07BEB8",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
+    justifyContent: "center",
     marginTop: pixelSizeVertical(16),
     marginBottom: pixelSizeVertical(24),
     width: "100%",
+    height: heightPixel(62),
     borderRadius: 5,
   },
   loginButtonDisabled: {
