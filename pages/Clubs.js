@@ -74,6 +74,7 @@ export default React.memo(function Clubs({ navigation }) {
   const onRefresh = React.useCallback(() => {
     //get clubs from clubs overview
     setRefreshing(true);
+    setSearch("");
     setLoading(true);
     dispatch(getAuthenticatedUser(user.email));
     db.collection("clubsOverview")
@@ -94,18 +95,18 @@ export default React.memo(function Clubs({ navigation }) {
   useEffect(() => {
     const temp = [];
     if (all && all.length > 0 && user.clubs.length > 0) {
-      user.clubs.map((club) => {
-        const index = all.findIndex((all) => all.clubID === club.clubID);
-        if (index !== -1) {
+      user.clubs.forEach((club) => {
+        const foundClub = all.find((allClub) => allClub.clubID === club.clubID);
+        if (foundClub) {
           temp.push({
-            ...all[index],
+            ...foundClub,
             role: club.role,
           });
         }
       });
     }
-    setYours([...temp]);
-  }, [all]);
+    setYours(temp);
+  }, [all, user.clubs]);
 
   useEffect(() => {
     return () => {
