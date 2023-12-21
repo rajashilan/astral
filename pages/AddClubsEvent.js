@@ -384,25 +384,6 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
-  imageHeaderContainer: {
-    height: pixelSizeVertical(120),
-    width: "100%",
-  },
-  overlayContainer: {
-    justifyContent: "center",
-    height: pixelSizeVertical(120),
-    width: "100%",
-    backgroundColor: "rgba(12, 17, 31, 0.7)",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-  },
-  header: {
-    fontSize: fontPixel(34),
-    fontWeight: "500",
-    color: "#DFE5F8",
-  },
   datePickerButton: {
     backgroundColor: "#232F52",
     paddingRight: pixelSizeHorizontal(16),
@@ -429,15 +410,6 @@ const styles = StyleSheet.create({
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
   },
-  headerContainer: {
-    marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(16),
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    alignItems: "center",
-  },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
     width: pixelSizeHorizontal(30),
@@ -447,21 +419,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#C4FFF9",
     marginTop: pixelSizeVertical(2),
-  },
-  headerMini: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#DFE5F8",
-    maxWidth: width - 180,
-    marginLeft: pixelSizeHorizontal(-10),
-  },
-  headerMiniInvisible: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#DFE5F8",
-    marginRight: pixelSizeHorizontal(16),
-    maxWidth: "80%",
-    opacity: 0,
   },
   headerContainerShowMiniHeader: {
     marginTop: pixelSizeVertical(20),
@@ -478,24 +435,6 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(12),
     borderRadius: 5,
   },
-  role: {
-    fontSize: fontPixel(14),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(4),
-  },
-  name: {
-    fontSize: fontPixel(20),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(10),
-  },
-  quote: {
-    fontSize: fontPixel(14),
-    fontWeight: "400",
-    color: "#C6CDE2",
-    lineHeight: 22,
-  },
   textInput: {
     backgroundColor: "#1A2238",
     paddingRight: pixelSizeHorizontal(16),
@@ -508,13 +447,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
-  },
-  tertiaryButton: {
-    color: "#A7AFC7",
-    fontSize: fontPixel(22),
-    textTransform: "lowercase",
-    fontWeight: "400",
-    textAlign: "center",
   },
   disclaimer: {
     marginTop: pixelSizeVertical(-18),
