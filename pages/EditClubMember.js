@@ -30,6 +30,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
@@ -41,6 +42,7 @@ export default function EditClubMember({ navigation, route }) {
   );
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
+  //const loading = true;
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
@@ -88,6 +90,7 @@ export default function EditClubMember({ navigation, route }) {
   };
 
   const handleShowAssignRolePopUp = () => {
+    setSelectedRole("");
     setShowAssignRolePopUp(!showAssignRolePopUp);
   };
 
@@ -254,7 +257,7 @@ export default function EditClubMember({ navigation, route }) {
             </Text>
             <Text
               style={{
-                fontSize: fontPixel(20),
+                fontSize: member.phone_number ? fontPixel(20) : fontPixel(16),
                 fontWeight: "400",
                 color: "#DFE5F8",
                 marginTop: pixelSizeVertical(6),
@@ -265,21 +268,12 @@ export default function EditClubMember({ navigation, route }) {
                 ? member.phone_number
                 : "phone number not available"}
             </Text>
-            <Pressable
-              style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            <PrimaryButton
+              loading={loading}
               onPress={handleShowAssignRolePopUp}
-            >
-              <Text
-                style={
-                  loading
-                    ? styles.loginButtonLoadingText
-                    : styles.loginButtonText
-                }
-              >
-                {loading ? "assigning role..." : "assign role"}
-              </Text>
-            </Pressable>
-            {member.name !== currentMember.name && (
+              text="assign role"
+            />
+            {member.name !== currentMember.name && !loading && (
               <Pressable
                 onPress={handleShowDeactivateMemberPopUp}
                 disabled={loading}
@@ -387,26 +381,12 @@ export default function EditClubMember({ navigation, route }) {
             }}
           />
           {errors.role ? <Text style={styles.error}>{errors.role}</Text> : null}
-
-          <Pressable
-            disabled={loading || !selectedRole}
-            style={
-              loading || !selectedRole
-                ? styles.loginButtonDisabled
-                : styles.loginButton
-            }
+          <PrimaryButton
+            conditionToDisable={!selectedRole}
+            loading={loading}
+            text="assign"
             onPress={handleAssignRole}
-          >
-            <Text
-              style={
-                loading || !selectedRole
-                  ? styles.loginButtonLoadingText
-                  : styles.loginButtonText
-              }
-            >
-              {loading ? "assigning..." : "assign"}
-            </Text>
-          </Pressable>
+          />
           {!loading && (
             <Pressable onPress={handleShowAssignRolePopUp}>
               <Text style={styles.withdrawButton}>cancel</Text>
@@ -439,18 +419,11 @@ export default function EditClubMember({ navigation, route }) {
               ? "Assigning this member the President's role will remove your role as a president and reassign your role as a member. Do you wish to continue?"
               : "Reassigning this role will reset the previous member's role. Do you wish to continue?"}
           </Text>
-          <Pressable
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+          <PrimaryButton
+            loading={loading}
+            text="continue"
             onPress={handleAssignCommitteeRole}
-          >
-            <Text
-              style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
-              }
-            >
-              continue
-            </Text>
-          </Pressable>
+          />
           {!loading && (
             <Pressable onPress={handleShowRoleWarningPopUp}>
               <Text style={styles.withdrawButton}>cancel</Text>
@@ -481,18 +454,11 @@ export default function EditClubMember({ navigation, route }) {
           >
             are you sure to remove this member?
           </Text>
-          <Pressable
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+          <PrimaryButton
+            loading={loading}
             onPress={handleDeactivateMember}
-          >
-            <Text
-              style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
-              }
-            >
-              remove
-            </Text>
-          </Pressable>
+            text={"remove"}
+          />
           {!loading && (
             <Pressable onPress={handleShowDeactivateMemberPopUp}>
               <Text style={styles.withdrawButton}>cancel</Text>
@@ -646,23 +612,6 @@ const styles = StyleSheet.create({
     paddingBottom: pixelSizeVertical(16),
     borderRadius: 5,
   },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
   secondaryButton: {
     fontSize: fontPixel(22),
     fontWeight: "500",
@@ -678,19 +627,6 @@ const styles = StyleSheet.create({
     color: "#a3222d",
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
-  },
-  altButton: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#07BEB8",
-    marginTop: pixelSizeVertical(8),
-  },
-  altButtonInactive: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#07BEB8",
-    marginTop: pixelSizeVertical(8),
-    opacity: 0.5,
   },
   withdrawMenu: {
     height: "auto",
