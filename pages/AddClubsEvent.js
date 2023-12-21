@@ -35,6 +35,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
@@ -333,20 +334,11 @@ export default function AddClubsEvent({ navigation }) {
                 onCancel={() => setDatePickerVisibility(!isDatePickerVisible)}
               />
             )}
-            <Pressable
-              style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            <PrimaryButton
+              loading={loading}
               onPress={handleAddToEvent}
-            >
-              <Text
-                style={
-                  loading
-                    ? styles.loginButtonLoadingText
-                    : styles.loginButtonText
-                }
-              >
-                {loading ? "adding to event..." : "add"}
-              </Text>
-            </Pressable>
+              text="add"
+            />
             <Pressable
               onPress={() => {
                 navigation.goBack();
@@ -537,40 +529,6 @@ const styles = StyleSheet.create({
     paddingTop: pixelSizeVertical(16),
     paddingBottom: pixelSizeVertical(16),
     borderRadius: 5,
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   secondaryButton: {
     fontSize: fontPixel(22),
