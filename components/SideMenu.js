@@ -32,20 +32,22 @@ const SideMenu = (props) => {
 
   const handleMenuNavigation = (name) => {
     props.callParentScreenFunction();
-    const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
-    if (name === "staff list") navigation.replace("Stafflist");
-    else if (name === "general forms") navigation.replace("GeneralForms");
-    else navigation.replace(menuItem.trim());
+    if (props.currentPage !== name) {
+      const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
+      if (name === "general forms") navigation.replace("GeneralForms");
+      else navigation.replace(menuItem.trim());
+    }
   };
 
   const handleNavigateToProfile = () => {
     props.callParentScreenFunction();
-    navigation.replace("Profile");
+    if (props.currentPage !== "profile") navigation.replace("Profile");
   };
 
   const handleNavigateToNotifications = () => {
     props.callParentScreenFunction();
-    navigation.replace("Notifications");
+    if (props.currentPage !== "notifications")
+      navigation.replace("Notifications");
   };
 
   const signOutUser = () => {
