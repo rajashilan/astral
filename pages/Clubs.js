@@ -94,7 +94,7 @@ export default React.memo(function Clubs({ navigation }) {
 
   useEffect(() => {
     const temp = [];
-    if (all && all.length > 0 && user.clubs.length > 0) {
+    if (all && user && all.length > 0 && user.clubs && user.clubs.length > 0) {
       user.clubs.forEach((club) => {
         const foundClub = all.find((allClub) => allClub.clubID === club.clubID);
         if (foundClub) {
