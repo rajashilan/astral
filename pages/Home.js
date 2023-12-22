@@ -178,7 +178,9 @@ export default function Home({ navigation }) {
               disabled={loading}
               onPress={() => handleMenuNavigation(item.name)}
             >
-              <Text style={styles.menuItems}>{item.name}</Text>
+              <Text style={[styles.menuItems, { opacity: loading ? 0.5 : 1 }]}>
+                {item.name}
+              </Text>
             </Pressable>
           )}
         />
