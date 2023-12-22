@@ -202,25 +202,6 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
-  imageHeaderContainer: {
-    height: pixelSizeVertical(120),
-    width: "100%",
-  },
-  overlayContainer: {
-    justifyContent: "center",
-    height: pixelSizeVertical(120),
-    width: "100%",
-    backgroundColor: "rgba(12, 17, 31, 0.7)",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-  },
-  header: {
-    fontSize: fontPixel(34),
-    fontWeight: "500",
-    color: "#DFE5F8",
-  },
   emptyView: {
     flex: 1,
     height: pixelSizeVertical(32),
@@ -230,15 +211,6 @@ const styles = StyleSheet.create({
     margin: 0,
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
-  },
-  headerContainer: {
-    marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(16),
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    alignItems: "center",
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
