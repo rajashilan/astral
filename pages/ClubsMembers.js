@@ -109,9 +109,6 @@ const styles = StyleSheet.create({
     color: "#C6CDE2",
     lineHeight: 22,
   },
-  onlySpan: {
-    flexDirection: "row",
-  },
   emptyView: {
     flex: 1,
     height: pixelSizeVertical(30),
