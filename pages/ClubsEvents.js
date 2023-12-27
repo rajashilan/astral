@@ -19,6 +19,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
@@ -134,14 +135,10 @@ const ClubsEvents = React.memo(({ navigation }) => {
   return (
     <View style={styles.container}>
       {!isEmpty(currentMember) && currentMember.role === "president" && (
-        <Pressable
-          style={styles.loginButton}
-          onPress={() => {
-            navigation.navigate("AddClubsEvent");
-          }}
-        >
-          <Text style={styles.loginButtonText}>add an event</Text>
-        </Pressable>
+        <PrimaryButton
+          onPress={() => navigation.navigate("AddClubsEvent")}
+          text="add an event"
+        />
       )}
       {!loading &&
         data.past.length + data.future.length === 0 &&
@@ -457,18 +454,11 @@ const ClubsEvents = React.memo(({ navigation }) => {
               ? "Deleting this event will set your club as inactive. Do you wish to continue?"
               : "Are you sure to delete this event?"}
           </Text>
-          <Pressable
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+          <PrimaryButton
+            loading={loading}
             onPress={handleDeleteEvent}
-          >
-            <Text
-              style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
-              }
-            >
-              {loading ? "deleting..." : "delete"}
-            </Text>
-          </Pressable>
+            text="delete"
+          />
           {!loading && (
             <Pressable onPress={() => handleShowDeleteModal()}>
               <Text style={styles.withdrawButton}>cancel</Text>
@@ -487,12 +477,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0C111F",
     paddingTop: pixelSizeVertical(4),
-  },
-  header: {
-    fontSize: fontPixel(26),
-    fontWeight: "500",
-    color: "#F5F5F5",
-    marginBottom: pixelSizeVertical(16),
   },
   innerTabActive: {
     fontSize: fontPixel(22),
@@ -533,16 +517,6 @@ const styles = StyleSheet.create({
     color: "#C6CDE2",
     lineHeight: 22,
   },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
   onlySpan: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -553,12 +527,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: pixelSizeVertical(30),
     backgroundColor: "#0C111F",
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
   },
   borderButton: {
     backgroundColor: "#0C111F",
@@ -599,13 +567,6 @@ const styles = StyleSheet.create({
     color: "#A7AFC7",
     marginTop: pixelSizeVertical(2),
     textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-    marginTop: pixelSizeVertical(8),
   },
   warningText: {
     fontSize: fontPixel(20),
