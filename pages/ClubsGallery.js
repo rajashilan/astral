@@ -18,6 +18,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
@@ -107,14 +108,13 @@ const ClubsGallery = React.memo(({ navigation }) => {
   return (
     <View style={styles.container}>
       {!isEmpty(currentMember) && currentMember.role === "president" && (
-        <Pressable
-          style={styles.loginButton}
+        <PrimaryButton
           onPress={() => {
             navigation.navigate("AddClubsGallery");
           }}
-        >
-          <Text style={styles.loginButtonText}>add a photo</Text>
-        </Pressable>
+          text="add a photo"
+          buttonStyle={{ marginTop: 0 }}
+        />
       )}
       {!loading &&
         data.length === 0 &&
@@ -260,18 +260,11 @@ const ClubsGallery = React.memo(({ navigation }) => {
               ? "Deleting this photo will set your club as inactive. Do you wish to continue?"
               : "Are you sure to delete this photo?"}
           </Text>
-          <Pressable
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+          <PrimaryButton
+            loading={loading}
             onPress={handleDeleteGallery}
-          >
-            <Text
-              style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
-              }
-            >
-              {loading ? "deleting..." : "delete"}
-            </Text>
-          </Pressable>
+            text="delete"
+          />
           {!loading && (
             <Pressable onPress={() => handleShowDeleteModal()}>
               <Text style={styles.withdrawButton}>cancel</Text>
@@ -318,22 +311,6 @@ const styles = StyleSheet.create({
     height: pixelSizeVertical(30),
     backgroundColor: "#0C111F",
   },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
   borderButton: {
     backgroundColor: "#0C111F",
     paddingRight: pixelSizeHorizontal(16),
@@ -373,13 +350,6 @@ const styles = StyleSheet.create({
     color: "#A7AFC7",
     marginTop: pixelSizeVertical(2),
     textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-    marginTop: pixelSizeVertical(8),
   },
   warningText: {
     fontSize: fontPixel(20),

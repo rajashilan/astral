@@ -138,6 +138,7 @@ const ClubsEvents = React.memo(({ navigation }) => {
         <PrimaryButton
           onPress={() => navigation.navigate("AddClubsEvent")}
           text="add an event"
+          buttonStyle={{ marginTop: 0 }}
         />
       )}
       {!loading &&
