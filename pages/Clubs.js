@@ -421,12 +421,6 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
-  header: {
-    fontSize: fontPixel(42),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(10),
-  },
   image: {
     width: "100%",
     height: heightPixel(150),
@@ -557,12 +551,6 @@ const styles = StyleSheet.create({
     margin: 0,
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
-  },
-  headerContainer: {
-    marginTop: pixelSizeVertical(20),
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginBottom: pixelSizeVertical(8),
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
