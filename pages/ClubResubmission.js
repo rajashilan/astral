@@ -35,6 +35,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
@@ -361,6 +362,7 @@ export default function ClubResubmission({ navigation, route }) {
       })
       .then(() => {
         setLoading(false);
+        setShowWithdrawModal(!showWithdrawModal);
         Toast.show({
           type: "success",
           text1: "Club application withdrawn successfully",
@@ -558,29 +560,22 @@ export default function ClubResubmission({ navigation, route }) {
       </View>
       {step === "step1" ? clubName : null}
       {step === "step2" ? fpf : null}
-      <Pressable
-        style={loading ? styles.loginButtonDisabled : styles.loginButton}
+      <PrimaryButton
         onPress={handleSubmit}
-      >
-        <Text
-          style={
-            loading ? styles.loginButtonLoadingText : styles.loginButtonText
-          }
-        >
-          {step === "step2"
-            ? loading
-              ? "resubmitting..."
-              : "resubmit"
-            : "next"}
-        </Text>
-      </Pressable>
-      {step === "step2" ? (
+        loading={loading}
+        text={step === "step2" ? "resubmit" : "next"}
+      />
+      {step === "step2" && !loading ? (
         <Pressable
           onPress={() => {
             setStep("step1");
           }}
         >
           <Text style={styles.secondaryButton}>back</Text>
+        </Pressable>
+      ) : step === "step1" && !loading ? (
+        <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
+          <Text style={styles.secondaryButton}>withdraw</Text>
         </Pressable>
       ) : null}
       {successMessage ? (
@@ -624,18 +619,11 @@ export default function ClubResubmission({ navigation, route }) {
           >
             Are you sure to withdraw your application?
           </Text>
-          <Pressable
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+          <PrimaryButton
+            loading={loading}
             onPress={handleWithdraw}
-          >
-            <Text
-              style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
-              }
-            >
-              {loading ? "withdrawing..." : "withdraw"}
-            </Text>
-          </Pressable>
+            text="withdraw"
+          />
           <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
             <Text style={styles.withdrawButton}>cancel</Text>
           </Pressable>
@@ -654,19 +642,6 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
-  imageBackground: {
-    flex: 1,
-    backgroundColor: "#0C111F",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-  },
-  image: {
-    width: widthPixel(177),
-    height: heightPixel(93),
-    marginBottom: pixelSizeVertical(38),
-  },
   text: {
     color: "#fff",
   },
@@ -683,69 +658,12 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 5,
   },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
   secondaryButton: {
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#A7AFC7",
     marginTop: pixelSizeVertical(2),
     textAlign: "center",
-  },
-  forgotPasswordButton: {
-    color: "#C4FFF9",
-    fontSize: fontPixel(14),
-    textTransform: "lowercase",
-    fontWeight: "400",
-    marginBottom: pixelSizeVertical(34),
-  },
-  welcomeTitle: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#DFE5F8",
-    textAlign: "center",
-    marginTop: pixelSizeVertical(-26),
-    marginBottom: pixelSizeVertical(4),
-  },
-  welcomeSubheading: {
-    fontSize: fontPixel(14),
-    fontWeight: "500",
-    color: "#C6CDE2",
-    textAlign: "center",
-    lineHeight: 22,
-    marginBottom: pixelSizeVertical(16),
   },
   error: {
     marginTop: pixelSizeVertical(8),
@@ -757,16 +675,6 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
-  },
-  errorUnderButton: {
-    marginTop: pixelSizeVertical(-12),
-    marginBottom: pixelSizeVertical(16),
-    fontSize: fontPixel(12),
-    fontWeight: "400",
-    color: "#a3222d",
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingRight: pixelSizeHorizontal(16),
-    textAlign: "center",
   },
   successText: {
     marginTop: pixelSizeVertical(-8),
@@ -801,30 +709,9 @@ const styles = StyleSheet.create({
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
   },
-  headerContainer: {
-    marginTop: pixelSizeVertical(20),
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginBottom: pixelSizeVertical(8),
-  },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
     width: pixelSizeHorizontal(30),
-  },
-  headerMini: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#DFE5F8",
-    marginRight: pixelSizeHorizontal(16),
-    maxWidth: width - 100,
-  },
-  headerMiniInvisible: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#DFE5F8",
-    marginRight: pixelSizeHorizontal(16),
-    maxWidth: "80%",
-    opacity: 0,
   },
   headerContainerShowMiniHeader: {
     marginTop: pixelSizeVertical(20),
@@ -833,13 +720,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-  },
-  headerContainerHideMiniHeader: {
-    marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(8),
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
   },
   backButton: {
     fontSize: fontPixel(22),
@@ -855,5 +735,27 @@ const styles = StyleSheet.create({
     paddingBottom: pixelSizeVertical(16),
     marginBottom: pixelSizeVertical(8),
     borderRadius: 5,
+  },
+  withdrawMenu: {
+    height: "auto",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    backgroundColor: "#131A2E",
+    display: "flex",
+    borderRadius: 5,
+  },
+  rejectionReason: {
+    fontSize: fontPixel(20),
+    fontWeight: "400",
+    color: "#DFE5F8",
+  },
+  withdrawButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#A7AFC7",
+    marginTop: pixelSizeVertical(2),
+    textAlign: "center",
   },
 });
