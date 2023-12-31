@@ -193,7 +193,7 @@ export default function ClubsPages({ navigation, route }) {
           paddingLeft: pixelSizeHorizontal(16),
         }}
       >
-        {!isEmpty(currentMember) && !hasRequested && (
+        {isEmpty(currentMember) && !hasRequested && (
           <PrimaryButton
             onPress={() => setShowAgreementPopUp(!showAgreementPopUp)}
             text="join"
@@ -209,6 +209,14 @@ export default function ClubsPages({ navigation, route }) {
           tabBarAllowFontScaling: true,
           tabBarActiveTintColor: "#DFE5F8",
           tabBarIndicator: null,
+          lazyPlaceholder: () => (
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: "#232F52",
+              }}
+            ></View>
+          ),
           swipeEnabled: false,
           tabBarStyle: {
             backgroundColor: "transparent",
