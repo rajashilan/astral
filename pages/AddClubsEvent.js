@@ -348,6 +348,7 @@ export default function AddClubsEvent({ navigation }) {
             </Pressable>
           </View>
         </View>
+        <View style={styles.emptyView}></View>
       </ScrollView>
 
       <Modal

@@ -280,6 +280,7 @@ export default function AddClubsGallery({ navigation }) {
             </Pressable>
           </View>
         </View>
+        <View style={styles.emptyView}></View>
       </ScrollView>
 
       <Modal
