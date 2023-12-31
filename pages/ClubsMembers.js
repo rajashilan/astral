@@ -1,6 +1,6 @@
 import FastImage from "react-native-fast-image";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Dimensions, ScrollView } from "react-native";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import { useSelector } from "react-redux";
 
@@ -13,7 +13,7 @@ import {
 
 const { width } = Dimensions.get("window");
 
-const ClubsMembers = React.memo((props) => {
+const ClubsMembers = React.memo(({ onScroll }) => {
   const members = useSelector((state) => state.data.clubData.members);
   const numberOfMembers = `${members.length} members`;
 
@@ -23,8 +23,16 @@ const ClubsMembers = React.memo((props) => {
     setIndexSelected(indexSelected);
   };
 
+  const handleScroll = (scrollHeight) => {
+    onScroll(scrollHeight);
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      scrollEventThrottle={16}
+      onScroll={(event) => handleScroll(event.nativeEvent.contentOffset.y)}
+    >
       {numberOfMembers && <Text style={styles.header}>{numberOfMembers}</Text>}
       <Pagination
         inactiveDotColor="#546593"
@@ -68,7 +76,7 @@ const ClubsMembers = React.memo((props) => {
         )}
       />
       <View style={styles.emptyView} />
-    </View>
+    </ScrollView>
   );
 });
 
@@ -76,7 +84,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    paddingTop: pixelSizeVertical(4),
+    paddingTop: pixelSizeVertical(14),
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingBottom: pixelSizeVertical(12),
   },
   header: {
     fontSize: fontPixel(22),

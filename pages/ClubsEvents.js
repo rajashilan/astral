@@ -1,7 +1,14 @@
 import dayjs from "dayjs";
 import FastImage from "react-native-fast-image";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import Modal from "react-native-modal";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import Toast from "react-native-toast-message";
@@ -23,7 +30,7 @@ import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
-const ClubsEvents = React.memo(({ navigation }) => {
+const ClubsEvents = React.memo(({ navigation, onScroll }) => {
   //can have image, must have title, must have date, can have text
 
   const [innerTab, setInnerTab] = useState("past");
@@ -132,8 +139,16 @@ const ClubsEvents = React.memo(({ navigation }) => {
     }
   };
 
+  const handleScroll = (scrollHeight) => {
+    onScroll(scrollHeight);
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      scrollEventThrottle={16}
+      onScroll={(event) => handleScroll(event.nativeEvent.contentOffset.y)}
+    >
       {!isEmpty(currentMember) && currentMember.role === "president" && (
         <PrimaryButton
           onPress={() => navigation.navigate("AddClubsEvent")}
@@ -313,16 +328,19 @@ const ClubsEvents = React.memo(({ navigation }) => {
                   </>
                 )}
                 {item.approval === "pending" && (
-                  <Text
-                    style={{
-                      fontSize: fontPixel(16),
-                      fontWeight: "400",
-                      color: "#C6CDE2",
-                      marginTop: pixelSizeVertical(2),
-                    }}
-                  >
-                    pending approval
-                  </Text>
+                  <>
+                    <Text
+                      style={{
+                        fontSize: fontPixel(16),
+                        fontWeight: "400",
+                        color: "#C6CDE2",
+                        marginTop: pixelSizeVertical(2),
+                      }}
+                    >
+                      pending approval
+                    </Text>
+                    <Text style={styles.content}>{item.content}</Text>
+                  </>
                 )}
               </Pressable>
             </>
@@ -469,7 +487,7 @@ const ClubsEvents = React.memo(({ navigation }) => {
       </Modal>
       <View style={styles.emptyView} />
       <Toast config={toastConfig} />
-    </View>
+    </ScrollView>
   );
 });
 
@@ -477,7 +495,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    paddingTop: pixelSizeVertical(4),
+    paddingTop: pixelSizeVertical(14),
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingBottom: pixelSizeVertical(12),
   },
   innerTabActive: {
     fontSize: fontPixel(22),

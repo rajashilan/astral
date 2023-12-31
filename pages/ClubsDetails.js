@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import Toast from "react-native-toast-message";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -16,7 +23,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 
-const ClubsDetails = React.memo(({ navigation }) => {
+const ClubsDetails = React.memo(({ onScroll }) => {
   const dispatch = useDispatch();
 
   const club = useSelector((state) => state.data.clubData.club);
@@ -165,14 +172,22 @@ const ClubsDetails = React.memo(({ navigation }) => {
     </>
   );
 
+  const handleScroll = (scrollHeight) => {
+    onScroll(scrollHeight);
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      scrollEventThrottle={16}
+      onScroll={(event) => handleScroll(event.nativeEvent.contentOffset.y)}
+    >
       {!isEmpty(currentMember) && currentMember.role === "president"
         ? editView
         : normalView}
       <Toast config={toastConfig} />
       <View style={styles.emptyView} />
-    </View>
+    </ScrollView>
   );
 });
 
@@ -180,7 +195,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    paddingTop: pixelSizeVertical(4),
+    paddingTop: pixelSizeVertical(14),
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingBottom: pixelSizeVertical(12),
   },
   title: {
     fontSize: fontPixel(20),

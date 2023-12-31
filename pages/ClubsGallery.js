@@ -1,6 +1,13 @@
 import FastImage from "react-native-fast-image";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import Modal from "react-native-modal";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import Toast from "react-native-toast-message";
@@ -22,7 +29,7 @@ import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
-const ClubsGallery = React.memo(({ navigation }) => {
+const ClubsGallery = React.memo(({ navigation, onScroll }) => {
   const dispatch = useDispatch();
   const club = useSelector((state) => state.data.clubData.club);
   const campusID = useSelector((state) => state.data.campus.campusID);
@@ -105,8 +112,16 @@ const ClubsGallery = React.memo(({ navigation }) => {
     }
   };
 
+  const handleScroll = (scrollHeight) => {
+    onScroll(scrollHeight);
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      scrollEventThrottle={16}
+      onScroll={(event) => handleScroll(event.nativeEvent.contentOffset.y)}
+    >
       {!isEmpty(currentMember) && currentMember.role === "president" && (
         <PrimaryButton
           onPress={() => {
@@ -275,7 +290,7 @@ const ClubsGallery = React.memo(({ navigation }) => {
 
       <View style={styles.emptyView} />
       <Toast config={toastConfig} />
-    </View>
+    </ScrollView>
   );
 });
 
@@ -283,7 +298,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    paddingTop: pixelSizeVertical(4),
+    paddingTop: pixelSizeVertical(14),
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingBottom: pixelSizeVertical(12),
   },
   image: {
     width: "100%",

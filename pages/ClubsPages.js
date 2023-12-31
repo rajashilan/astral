@@ -11,9 +11,13 @@ import {
   ImageBackground,
 } from "react-native";
 import { Bounce } from "react-native-animated-spinkit";
-import { ScrollView } from "react-native-gesture-handler";
 import Modal from "react-native-modal";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  FadeInUp,
+  FadeOutUp,
+} from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -37,6 +41,10 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+
+const Tab = createMaterialTopTabNavigator();
+
 const { width } = Dimensions.get("window");
 
 export default function ClubsPages({ navigation, route }) {
@@ -55,18 +63,7 @@ export default function ClubsPages({ navigation, route }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
   const [showAgreementPopUp, setShowAgreementPopUp] = useState(false);
 
-  const [headerHeight, setHeaderHeight] = useState(300);
-  const [scrollHeight, setScrollHeight] = useState(0);
-  const [showMiniHeader, setShowMiniHeader] = useState(false);
-
-  const [navigations] = useState({
-    navigations: [
-      { name: "members" },
-      { name: "gallery" },
-      { name: "events" },
-      { name: "details" },
-    ],
-  });
+  const [show, setShow] = useState(true);
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0;
@@ -91,8 +88,6 @@ export default function ClubsPages({ navigation, route }) {
   //pass down current member data to all components as prop
   //same goes for clubsDetails
   //gallery and events get their data separately
-
-  const [tab, setTab] = useState("members");
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -158,43 +153,38 @@ export default function ClubsPages({ navigation, route }) {
     dispatch(createNotification(notification, userIDs));
   };
 
-  const onLayout = (event) => {
-    const { height } = event.nativeEvent.layout;
-    setHeaderHeight(height);
+  //handle scroll for components
+  const handleScroll = (scrollHeight) => {
+    let hideHeader = false;
+    if (scrollHeight > 50 && !hideHeader) hideHeader = true;
+    else if (scrollHeight < 200 && hideHeader) hideHeader = false;
+    setShow(!hideHeader);
   };
-
-  useEffect(() => {
-    //if scroll height is more than header height and the header is not shown, show
-    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
-    else if (scrollHeight < headerHeight && showMiniHeader)
-      setShowMiniHeader(false);
-  }, [scrollHeight, showMiniHeader]);
 
   const UI = UIloading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
       <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
     </View>
   ) : (
-    <ScrollView
-      scrollEventThrottle={16}
-      stickyHeaderIndices={[2]}
-      onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
-      style={StyleSheet.create({
-        flex: 1,
-        marginTop: pixelSizeVertical(10),
-      })}
-    >
-      {data && data.image && (
-        <View onLayout={onLayout}>
-          <ImageBackground
-            source={{ uri: data.image }}
-            style={styles.imageHeaderContainer}
-          >
-            <View style={styles.overlayContainer}>
-              <Text style={styles.header}>{data.name}</Text>
+    <>
+      {show && (
+        <Animated.View
+          entering={FadeInUp.duration(100)}
+          exiting={FadeOutUp.duration(70)}
+        >
+          {data && data.image && (
+            <View>
+              <ImageBackground
+                source={{ uri: data.image }}
+                style={styles.imageHeaderContainer}
+              >
+                <View style={styles.overlayContainer}>
+                  <Text style={styles.header}>{data.name}</Text>
+                </View>
+              </ImageBackground>
             </View>
-          </ImageBackground>
-        </View>
+          )}
+        </Animated.View>
       )}
 
       <View
@@ -203,69 +193,59 @@ export default function ClubsPages({ navigation, route }) {
           paddingLeft: pixelSizeHorizontal(16),
         }}
       >
-        {isEmpty(currentMember) && !hasRequested && (
+        {!isEmpty(currentMember) && !hasRequested && (
           <PrimaryButton
             onPress={() => setShowAgreementPopUp(!showAgreementPopUp)}
             text="join"
+            buttonStyle={{ marginBottom: pixelSizeVertical(4) }}
           />
         )}
       </View>
 
-      <View
-        style={{
-          paddingRight: pixelSizeHorizontal(16),
-          paddingLeft: pixelSizeHorizontal(16),
-          backgroundColor: "#0C111F",
-          paddingBottom: pixelSizeVertical(12),
+      <Tab.Navigator
+        screenOptions={{
+          lazy: true,
+          lazyPreloadDistance: 1,
+          tabBarAllowFontScaling: true,
+          tabBarActiveTintColor: "#DFE5F8",
+          tabBarIndicator: null,
+          swipeEnabled: false,
+          tabBarStyle: {
+            backgroundColor: "transparent",
+            marginBottom: -8,
+          },
+          style: {
+            elevation: 0, // for Android
+            shadowOffset: {
+              width: 0,
+              height: 0, // for iOS
+            },
+          },
+          tabBarIndicatorStyle: {
+            width: 0,
+            height: 0,
+            elevation: 0,
+          },
         }}
       >
-        <View style={styles.navigationContainer}>
-          {navigations.navigations.length > 0 &&
-            navigations.navigations.map((link) => {
-              return (
-                <Pressable
-                  key={link.name}
-                  onPress={() => setTab(link.name)}
-                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                >
-                  <Text
-                    style={
-                      link.name === tab
-                        ? styles.navigationLinkActive
-                        : styles.navigationLinkInactive
-                    }
-                  >
-                    {link.name}
-                  </Text>
-                  <View
-                    style={
-                      link.name === tab ? styles.navigationBorderActive : null
-                    }
-                  />
-                </Pressable>
-              );
-            })}
-        </View>
-        <View style={styles.navigationBorderInactive} />
-      </View>
-
-      <View
-        style={{
-          paddingRight: pixelSizeHorizontal(16),
-          paddingLeft: pixelSizeHorizontal(16),
-        }}
-      >
-        {tab === "members" ? (
-          <ClubsMembers />
-        ) : tab === "gallery" ? (
-          <ClubsGallery navigation={navigation} />
-        ) : tab === "events" ? (
-          <ClubsEvents navigation={navigation} />
-        ) : tab === "details" ? (
-          <ClubsDetails />
-        ) : null}
-      </View>
-    </ScrollView>
+        <Tab.Screen name="members">
+          {() => <ClubsMembers onScroll={handleScroll} />}
+        </Tab.Screen>
+        <Tab.Screen name="gallery">
+          {() => (
+            <ClubsGallery navigation={navigation} onScroll={handleScroll} />
+          )}
+        </Tab.Screen>
+        <Tab.Screen name="events">
+          {() => (
+            <ClubsEvents navigation={navigation} onScroll={handleScroll} />
+          )}
+        </Tab.Screen>
+        <Tab.Screen name="details">
+          {() => <ClubsDetails onScroll={handleScroll} />}
+        </Tab.Screen>
+      </Tab.Navigator>
+    </>
   );
 
   return (
@@ -278,7 +258,7 @@ export default function ClubsPages({ navigation, route }) {
         >
           <Text style={styles.backButton}>back</Text>
         </Pressable>
-        {isEmpty(currentMember) && showMiniHeader ? (
+        {isEmpty(currentMember) && show ? (
           <Animated.View
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
@@ -313,7 +293,6 @@ export default function ClubsPages({ navigation, route }) {
           />
         </Pressable>
       </View>
-
       {UI}
       <Modal
         isVisible={isSideMenuVisible}
