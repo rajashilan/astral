@@ -17,7 +17,6 @@ import Clubs from "./pages/Clubs";
 import ClubsPages from "./pages/ClubsPages";
 import ClubsYou from "./pages/ClubsYou";
 import CreateAClub from "./pages/CreateAClub";
-import Department from "./pages/Department";
 import EditClub from "./pages/EditClub";
 import EditClubMember from "./pages/EditClubMember";
 import EditClubRoles from "./pages/EditClubRoles";
@@ -36,8 +35,6 @@ import ResubmitClubsGallery from "./pages/ResubmitClubsGallery";
 import Signup from "./pages/Signup";
 import SignupDetails from "./pages/SignupDetails";
 import SignupExtra from "./pages/SignupExtra";
-import Stafflist from "./pages/Stafflist";
-import Stafflistpage from "./pages/Stafflistpage";
 import { store } from "./src/redux/store";
 
 const Stack = createStackNavigator();
@@ -100,6 +97,10 @@ export default function App() {
             name="Main"
             component={Main}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -168,6 +169,10 @@ export default function App() {
             name="Home"
             component={Home}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -176,6 +181,10 @@ export default function App() {
             name="Orientation"
             component={Orientation}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -184,6 +193,10 @@ export default function App() {
             name="OrientationPages"
             component={OrientationPages}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -192,6 +205,10 @@ export default function App() {
             name="Clubs"
             component={Clubs}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -200,6 +217,10 @@ export default function App() {
             name="ClubsPages"
             component={ClubsPages}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -208,6 +229,10 @@ export default function App() {
             name="ClubResubmission"
             component={ClubResubmission}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -216,6 +241,10 @@ export default function App() {
             name="ClubsYou"
             component={ClubsYou}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -224,6 +253,10 @@ export default function App() {
             name="AddClubsGallery"
             component={AddClubsGallery}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -232,6 +265,10 @@ export default function App() {
             name="ResubmitClubsGallery"
             component={ResubmitClubsGallery}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -240,6 +277,10 @@ export default function App() {
             name="AddClubsEvent"
             component={AddClubsEvent}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -248,6 +289,10 @@ export default function App() {
             name="ResubmitClubsEvent"
             component={ResubmitClubsEvent}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -256,6 +301,10 @@ export default function App() {
             name="EditClub"
             component={EditClub}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -264,6 +313,10 @@ export default function App() {
             name="ClubCurrentMembers"
             component={ClubCurrentMembers}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -272,6 +325,10 @@ export default function App() {
             name="ClubMembersRequest"
             component={ClubMembersRequest}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -280,6 +337,10 @@ export default function App() {
             name="EditClubMember"
             component={EditClubMember}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -288,6 +349,10 @@ export default function App() {
             name="EditClubRoles"
             component={EditClubRoles}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -296,6 +361,10 @@ export default function App() {
             name="Notifications"
             component={Notifications}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -304,6 +373,10 @@ export default function App() {
             name="GeneralForms"
             component={GeneralForms}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -312,14 +385,10 @@ export default function App() {
             name="GeneralFormsPage"
             component={GeneralFormsPage}
             options={{
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="Department"
-            component={Department}
-            options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -328,22 +397,10 @@ export default function App() {
             name="Profile"
             component={Profile}
             options={{
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="Stafflist"
-            component={Stafflist}
-            options={{
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="Stafflistpage"
-            component={Stafflistpage}
-            options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
@@ -352,6 +409,10 @@ export default function App() {
             name="CreateAClub"
             component={CreateAClub}
             options={{
+              transitionSpec: {
+                open: animationConfig,
+                close: animationConfig,
+              }, // added
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
