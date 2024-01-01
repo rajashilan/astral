@@ -38,7 +38,7 @@ export default React.memo(function OrientationPages({ navigation, route }) {
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
-  const [headerHeight, setHeaderHeight] = useState(300);
+  const [headerHeight, setHeaderHeight] = useState(150);
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
@@ -221,9 +221,9 @@ export default React.memo(function OrientationPages({ navigation, route }) {
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
           >
-            {data[0] && data[0].header && (
+            {data[0] && data[0].title && (
               <Text style={styles.headerMini} numberOfLines={1}>
-                {data[0].header}
+                {data[0].title}
               </Text>
             )}
           </Animated.View>
@@ -336,13 +336,6 @@ const styles = StyleSheet.create({
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
   },
-  headerContainer: {
-    marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(16),
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
     width: pixelSizeHorizontal(30),
@@ -377,13 +370,6 @@ const styles = StyleSheet.create({
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
   },
-  headerContainerHideMiniHeader: {
-    marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(8),
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
   contentContainer: {
     paddingTop: pixelSizeVertical(20),
     paddingBottom: pixelSizeVertical(20),
@@ -391,19 +377,5 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     backgroundColor: "#131A2E",
     marginBottom: pixelSizeVertical(10),
-  },
-  focusImage: {
-    width: width * 0.85,
-    height: heightPixel(350),
-    borderRadius: 5,
-  },
-  focusImageModal: {
-    margin: 0,
-    width, // SideMenu width
-    alignSelf: "center",
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingRight: pixelSizeHorizontal(16),
   },
 });
