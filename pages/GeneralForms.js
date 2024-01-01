@@ -86,37 +86,12 @@ export default function GeneralForms({ navigation }) {
   }, [scrollHeight, showMiniHeader]);
 
   const handleOnPress = (item) => {
-    console.log(item);
     if (item.type === "easyFill")
       navigation.navigate("GeneralFormsPage", {
         id: item.generalFormID,
       });
     else WebBrowser.openBrowserAsync(item.link);
   };
-
-  const clearSearch = () => {
-    setSearch("");
-  };
-
-  const clearButton =
-    search === "" ? null : (
-      <Animated.View
-        entering={FadeIn.duration(200)}
-        exiting={FadeOut.duration(200)}
-      >
-        <Pressable
-          style={{
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            marginTop: pixelSizeVertical(-18),
-          }}
-          onPress={clearSearch}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Text style={styles.filterButton}>clear</Text>
-        </Pressable>
-      </Animated.View>
-    );
 
   const UI = loading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
@@ -132,7 +107,6 @@ export default function GeneralForms({ navigation }) {
       <View onLayout={onLayout}>
         <Header header="general forms" />
       </View>
-      {/* {clearButton} */}
       <View
         style={{
           backgroundColor: "#0C111F",
@@ -254,13 +228,6 @@ const styles = StyleSheet.create({
     paddingLeft: pixelSizeHorizontal(16),
     paddingBottom: pixelSizeVertical(16),
   },
-  title: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#DFE5F8",
-    marginTop: pixelSizeVertical(18),
-    marginBottom: pixelSizeVertical(26),
-  },
   headerMini: {
     fontSize: fontPixel(22),
     fontWeight: "500",
@@ -275,16 +242,6 @@ const styles = StyleSheet.create({
     marginRight: pixelSizeHorizontal(16),
     maxWidth: "80%",
     opacity: 0,
-  },
-  video: {
-    alignSelf: "center",
-    width: width - 32,
-    height: 200,
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
   },
   pageItems: {
     fontSize: fontPixel(28),
@@ -339,10 +296,5 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
     width: "100%",
     borderRadius: 5,
-  },
-  filterButton: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#C4FFF9",
   },
 });
