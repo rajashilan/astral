@@ -245,11 +245,6 @@ const styles = StyleSheet.create({
     width: width - 32,
     height: 200,
   },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
   pageItems: {
     fontSize: fontPixel(28),
     fontWeight: "500",
@@ -261,11 +256,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: "100%",
     marginBottom: pixelSizeVertical(12),
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
   },
   sideMenuStyle: {
     margin: 0,
