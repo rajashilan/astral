@@ -31,6 +31,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
@@ -269,21 +270,11 @@ export default function EditClubRoles({ navigation }) {
                 </>
               )}
             />
-            <Pressable
-              disabled={loading}
-              style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            <PrimaryButton
+              loading={loading}
               onPress={handleShowAddPopUp}
-            >
-              <Text
-                style={
-                  loading
-                    ? styles.loginButtonLoadingText
-                    : styles.loginButtonText
-                }
-              >
-                {loading ? "adding new role..." : "add new role"}
-              </Text>
-            </Pressable>
+              text="add new role"
+            />
           </View>
         </View>
       </ScrollView>
@@ -338,20 +329,7 @@ export default function EditClubRoles({ navigation }) {
             onChangeText={(role) => setNewRole(role)}
           />
           {errors.role ? <Text style={styles.error}>{errors.role}</Text> : null}
-
-          <Pressable
-            disabled={loading}
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
-            onPress={handleAddRole}
-          >
-            <Text
-              style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
-              }
-            >
-              {loading ? "adding new role..." : "add"}
-            </Text>
-          </Pressable>
+          <PrimaryButton loading={loading} onPress={handleAddRole} text="add" />
           {!loading && (
             <Pressable onPress={handleShowAddPopUp}>
               <Text style={styles.withdrawButton}>cancel</Text>
@@ -381,20 +359,11 @@ export default function EditClubRoles({ navigation }) {
           >
             {` are you sure to delete the "${deleteRole}" role?`}
           </Text>
-
-          <Pressable
-            disabled={loading}
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+          <PrimaryButton
+            loading={loading}
             onPress={handleDeleteRole}
-          >
-            <Text
-              style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
-              }
-            >
-              {loading ? "deleting role..." : "delete"}
-            </Text>
-          </Pressable>
+            text="delete"
+          />
           {!loading && (
             <Pressable onPress={handleShowDeletePopUp}>
               <Text style={styles.withdrawButton}>cancel</Text>
@@ -426,19 +395,11 @@ export default function EditClubRoles({ navigation }) {
             {`Role currently assigned to ${warningPopUpData}. Reassign them as a regular member before deleting this role.`}
           </Text>
 
-          <Pressable
-            disabled={loading}
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+          <PrimaryButton
+            loading={loading}
             onPress={handleShowWarningPopUp}
-          >
-            <Text
-              style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
-              }
-            >
-              ok
-            </Text>
-          </Pressable>
+            text="ok"
+          />
         </View>
       </Modal>
       <Toast config={toastConfig} />
@@ -456,25 +417,6 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
-  imageHeaderContainer: {
-    height: pixelSizeVertical(120),
-    width: "100%",
-  },
-  overlayContainer: {
-    justifyContent: "center",
-    height: pixelSizeVertical(120),
-    width: "100%",
-    backgroundColor: "rgba(12, 17, 31, 0.7)",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-  },
-  header: {
-    fontSize: fontPixel(34),
-    fontWeight: "500",
-    color: "#DFE5F8",
-  },
   emptyView: {
     flex: 1,
     height: pixelSizeVertical(32),
@@ -484,15 +426,6 @@ const styles = StyleSheet.create({
     margin: 0,
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
-  },
-  headerContainer: {
-    marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(16),
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    alignItems: "center",
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
@@ -528,30 +461,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  image: {
-    width: "100%",
-    height: heightPixel(280),
-    marginBottom: pixelSizeVertical(12),
-    borderRadius: 5,
-  },
-  role: {
-    fontSize: fontPixel(14),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(4),
-  },
-  name: {
-    fontSize: fontPixel(20),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(10),
-  },
-  quote: {
-    fontSize: fontPixel(14),
-    fontWeight: "400",
-    color: "#C6CDE2",
-    lineHeight: 22,
-  },
   textInput: {
     backgroundColor: "#212A46",
     paddingRight: pixelSizeHorizontal(16),
@@ -565,44 +474,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  tertiaryButton: {
-    color: "#A7AFC7",
-    fontSize: fontPixel(22),
-    textTransform: "lowercase",
-    fontWeight: "400",
-    textAlign: "center",
-  },
   disclaimer: {
     marginTop: pixelSizeVertical(-18),
     fontSize: fontPixel(20),
     fontWeight: "400",
     color: "#C6CDE2",
-  },
-  imagePicker: {
-    backgroundColor: "#232F52",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    borderRadius: 5,
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  secondaryButton: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#A7AFC7",
-    marginTop: pixelSizeVertical(2),
-    textAlign: "center",
   },
   error: {
     marginTop: pixelSizeVertical(8),
@@ -612,19 +488,6 @@ const styles = StyleSheet.create({
     color: "#a3222d",
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
-  },
-  altButton: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#07BEB8",
-    marginTop: pixelSizeVertical(8),
-  },
-  altButtonInactive: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#07BEB8",
-    marginTop: pixelSizeVertical(8),
-    opacity: 0.5,
   },
   withdrawMenu: {
     height: "auto",
