@@ -24,6 +24,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 export default function Login({ navigation, route }) {
   const [loading, setLoading] = useState(false);
@@ -125,18 +126,7 @@ export default function Login({ navigation, route }) {
       {errors.password ? (
         <Text style={styles.error}>{errors.password}</Text>
       ) : null}
-      <Pressable
-        style={loading ? styles.loginButtonDisabled : styles.loginButton}
-        onPress={handleLogin}
-      >
-        <Text
-          style={
-            loading ? styles.loginButtonLoadingText : styles.loginButtonText
-          }
-        >
-          {loading ? "logging you in..." : "login"}
-        </Text>
-      </Pressable>
+      <PrimaryButton loading={loading} onPress={handleLogin} text="login" />
       {errors.general ? (
         <Text style={styles.errorUnderButton}>{errors.general}</Text>
       ) : null}
@@ -231,40 +221,6 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
     width: "100%",
     borderRadius: 5,
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   secondaryButton: {
     color: "#C4FFF9",
