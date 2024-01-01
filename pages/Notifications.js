@@ -331,7 +331,7 @@ export default function Notifications({ navigation }) {
         </Pressable>
       </View>
       {UI}
-
+      <View style={styles.emptyView}></View>
       <Modal
         isVisible={isSideMenuVisible}
         onBackdropPress={toggleSideMenu} // Android back press
@@ -365,38 +365,10 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
-  imageHeaderContainer: {
-    height: pixelSizeVertical(120),
-    width: "100%",
-  },
-  overlayContainer: {
-    justifyContent: "center",
-    height: pixelSizeVertical(120),
-    width: "100%",
-    backgroundColor: "rgba(12, 17, 31, 0.7)",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-  },
-  header: {
-    fontSize: fontPixel(34),
-    fontWeight: "500",
-    color: "#DFE5F8",
-  },
   sideMenuStyle: {
     margin: 0,
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
-  },
-  headerContainer: {
-    marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(16),
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    alignItems: "center",
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
@@ -438,98 +410,6 @@ const styles = StyleSheet.create({
     marginBottom: "auto",
     marginRight: pixelSizeHorizontal(10),
     borderRadius: 50,
-  },
-  role: {
-    fontSize: fontPixel(14),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(4),
-  },
-  name: {
-    fontSize: fontPixel(20),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(10),
-  },
-  quote: {
-    fontSize: fontPixel(14),
-    fontWeight: "400",
-    color: "#C6CDE2",
-    lineHeight: 22,
-  },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
-    marginTop: pixelSizeVertical(10),
-  },
-  tertiaryButton: {
-    color: "#A7AFC7",
-    fontSize: fontPixel(22),
-    textTransform: "lowercase",
-    fontWeight: "400",
-    textAlign: "center",
-  },
-  disclaimer: {
-    marginTop: pixelSizeVertical(-18),
-    fontSize: fontPixel(20),
-    fontWeight: "400",
-    color: "#C6CDE2",
-  },
-  imagePicker: {
-    backgroundColor: "#232F52",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    borderRadius: 5,
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  secondaryButton: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#A7AFC7",
-    marginTop: pixelSizeVertical(2),
-    textAlign: "center",
-  },
-  error: {
-    marginTop: pixelSizeVertical(8),
-    marginBottom: pixelSizeVertical(8),
-    fontSize: fontPixel(12),
-    fontWeight: "400",
-    color: "#a3222d",
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingRight: pixelSizeHorizontal(16),
-  },
-  altButton: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#07BEB8",
-    marginTop: pixelSizeVertical(8),
-  },
-  altButtonInactive: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#07BEB8",
-    marginTop: pixelSizeVertical(8),
-    opacity: 0.5,
   },
   notificationContainerUnread: {
     backgroundColor: "#232F52",
