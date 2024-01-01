@@ -6,7 +6,8 @@ import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 
-import notificationIcon from "../assets/notification_icon.png";
+import Notification_Icon from "../assets/Notification_Icon";
+import Notification_Alert_Icon from "../assets/Notification_Alert_Icon";
 import IosHeight from "../components/IosHeight";
 import { getAuthenticatedUser } from "../src/redux/actions/userActions";
 import {
@@ -151,11 +152,7 @@ export default function Home({ navigation }) {
         }}
         onPress={() => navigation.replace("Notifications")}
       >
-        <FastImage
-          style={styles.notificationIcon}
-          resizeMode="contain"
-          source={notificationIcon}
-        />
+        <Notification_Alert_Icon />
       </Pressable>
     </View>
   );
@@ -224,20 +221,11 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#363BB1",
-  },
   image: {
     width: widthPixel(60),
     height: heightPixel(60),
     marginTop: "auto",
     marginBottom: "auto",
     borderRadius: 50,
-  },
-  notificationIcon: {
-    height: pixelSizeVertical(24),
-    width: pixelSizeHorizontal(28),
   },
 });
