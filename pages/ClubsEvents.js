@@ -339,7 +339,6 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
                     >
                       pending approval
                     </Text>
-                    <Text style={styles.content}>{item.content}</Text>
                   </>
                 )}
               </Pressable>
