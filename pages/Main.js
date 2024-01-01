@@ -28,6 +28,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
+import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
@@ -144,12 +145,16 @@ export default function Main({ navigation }) {
             dotsLength={data.length}
             inactiveDotScale={1}
           />
-          <Pressable style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>login</Text>
-          </Pressable>
-          <Pressable style={styles.signupButton} onPress={handleSignup}>
-            <Text style={styles.loginButtonText}>signup</Text>
-          </Pressable>
+          <PrimaryButton
+            onPress={handleLogin}
+            text="login"
+            buttonStyle={{ marginBottom: pixelSizeVertical(16), marginTop: 0 }}
+          />
+          <PrimaryButton
+            onPress={handleSignup}
+            text="signup"
+            buttonStyle={{ marginTop: 0, backgroundColor: "#C4FFF9" }}
+          />
           <StatusBar
             style="light"
             translucent={false}
@@ -177,39 +182,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#fff",
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginBottom: pixelSizeVertical(16),
-    width: "100%",
-    borderRadius: 5,
-  },
-  signupButton: {
-    backgroundColor: "#C4FFF9",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  secondaryButton: {
-    color: "#07BEB8",
-    fontSize: fontPixel(18),
-    textTransform: "lowercase",
-    fontWeight: 500,
-    textDecorationLine: "underline",
   },
   displayImage: {
     marginTop: pixelSizeVertical(26),
