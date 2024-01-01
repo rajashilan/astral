@@ -13,6 +13,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 export default function ForgotPassword({ navigation, route }) {
   const [loading, setLoading] = useState(false);
@@ -75,18 +76,7 @@ export default function ForgotPassword({ navigation, route }) {
       />
       {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
 
-      <Pressable
-        style={loading ? styles.loginButtonDisabled : styles.loginButton}
-        onPress={handleSubmit}
-      >
-        <Text
-          style={
-            loading ? styles.loginButtonLoadingText : styles.loginButtonText
-          }
-        >
-          {loading ? "sending..." : "send"}
-        </Text>
-      </Pressable>
+      <PrimaryButton loading={loading} onPress={handleSubmit} text="send" />
       {errors.general ? (
         <Text style={styles.errorUnderButton}>{errors.general}</Text>
       ) : null}
@@ -113,19 +103,6 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
-  imageBackground: {
-    flex: 1,
-    backgroundColor: "#0C111F",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-  },
-  image: {
-    width: widthPixel(177),
-    height: heightPixel(93),
-    marginBottom: pixelSizeVertical(38),
-  },
   text: {
     color: "#fff",
   },
@@ -141,63 +118,6 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
     width: "100%",
     borderRadius: 5,
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
-  },
-  secondaryButton: {
-    color: "#C4FFF9",
-    fontSize: fontPixel(18),
-    textTransform: "lowercase",
-    fontWeight: 500,
-    textDecorationLine: "underline",
-  },
-  welcomeTitle: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#DFE5F8",
-    textAlign: "center",
-    marginTop: pixelSizeVertical(-26),
-    marginBottom: pixelSizeVertical(4),
-  },
-  welcomeSubheading: {
-    fontSize: fontPixel(14),
-    fontWeight: "500",
-    color: "#C6CDE2",
-    textAlign: "center",
-    lineHeight: 22,
-    marginBottom: pixelSizeVertical(16),
   },
   error: {
     marginTop: pixelSizeVertical(8),
