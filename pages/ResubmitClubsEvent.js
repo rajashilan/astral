@@ -266,6 +266,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
     dispatch(handleDeleteClubEvent(event.eventID, club.clubID, true));
     handleNavigateBack();
   };
+
   useEffect(() => {
     //if scroll height is more than header height and the header is not shown, show
     if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);

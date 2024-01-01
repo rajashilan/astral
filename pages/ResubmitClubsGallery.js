@@ -4,6 +4,7 @@ import FastImage from "react-native-fast-image";
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import {
   StyleSheet,
   Text,
@@ -34,6 +35,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
@@ -59,6 +61,10 @@ export default function ResubmitClubsGallery({ navigation, route }) {
   const [submittedImage, setSubmittedImage] = useState("");
 
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+
+  const [headerHeight] = useState(150);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
 
   const [errors, setErrors] = useState({
     title: undefined,
@@ -253,6 +259,13 @@ export default function ResubmitClubsGallery({ navigation, route }) {
     handleNavigateBack();
   };
 
+  useEffect(() => {
+    //if scroll height is more than header height and the header is not shown, show
+    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
+    else if (scrollHeight < headerHeight && showMiniHeader)
+      setShowMiniHeader(false);
+  }, [scrollHeight, showMiniHeader]);
+
   return (
     <View style={styles.container}>
       <IosHeight />
@@ -263,7 +276,18 @@ export default function ResubmitClubsGallery({ navigation, route }) {
         >
           <Text style={styles.backButton}>back</Text>
         </Pressable>
-
+        {showMiniHeader ? (
+          <Animated.View
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <Text style={styles.headerMini} numberOfLines={1}>
+              resubmit photo
+            </Text>
+          </Animated.View>
+        ) : (
+          <Text style={styles.headerMiniInvisible}>title</Text>
+        )}
         <Pressable
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
@@ -275,10 +299,13 @@ export default function ResubmitClubsGallery({ navigation, route }) {
           />
         </Pressable>
       </View>
-      <ScrollView>
+      <ScrollView
+        scrollEventThrottle={16}
+        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      >
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
-            <Header header="add a photo" />
+            <Header header="resubmit photo" />
             <Text style={styles.disclaimer}>{club.name}</Text>
 
             <View
@@ -327,21 +354,11 @@ export default function ResubmitClubsGallery({ navigation, route }) {
               editable={!loading}
               onChangeText={(content) => setContent(content)}
             />
-
-            <Pressable
-              style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            <PrimaryButton
+              loading={loading}
               onPress={handleAddToGallery}
-            >
-              <Text
-                style={
-                  loading
-                    ? styles.loginButtonLoadingText
-                    : styles.loginButtonText
-                }
-              >
-                {loading ? "resubmitting..." : "resubmit"}
-              </Text>
-            </Pressable>
+              text="resubmit"
+            />
             <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
               <Text style={styles.secondaryButton}>withdraw</Text>
             </Pressable>
@@ -386,18 +403,11 @@ export default function ResubmitClubsGallery({ navigation, route }) {
           >
             Are you sure to withdraw this photo?
           </Text>
-          <Pressable
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+          <PrimaryButton
+            loading={loading}
             onPress={handleWithdraw}
-          >
-            <Text
-              style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
-              }
-            >
-              {loading ? "withdrawing..." : "withdraw"}
-            </Text>
-          </Pressable>
+            text="withdraw"
+          />
           <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
             <Text style={styles.withdrawButton}>cancel</Text>
           </Pressable>
@@ -419,43 +429,10 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
-  imageHeaderContainer: {
-    height: pixelSizeVertical(120),
-    width: "100%",
-  },
-  overlayContainer: {
-    justifyContent: "center",
-    height: pixelSizeVertical(120),
-    width: "100%",
-    backgroundColor: "rgba(12, 17, 31, 0.7)",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-  },
-  header: {
-    fontSize: fontPixel(34),
-    fontWeight: "500",
-    color: "#DFE5F8",
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
-  },
   sideMenuStyle: {
     margin: 0,
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
-  },
-  headerContainer: {
-    marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(16),
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    alignItems: "center",
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
@@ -491,30 +468,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  image: {
-    width: "100%",
-    height: heightPixel(280),
-    marginBottom: pixelSizeVertical(12),
-    borderRadius: 5,
-  },
-  role: {
-    fontSize: fontPixel(14),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(4),
-  },
-  name: {
-    fontSize: fontPixel(20),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(10),
-  },
-  quote: {
-    fontSize: fontPixel(14),
-    fontWeight: "400",
-    color: "#C6CDE2",
-    lineHeight: 22,
-  },
   textInput: {
     backgroundColor: "#1A2238",
     paddingRight: pixelSizeHorizontal(16),
@@ -528,13 +481,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
   },
-  tertiaryButton: {
-    color: "#A7AFC7",
-    fontSize: fontPixel(22),
-    textTransform: "lowercase",
-    fontWeight: "400",
-    textAlign: "center",
-  },
   disclaimer: {
     marginTop: pixelSizeVertical(-18),
     fontSize: fontPixel(20),
@@ -547,17 +493,6 @@ const styles = StyleSheet.create({
     paddingLeft: pixelSizeHorizontal(16),
     paddingTop: pixelSizeVertical(16),
     paddingBottom: pixelSizeVertical(16),
-    borderRadius: 5,
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
     borderRadius: 5,
   },
   secondaryButton: {
