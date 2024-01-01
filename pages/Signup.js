@@ -17,6 +17,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 const db = firestore();
 
@@ -484,9 +485,7 @@ export default function Signup({ navigation }) {
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
           >
-            <Pressable style={styles.loginButton} onPress={handleNext}>
-              <Text style={styles.loginButtonText}>next</Text>
-            </Pressable>
+            <PrimaryButton onPress={handleNext} text="next" />
           </Animated.View>
         ) : null}
         <Pressable onPress={handleLogin}>
@@ -534,22 +533,6 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
     width: "100%",
     borderRadius: 5,
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
   },
   secondaryButton: {
     color: "#C4FFF9",
