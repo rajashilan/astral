@@ -266,7 +266,7 @@ export default function ClubsPages({ navigation, route }) {
         >
           <Text style={styles.backButton}>back</Text>
         </Pressable>
-        {isEmpty(currentMember) && show && !UIloading ? (
+        {isEmpty(currentMember) && !show && !UIloading ? (
           <Animated.View
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
