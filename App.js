@@ -34,7 +34,6 @@ import ResubmitClubsEvent from "./pages/ResubmitClubsEvent";
 import ResubmitClubsGallery from "./pages/ResubmitClubsGallery";
 import Signup from "./pages/Signup";
 import SignupDetails from "./pages/SignupDetails";
-import SignupExtra from "./pages/SignupExtra";
 import { store } from "./src/redux/store";
 
 const Stack = createStackNavigator();
@@ -144,18 +143,6 @@ export default function App() {
           <Stack.Screen
             name="SignupDetails"
             component={SignupDetails}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="SignupExtra"
-            component={SignupExtra}
             options={{
               transitionSpec: {
                 open: animationConfig,
