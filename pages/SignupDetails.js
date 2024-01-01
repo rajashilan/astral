@@ -28,6 +28,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 const db = firestore();
 
@@ -400,20 +401,7 @@ export default function SignupDetails({ navigation, route }) {
         {errors.password ? (
           <Text style={styles.errorUnderDislcaimer}>{errors.password}</Text>
         ) : null}
-
-        <Pressable
-          style={loading ? styles.loginButtonDisabled : styles.loginButton}
-          onPress={handleNext}
-          disabled={loading}
-        >
-          <Text
-            style={
-              loading ? styles.loginButtonLoadingText : styles.loginButtonText
-            }
-          >
-            {loading ? "signing you up..." : "next"}
-          </Text>
-        </Pressable>
+        <PrimaryButton loading={loading} onPress={handleNext} text="sign up" />
 
         {errors.email ||
         errors.name ||
@@ -448,7 +436,7 @@ export default function SignupDetails({ navigation, route }) {
           </Pressable>
         </View>
         {!loading ? (
-          <Pressable onPress={() => navigation.replace("Signup")}>
+          <Pressable onPress={() => navigation.goBack()}>
             <Text style={styles.tertiaryButton}>back</Text>
           </Pressable>
         ) : null}
@@ -544,40 +532,6 @@ const styles = StyleSheet.create({
     color: "#a3222d",
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
-    textAlign: "center",
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
     textAlign: "center",
   },
   tertiaryButton: {
