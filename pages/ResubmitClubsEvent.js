@@ -5,6 +5,7 @@ import * as Crypto from "expo-crypto";
 import FastImage from "react-native-fast-image";
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -36,6 +37,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 
 const { width } = Dimensions.get("window");
 
@@ -64,6 +66,10 @@ export default function ResubmitClubsEvent({ navigation, route }) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+
+  const [headerHeight] = useState(150);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
 
   const [errors, setErrors] = useState({
     title: undefined,
@@ -260,6 +266,12 @@ export default function ResubmitClubsEvent({ navigation, route }) {
     dispatch(handleDeleteClubEvent(event.eventID, club.clubID, true));
     handleNavigateBack();
   };
+  useEffect(() => {
+    //if scroll height is more than header height and the header is not shown, show
+    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
+    else if (scrollHeight < headerHeight && showMiniHeader)
+      setShowMiniHeader(false);
+  }, [scrollHeight, showMiniHeader]);
 
   return (
     <View style={styles.container}>
@@ -271,7 +283,18 @@ export default function ResubmitClubsEvent({ navigation, route }) {
         >
           <Text style={styles.backButton}>back</Text>
         </Pressable>
-
+        {showMiniHeader ? (
+          <Animated.View
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
+          >
+            <Text style={styles.headerMini} numberOfLines={1}>
+              resubmit event
+            </Text>
+          </Animated.View>
+        ) : (
+          <Text style={styles.headerMiniInvisible}>title</Text>
+        )}
         <Pressable
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
@@ -283,7 +306,10 @@ export default function ResubmitClubsEvent({ navigation, route }) {
           />
         </Pressable>
       </View>
-      <ScrollView>
+      <ScrollView
+        scrollEventThrottle={16}
+        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+      >
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
             <Header header="resubmit event" />
@@ -359,20 +385,11 @@ export default function ResubmitClubsEvent({ navigation, route }) {
                 onCancel={() => setDatePickerVisibility(!isDatePickerVisible)}
               />
             )}
-            <Pressable
-              style={loading ? styles.loginButtonDisabled : styles.loginButton}
+            <PrimaryButton
+              loading={loading}
               onPress={handleAddToEvent}
-            >
-              <Text
-                style={
-                  loading
-                    ? styles.loginButtonLoadingText
-                    : styles.loginButtonText
-                }
-              >
-                {loading ? "resubmitting..." : "resubmit"}
-              </Text>
-            </Pressable>
+              text="resubmit"
+            />
             <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
               <Text style={styles.secondaryButton}>withdraw</Text>
             </Pressable>
@@ -418,18 +435,11 @@ export default function ResubmitClubsEvent({ navigation, route }) {
           >
             Are you sure to withdraw this event?
           </Text>
-          <Pressable
-            style={loading ? styles.loginButtonDisabled : styles.loginButton}
+          <PrimaryButton
+            loading={loading}
             onPress={handleWithdraw}
-          >
-            <Text
-              style={
-                loading ? styles.loginButtonLoadingText : styles.loginButtonText
-              }
-            >
-              {loading ? "withdrawing..." : "withdraw"}
-            </Text>
-          </Pressable>
+            text="withdraw"
+          />
           <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
             <Text style={styles.withdrawButton}>cancel</Text>
           </Pressable>
@@ -451,25 +461,6 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
-  imageHeaderContainer: {
-    height: pixelSizeVertical(120),
-    width: "100%",
-  },
-  overlayContainer: {
-    justifyContent: "center",
-    height: pixelSizeVertical(120),
-    width: "100%",
-    backgroundColor: "rgba(12, 17, 31, 0.7)",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-  },
-  header: {
-    fontSize: fontPixel(34),
-    fontWeight: "500",
-    color: "#DFE5F8",
-  },
   datePickerButton: {
     backgroundColor: "#232F52",
     paddingRight: pixelSizeHorizontal(16),
@@ -486,24 +477,10 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
     textAlign: "center",
   },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
-  },
   sideMenuStyle: {
     margin: 0,
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
-  },
-  headerContainer: {
-    marginTop: pixelSizeVertical(20),
-    marginBottom: pixelSizeVertical(16),
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    alignItems: "center",
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
@@ -539,30 +516,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  image: {
-    width: "100%",
-    height: heightPixel(280),
-    marginBottom: pixelSizeVertical(12),
-    borderRadius: 5,
-  },
-  role: {
-    fontSize: fontPixel(14),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(4),
-  },
-  name: {
-    fontSize: fontPixel(20),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(10),
-  },
-  quote: {
-    fontSize: fontPixel(14),
-    fontWeight: "400",
-    color: "#C6CDE2",
-    lineHeight: 22,
-  },
   textInput: {
     backgroundColor: "#1A2238",
     paddingRight: pixelSizeHorizontal(16),
@@ -575,13 +528,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 5,
     marginTop: pixelSizeVertical(10),
-  },
-  tertiaryButton: {
-    color: "#A7AFC7",
-    fontSize: fontPixel(22),
-    textTransform: "lowercase",
-    fontWeight: "400",
-    textAlign: "center",
   },
   disclaimer: {
     marginTop: pixelSizeVertical(-18),
@@ -596,40 +542,6 @@ const styles = StyleSheet.create({
     paddingTop: pixelSizeVertical(16),
     paddingBottom: pixelSizeVertical(16),
     borderRadius: 5,
-  },
-  loginButton: {
-    backgroundColor: "#07BEB8",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonDisabled: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(18),
-    paddingBottom: pixelSizeVertical(18),
-    marginTop: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(24),
-    width: "100%",
-    borderRadius: 5,
-  },
-  loginButtonText: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
-    color: "#0C111F",
-    textAlign: "center",
-  },
-  loginButtonLoadingText: {
-    fontSize: fontPixel(22),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    textAlign: "center",
   },
   secondaryButton: {
     fontSize: fontPixel(22),
