@@ -42,6 +42,7 @@ import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { RESET_CLUB_DATA } from "../src/redux/type";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -71,6 +72,9 @@ export default function ClubsPages({ navigation, route }) {
 
   useEffect(() => {
     dispatch(getAClub(clubID, user.userId));
+    return () => {
+      dispatch({ type: RESET_CLUB_DATA });
+    };
   }, []);
 
   useEffect(() => {
