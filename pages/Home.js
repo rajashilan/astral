@@ -5,8 +5,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
-
-import Notification_Icon from "../assets/Notification_Icon";
+import { Wave } from "react-native-animated-spinkit";
 import Notification_Alert_Icon from "../assets/Notification_Alert_Icon";
 import IosHeight from "../components/IosHeight";
 import { getAuthenticatedUser } from "../src/redux/actions/userActions";
@@ -64,37 +63,14 @@ export default function Home({ navigation }) {
   const userProfileDisplay = loading ? (
     <View
       style={{
-        flexDirection: "row",
-        marginBottom: pixelSizeVertical(24),
         paddingRight: pixelSizeHorizontal(16),
         paddingLeft: pixelSizeHorizontal(16),
-        paddingTop: pixelSizeVertical(12),
-        paddingBottom: pixelSizeVertical(12),
-        alignSelf: "center",
       }}
     >
-      <View
-        style={{
-          width: widthPixel(32),
-          height: heightPixel(32),
-          backgroundColor: "#242997",
-          marginRight: pixelSizeHorizontal(16),
-        }}
-      />
-      <View
-        style={{
-          width: widthPixel(32),
-          height: heightPixel(32),
-          backgroundColor: "#242997",
-          marginRight: pixelSizeHorizontal(16),
-        }}
-      />
-      <View
-        style={{
-          width: widthPixel(32),
-          height: heightPixel(32),
-          backgroundColor: "#242997",
-        }}
+      <Wave
+        size={240}
+        color="#242997"
+        style={{ alignSelf: "center", marginBottom: pixelSizeVertical(260) }}
       />
     </View>
   ) : (
@@ -161,26 +137,26 @@ export default function Home({ navigation }) {
     <View style={styles.container}>
       <IosHeight />
       <View style={styles.list}>
-        <Text style={styles.college}>{user.campus}</Text>
+        {!loading ? <Text style={styles.college}>{user.campus}</Text> : null}
         {userProfileDisplay}
-        <FlatList
-          style={{
-            paddingRight: pixelSizeHorizontal(16),
-            paddingLeft: pixelSizeHorizontal(16),
-          }}
-          keyExtractor={(item, index) => index.toString()}
-          data={menuItems}
-          renderItem={({ item }) => (
-            <Pressable
-              disabled={loading}
-              onPress={() => handleMenuNavigation(item.name)}
-            >
-              <Text style={[styles.menuItems, { opacity: loading ? 0.5 : 1 }]}>
-                {item.name}
-              </Text>
-            </Pressable>
-          )}
-        />
+        {!loading ? (
+          <FlatList
+            style={{
+              paddingRight: pixelSizeHorizontal(16),
+              paddingLeft: pixelSizeHorizontal(16),
+            }}
+            keyExtractor={(item, index) => index.toString()}
+            data={menuItems}
+            renderItem={({ item }) => (
+              <Pressable
+                disabled={loading}
+                onPress={() => handleMenuNavigation(item.name)}
+              >
+                <Text style={styles.menuItems}>{item.name}</Text>
+              </Pressable>
+            )}
+          />
+        ) : null}
       </View>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#363BB1" />
