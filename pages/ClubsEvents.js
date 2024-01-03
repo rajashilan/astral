@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   image: {
-    width: "100%",
+    width: "99%",
     height: 170,
     marginBottom: pixelSizeVertical(12),
     borderRadius: 5,
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
     paddingTop: pixelSizeVertical(18),
     paddingBottom: pixelSizeVertical(18),
     marginTop: pixelSizeVertical(24),
-    width: "100%",
+    width: "99%",
     borderRadius: 5,
     borderColor: "#C6CDE2",
     borderWidth: 1,
