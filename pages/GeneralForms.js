@@ -12,7 +12,7 @@ import {
   Dimensions,
   TextInput,
 } from "react-native";
-import { Bounce } from "react-native-animated-spinkit";
+import { Wave } from "react-native-animated-spinkit";
 import { ScrollView } from "react-native-gesture-handler";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -95,7 +95,11 @@ export default function GeneralForms({ navigation }) {
 
   const UI = loading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
-      <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
+      <Wave
+        size={240}
+        color="#495986"
+        style={{ alignSelf: "center", marginBottom: pixelSizeVertical(260) }}
+      />
     </View>
   ) : (
     <ScrollView
