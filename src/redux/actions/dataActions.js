@@ -145,9 +145,16 @@ export const getAClub = (clubID, userID) => (dispatch) => {
     .doc(clubID)
     .get()
     .then((doc) => {
-      dispatch({ type: STOP_UI_LOADING });
       dispatch({ type: GET_A_CLUB_DATA, payload: { ...doc.data() } });
-      dispatch(getClubMembers(clubID, userID));
+
+      return db.collection("clubMembers").doc(clubID).get();
+    })
+    .then((doc) => {
+      dispatch({ type: STOP_UI_LOADING });
+      dispatch({
+        type: SET_CLUB_MEMBERS_DATA,
+        payload: { members: [...doc.data().members], userID },
+      });
     })
     .catch((error) => {
       dispatch({ type: STOP_UI_LOADING });
