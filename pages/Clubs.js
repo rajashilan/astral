@@ -13,7 +13,7 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import { Bounce } from "react-native-animated-spinkit";
+import { Wave } from "react-native-animated-spinkit";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
@@ -140,7 +140,11 @@ export default React.memo(function Clubs({ navigation }) {
 
   const UI = loading ? (
     <View style={{ marginTop: pixelSizeVertical(60) }}>
-      <Bounce size={240} color="#495986" style={{ alignSelf: "center" }} />
+      <Wave
+        size={240}
+        color="#495986"
+        style={{ alignSelf: "center", marginBottom: pixelSizeVertical(260) }}
+      />
     </View>
   ) : (
     <ScrollView
