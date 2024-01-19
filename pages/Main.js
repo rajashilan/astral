@@ -40,7 +40,7 @@ export default function Main({ navigation }) {
     {
       image: welcome,
       title: "Welcome to astral",
-      subtitle: "Where we try and make your student life easier.",
+      subtitle: "Where we try and make your student life better.",
     },
     {
       image: orientation,
@@ -56,15 +56,9 @@ export default function Main({ navigation }) {
     },
     {
       image: departments,
-      title: "Always stay updated",
+      title: "Easily access important forms",
       subtitle:
-        "Quickly view announcements and save important files from your department. Good-bye FB groups.",
-    },
-    {
-      image: lecturers,
-      title: "Connect with your lecturers",
-      subtitle:
-        "Easily set up meetings with your lecturers using their contact and schedule details.",
+        "No more looking for forms all over the place. Everything is listed for you, in one page.",
     },
   ]);
 

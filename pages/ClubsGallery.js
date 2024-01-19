@@ -154,6 +154,24 @@ const ClubsGallery = React.memo(({ navigation, onScroll }) => {
         dotsLength={data.length}
         inactiveDotScale={1}
       />
+      <View style={{ flexDirection: row, justifyContent: "space-between" }}>
+        <View
+          style={{
+            height: 10,
+            width: 10,
+            backgroundColor: "#546593",
+            borderRadius: "50%",
+          }}
+        ></View>
+        <View
+          style={{
+            height: 10,
+            width: 10,
+            backgroundColor: "#546593",
+            borderRadius: "50%",
+          }}
+        ></View>
+      </View>
       <Carousel
         layout="default"
         data={data}
