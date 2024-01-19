@@ -31,6 +31,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 const db = firestore();
@@ -347,7 +348,7 @@ export default React.memo(function Clubs({ navigation }) {
           <Text style={styles.joinClubSmallButton}>Create your own club</Text>
         </Pressable>
       )}
-      <View style={styles.emptyView} />
+      <EmptyView />
     </ScrollView>
   );
 
@@ -545,11 +546,6 @@ const styles = StyleSheet.create({
     marginLeft: pixelSizeHorizontal(2),
     marginRight: pixelSizeHorizontal(2),
     marginBottom: pixelSizeVertical(-3),
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(60),
-    backgroundColor: "#0C111F",
   },
   sideMenuStyle: {
     margin: 0,

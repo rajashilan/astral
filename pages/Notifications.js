@@ -33,6 +33,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 const db = firestore();
@@ -335,7 +336,7 @@ export default function Notifications({ navigation }) {
         </Pressable>
       </View>
       {UI}
-      <View style={styles.emptyView}></View>
+      <EmptyView />
       <Modal
         isVisible={isSideMenuVisible}
         onBackdropPress={toggleSideMenu} // Android back press
@@ -432,10 +433,5 @@ const styles = StyleSheet.create({
     paddingBottom: pixelSizeVertical(12),
     flexDirection: "row",
     flexGrow: 1,
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
   },
 });

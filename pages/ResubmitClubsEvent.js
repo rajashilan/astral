@@ -38,6 +38,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 
@@ -396,6 +397,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
             </Pressable>
           </View>
         </View>
+        <EmptyView />
       </ScrollView>
 
       <Modal

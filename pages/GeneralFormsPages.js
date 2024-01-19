@@ -31,6 +31,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 const db = firestore();
@@ -246,7 +247,7 @@ export default function GeneralFormsPage({ navigation, route }) {
             onPress={handleSubmit}
             text="save"
           />
-          <View style={styles.emptyView} />
+          <EmptyView />
         </View>
       </View>
     </ScrollView>
@@ -321,11 +322,6 @@ const styles = StyleSheet.create({
   paddingContainer: {
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
   },
   sideMenuStyle: {
     margin: 0,

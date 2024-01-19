@@ -22,6 +22,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
 
 const ClubsDetails = React.memo(({ onScroll }) => {
   const dispatch = useDispatch();
@@ -190,7 +191,7 @@ const ClubsDetails = React.memo(({ onScroll }) => {
         ? editView
         : normalView}
       <Toast config={toastConfig} />
-      <View style={styles.emptyView} />
+      <EmptyView />
     </ScrollView>
   );
 });
@@ -222,11 +223,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#C6CDE2",
     lineHeight: 22,
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
   },
   textInput: {
     backgroundColor: "#1A2238",

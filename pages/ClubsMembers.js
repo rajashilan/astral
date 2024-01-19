@@ -10,6 +10,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 
@@ -75,7 +76,7 @@ const ClubsMembers = React.memo(({ onScroll }) => {
           </>
         )}
       />
-      <View style={styles.emptyView} />
+      <EmptyView />
     </ScrollView>
   );
 });
@@ -119,11 +120,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#C6CDE2",
     lineHeight: 22,
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(30),
-    backgroundColor: "#0C111F",
   },
 });
 

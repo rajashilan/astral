@@ -18,6 +18,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
 
 const db = firestore();
 
@@ -491,6 +492,7 @@ export default function Signup({ navigation }) {
         <Pressable onPress={handleLogin}>
           <Text style={styles.secondaryButton}>login instead</Text>
         </Pressable>
+        <EmptyView />
       </ScrollView>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />

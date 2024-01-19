@@ -26,6 +26,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 
@@ -152,6 +153,7 @@ export default function Orientation({ navigation }) {
           </>
         )}
       />
+      <EmptyView />
     </ScrollView>
   );
 

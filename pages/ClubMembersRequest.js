@@ -31,6 +31,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 
@@ -220,6 +221,7 @@ export default function ClubMembersRequest({ navigation }) {
             )}
           </View>
         </View>
+        <EmptyView />
       </ScrollView>
 
       <Modal
@@ -254,11 +256,6 @@ const styles = StyleSheet.create({
   paddingContainer: {
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
   },
   sideMenuStyle: {
     margin: 0,

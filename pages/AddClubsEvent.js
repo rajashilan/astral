@@ -36,6 +36,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 
@@ -348,7 +349,7 @@ export default function AddClubsEvent({ navigation }) {
             </Pressable>
           </View>
         </View>
-        <View style={styles.emptyView}></View>
+        <EmptyView />
       </ScrollView>
 
       <Modal
@@ -400,11 +401,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#DFE5F8",
     textAlign: "center",
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
   },
   sideMenuStyle: {
     margin: 0,

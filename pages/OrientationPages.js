@@ -26,6 +26,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 
@@ -202,7 +203,7 @@ export default React.memo(function OrientationPages({ navigation, route }) {
                 </View>
               );
             })}
-          <View style={styles.emptyView} />
+          <EmptyView />
         </React.Fragment>
       )}
     />
@@ -329,11 +330,6 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingBottom: 0,
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
   },
   sideMenuStyle: {
     margin: 0,

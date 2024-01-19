@@ -27,6 +27,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 
@@ -488,7 +489,7 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
           )}
         </View>
       </Modal>
-      <View style={styles.emptyView} />
+      <EmptyView />
       <Toast config={toastConfig} />
     </ScrollView>
   );
@@ -547,11 +548,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingRight: pixelSizeHorizontal(2),
     paddingLeft: pixelSizeHorizontal(2),
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(30),
-    backgroundColor: "#0C111F",
   },
   borderButton: {
     backgroundColor: "#0C111F",

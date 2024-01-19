@@ -29,6 +29,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
 
 const db = firestore();
 
@@ -440,7 +441,7 @@ export default function SignupDetails({ navigation, route }) {
             <Text style={styles.tertiaryButton}>back</Text>
           </Pressable>
         ) : null}
-        <View style={styles.emptyView} />
+        <EmptyView />
       </ScrollView>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
@@ -588,10 +589,5 @@ const styles = StyleSheet.create({
     color: "#DFE5F8",
     width: "86%",
     marginRight: pixelSizeHorizontal(8),
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(30),
-    backgroundColor: "#0C111F",
   },
 });

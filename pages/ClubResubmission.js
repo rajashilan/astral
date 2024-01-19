@@ -36,6 +36,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 
@@ -629,6 +630,7 @@ export default function ClubResubmission({ navigation, route }) {
           </Pressable>
         </View>
       </Modal>
+      <EmptyView />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
   );

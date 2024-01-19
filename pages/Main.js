@@ -29,6 +29,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 
@@ -161,7 +162,7 @@ export default function Main({ navigation }) {
             backgroundColor="#0C111F"
           />
         </View>
-        <View style={styles.emptyView} />
+        <EmptyView />
       </ScrollView>
     </View>
   );
@@ -203,10 +204,5 @@ const styles = StyleSheet.create({
     color: "#A7AFC7",
     marginBottom: pixelSizeVertical(20),
     textAlign: "center",
-  },
-  emptyView: {
-    flex: 1,
-    height: pixelSizeVertical(30),
-    backgroundColor: "#0C111F",
   },
 });
