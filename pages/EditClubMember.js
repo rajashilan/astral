@@ -301,7 +301,7 @@ export default function EditClubMember({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage="clubs"
+          currentPage="clubspages"
           navigation={navigation}
         />
       </Modal>

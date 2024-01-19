@@ -298,7 +298,7 @@ export default function AddClubsGallery({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage="clubs"
+          currentPage="clubspages"
           navigation={navigation}
         />
       </Modal>

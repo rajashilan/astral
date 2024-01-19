@@ -382,7 +382,7 @@ export default function ResubmitClubsGallery({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage="clubs"
+          currentPage="clubspages"
           navigation={navigation}
         />
       </Modal>

@@ -238,7 +238,7 @@ export default function ClubMembersRequest({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage="clubs"
+          currentPage="clubspages"
           navigation={navigation}
         />
       </Modal>

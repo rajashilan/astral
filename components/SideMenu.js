@@ -14,6 +14,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 
 import Notification_Icon from "../assets/Notification_Icon";
+import Notification_Alert_Icon from "../assets/Notification_Alert_Icon";
 import closeIcon from "../assets/close_icon.png";
 import { LOGOUT } from "../src/redux/type";
 import {
@@ -133,7 +134,7 @@ const SideMenu = (props) => {
               contentFit="contain"
               source={notificationIcon}
             /> */}
-            <Notification_Icon />
+            <Notification_Alert_Icon />
           </Pressable>
         </View>
 
@@ -163,7 +164,10 @@ const SideMenu = (props) => {
                   style={
                     props.currentPage === item.name
                       ? styles.activeMenuItem
-                      : styles.inactiveMenuItem
+                      : props.currentPage === "clubspages" &&
+                          item.name === "clubs"
+                        ? styles.activeMenuItem
+                        : styles.inactiveMenuItem
                   }
                 >
                   {item.name}

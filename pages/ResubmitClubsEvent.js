@@ -414,7 +414,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage="clubs"
+          currentPage="clubspages"
           navigation={navigation}
         />
       </Modal>
