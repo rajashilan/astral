@@ -55,13 +55,17 @@ const ClubsDetails = React.memo(({ onScroll }) => {
   };
 
   const handleUpdateDetails = () => {
-    const data = {
+    const updateData = {
       schedule: meetings,
       fees,
       misc: more,
     };
-    dispatch(handleUpdateClubDetails(club.clubID, data));
-    if (club.status === "active") {
+    dispatch(handleUpdateClubDetails(club.clubID, updateData));
+
+    if (
+      (club.status === "active" && updateData.schedule === "") ||
+      (club.status === "active" && updateData.fees === "")
+    ) {
       dispatch(handleDeactivateClub(club.clubID, campusID, false));
       const notification = {
         preText: "",
