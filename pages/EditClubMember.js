@@ -61,6 +61,9 @@ export default function EditClubMember({ navigation, route }) {
   const [showDeactivateMemberPopUp, setShowDeactivateMemberPopUp] =
     useState(false);
 
+  const [showPresidentRoleWarningPopUp, setShowPresidentRoleWarningPopUp] =
+    useState(false);
+
   useEffect(() => {
     const temp = [...Object.values(club.roles)];
     const arr = [];
@@ -101,8 +104,10 @@ export default function EditClubMember({ navigation, route }) {
   const handleAssignRole = () => {
     //if role being assigned belongs to another member, show warning message
     const role = selectedRole.split(" ").join("");
+    console.log(member);
     if (selectedRole !== "member" && club.roles[role].userID !== "")
       handleShowRoleWarningPopUp();
+    else if (member.role === "president") handleShowPresidentRoleWarningPopUp();
     else {
       const newMember = {
         userID: member.userID,
@@ -169,6 +174,10 @@ export default function EditClubMember({ navigation, route }) {
 
   const handleShowDeactivateMemberPopUp = () => {
     setShowDeactivateMemberPopUp(!showDeactivateMemberPopUp);
+  };
+
+  const handleShowPresidentRoleWarningPopUp = () => {
+    setShowPresidentRoleWarningPopUp(!showPresidentRoleWarningPopUp);
   };
 
   const handleDeactivateMember = () => {
@@ -466,6 +475,37 @@ export default function EditClubMember({ navigation, route }) {
               <Text style={styles.withdrawButton}>cancel</Text>
             </Pressable>
           )}
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={showPresidentRoleWarningPopUp}
+        onBackdropPress={handleShowPresidentRoleWarningPopUp} // Android back press
+        animationIn="bounceIn" // Has others, we want slide in from the left
+        animationOut="bounceOut" // When discarding the drawer
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
+      >
+        <View style={styles.withdrawMenu}>
+          <Text
+            style={{
+              fontSize: fontPixel(20),
+              fontWeight: "400",
+              color: "#DFE5F8",
+              marginBottom: pixelSizeVertical(12),
+              textAlign: "center",
+            }}
+          >
+            To change your role as president, appoint a new member as the club
+            president first.
+          </Text>
+          <PrimaryButton
+            loading={loading}
+            onPress={handleShowPresidentRoleWarningPopUp}
+            text={"Ok"}
+          />
         </View>
       </Modal>
       <Toast config={toastConfig} />
