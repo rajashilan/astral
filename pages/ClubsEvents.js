@@ -200,20 +200,36 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
           </Pressable>
         </View>
       )}
-      <Pagination
-        inactiveDotColor="#546593"
-        dotColor="#C4FFF9"
-        activeDotIndex={indexSelected}
-        containerStyle={{
-          paddingTop: 0,
-          paddingRight: pixelSizeHorizontal(16),
-          paddingLeft: pixelSizeHorizontal(16),
-          paddingBottom: 0,
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
           marginBottom: pixelSizeVertical(12),
         }}
-        dotsLength={innerTab === "past" ? data.past.length : data.future.length}
-        inactiveDotScale={1}
-      />
+      >
+        <View
+          style={
+            innerTab === "past"
+              ? indexSelected > 0 && data.past.length > 1
+                ? styles.activeDot
+                : styles.inactiveDot
+              : indexSelected > 0 && data.future.length > 1
+                ? styles.activeDot
+                : styles.inactiveDot
+          }
+        ></View>
+        <View
+          style={
+            innerTab === "past"
+              ? indexSelected < data.past.length - 1
+                ? styles.activeDot
+                : styles.inactiveDot
+              : indexSelected < data.future.length - 1
+                ? styles.activeDot
+                : styles.inactiveDot
+          }
+        ></View>
+      </View>
       {innerTab === "past" &&
         data.past.length === 0 &&
         !currentMember.role === "president" && (
@@ -593,6 +609,18 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(20),
     fontWeight: "400",
     color: "#C8A427",
+  },
+  inactiveDot: {
+    height: 10,
+    width: 10,
+    backgroundColor: "#546593",
+    borderRadius: 50,
+  },
+  activeDot: {
+    height: 10,
+    width: 10,
+    backgroundColor: "#C4FFF9",
+    borderRadius: 50,
   },
 });
 

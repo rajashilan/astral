@@ -140,36 +140,26 @@ const ClubsGallery = React.memo(({ navigation, onScroll }) => {
             Please add a photo to be able to activate your club.
           </Text>
         )}
-      <Pagination
-        inactiveDotColor="#546593"
-        dotColor="#C4FFF9"
-        activeDotIndex={indexSelected}
-        containerStyle={{
-          paddingTop: 0,
-          paddingRight: pixelSizeHorizontal(16),
-          paddingLeft: pixelSizeHorizontal(16),
-          paddingBottom: 0,
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
           marginBottom: pixelSizeVertical(12),
         }}
-        dotsLength={data.length}
-        inactiveDotScale={1}
-      />
-      <View style={{ flexDirection: row, justifyContent: "space-between" }}>
+      >
         <View
-          style={{
-            height: 10,
-            width: 10,
-            backgroundColor: "#546593",
-            borderRadius: "50%",
-          }}
+          style={
+            indexSelected > 0 && data.length > 1
+              ? styles.activeDot
+              : styles.inactiveDot
+          }
         ></View>
         <View
-          style={{
-            height: 10,
-            width: 10,
-            backgroundColor: "#546593",
-            borderRadius: "50%",
-          }}
+          style={
+            indexSelected < data.length - 1
+              ? styles.activeDot
+              : styles.inactiveDot
+          }
         ></View>
       </View>
       <Carousel
@@ -387,6 +377,18 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(20),
     fontWeight: "400",
     color: "#C8A427",
+  },
+  inactiveDot: {
+    height: 10,
+    width: 10,
+    backgroundColor: "#546593",
+    borderRadius: 50,
+  },
+  activeDot: {
+    height: 10,
+    width: 10,
+    backgroundColor: "#C4FFF9",
+    borderRadius: 50,
   },
 });
 
