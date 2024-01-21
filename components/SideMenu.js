@@ -4,7 +4,7 @@ import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
-  SafeAreaView,
+  ScrollView,
   Text,
   View,
   FlatList,
@@ -24,6 +24,7 @@ import {
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
+import EmptyView from "./EmptyView";
 
 const SideMenu = (props) => {
   const navigation = useNavigation();
@@ -69,126 +70,129 @@ const SideMenu = (props) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
-      <View>
-        <View style={styles.closeContainer}>
-          <Pressable
-            onPress={props.callParentScreenFunction}
-            style={styles.paddingContainer}
-            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
-          >
-            <FastImage
-              style={styles.closeIcon}
-              source={closeIcon}
-              resizeMode="contain"
-            />
-          </Pressable>
-        </View>
-
-        <Text style={styles.college}>{user.campus}</Text>
-        <View style={styles.userDetailsContainer}>
-          <Pressable onPress={handleNavigateToProfile}>
-            <FastImage
-              style={styles.image}
-              resizeMode="cover"
-              source={{ uri: user.profileImage }}
-              progressiveRenderingEnabled={true}
-              cache={FastImage.cacheControl.immutable}
-              priority={FastImage.priority.normal}
-            />
-          </Pressable>
-          <Pressable
-            style={{
-              marginRight: pixelSizeHorizontal(10),
-              marginLeft: pixelSizeHorizontal(10),
-              maxWidth: "60%",
-            }}
-            onPress={handleNavigateToProfile}
-          >
-            <Text
-              style={{
-                color: "#DFE5F8",
-                fontSize: fontPixel(22),
-                marginBottom: pixelSizeVertical(2),
-                fontWeight: "500",
-              }}
-              numberOfLines={5}
-            >
-              {user.name}
-            </Text>
-            <Text
-              style={{
-                color: "#C6CDE2",
-                fontSize: fontPixel(14),
-                fontWeight: "400",
-              }}
-            >
-              {user.intake}, {user.department}
-            </Text>
-          </Pressable>
-          <Pressable
-            style={{
-              marginLeft: "auto",
-            }}
-            onPress={handleNavigateToNotifications}
-          >
-            {hasNotification ? (
-              <Notification_Alert_Icon />
-            ) : (
-              <Notification_Icon />
-            )}
-          </Pressable>
-        </View>
-
-        <FlatList
-          style={styles.paddingContainer}
-          keyExtractor={(item, index) => index.toString()}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          data={[
+    <ScrollView stickyHeaderIndices={[0]} style={styles.safeAreaView}>
+      <View style={styles.closeContainer}>
+        <Pressable
+          onPress={props.callParentScreenFunction}
+          style={[
+            styles.paddingContainer,
             {
-              name: "orientation",
-            },
-            {
-              name: "clubs",
-            },
-            {
-              name: "general forms",
-            },
-            {
-              name: "profile",
+              backgroundColor: "#363BB1",
+              paddingTop: pixelSizeVertical(24),
+              paddingBottom: pixelSizeVertical(28),
             },
           ]}
-          renderItem={({ item }) => (
-            <>
-              <Pressable onPress={() => handleMenuNavigation(item.name)}>
-                <Text
-                  style={
-                    props.currentPage === item.name
-                      ? styles.activeMenuItem
-                      : props.currentPage === "clubspages" &&
-                          item.name === "clubs"
-                        ? styles.activeMenuItem
-                        : styles.inactiveMenuItem
-                  }
-                >
-                  {item.name}
-                </Text>
-              </Pressable>
-              <View style={styles.emptyView} />
-            </>
-          )}
-        />
-        <Pressable onPress={signOutUser}>
-          <Text style={styles.logout}>logout</Text>
+          hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+        >
+          <FastImage
+            style={styles.closeIcon}
+            source={closeIcon}
+            resizeMode="contain"
+          />
         </Pressable>
-        <StatusBar
-          style="light"
-          translucent={false}
-          backgroundColor="#0C111F"
-        />
       </View>
-    </SafeAreaView>
+
+      <Text style={styles.college}>{user.campus}</Text>
+      <View style={styles.userDetailsContainer}>
+        <Pressable onPress={handleNavigateToProfile}>
+          <FastImage
+            style={styles.image}
+            resizeMode="cover"
+            source={{ uri: user.profileImage }}
+            progressiveRenderingEnabled={true}
+            cache={FastImage.cacheControl.immutable}
+            priority={FastImage.priority.normal}
+          />
+        </Pressable>
+        <Pressable
+          style={{
+            marginRight: pixelSizeHorizontal(10),
+            marginLeft: pixelSizeHorizontal(10),
+            maxWidth: "60%",
+          }}
+          onPress={handleNavigateToProfile}
+        >
+          <Text
+            style={{
+              color: "#DFE5F8",
+              fontSize: fontPixel(22),
+              marginBottom: pixelSizeVertical(2),
+              fontWeight: "500",
+            }}
+            numberOfLines={5}
+          >
+            {user.name}
+          </Text>
+          <Text
+            style={{
+              color: "#C6CDE2",
+              fontSize: fontPixel(14),
+              fontWeight: "400",
+            }}
+          >
+            {user.intake}, {user.department}
+          </Text>
+        </Pressable>
+        <Pressable
+          style={{
+            marginLeft: "auto",
+          }}
+          onPress={handleNavigateToNotifications}
+        >
+          {hasNotification ? (
+            <Notification_Alert_Icon />
+          ) : (
+            <Notification_Icon />
+          )}
+        </Pressable>
+      </View>
+
+      <FlatList
+        style={styles.paddingContainer}
+        keyExtractor={(item, index) => index.toString()}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        scrollEnabled={false}
+        data={[
+          {
+            name: "orientation",
+          },
+          {
+            name: "clubs",
+          },
+          {
+            name: "general forms",
+          },
+          {
+            name: "profile",
+          },
+        ]}
+        renderItem={({ item }) => (
+          <>
+            <Pressable onPress={() => handleMenuNavigation(item.name)}>
+              <Text
+                style={
+                  props.currentPage === item.name
+                    ? styles.activeMenuItem
+                    : props.currentPage === "clubspages" &&
+                        item.name === "clubs"
+                      ? styles.activeMenuItem
+                      : styles.inactiveMenuItem
+                }
+              >
+                {item.name}
+              </Text>
+            </Pressable>
+            <View style={styles.emptyView} />
+          </>
+        )}
+      />
+      <Pressable onPress={signOutUser}>
+        <Text style={styles.logout}>logout</Text>
+      </Pressable>
+      <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
+      <EmptyView backgroundColor={"#363BB1"} />
+    </ScrollView>
   );
 };
 
@@ -202,12 +206,10 @@ const styles = StyleSheet.create({
     paddingLeft: pixelSizeHorizontal(16),
   },
   closeContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginTop: pixelSizeVertical(24),
-    marginBottom: pixelSizeVertical(28),
+    alignItems: "flex-end",
   },
   closeIcon: {
+    backgroundColor: "#363BB1",
     height: pixelSizeVertical(25),
     width: pixelSizeHorizontal(40),
   },
