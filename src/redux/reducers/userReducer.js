@@ -3,6 +3,7 @@ import {
   GET_AUTHENTICATED_USER,
   LOGOUT,
   SET_LOADING_USER,
+  SET_NOTIFICATION_AVAILABLE,
   STOP_LOADING_USER,
   UPDATE_USER_BIO,
   UPDATE_USER_PHOTO,
@@ -12,6 +13,7 @@ const initialState = {
   credentials: {},
   authenticated: false,
   loading: false,
+  notificationAvailable: false,
 };
 
 export default function (state = initialState, action) {
@@ -56,6 +58,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
+      };
+    case SET_NOTIFICATION_AVAILABLE:
+      return {
+        ...state,
+        notificationAvailable: action.payload,
       };
     default:
       return state;

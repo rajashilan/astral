@@ -6,6 +6,7 @@ export const ADD_USER_CLUB = "ADD_USER_CLUB";
 export const LOGOUT = "LOGOUT";
 export const UPDATE_USER_PHOTO = "UPDATE_USER_PHOTO";
 export const UPDATE_USER_BIO = "UPDATE_USER_BIO";
+export const SET_NOTIFICATION_AVAILABLE = "SET_NOTIFICATION_AVAILABLE";
 
 //data types
 //orientation

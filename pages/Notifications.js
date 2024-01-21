@@ -56,7 +56,7 @@ export default function Notifications({ navigation }) {
   const [data, setData] = useState([]);
   const [lastDoc, setLastDoc] = useState(null);
 
-  const fetchClubs = () => {
+  const fetchNotifications = () => {
     if (!lastDoc) setLoading(true);
 
     let query = db
@@ -95,7 +95,7 @@ export default function Notifications({ navigation }) {
   };
 
   useEffect(() => {
-    fetchClubs();
+    fetchNotifications();
     return () => {
       setLastDoc(null);
       setData([]);
@@ -116,7 +116,7 @@ export default function Notifications({ navigation }) {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setLastDoc(null);
-    fetchClubs();
+    fetchNotifications();
   }, []);
 
   const handleScroll = ({ nativeEvent }) => {
@@ -126,7 +126,7 @@ export default function Notifications({ navigation }) {
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
 
     if (isCloseToBottom) {
-      fetchClubs();
+      fetchNotifications();
     }
   };
 

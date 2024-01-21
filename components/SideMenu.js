@@ -30,6 +30,9 @@ const SideMenu = (props) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.credentials);
+  const hasNotification = useSelector(
+    (state) => state.user.notificationAvailable
+  );
 
   const handleMenuNavigation = (name) => {
     props.callParentScreenFunction();
@@ -129,12 +132,11 @@ const SideMenu = (props) => {
             }}
             onPress={handleNavigateToNotifications}
           >
-            {/* <FastImage
-              style={styles.notificationIcon}
-              contentFit="contain"
-              source={notificationIcon}
-            /> */}
-            <Notification_Alert_Icon />
+            {hasNotification ? (
+              <Notification_Alert_Icon />
+            ) : (
+              <Notification_Icon />
+            )}
           </Pressable>
         </View>
 

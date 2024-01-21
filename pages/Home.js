@@ -7,6 +7,7 @@ import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { Wave } from "react-native-animated-spinkit";
 import Notification_Alert_Icon from "../assets/Notification_Alert_Icon";
+import Notification_Icon from "../assets/Notification_Icon";
 import IosHeight from "../components/IosHeight";
 import { getAuthenticatedUser } from "../src/redux/actions/userActions";
 import {
@@ -23,6 +24,9 @@ export default function Home({ navigation }) {
   const state = useSelector((state) => state.user);
   const loading = useSelector((state) => state.user.loading);
   const user = useSelector((state) => state.user.credentials);
+  const hasNotification = useSelector(
+    (state) => state.user.notificationAvailable
+  );
 
   //show user's name, intake... photo, and notifications icon
 
@@ -128,7 +132,7 @@ export default function Home({ navigation }) {
         }}
         onPress={() => navigation.replace("Notifications")}
       >
-        <Notification_Alert_Icon />
+        {hasNotification ? <Notification_Alert_Icon /> : <Notification_Icon />}
       </Pressable>
     </View>
   );

@@ -31,6 +31,7 @@ import {
   SET_CLUB_GALLERY_TO_TRUE,
   SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
+  SET_NOTIFICATION_AVAILABLE,
   SET_UI_LOADING,
   STOP_LOADING_DATA,
   STOP_LOADING_USER,
@@ -1229,6 +1230,8 @@ export const createNotification = (notification, userIDs) => (dispatch) => {
 //receive notification IDs from frontEnd
 export const setNotificationsRead = (notificationIDs) => (dispatch) => {
   const batch = db.batch();
+
+  dispatch({ type: SET_NOTIFICATION_AVAILABLE, payload: false });
 
   notificationIDs.forEach((notificationID) => {
     const notification = db.collection("notifications").doc(notificationID);
