@@ -1,17 +1,25 @@
+import React from "react";
 import { StyleSheet, View } from "react-native";
-import React, { Component } from "react";
 import { pixelSizeVertical } from "../utils/responsive-font";
 
-export default class EmptyView extends Component {
-  render() {
-    return <View style={styles.emptyView}></View>;
-  }
-}
+const EmptyView = (props) => {
+  const { backgroundColor } = props;
+
+  return (
+    <View
+      style={[
+        styles.emptyView,
+        { backgroundColor: backgroundColor ? backgroundColor : "#0C111F" },
+      ]}
+    ></View>
+  );
+};
 
 const styles = StyleSheet.create({
   emptyView: {
     flex: 1,
     height: pixelSizeVertical(32),
-    backgroundColor: "#0C111F",
   },
 });
+
+export default EmptyView;
