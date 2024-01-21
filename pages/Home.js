@@ -2,7 +2,14 @@ import auth from "@react-native-firebase/auth";
 import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+} from "react-native";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { Wave } from "react-native-animated-spinkit";
@@ -18,6 +25,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import EmptyView from "../components/EmptyView";
 
 export default function Home({ navigation }) {
   const dispatch = useDispatch();
@@ -112,6 +120,7 @@ export default function Home({ navigation }) {
             fontSize: fontPixel(22),
             marginBottom: pixelSizeVertical(2),
             fontWeight: "500",
+            maxWidth: "84%",
           }}
         >
           {user.name}
@@ -121,6 +130,7 @@ export default function Home({ navigation }) {
             color: "#C6CDE2",
             fontSize: fontPixel(14),
             fontWeight: "400",
+            maxWidth: "94%",
           }}
         >
           {user.intake}, {user.department}
@@ -138,7 +148,14 @@ export default function Home({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      contentContainerStyle={{
+        justifyContent: "center",
+        paddingTop: pixelSizeVertical(80),
+        paddingBottom: pixelSizeVertical(16),
+      }}
+      style={styles.container}
+    >
       <IosHeight />
       <View style={styles.list}>
         {!loading ? <Text style={styles.college}>{user.campus}</Text> : null}
@@ -149,6 +166,7 @@ export default function Home({ navigation }) {
               paddingRight: pixelSizeHorizontal(16),
               paddingLeft: pixelSizeHorizontal(16),
             }}
+            scrollEnabled={false}
             keyExtractor={(item, index) => index.toString()}
             data={menuItems}
             renderItem={({ item }) => (
@@ -164,17 +182,15 @@ export default function Home({ navigation }) {
       </View>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#363BB1" />
-    </View>
+      <EmptyView backgroundColor={"#363BB1"} />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     backgroundColor: "#363BB1",
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
   },
   list: {
     marginBottom: pixelSizeVertical(32),
