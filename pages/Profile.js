@@ -253,7 +253,7 @@ export default function ClubCurrentMembers({ navigation }) {
                   <View
                     key={club.clubID}
                     style={{
-                      flexDirection: "row",
+                      flexDirection: "column",
                       marginTop: pixelSizeVertical(16),
                     }}
                   >
@@ -393,6 +393,5 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#07BEB8",
-    marginTop: pixelSizeVertical(8),
   },
 });
