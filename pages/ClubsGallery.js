@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
-import Carousel, { Pagination } from "react-native-snap-carousel";
+import Carousel from "react-native-snap-carousel";
 import Toast from "react-native-toast-message";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -140,28 +140,30 @@ const ClubsGallery = React.memo(({ navigation, onScroll }) => {
             Please add a photo to be able to activate your club.
           </Text>
         )}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginBottom: pixelSizeVertical(12),
-        }}
-      >
+      {data.length > 0 ? (
         <View
-          style={
-            indexSelected > 0 && data.length > 1
-              ? styles.activeDot
-              : styles.inactiveDot
-          }
-        ></View>
-        <View
-          style={
-            indexSelected < data.length - 1
-              ? styles.activeDot
-              : styles.inactiveDot
-          }
-        ></View>
-      </View>
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: pixelSizeVertical(12),
+          }}
+        >
+          <View
+            style={
+              indexSelected > 0 && data.length > 1
+                ? styles.activeDot
+                : styles.inactiveDot
+            }
+          ></View>
+          <View
+            style={
+              indexSelected < data.length - 1
+                ? styles.activeDot
+                : styles.inactiveDot
+            }
+          ></View>
+        </View>
+      ) : null}
       <Carousel
         layout="default"
         data={data}

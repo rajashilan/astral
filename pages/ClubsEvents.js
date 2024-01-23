@@ -10,7 +10,7 @@ import {
   ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
-import Carousel, { Pagination } from "react-native-snap-carousel";
+import Carousel from "react-native-snap-carousel";
 import Toast from "react-native-toast-message";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -200,36 +200,38 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
           </Pressable>
         </View>
       )}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginBottom: pixelSizeVertical(12),
-        }}
-      >
+      {data.past.length > 0 || data.future.length > 0 ? (
         <View
-          style={
-            innerTab === "past"
-              ? indexSelected > 0 && data.past.length > 1
-                ? styles.activeDot
-                : styles.inactiveDot
-              : indexSelected > 0 && data.future.length > 1
-                ? styles.activeDot
-                : styles.inactiveDot
-          }
-        ></View>
-        <View
-          style={
-            innerTab === "past"
-              ? indexSelected < data.past.length - 1
-                ? styles.activeDot
-                : styles.inactiveDot
-              : indexSelected < data.future.length - 1
-                ? styles.activeDot
-                : styles.inactiveDot
-          }
-        ></View>
-      </View>
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: pixelSizeVertical(12),
+          }}
+        >
+          <View
+            style={
+              innerTab === "past"
+                ? indexSelected > 0 && data.past.length > 1
+                  ? styles.activeDot
+                  : styles.inactiveDot
+                : indexSelected > 0 && data.future.length > 1
+                  ? styles.activeDot
+                  : styles.inactiveDot
+            }
+          ></View>
+          <View
+            style={
+              innerTab === "past"
+                ? indexSelected < data.past.length - 1
+                  ? styles.activeDot
+                  : styles.inactiveDot
+                : indexSelected < data.future.length - 1
+                  ? styles.activeDot
+                  : styles.inactiveDot
+            }
+          ></View>
+        </View>
+      ) : null}
       {innerTab === "past" &&
         data.past.length === 0 &&
         !currentMember.role === "president" && (
