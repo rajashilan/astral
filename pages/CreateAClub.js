@@ -214,7 +214,7 @@ export default function CreateAClub({ navigation, route }) {
             clubID: "", //get it later after adding
             name,
             image:
-              "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.jpeg?alt=media&token=8a9c42e0-d937-4389-804f-9fd6953644ac&_gl=1*1c0ck02*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMDYzLjU4LjAuMA..",
+              "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclub_default_img.png?alt=media&token=cbd925cb-bfc3-4b9f-80e5-3895099f8477",
             gallery: false,
             events: false,
             details: {
@@ -308,7 +308,7 @@ export default function CreateAClub({ navigation, route }) {
           const clubsOverviewData = {
             name,
             image:
-              "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclubs_default.jpeg?alt=media&token=8a9c42e0-d937-4389-804f-9fd6953644ac&_gl=1*1c0ck02*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMDYzLjU4LjAuMA..",
+              "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclub_default_img.png?alt=media&token=cbd925cb-bfc3-4b9f-80e5-3895099f8477",
             clubID: "", //to be added later
             approval: "pending",
             approvalText:
@@ -361,7 +361,8 @@ export default function CreateAClub({ navigation, route }) {
                     temp.push(clubsOverviewData);
 
                     return db
-                      .doc(`/clubsOverview/${state.campus.campusID}`)
+                      .collection("clubsOverview")
+                      .doc(state.campus.campusID)
                       .update({ clubs: [...temp] });
                   }
                 })
@@ -378,25 +379,29 @@ export default function CreateAClub({ navigation, route }) {
                       temp.push(userData);
 
                       return db
-                        .doc(`/users/${user.userId}`)
+                        .collection("users")
+                        .doc(user.userId)
                         .update({ clubs: [...temp] });
                     })
                     .then(() => {
                       //create event details
                       return db
-                        .doc(`/events/${eventData.clubID}`)
+                        .collection("events")
+                        .doc(eventData.clubID)
                         .set(eventData);
                     })
                     .then(() => {
                       //create gallery details
                       return db
-                        .doc(`/gallery/${galleryData.clubID}`)
+                        .collection("gallery")
+                        .doc(galleryData.clubID)
                         .set(galleryData);
                     })
                     .then(() => {
                       //add members details
                       return db
-                        .doc(`/clubMembers/${clubMembers.clubID}`)
+                        .collection("clubMembers")
+                        .doc(clubMembers.clubID)
                         .set(clubMembers);
                     })
                     .then(() => {

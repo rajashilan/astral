@@ -208,12 +208,14 @@ export default function ClubResubmission({ navigation, route }) {
             temp[index].approval = "pending";
 
             return db
-              .doc(`/clubsOverview/${club.campusID}`)
+              .collection("clubsOverview")
+              .doc(club.campusID)
               .update({ clubs: [...temp] });
           })
           .then(() => {
             return db
-              .doc(`/clubs/${club.clubID}`)
+              .collection("clubs")
+              .doc(club.clubID)
               .update({ name, approval: "pending" });
           })
           .then(() => {
@@ -255,7 +257,8 @@ export default function ClubResubmission({ navigation, route }) {
                   temp[index].approval = "pending";
 
                   return db
-                    .doc(`/users/${user.userId}`)
+                    .collection("users")
+                    .doc(user.userId)
                     .update({ clubs: [...temp] });
                 })
                 .then(() => {
@@ -274,12 +277,14 @@ export default function ClubResubmission({ navigation, route }) {
                   temp[index].approval = "pending";
 
                   return db
-                    .doc(`/clubsOverview/${club.campusID}`)
+                    .collection("clubsOverview")
+                    .doc(club.campusID)
                     .update({ clubs: [...temp] });
                 })
                 .then(() => {
                   return db
-                    .doc(`/clubs/${club.clubID}`)
+                    .collection("clubs")
+                    .doc(club.clubID)
                     .update({ name, approval: "pending", fpfForms: [url] });
                 })
                 .then(() => {
@@ -342,7 +347,8 @@ export default function ClubResubmission({ navigation, route }) {
         temp.splice(index, 1);
 
         return db
-          .doc(`/clubsOverview/${club.campusID}`)
+          .collection("clubsOverview")
+          .doc(club.campusID)
           .update({ clubs: [...temp] });
       })
       .then(() => {
