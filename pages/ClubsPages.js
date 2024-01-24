@@ -206,6 +206,7 @@ export default function ClubsPages({ navigation, route }) {
           <PrimaryButton
             onPress={() => setShowAgreementPopUp(!showAgreementPopUp)}
             text="join"
+            loading={loading}
             buttonStyle={{ marginBottom: pixelSizeVertical(4) }}
           />
         )}
