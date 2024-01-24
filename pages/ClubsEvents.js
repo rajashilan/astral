@@ -247,21 +247,24 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
             nothing to see here...yet
           </Text>
         )}
-      {innerTab === "future" &&
+      {(innerTab === "future" &&
         data.future.length === 0 &&
-        !currentMember.role === "president" && (
-          <Text
-            style={{
-              fontSize: fontPixel(20),
-              fontWeight: "400",
-              color: "#F5F5F5",
-              marginTop: pixelSizeVertical(12),
-              textAlign: "center",
-            }}
-          >
-            nothing to see here...yet
-          </Text>
-        )}
+        !currentMember.role === "president") ||
+        (innerTab === "future" &&
+          data.future.length === 0 &&
+          Object.keys(currentMember).length === 0 && (
+            <Text
+              style={{
+                fontSize: fontPixel(20),
+                fontWeight: "400",
+                color: "#F5F5F5",
+                marginTop: pixelSizeVertical(12),
+                textAlign: "center",
+              }}
+            >
+              nothing to see here...yet
+            </Text>
+          ))}
       {innerTab === "past" ? (
         <Carousel
           layout="default"
@@ -566,6 +569,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingRight: pixelSizeHorizontal(2),
     paddingLeft: pixelSizeHorizontal(2),
+    marginTop: pixelSizeVertical(4),
   },
   borderButton: {
     backgroundColor: "#0C111F",
