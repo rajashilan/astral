@@ -100,7 +100,7 @@ export default function SignupDetails({ navigation, route }) {
       setLoading(true);
 
       // check for username
-      db.collection("users")
+      db.collection("usernames")
         .where("username", "==", username.toLowerCase())
         .get()
         .then((data) => {
@@ -120,7 +120,7 @@ export default function SignupDetails({ navigation, route }) {
               gender: selectedGender,
               birthday,
               profileImage:
-                "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/users%2FprofileImage%2Fuser_default_gradient.jpeg?alt=media&token=c9078223-b50d-44db-b861-ea63ca0ed83e&_gl=1*h7xjl7*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4MzAwMTc3LjIzLjAuMA..",
+                "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/users%2FprofileImage%2Fuser_default_img.png?alt=media&token=6199cf2b-cbfe-4b25-a3b4-ef6b5261e98b",
               bio: "",
               userId: "",
               college,
@@ -144,6 +144,11 @@ export default function SignupDetails({ navigation, route }) {
                     db.collection("users")
                       .doc(data.userId)
                       .set(data)
+                      .then(() => {
+                        return db
+                          .collection("usernames")
+                          .add({ username: username });
+                      })
                       .then(() => {
                         setLoading(false);
                         navigation.replace("Login", {
