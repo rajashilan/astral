@@ -232,21 +232,24 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
           ></View>
         </View>
       ) : null}
-      {innerTab === "past" &&
+      {(innerTab === "past" &&
         data.past.length === 0 &&
-        !currentMember.role === "president" && (
-          <Text
-            style={{
-              fontSize: fontPixel(20),
-              fontWeight: "400",
-              color: "#F5F5F5",
-              marginTop: pixelSizeVertical(12),
-              textAlign: "center",
-            }}
-          >
-            nothing to see here...yet
-          </Text>
-        )}
+        !currentMember.role === "president") ||
+        (innerTab === "past" &&
+          data.past.length === 0 &&
+          Object.keys(currentMember).length === 0 && (
+            <Text
+              style={{
+                fontSize: fontPixel(20),
+                fontWeight: "400",
+                color: "#F5F5F5",
+                marginTop: pixelSizeVertical(12),
+                textAlign: "center",
+              }}
+            >
+              nothing to see here...yet
+            </Text>
+          ))}
       {(innerTab === "future" &&
         data.future.length === 0 &&
         !currentMember.role === "president") ||
