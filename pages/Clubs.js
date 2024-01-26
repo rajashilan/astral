@@ -349,6 +349,7 @@ export default React.memo(function Clubs({ navigation }) {
         </Pressable>
       )}
       <EmptyView />
+      <EmptyView />
     </ScrollView>
   );
 
