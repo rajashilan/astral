@@ -79,7 +79,8 @@ export default function EditClub({ navigation }) {
         club.details.fees === "") &&
       selectedActive === "activate"
     )
-      errors.active = "Please complete your club details to active the club.";
+      errors.active =
+        "Please activate the club by completing your details. Wait for the details to be approved if not yet approved.";
 
     if (!errors.active) {
       if (selectedActive === "activate") {
