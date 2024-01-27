@@ -15,7 +15,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
-
+import { Video } from "expo-av";
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import Header from "../components/Header";
 import IosHeight from "../components/IosHeight";
@@ -45,6 +45,8 @@ export default function Orientation({ navigation }) {
 
   const [overview, setOverview] = useState({});
   const [search, setSearch] = useState("");
+
+  console.log(overview);
 
   useEffect(() => {
     if (user.authenticated) dispatch(getOrientation(state.campus.campusID));
@@ -100,19 +102,25 @@ export default function Orientation({ navigation }) {
       <View onLayout={onLayout}>
         <Header header="orientation" />
       </View>
-      {/* {overview.video && (
-        <VideoPlayer
-          style={styles.video}
-          videoProps={{
-            resizeMode: ResizeMode.CONTAIN,
-            source: {
-              uri: overview.videos[0],
-            },
-          }}
-        />
-      )} */}
 
       <Text style={styles.title}>{overview.title}</Text>
+
+      {overview.videos &&
+        overview.videos.map((video) => {
+          let videoID = video.url.split("/");
+          videoID = videoID[videoID.length - 2];
+          console.log(videoID);
+          return (
+            <Video
+              source={{
+                uri: `https://drive.google.com/uc?export=download&id=${videoID}`,
+              }}
+              style={styles.video}
+              useNativeControls
+              resizeMode="contain"
+            />
+          );
+        })}
 
       <View
         style={{
@@ -249,7 +257,9 @@ const styles = StyleSheet.create({
   video: {
     alignSelf: "center",
     width: width - 32,
-    height: 200,
+    height: 180,
+    backgroundColor: "#1A2238",
+    marginBottom: pixelSizeVertical(16),
   },
   pageItems: {
     fontSize: fontPixel(28),
