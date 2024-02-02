@@ -20,6 +20,7 @@ import {
   LOGOUT,
   REJECT_NEW_CLUB_MEMBER,
   RESET_CLUB_DATA,
+  RESET_ORIENTATION_PAGE,
   SET_CLUB_EVENT,
   SET_CLUB_EVENT_TO_FALSE,
   SET_CLUB_EVENT_TO_TRUE,
@@ -90,6 +91,15 @@ export default function (state = initialState, action) {
           overview: { ...state.orientation.overview },
           pages: [...state.orientation.pages],
           currentPage: { ...action.payload },
+        },
+      };
+    case RESET_ORIENTATION_PAGE:
+      return {
+        ...state,
+        orientation: {
+          overview: { ...state.orientation.overview },
+          pages: [...state.orientation.pages],
+          currentPage: {},
         },
       };
     case GET_A_CLUB_DATA:

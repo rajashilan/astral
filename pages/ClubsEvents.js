@@ -514,6 +514,7 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
         </View>
       </Modal>
       <EmptyView />
+      <EmptyView />
       <Toast config={toastConfig} />
     </ScrollView>
   );

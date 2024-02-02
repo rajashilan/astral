@@ -1,6 +1,6 @@
 import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, memo } from "react";
 import {
   StyleSheet,
   Text,
@@ -27,6 +27,8 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import EmptyView from "../components/EmptyView";
+import { RESET_ORIENTATION_PAGE } from "../src/redux/type";
+import { useFocusEffect } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
@@ -46,7 +48,18 @@ export default function Orientation({ navigation }) {
   const [overview, setOverview] = useState({});
   const [search, setSearch] = useState("");
 
-  console.log(overview);
+  const [showVideos, setShowVideos] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowVideos(true);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+      setOverview({});
+    };
+  }, []);
 
   useEffect(() => {
     if (user.authenticated) dispatch(getOrientation(state.campus.campusID));
@@ -77,6 +90,25 @@ export default function Orientation({ navigation }) {
     setHeaderHeight(height);
   };
 
+  const memoizedVideos = useMemo(() => {
+    if (overview.videos && showVideos)
+      return overview.videos.map((video) => {
+        let videoID = video.url.split("/");
+        videoID = videoID[videoID.length - 2];
+        return (
+          <Video
+            key={video.videoID}
+            source={{
+              uri: `https://drive.google.com/uc?id=${videoID}`,
+            }}
+            style={styles.video}
+            useNativeControls
+            resizeMode="contain"
+          />
+        );
+      });
+  }, [overview.videos, showVideos]);
+
   useEffect(() => {
     //if scroll height is more than header height and the header is not shown, show
     if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
@@ -95,7 +127,6 @@ export default function Orientation({ navigation }) {
   ) : (
     <ScrollView
       scrollEventThrottle={16}
-      stickyHeaderIndices={[2]}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
       showsVerticalScrollIndicator={false}
     >
@@ -105,22 +136,7 @@ export default function Orientation({ navigation }) {
 
       <Text style={styles.title}>{overview.title}</Text>
 
-      {overview.videos &&
-        overview.videos.map((video) => {
-          let videoID = video.url.split("/");
-          videoID = videoID[videoID.length - 2];
-          console.log(videoID);
-          return (
-            <Video
-              source={{
-                uri: `https://drive.google.com/uc?export=download&id=${videoID}`,
-              }}
-              style={styles.video}
-              useNativeControls
-              resizeMode="contain"
-            />
-          );
-        })}
+      {memoizedVideos}
 
       <View
         style={{

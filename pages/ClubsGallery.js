@@ -300,6 +300,7 @@ const ClubsGallery = React.memo(({ navigation, onScroll }) => {
       </Modal>
 
       <EmptyView />
+      <EmptyView />
       <Toast config={toastConfig} />
     </ScrollView>
   );

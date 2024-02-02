@@ -27,6 +27,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import EmptyView from "../components/EmptyView";
+import { RESET_ORIENTATION_PAGE } from "../src/redux/type";
 
 const { width } = Dimensions.get("window");
 
@@ -49,8 +50,8 @@ export default React.memo(function OrientationPages({ navigation, route }) {
 
   // const [focusImage, setFocusImage] = useState("");
   // const [isImageModalVisible, setIsImageModalVisible] = useState(false);
-  const [rendered, setRendered] = useState(false);
-  const [goBack, setGoBack] = useState(false);
+
+  const [show, setShow] = useState(false);
 
   //on mount
   //set render to true
@@ -58,28 +59,31 @@ export default React.memo(function OrientationPages({ navigation, route }) {
   //if
 
   useEffect(() => {
-    setRendered(true);
-    setGoBack(false);
-    dispatch(getOrientationPage(orientationPageID));
+    const timeout = setTimeout(() => {
+      setShow(true);
+    }, 180);
+
+    return () => {
+      clearTimeout(timeout);
+      dispatch({ type: RESET_ORIENTATION_PAGE });
+    };
   }, []);
 
   useEffect(() => {
-    if (rendered && !loading) setData([page]);
-  }, [page, rendered]);
+    if (show) dispatch(getOrientationPage(orientationPageID));
+  }, [show]);
+
+  useEffect(() => {
+    setData([page]);
+  }, [page]);
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
   const handleNavigateBack = () => {
-    setData([]);
-    setRendered(false);
-    setGoBack(true);
+    navigation.navigate("Orientation");
   };
-
-  useEffect(() => {
-    if (!rendered && goBack) navigation.navigate("Orientation");
-  }, [rendered, goBack]);
 
   const onLayout = (event) => {
     const { height } = event.nativeEvent.layout;
