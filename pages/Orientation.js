@@ -8,10 +8,11 @@ import {
   FlatList,
   Pressable,
   Dimensions,
+  RefreshControl,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { Wave } from "react-native-animated-spinkit";
-import { ScrollView } from "react-native-gesture-handler";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,6 +30,7 @@ import {
 import EmptyView from "../components/EmptyView";
 import { RESET_ORIENTATION_PAGE } from "../src/redux/type";
 import { useFocusEffect } from "@react-navigation/native";
+import { retrieveData, saveData } from "../utils/cache";
 
 const { width } = Dimensions.get("window");
 
@@ -48,26 +50,56 @@ export default function Orientation({ navigation }) {
   const [overview, setOverview] = useState({});
   const [search, setSearch] = useState("");
 
-  const [showVideos, setShowVideos] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const [show, setShow] = useState(false);
+  const [fetch, setFetch] = useState(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setShowVideos(true);
-    }, 1000);
+      setShow(true);
+    }, 260);
 
     return () => {
       clearTimeout(timeout);
-      setOverview({});
     };
   }, []);
 
   useEffect(() => {
-    if (user.authenticated) dispatch(getOrientation(state.campus.campusID));
-  }, [user.authenticated]);
+    const fetchData = async () => {
+      if (!user.authenticated || !show) {
+        return;
+      }
+
+      try {
+        const data = await retrieveData("@astral:orientation");
+        if (data) {
+          setOverview(data);
+        } else {
+          dispatch(getOrientation(state.campus.campusID));
+          setFetch(true);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [user.authenticated, show]);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    dispatch(getOrientation(state.campus.campusID));
+    setFetch(true);
+  });
 
   useEffect(() => {
-    setOverview({ ...orientation.overview });
-  }, [orientation.overview]);
+    if (fetch) {
+      setOverview({ ...orientation.overview });
+      saveData("@astral:orientation", { ...orientation.overview });
+      setRefreshing(false);
+    }
+  }, [orientation.overview, fetch]);
 
   useEffect(() => {
     return () => {
@@ -91,7 +123,7 @@ export default function Orientation({ navigation }) {
   };
 
   const memoizedVideos = useMemo(() => {
-    if (overview.videos && showVideos)
+    if (overview.videos)
       return overview.videos.map((video) => {
         let videoID = video.url.split("/");
         videoID = videoID[videoID.length - 2];
@@ -107,7 +139,7 @@ export default function Orientation({ navigation }) {
           />
         );
       });
-  }, [overview.videos, showVideos]);
+  }, [overview.videos]);
 
   useEffect(() => {
     //if scroll height is more than header height and the header is not shown, show
@@ -129,6 +161,9 @@ export default function Orientation({ navigation }) {
       scrollEventThrottle={16}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     >
       <View onLayout={onLayout}>
         <Header header="orientation" />
@@ -153,7 +188,6 @@ export default function Orientation({ navigation }) {
       </View>
 
       <FlatList
-        style={styles.list}
         scrollEnabled={false}
         keyExtractor={(item, index) => index.toString()}
         initialNumToRender={10}
