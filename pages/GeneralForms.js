@@ -11,9 +11,10 @@ import {
   Pressable,
   Dimensions,
   TextInput,
+  RefreshControl,
+  ScrollView,
 } from "react-native";
 import { Wave } from "react-native-animated-spinkit";
-import { ScrollView } from "react-native-gesture-handler";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
@@ -30,6 +31,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import EmptyView from "../components/EmptyView";
+import { retrieveData, saveData } from "../utils/cache";
 const db = firestore();
 
 const { width } = Dimensions.get("window");
@@ -48,27 +50,84 @@ export default function GeneralForms({ navigation }) {
 
   const [data, setData] = useState([]);
 
+  const [show, setShow] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShow(true);
+    }, 260);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!campus.campusID || !show) {
+        return;
+      }
+
+      try {
+        const data = await retrieveData("@astral:generalForms");
+        if (data) {
+          setData(data);
+        } else {
+          setLoading(true);
+          db.collection("generalFormsOverview")
+            .doc(campus.campusID)
+            .get()
+            .then((doc) => {
+              setLoading(false);
+              const temp = doc.data().forms;
+              setData([...temp]);
+              saveData("@astral:generalForms", [...temp]);
+            })
+            .catch((error) => {
+              setLoading(false);
+              console.error(error);
+              Toast.show({
+                type: "error",
+                text1: "something went wrong",
+              });
+            });
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [campus.campusID, show]);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
     setLoading(true);
-    if (campus.campusID) {
-      db.collection("generalFormsOverview")
-        .doc(campus.campusID)
-        .get()
-        .then((doc) => {
-          const temp = doc.data().forms;
-          setData([...temp]);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error(error);
-          Toast.show({
-            type: "error",
-            text1: "something went wrong",
-          });
-          setLoading(false);
+    db.collection("generalFormsOverview")
+      .doc(campus.campusID)
+      .get()
+      .then((doc) => {
+        setLoading(false);
+        setRefreshing(false);
+        const temp = doc.data().forms;
+        setData([...temp]);
+        saveData("@astral:generalForms", [...temp]);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setRefreshing(false);
+        console.error(error);
+        Toast.show({
+          type: "error",
+          text1: "something went wrong",
         });
-    }
-  }, [campus.campusID]);
+      });
+  });
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -108,23 +167,30 @@ export default function GeneralForms({ navigation }) {
       stickyHeaderIndices={[1]}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     >
-      <View onLayout={onLayout}>
-        <Header header="general forms" />
-      </View>
-      <View
-        style={{
-          backgroundColor: "#0C111F",
-        }}
-      >
-        <TextInput
-          style={styles.textInput}
-          placeholder="search for forms..."
-          placeholderTextColor="#DBDBDB"
-          onChangeText={(newSearch) => setSearch(newSearch)}
-          value={search}
-        />
-      </View>
+      {!isEmpty(data) && (
+        <View onLayout={onLayout}>
+          <Header header="general forms" />
+        </View>
+      )}
+      {!isEmpty(data) && (
+        <View
+          style={{
+            backgroundColor: "#0C111F",
+          }}
+        >
+          <TextInput
+            style={styles.textInput}
+            placeholder="search for forms..."
+            placeholderTextColor="#DBDBDB"
+            onChangeText={(newSearch) => setSearch(newSearch)}
+            value={search}
+          />
+        </View>
+      )}
       <FlatList
         style={styles.list}
         scrollEnabled={false}
