@@ -61,7 +61,7 @@ export default React.memo(function OrientationPages({ navigation, route }) {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setShow(true);
-    }, 180);
+    }, 240);
 
     return () => {
       clearTimeout(timeout);
