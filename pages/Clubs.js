@@ -56,21 +56,35 @@ export default React.memo(function Clubs({ navigation }) {
 
   const [search, setSearch] = useState("");
 
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShow(true);
+    }, 260);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
+
   useEffect(() => {
     //get clubs from clubs overview
-    setLoading(true);
-    db.collection("clubsOverview")
-      .doc(state.campus.campusID)
-      .get()
-      .then((doc) => {
-        if (doc.data()) setAll(doc.data().clubs);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
-  }, [state.campus.campusID]);
+    if (show) {
+      setLoading(true);
+      db.collection("clubsOverview")
+        .doc(state.campus.campusID)
+        .get()
+        .then((doc) => {
+          setLoading(false);
+          if (doc.data()) setAll(doc.data().clubs);
+        })
+        .catch((error) => {
+          console.error(error);
+          setLoading(false);
+        });
+    }
+  }, [state.campus.campusID, show]);
 
   const onRefresh = React.useCallback(() => {
     //get clubs from clubs overview
@@ -82,9 +96,9 @@ export default React.memo(function Clubs({ navigation }) {
       .doc(state.campus.campusID)
       .get()
       .then((doc) => {
-        if (doc.data()) setAll(doc.data().clubs);
         setRefreshing(false);
         setLoading(false);
+        if (doc.data()) setAll(doc.data().clubs);
       })
       .catch((error) => {
         console.error(error);
@@ -161,20 +175,29 @@ export default React.memo(function Clubs({ navigation }) {
         onLayout={onLayout}
         style={{ display: "flex", flexDirection: "row" }}
       >
-        <Pressable onPress={() => setTab("all clubs")}>
-          <Text
-            style={tab === "all clubs" ? styles.tabActive : styles.tabInactive}
-          >
-            all clubs
-          </Text>
-        </Pressable>
-        <Pressable onPress={() => setTab("yours")}>
-          <Text style={tab === "yours" ? styles.tabActive : styles.tabInactive}>
-            yours
-          </Text>
-        </Pressable>
+        {all.length > 0 && (
+          <>
+            <Pressable onPress={() => setTab("all clubs")}>
+              <Text
+                style={
+                  tab === "all clubs" ? styles.tabActive : styles.tabInactive
+                }
+              >
+                all clubs
+              </Text>
+            </Pressable>
+
+            <Pressable onPress={() => setTab("yours")}>
+              <Text
+                style={tab === "yours" ? styles.tabActive : styles.tabInactive}
+              >
+                yours
+              </Text>
+            </Pressable>
+          </>
+        )}
       </View>
-      {tab !== "yours" || yours.length > 2 ? (
+      {(tab === "all clubs" && all.length > 0) || yours.length > 2 ? (
         <View
           style={{
             backgroundColor: "#0C111F",
@@ -340,14 +363,14 @@ export default React.memo(function Clubs({ navigation }) {
             </Pressable>
           </View>
         </View>
-      ) : (
+      ) : all.length > 0 ? (
         <Pressable
           onPress={() => navigation.navigate("CreateAClub")}
           style={{ alignItems: "center" }}
         >
           <Text style={styles.joinClubSmallButton}>Create your own club</Text>
         </Pressable>
-      )}
+      ) : null}
       <EmptyView />
       <EmptyView />
     </ScrollView>
