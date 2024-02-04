@@ -30,6 +30,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
+import CustomTextInput from "../components/CustomTextInput";
 
 const db = firestore();
 
@@ -244,30 +245,27 @@ export default function SignupDetails({ navigation, route }) {
         showsVerticalScrollIndicator={false}
         style={{ width: "100%" }}
       >
-        <TextInput
-          style={styles.textInput}
-          placeholder="Student Email"
-          placeholderTextColor="#DBDBDB"
+        <CustomTextInput
+          placeholder="enter your student email"
+          label="student email"
           value={email}
           onChangeText={(email) => setEmail(email)}
           editable={!loading}
         />
         {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
 
-        <TextInput
-          style={styles.textInput}
-          placeholder="Full Name"
-          placeholderTextColor="#DBDBDB"
+        <CustomTextInput
+          placeholder="enter your full name"
+          label="full name"
           value={name}
           onChangeText={(name) => setName(name)}
           editable={!loading}
         />
         {errors.name ? <Text style={styles.error}>{errors.name}</Text> : null}
 
-        <TextInput
-          style={styles.textInput}
-          placeholder="Username"
-          placeholderTextColor="#DBDBDB"
+        <CustomTextInput
+          placeholder="enter your username"
+          label="username"
           value={username}
           editable={!loading}
           onChangeText={(username) => setUsername(username)}
@@ -276,10 +274,9 @@ export default function SignupDetails({ navigation, route }) {
           <Text style={styles.error}>{errors.username}</Text>
         ) : null}
 
-        <TextInput
-          style={styles.textInput}
-          placeholder="Phone Number (optional)"
-          placeholderTextColor="#DBDBDB"
+        <CustomTextInput
+          placeholder="enter your phone number (optional)"
+          label="phone number"
           value={phoneNumber}
           editable={!loading}
           keyboardType="number-pad"
@@ -290,7 +287,7 @@ export default function SignupDetails({ navigation, route }) {
         </Text>
 
         <SelectDropdown
-          defaultButtonText="Gender"
+          defaultButtonText="gender"
           disabled={loading}
           buttonStyle={{
             backgroundColor: "#1A2238",
@@ -302,7 +299,7 @@ export default function SignupDetails({ navigation, route }) {
           buttonTextStyle={{
             fontSize: fontPixel(16),
             fontWeight: "400",
-            color: "#DFE5F8",
+            color: "#A7AFC7",
             textAlign: "left",
           }}
           dropdownStyle={{
@@ -355,11 +352,11 @@ export default function SignupDetails({ navigation, route }) {
             style={{
               fontSize: fontPixel(16),
               fontWeight: "400",
-              color: "#DFE5F8",
+              color: "#A7AFC7",
               textAlign: "left",
             }}
           >
-            {birthday ? birthday.toString() : "Birthday"}
+            {birthday ? birthday.toString() : "birthday"}
           </Text>
         </Pressable>
         <Text style={styles.disclaimer}>
@@ -382,8 +379,8 @@ export default function SignupDetails({ navigation, route }) {
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.passwordInput}
-            placeholder="Password"
-            placeholderTextColor="#DBDBDB"
+            placeholder="enter your passsword"
+            placeholderTextColor="#A7AFC7"
             secureTextEntry={passwordInvisible}
             value={password}
             editable={!loading}
@@ -478,27 +475,14 @@ const styles = StyleSheet.create({
   text: {
     color: "#fff",
   },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    marginTop: pixelSizeVertical(10),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
-  },
   disclaimer: {
     marginTop: pixelSizeVertical(8),
     marginBottom: pixelSizeVertical(8),
     fontSize: fontPixel(12),
     fontWeight: "400",
     color: "#A7AFC7",
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(12),
+    paddingRight: pixelSizeHorizontal(12),
   },
   disclaimerNoMargin: {
     fontSize: fontPixel(12),

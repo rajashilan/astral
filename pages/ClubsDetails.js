@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Text, Pressable, ScrollView } from "react-native";
 import Toast from "react-native-toast-message";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -23,6 +16,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
+import CustomTextInput from "../components/CustomTextInput";
 
 const ClubsDetails = React.memo(({ onScroll }) => {
   const dispatch = useDispatch();
@@ -115,12 +109,10 @@ const ClubsDetails = React.memo(({ onScroll }) => {
       <Text style={[styles.title, { paddingLeft: pixelSizeHorizontal(8) }]}>
         Meetings
       </Text>
-      <TextInput
-        style={styles.textInput}
+      <CustomTextInput
         placeholder="Enter your club's meeting schedule. It would be good to add the day, time, venue, and frequency. Eg: Every Thurday, 5pm, at LR504."
-        placeholderTextColor="#C6CDE2"
         value={meetings}
-        multiline
+        multiline={true}
         numberOfLines={4}
         editable={!loading}
         onChangeText={(meetings) => setMeetings(meetings)}
@@ -130,12 +122,10 @@ const ClubsDetails = React.memo(({ onScroll }) => {
       >
         Fees
       </Text>
-      <TextInput
-        style={styles.textInput}
+      <CustomTextInput
         placeholder="Enter your club's fees. Please add the amount, and frequency. Eg: RM20 per month."
-        placeholderTextColor="#C6CDE2"
         value={fees}
-        multiline
+        multiline={true}
         numberOfLines={4}
         editable={!loading}
         onChangeText={(fees) => setFees(fees)}
@@ -145,17 +135,14 @@ const ClubsDetails = React.memo(({ onScroll }) => {
       >
         More...
       </Text>
-      <TextInput
-        style={styles.textInput}
+      <CustomTextInput
         placeholder="Enter more details about the Club should you wish to share. This is optional."
-        placeholderTextColor="#C6CDE2"
         value={more}
-        multiline
+        multiline={true}
         numberOfLines={4}
         editable={!loading}
         onChangeText={(more) => setMore(more)}
       />
-
       {((data && meetings !== data.schedule) ||
         (data && fees !== data.fees) ||
         (data && more !== data.misc)) && (
@@ -223,18 +210,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#C6CDE2",
     lineHeight: 22,
-  },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
   },
   tertiaryButton: {
     color: "#A7AFC7",

@@ -1,7 +1,7 @@
 import auth from "@react-native-firebase/auth";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 import IosHeight from "../components/IosHeight";
@@ -14,6 +14,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import CustomTextInput from "../components/CustomTextInput";
 
 export default function ForgotPassword({ navigation, route }) {
   const [loading, setLoading] = useState(false);
@@ -66,10 +67,8 @@ export default function ForgotPassword({ navigation, route }) {
       <Text style={styles.content}>
         No worries! We'll send you an email where you can reset your password.
       </Text>
-      <TextInput
-        style={styles.textInput}
+      <CustomTextInput
         placeholder="Email"
-        placeholderTextColor="#DBDBDB"
         value={email}
         editable={!loading}
         onChangeText={(email) => setEmail(email)}
@@ -105,19 +104,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#fff",
-  },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    marginTop: pixelSizeVertical(10),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
   },
   error: {
     marginTop: pixelSizeVertical(8),

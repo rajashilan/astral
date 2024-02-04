@@ -10,7 +10,6 @@ import {
   FlatList,
   Pressable,
   Dimensions,
-  TextInput,
   RefreshControl,
   ScrollView,
 } from "react-native";
@@ -32,6 +31,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import EmptyView from "../components/EmptyView";
 import { retrieveData, saveData } from "../utils/cache";
+import CustomTextInput from "../components/CustomTextInput";
 const db = firestore();
 
 const { width } = Dimensions.get("window");
@@ -182,12 +182,11 @@ export default function GeneralForms({ navigation }) {
             backgroundColor: "#0C111F",
           }}
         >
-          <TextInput
-            style={styles.textInput}
+          <CustomTextInput
             placeholder="search for forms..."
-            placeholderTextColor="#DBDBDB"
             onChangeText={(newSearch) => setSearch(newSearch)}
             value={search}
+            inputStyle={{ marginBottom: pixelSizeVertical(18) }}
           />
         </View>
       )}
@@ -348,19 +347,5 @@ const styles = StyleSheet.create({
   hamburgerIcon: {
     height: pixelSizeVertical(20),
     width: pixelSizeHorizontal(30),
-  },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    marginTop: pixelSizeVertical(10),
-    marginBottom: pixelSizeVertical(18),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
   },
 });

@@ -13,7 +13,6 @@ import {
   View,
   Dimensions,
   Pressable,
-  TextInput,
   ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
@@ -39,6 +38,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
+import CustomTextInput from "../components/CustomTextInput";
 
 const { width } = Dimensions.get("window");
 
@@ -338,10 +338,9 @@ export default function ResubmitClubsEvent({ navigation, route }) {
                 </Text>
               </Pressable>
             </View>
-            <TextInput
-              style={styles.textInput}
+            <CustomTextInput
               placeholder="Enter the title"
-              placeholderTextColor="#DBDBDB"
+              label="title"
               value={title}
               multiline
               editable={!loading}
@@ -350,12 +349,11 @@ export default function ResubmitClubsEvent({ navigation, route }) {
             {errors.title ? (
               <Text style={styles.error}>{errors.title}</Text>
             ) : null}
-            <TextInput
-              style={styles.textInput}
+            <CustomTextInput
               placeholder="Share more details about the event..."
-              placeholderTextColor="#DBDBDB"
+              label="details"
               value={content}
-              multiline
+              multiline={true}
               numberOfLines={4}
               editable={!loading}
               onChangeText={(content) => setContent(content)}
@@ -518,19 +516,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
-    marginTop: pixelSizeVertical(10),
   },
   disclaimer: {
     marginTop: pixelSizeVertical(-18),

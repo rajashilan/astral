@@ -7,7 +7,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
   ImageBackground,
 } from "react-native";
@@ -25,6 +24,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import CustomTextInput from "../components/CustomTextInput";
 
 export default function Login({ navigation, route }) {
   const [loading, setLoading] = useState(false);
@@ -104,21 +104,18 @@ export default function Login({ navigation, route }) {
 
   const loginInputs = (
     <>
-      <TextInput
-        style={styles.textInput}
+      <CustomTextInput
         placeholder="Email"
-        placeholderTextColor="#DBDBDB"
+        label="email"
         value={email}
         editable={!loading}
         onChangeText={(email) => setEmail(email)}
       />
       {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
-
-      <TextInput
-        style={styles.textInput}
+      <CustomTextInput
         placeholder="Password"
-        secureTextEntry
-        placeholderTextColor="#DBDBDB"
+        label="password"
+        secureTextEntry={true}
         value={password}
         editable={!loading}
         onChangeText={(password) => setPassword(password)}
@@ -208,19 +205,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#fff",
-  },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    marginTop: pixelSizeVertical(10),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
   },
   secondaryButton: {
     color: "#C4FFF9",

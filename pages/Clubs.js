@@ -10,7 +10,6 @@ import {
   RefreshControl,
   Pressable,
   Dimensions,
-  TextInput,
   ScrollView,
 } from "react-native";
 import { Wave } from "react-native-animated-spinkit";
@@ -32,6 +31,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import EmptyView from "../components/EmptyView";
+import CustomTextInput from "../components/CustomTextInput";
 
 const { width } = Dimensions.get("window");
 const db = firestore();
@@ -203,14 +203,13 @@ export default React.memo(function Clubs({ navigation }) {
             backgroundColor: "#0C111F",
           }}
         >
-          <TextInput
-            style={styles.textInput}
+          <CustomTextInput
             placeholder={
               tab === "all clubs" ? "Search for clubs" : "Search for your clubs"
             }
-            placeholderTextColor="#DBDBDB"
             value={search}
             onChangeText={(newSearch) => setSearch(newSearch)}
+            inputStyle={{ marginBottom: pixelSizeVertical(18) }}
           />
         </View>
       ) : null}
@@ -651,19 +650,5 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(20),
     fontWeight: "400",
     color: "#DFE5F8",
-  },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    marginTop: pixelSizeVertical(10),
-    marginBottom: pixelSizeVertical(18),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
   },
 });

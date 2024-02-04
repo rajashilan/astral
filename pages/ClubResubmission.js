@@ -7,14 +7,7 @@ import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import React, { useState, useEffect } from "react";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Dimensions,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View, Dimensions } from "react-native";
 import Modal from "react-native-modal";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,6 +30,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
+import CustomTextInput from "../components/CustomTextInput";
 
 const { width } = Dimensions.get("window");
 
@@ -392,10 +386,8 @@ export default function ClubResubmission({ navigation, route }) {
 
   const clubName = (
     <>
-      <TextInput
-        style={styles.textInput}
+      <CustomTextInput
         placeholder="Enter your club's name"
-        placeholderTextColor="#DBDBDB"
         value={name}
         editable={!loading}
         onChangeText={(name) => setName(name)}
@@ -632,7 +624,7 @@ export default function ClubResubmission({ navigation, route }) {
             text="withdraw"
           />
           <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
-            <Text style={styles.withdrawButton}>cancel</Text>
+            <Text style={styles.withdrawButton}>back</Text>
           </Pressable>
         </View>
       </Modal>
@@ -652,19 +644,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#fff",
-  },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    marginTop: pixelSizeVertical(28),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
   },
   secondaryButton: {
     fontSize: fontPixel(22),

@@ -9,7 +9,6 @@ import {
   Pressable,
   FlatList,
   ScrollView,
-  TextInput,
 } from "react-native";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -33,6 +32,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
+import CustomTextInput from "../components/CustomTextInput";
 
 const { width } = Dimensions.get("window");
 
@@ -321,14 +321,12 @@ export default function EditClubRoles({ navigation }) {
           >
             add a new role
           </Text>
-
-          <TextInput
-            style={styles.textInput}
+          <CustomTextInput
             placeholder="enter new role"
-            placeholderTextColor="#DBDBDB"
             value={newRole}
             editable={!loading}
             onChangeText={(role) => setNewRole(role)}
+            inputStyle={{ backgroundColor: "#212A46" }}
           />
           {errors.role ? <Text style={styles.error}>{errors.role}</Text> : null}
           <PrimaryButton loading={loading} onPress={handleAddRole} text="add" />
@@ -457,19 +455,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  textInput: {
-    backgroundColor: "#212A46",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
-    marginTop: pixelSizeVertical(10),
   },
   disclaimer: {
     marginTop: pixelSizeVertical(-18),

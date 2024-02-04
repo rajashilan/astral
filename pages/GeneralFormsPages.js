@@ -9,9 +9,9 @@ import {
   View,
   Dimensions,
   Pressable,
-  TextInput,
   ScrollView,
 } from "react-native";
+import CustomTextInput from "../components/CustomTextInput";
 import { Wave } from "react-native-animated-spinkit";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -228,10 +228,9 @@ export default function GeneralFormsPage({ navigation, route }) {
               {field.fieldType !== "todayDate" &&
               field.fieldName !== "matriculationNo" &&
               field.fieldName !== "signature" ? (
-                <TextInput
-                  style={styles.textInput}
+                <CustomTextInput
+                  label={field.label}
                   placeholder={field.placeHolder}
-                  placeholderTextColor="#A7AFC7"
                   value={fieldValues[field.fieldName] || ""}
                   multiline={field.fieldType === "multiline"}
                   numberOfLines={field.fieldType === "multiline" ? 3 : 1}
@@ -244,11 +243,10 @@ export default function GeneralFormsPage({ navigation, route }) {
                 />
               ) : field.fieldType !== "todayDate" &&
                 field.fieldName === "matriculationNo" ? (
-                <TextInput
-                  style={styles.textInput}
-                  placeholder={field.placeHolder}
+                <CustomTextInput
                   editable={false}
-                  placeholderTextColor="#A7AFC7"
+                  label={field.label}
+                  placeholder={field.placeHolder}
                   value={fieldValues[field.fieldName] || ""}
                   multiline={field.fieldType === "multiline"}
                 />
@@ -414,19 +412,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
-    marginTop: pixelSizeVertical(10),
   },
   disclaimer: {
     marginTop: pixelSizeVertical(-18),

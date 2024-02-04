@@ -9,7 +9,6 @@ import {
   Pressable,
   Dimensions,
   RefreshControl,
-  TextInput,
   ScrollView,
 } from "react-native";
 import { Wave } from "react-native-animated-spinkit";
@@ -31,6 +30,7 @@ import EmptyView from "../components/EmptyView";
 import { RESET_ORIENTATION_PAGE } from "../src/redux/type";
 import { useFocusEffect } from "@react-navigation/native";
 import { retrieveData, saveData } from "../utils/cache";
+import CustomTextInput from "../components/CustomTextInput";
 
 const { width } = Dimensions.get("window");
 
@@ -178,12 +178,11 @@ export default function Orientation({ navigation }) {
           backgroundColor: "#0C111F",
         }}
       >
-        <TextInput
-          style={styles.textInput}
+        <CustomTextInput
           placeholder="Search orientation pages"
-          placeholderTextColor="#DBDBDB"
           value={search}
           onChangeText={(newSearch) => setSearch(newSearch)}
+          inputStyle={{ marginBottom: pixelSizeVertical(18) }}
         />
       </View>
 
@@ -345,18 +344,5 @@ const styles = StyleSheet.create({
   hamburgerIcon: {
     height: pixelSizeVertical(20),
     width: pixelSizeHorizontal(30),
-  },
-  textInput: {
-    backgroundColor: "#1A2238",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingTop: pixelSizeVertical(16),
-    paddingBottom: pixelSizeVertical(16),
-    marginBottom: pixelSizeVertical(18),
-    fontSize: fontPixel(16),
-    fontWeight: "400",
-    color: "#DFE5F8",
-    width: "100%",
-    borderRadius: 5,
   },
 });
