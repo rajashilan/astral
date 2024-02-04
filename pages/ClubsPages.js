@@ -131,6 +131,7 @@ export default function ClubsPages({ navigation, route }) {
     const clubsData = {
       clubID: data.clubID,
       userID: user.userId,
+      name: data.name,
       memberID,
       role: "member",
       createdAt,
