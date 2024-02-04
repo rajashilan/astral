@@ -36,6 +36,8 @@ export default function Home({ navigation }) {
     (state) => state.user.notificationAvailable
   );
 
+  const [show, setShow] = useState(false);
+
   //show user's name, intake... photo, and notifications icon
 
   const [menuItems] = useState([
@@ -44,6 +46,16 @@ export default function Home({ navigation }) {
     { name: "general forms" },
     { name: "profile" },
   ]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShow(true);
+    }, 160);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
 
   const handleMenuNavigation = (name) => {
     const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
@@ -57,12 +69,14 @@ export default function Home({ navigation }) {
   }
 
   useEffect(() => {
-    auth().onAuthStateChanged((user) => {
-      if (user && isEmpty(state.credentials) && !loading) {
-        dispatch(getAuthenticatedUser(user.email));
-      }
-    });
-  }, []);
+    if (show) {
+      auth().onAuthStateChanged((user) => {
+        if (user && isEmpty(state.credentials) && !loading) {
+          dispatch(getAuthenticatedUser(user.email));
+        }
+      });
+    }
+  }, [show]);
 
   useEffect(() => {
     if (user.name)

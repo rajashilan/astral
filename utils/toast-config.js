@@ -31,7 +31,7 @@ const toastConfig = {
     <BaseToast
       {...props}
       style={{
-        borderLeftColor: "#A3222D",
+        borderLeftColor: "#ed3444",
         marginTop: Platform.OS === "ios" ? pixelSizeVertical(24) : 0,
       }}
       contentContainerStyle={{

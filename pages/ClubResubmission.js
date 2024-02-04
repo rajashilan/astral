@@ -475,7 +475,7 @@ export default function ClubResubmission({ navigation, route }) {
             marginBottom: pixelSizeVertical(8),
             fontSize: fontPixel(12),
             fontWeight: "400",
-            color: "#a3222d",
+            color: "#ed3444",
             textAlign: "left",
             width: "100%",
           }}
@@ -519,7 +519,7 @@ export default function ClubResubmission({ navigation, route }) {
             marginBottom: pixelSizeVertical(8),
             fontSize: fontPixel(12),
             fontWeight: "400",
-            color: "#a3222d",
+            color: "#ed3444",
             textAlign: "left",
             width: "100%",
           }}
@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(8),
     fontSize: fontPixel(12),
     fontWeight: "400",
-    color: "#a3222d",
+    color: "#ed3444",
     textAlign: "left",
     width: "100%",
     paddingLeft: pixelSizeHorizontal(16),

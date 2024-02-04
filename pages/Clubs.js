@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
   pageItemsSuspended: {
     fontSize: fontPixel(28),
     fontWeight: "400",
-    color: "#A3222D",
+    color: "#ed3444",
     marginTop: pixelSizeVertical(4),
     marginLeft: pixelSizeHorizontal(2),
     marginRight: pixelSizeHorizontal(2),
@@ -530,7 +530,7 @@ const styles = StyleSheet.create({
   pageItemSubtitleSuspended: {
     fontSize: fontPixel(18),
     fontWeight: "400",
-    color: "#A3222D",
+    color: "#ed3444",
     marginTop: pixelSizeVertical(4),
     marginLeft: pixelSizeHorizontal(2),
     marginRight: pixelSizeHorizontal(2),
@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
   pageItemSubtitleSuspendedSmaller: {
     fontSize: fontPixel(14),
     fontWeight: "400",
-    color: "#A3222D",
+    color: "#ed3444",
     marginTop: pixelSizeVertical(4),
     marginLeft: pixelSizeHorizontal(2),
     marginRight: pixelSizeHorizontal(2),

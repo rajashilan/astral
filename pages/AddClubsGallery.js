@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(8),
     fontSize: fontPixel(12),
     fontWeight: "400",
-    color: "#a3222d",
+    color: "#ed3444",
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
   },

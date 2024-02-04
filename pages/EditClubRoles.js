@@ -260,7 +260,7 @@ export default function EditClubRoles({ navigation }) {
                             style={{
                               fontSize: fontPixel(18),
                               fontWeight: "800",
-                              color: "#A3222D",
+                              color: "#ed3444",
                             }}
                           >
                             &#10005;
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
     marginBottom: pixelSizeVertical(8),
     fontSize: fontPixel(12),
     fontWeight: "400",
-    color: "#a3222d",
+    color: "#ed3444",
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
   },
