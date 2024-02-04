@@ -28,6 +28,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
+import WarningContainer from "../components/WarningContainer";
 
 const { width } = Dimensions.get("window");
 
@@ -161,9 +162,16 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
         data.past.length + data.future.length === 0 &&
         !isEmpty(currentMember) &&
         currentMember.role === "president" && (
-          <Text style={styles.warningText}>
-            Please add an event to be able to activate your club.
-          </Text>
+          <WarningContainer
+            style={{
+              marginBottom: pixelSizeVertical(16),
+              marginTop: pixelSizeVertical(-8),
+            }}
+          >
+            <Text style={styles.warningText}>
+              add an event to be able to activate your club.
+            </Text>
+          </WarningContainer>
         )}
       {!loading && data.past.length + data.future.length !== 0 && (
         <View style={styles.onlySpan}>
@@ -305,7 +313,7 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
                     item.approval === "approved"
                       ? styles.title
                       : item.approval === "rejected"
-                        ? [styles.title, { color: "#A3222D" }]
+                        ? [styles.title, { color: "#ed3444" }]
                         : [styles.title, { opacity: 0.5 }]
                   }
                 >
@@ -339,7 +347,7 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
                       style={{
                         fontSize: fontPixel(16),
                         fontWeight: "400",
-                        color: "#A3222D",
+                        color: "#ed3444",
                       }}
                     >
                       rejected
@@ -412,7 +420,7 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
                     item.approval === "approved"
                       ? styles.title
                       : item.approval === "rejected"
-                        ? [styles.title, { color: "#A3222D" }]
+                        ? [styles.title, { color: "#ed3444" }]
                         : [styles.title, { opacity: 0.5 }]
                   }
                 >
@@ -446,7 +454,7 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
                       style={{
                         fontSize: fontPixel(16),
                         fontWeight: "400",
-                        color: "#A3222D",
+                        color: "#ed3444",
                       }}
                     >
                       rejected
@@ -616,9 +624,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   warningText: {
-    fontSize: fontPixel(20),
+    fontSize: fontPixel(16),
     fontWeight: "400",
-    color: "#C8A427",
+    color: "#DFE5F8",
   },
   inactiveDot: {
     height: 10,

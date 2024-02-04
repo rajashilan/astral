@@ -27,6 +27,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
+import WarningContainer from "../components/WarningContainer";
 
 const { width } = Dimensions.get("window");
 
@@ -136,9 +137,16 @@ const ClubsGallery = React.memo(({ navigation, onScroll }) => {
         data.length === 0 &&
         !isEmpty(currentMember) &&
         currentMember.role === "president" && (
-          <Text style={styles.warningText}>
-            Please add a photo to be able to activate your club.
-          </Text>
+          <WarningContainer
+            style={{
+              marginBottom: pixelSizeVertical(16),
+              marginTop: pixelSizeVertical(-8),
+            }}
+          >
+            <Text style={styles.warningText}>
+              add a photo to be able to activate your club.
+            </Text>
+          </WarningContainer>
         )}
       {data.length > 0 ? (
         <View
@@ -201,7 +209,7 @@ const ClubsGallery = React.memo(({ navigation, onScroll }) => {
                     item.approval === "approved"
                       ? styles.title
                       : item.approval === "rejected"
-                        ? [styles.title, { color: "#A3222D" }]
+                        ? [styles.title, { color: "#ed3444" }]
                         : [styles.title, { opacity: 0.5 }]
                   }
                 >
@@ -231,7 +239,7 @@ const ClubsGallery = React.memo(({ navigation, onScroll }) => {
                     style={{
                       fontSize: fontPixel(16),
                       fontWeight: "400",
-                      color: "#A3222D",
+                      color: "#ed3444",
                     }}
                   >
                     rejected
@@ -377,9 +385,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   warningText: {
-    fontSize: fontPixel(20),
+    fontSize: fontPixel(16),
     fontWeight: "400",
-    color: "#C8A427",
+    color: "#DFE5F8",
   },
   inactiveDot: {
     height: 10,

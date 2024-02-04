@@ -17,6 +17,7 @@ import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import CustomTextInput from "../components/CustomTextInput";
+import WarningContainer from "../components/WarningContainer";
 
 const ClubsDetails = React.memo(({ onScroll }) => {
   const dispatch = useDispatch();
@@ -102,9 +103,11 @@ const ClubsDetails = React.memo(({ onScroll }) => {
   const editView = (
     <>
       {(!loading && meetings === "") || (!loading && fees === "") ? (
-        <Text style={styles.warningText}>
-          Please add meetings and fees details to be able to activate your club.
-        </Text>
+        <WarningContainer>
+          <Text style={styles.warningText}>
+            add meetings and fees details to be able to activate your club.
+          </Text>
+        </WarningContainer>
       ) : null}
       <Text style={[styles.title, { paddingLeft: pixelSizeHorizontal(8) }]}>
         Meetings
@@ -179,6 +182,7 @@ const ClubsDetails = React.memo(({ onScroll }) => {
         : normalView}
       <Toast config={toastConfig} />
       <EmptyView />
+      <EmptyView />
     </ScrollView>
   );
 });
@@ -219,10 +223,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   warningText: {
-    fontSize: fontPixel(20),
+    fontSize: fontPixel(16),
     fontWeight: "400",
-    color: "#C8A427",
-    marginBottom: pixelSizeVertical(32),
+    color: "#DFE5F8",
   },
 });
 

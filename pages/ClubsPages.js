@@ -162,8 +162,8 @@ export default function ClubsPages({ navigation, route }) {
   const handleScroll = (scrollHeight) => {
     let hideHeader = false;
 
-    if (scrollHeight > 120 && !hideHeader) hideHeader = true;
-    else if (scrollHeight < 130 && hideHeader) hideHeader = false;
+    if (scrollHeight > 200 && !hideHeader) hideHeader = true;
+    else if (scrollHeight < 150 && hideHeader) hideHeader = false;
     setShow(!hideHeader);
   };
 
@@ -297,7 +297,17 @@ export default function ClubsPages({ navigation, route }) {
         {!isEmpty(currentMember) &&
           currentMember.role === "president" &&
           !UIloading && (
-            <Pressable onPress={handleEditClub} style={styles.youButtonNoAuto}>
+            <Pressable
+              onPress={handleEditClub}
+              style={
+                !data.gallery ||
+                !data.events ||
+                data.details.schedule === "" ||
+                data.details.fees === ""
+                  ? styles.youButtonNoAutoWarning
+                  : styles.youButtonNoAuto
+              }
+            >
               <Text style={styles.youText}>club</Text>
             </Pressable>
           )}
@@ -481,6 +491,15 @@ const styles = StyleSheet.create({
     paddingTop: pixelSizeVertical(1),
     paddingBottom: pixelSizeVertical(6),
     backgroundColor: "#232F52",
+    borderRadius: 5,
+  },
+  youButtonNoAutoWarning: {
+    marginRight: pixelSizeHorizontal(18),
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(1),
+    paddingBottom: pixelSizeVertical(6),
+    backgroundColor: "#a68107",
     borderRadius: 5,
   },
   youButton: {

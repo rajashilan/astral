@@ -36,6 +36,8 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
+import EmptyView from "../components/EmptyView";
+import WarningContainer from "../components/WarningContainer";
 
 const { width } = Dimensions.get("window");
 
@@ -319,7 +321,35 @@ export default function EditClub({ navigation }) {
             {errors.active ? (
               <Text style={styles.error}>{errors.active}</Text>
             ) : null}
-
+            {!club.gallery ||
+            !club.events ||
+            club.details.schedule === "" ||
+            club.details.fees === "" ? (
+              <WarningContainer>
+                <Text
+                  style={[
+                    styles.warningText,
+                    { marginBottom: pixelSizeVertical(8) },
+                  ]}
+                >
+                  Club inactive due to insufficient details. Complete them and
+                  reactivate your club:
+                </Text>
+                {!club.gallery && (
+                  <Text style={[styles.warningText]}>
+                    {"   "}&#x2022; gallery
+                  </Text>
+                )}
+                {!club.events && (
+                  <Text style={styles.warningText}>{"   "}&#x2022; events</Text>
+                )}
+                {club.details.schedule === "" || club.details.fees === "" ? (
+                  <Text style={styles.warningText}>
+                    {"   "}&#x2022; details
+                  </Text>
+                ) : null}
+              </WarningContainer>
+            ) : null}
             <Pressable
               onPress={() => navigation.navigate("ClubCurrentMembers")}
             >
@@ -354,12 +384,13 @@ export default function EditClub({ navigation }) {
                     navigation.goBack();
                   }}
                 >
-                  <Text style={styles.secondaryButton}>cancel</Text>
+                  <Text style={styles.secondaryButton}>back</Text>
                 </Pressable>
               </>
             )}
           </View>
         </View>
+        <EmptyView />
       </ScrollView>
 
       <Modal
@@ -445,13 +476,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   error: {
-    marginTop: pixelSizeVertical(8),
-    marginBottom: pixelSizeVertical(8),
+    marginBottom: pixelSizeVertical(16),
     fontSize: fontPixel(12),
     fontWeight: "400",
-    color: "#a3222d",
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingRight: pixelSizeHorizontal(16),
+    color: "#ed3444",
   },
   altButton: {
     fontSize: fontPixel(22),
@@ -465,5 +493,10 @@ const styles = StyleSheet.create({
     color: "#07BEB8",
     marginTop: pixelSizeVertical(8),
     opacity: 0.5,
+  },
+  warningText: {
+    fontSize: fontPixel(16),
+    fontWeight: "400",
+    color: "#DFE5F8",
   },
 });
