@@ -85,6 +85,10 @@ export default function Orientation({ navigation }) {
     };
 
     fetchData();
+
+    return () => {
+      setSearch("");
+    };
   }, [user.authenticated, show]);
 
   const onRefresh = React.useCallback(() => {
@@ -99,13 +103,11 @@ export default function Orientation({ navigation }) {
       saveData("@astral:orientation", { ...orientation.overview });
       setRefreshing(false);
     }
-  }, [orientation.overview, fetch]);
 
-  useEffect(() => {
     return () => {
-      setSearch("");
+      setFetch(false);
     };
-  }, []);
+  }, [orientation.overview, fetch]);
 
   const handlePageItemPress = (orientationPageID) => {
     navigation.navigate("OrientationPages", {
