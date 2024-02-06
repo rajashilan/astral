@@ -11,7 +11,6 @@ import {
   RefreshControl,
   ScrollView,
 } from "react-native";
-import { Wave } from "react-native-animated-spinkit";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +30,7 @@ import { RESET_ORIENTATION_PAGE } from "../src/redux/type";
 import { useFocusEffect } from "@react-navigation/native";
 import { retrieveData, saveData } from "../utils/cache";
 import CustomTextInput from "../components/CustomTextInput";
+import Loader from "../components/Loader";
 
 const { width } = Dimensions.get("window");
 
@@ -151,13 +151,7 @@ export default function Orientation({ navigation }) {
   }, [scrollHeight, showMiniHeader]);
 
   const UI = loading ? (
-    <View style={{ marginTop: pixelSizeVertical(60) }}>
-      <Wave
-        size={240}
-        color="#495986"
-        style={{ alignSelf: "center", marginBottom: pixelSizeVertical(260) }}
-      />
-    </View>
+    <Loader />
   ) : (
     <ScrollView
       scrollEventThrottle={16}

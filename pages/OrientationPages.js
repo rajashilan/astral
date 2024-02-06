@@ -10,7 +10,6 @@ import {
   Pressable,
   Dimensions,
 } from "react-native";
-import { Wave } from "react-native-animated-spinkit";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Carousel, { Pagination } from "react-native-snap-carousel";
@@ -28,6 +27,7 @@ import {
 } from "../utils/responsive-font";
 import EmptyView from "../components/EmptyView";
 import { RESET_ORIENTATION_PAGE } from "../src/redux/type";
+import Loader from "../components/Loader";
 
 const { width } = Dimensions.get("window");
 
@@ -112,13 +112,7 @@ export default React.memo(function OrientationPages({ navigation, route }) {
   }, [scrollHeight, showMiniHeader]);
 
   const UI = loading ? (
-    <View style={{ marginTop: pixelSizeVertical(60) }}>
-      <Wave
-        size={240}
-        color="#495986"
-        style={{ alignSelf: "center", marginBottom: pixelSizeVertical(260) }}
-      />
-    </View>
+    <Loader />
   ) : (
     <FlatList
       removeClippedSubviews={true}

@@ -10,7 +10,6 @@ import {
   Pressable,
   ImageBackground,
 } from "react-native";
-import { Wave } from "react-native-animated-spinkit";
 import Modal from "react-native-modal";
 import Animated, {
   FadeIn,
@@ -43,6 +42,7 @@ import PrimaryButton from "../components/PrimaryButton";
 
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { RESET_CLUB_DATA } from "../src/redux/type";
+import Loader from "../components/Loader";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -168,13 +168,7 @@ export default function ClubsPages({ navigation, route }) {
   };
 
   const UI = UIloading ? (
-    <View style={{ marginTop: pixelSizeVertical(60) }}>
-      <Wave
-        size={240}
-        color="#495986"
-        style={{ alignSelf: "center", marginBottom: pixelSizeVertical(260) }}
-      />
-    </View>
+    <Loader />
   ) : (
     <>
       {show && (

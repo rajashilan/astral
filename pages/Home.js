@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
-import { Wave } from "react-native-animated-spinkit";
 import Notification_Alert_Icon from "../assets/Notification_Alert_Icon";
 import Notification_Icon from "../assets/Notification_Icon";
 import IosHeight from "../components/IosHeight";
@@ -26,6 +25,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import EmptyView from "../components/EmptyView";
+import Loader from "../components/Loader";
 
 export default function Home({ navigation }) {
   const dispatch = useDispatch();
@@ -87,18 +87,7 @@ export default function Home({ navigation }) {
   }, [user]);
 
   const userProfileDisplay = loading ? (
-    <View
-      style={{
-        paddingRight: pixelSizeHorizontal(16),
-        paddingLeft: pixelSizeHorizontal(16),
-      }}
-    >
-      <Wave
-        size={240}
-        color="#242997"
-        style={{ alignSelf: "center", marginBottom: pixelSizeVertical(260) }}
-      />
-    </View>
+    <Loader style={{ marginTop: pixelSizeVertical(200) }} />
   ) : (
     <View
       style={{

@@ -14,7 +14,6 @@ import {
   ScrollView,
   RefreshControl,
 } from "react-native";
-import { Wave } from "react-native-animated-spinkit";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
@@ -34,6 +33,7 @@ import {
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import EmptyView from "../components/EmptyView";
+import Loader from "../components/Loader";
 
 const { width } = Dimensions.get("window");
 const db = firestore();
@@ -159,13 +159,7 @@ export default function Notifications({ navigation }) {
   };
 
   const UI = loading ? (
-    <View style={{ marginTop: pixelSizeVertical(60) }}>
-      <Wave
-        size={240}
-        color="#495986"
-        style={{ alignSelf: "center", marginBottom: pixelSizeVertical(260) }}
-      />
-    </View>
+    <Loader />
   ) : (
     <ScrollView
       scrollEventThrottle={16}
