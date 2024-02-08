@@ -291,17 +291,7 @@ export default function ClubsPages({ navigation, route }) {
         {!isEmpty(currentMember) &&
           currentMember.role === "president" &&
           !UIloading && (
-            <Pressable
-              onPress={handleEditClub}
-              style={
-                !data.gallery ||
-                !data.events ||
-                data.details.schedule === "" ||
-                data.details.fees === ""
-                  ? styles.youButtonNoAutoWarning
-                  : styles.youButtonNoAuto
-              }
-            >
+            <Pressable onPress={handleEditClub} style={styles.youButtonNoAuto}>
               <Text style={styles.youText}>club</Text>
             </Pressable>
           )}

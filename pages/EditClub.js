@@ -321,7 +321,7 @@ export default function EditClub({ navigation }) {
             {errors.active ? (
               <Text style={styles.error}>{errors.active}</Text>
             ) : null}
-            {!club.gallery ||
+            {/* {!club.gallery ||
             !club.events ||
             club.details.schedule === "" ||
             club.details.fees === "" ? (
@@ -349,7 +349,7 @@ export default function EditClub({ navigation }) {
                   </Text>
                 ) : null}
               </WarningContainer>
-            ) : null}
+            ) : null} */}
             <Pressable
               onPress={() => navigation.navigate("ClubCurrentMembers")}
             >
