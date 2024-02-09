@@ -85,7 +85,12 @@ const animationConfig = {
 export default function App() {
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer
+        theme={{
+          dark: true,
+          colors: { background: "#0C111F" },
+        }}
+      >
         <Stack.Navigator
           screenOptions={{
             header: () => null,
@@ -101,7 +106,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -114,7 +118,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -127,7 +130,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -140,7 +142,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -153,7 +154,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -166,7 +166,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -179,7 +178,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -192,7 +190,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -205,7 +202,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -218,7 +214,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -231,7 +226,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -244,7 +238,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -257,7 +250,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -270,7 +262,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -283,7 +274,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -296,7 +286,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -309,7 +298,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -322,7 +310,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -335,7 +322,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -348,7 +334,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -361,7 +346,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -374,7 +358,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -387,7 +370,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -400,7 +382,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -413,7 +394,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
@@ -426,7 +406,6 @@ export default function App() {
                 close: animationConfig,
               }, // added
               headerShown: false,
-              presentation: "transparentModal",
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />
