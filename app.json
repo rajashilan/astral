@@ -37,17 +37,20 @@
         }
       ],
       "@react-native-firebase/app",
+      "@react-native-firebase/auth",
       "@react-native-firebase/perf",
       "@react-native-firebase/crashlytics",
       [
         "expo-build-properties",
         {
-          "ios": {
-            "useFrameworks": "static",
-            "deploymentTarget": "13.0"
-          },
           "android": {
-            "minSdkVersion": 29
+            "compileSdkVersion": 31,
+            "targetSdkVersion": 31,
+            "buildToolsVersion": "31.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "15.0",
+            "useFrameworks": "static"
           }
         }
       ]
