@@ -32,6 +32,7 @@ import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import Loader from "../components/Loader";
+import * as WebBrowser from "expo-web-browser";
 
 const { width } = Dimensions.get("window");
 const db = firestore();
@@ -142,6 +143,10 @@ export default function GeneralFormsPage({ navigation, route }) {
         });
     }
   }, [show]);
+
+  useEffect(() => {
+    if (url !== "") WebBrowser.openBrowserAsync(url);
+  }, [url]);
 
   const onLayout = (event) => {
     const { height } = event.nativeEvent.layout;
@@ -350,9 +355,9 @@ export default function GeneralFormsPage({ navigation, route }) {
           navigation={navigation}
         />
       </Modal>
-      {url !== "" ? (
+      {/* {url !== "" ? (
         <WebView source={{ uri: url }} style={{ flex: 1 }} />
-      ) : null}
+      ) : null} */}
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </View>
