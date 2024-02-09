@@ -148,16 +148,15 @@ export default function Login({ navigation, route }) {
       <FastImage
         style={styles.image}
         source={logo}
-        resizeMode="cover"
+        resizeMode="contain"
         transition={1000}
       />
       <Text style={styles.welcomeTitle}>
         Wohoo! Welcome to astral! &#128075;
       </Text>
       <Text style={styles.welcomeSubheading}>
-        You’re one step away from convenience! We have sent you a verification
-        email. Please click on the link to complete your registration, and
-        you'll be off!
+        You’re only one step away! We have sent you a verification email. Please
+        click on the link to complete your registration, and you'll be off!
       </Text>
       {loginInputs}
       <Toast config={toastConfig} />
@@ -169,7 +168,7 @@ export default function Login({ navigation, route }) {
       <FastImage
         style={styles.image}
         source={logo}
-        resizeMode="cover"
+        resizeMode="contain"
         transition={1000}
       />
       {loginInputs}

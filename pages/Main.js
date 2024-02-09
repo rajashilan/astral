@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import { useDispatch } from "react-redux";
-
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import clubs from "../assets/clubs.png";
 import departments from "../assets/departments.png";
 import lecturers from "../assets/lecturers.png";
@@ -102,31 +102,36 @@ export default function Main({ navigation }) {
           transition={1000}
         />
         <View>
-          <Carousel
-            layout="default"
-            data={data}
-            disableIntervalMomentum
-            onSnapToItem={(index) => onSelect(index)}
-            sliderWidth={width - 32}
-            itemWidth={width - 32}
-            useExperimentalSnap
-            renderItem={({ item, index }) => (
-              <>
-                <FastImage
-                  key={index}
-                  style={styles.displayImage}
-                  transition={1000}
-                  resizeMode="contain"
-                  source={item.image}
-                  progressiveRenderingEnabled={true}
-                  cache={FastImage.cacheControl.immutable}
-                  priority={FastImage.priority.normal}
-                />
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.content}>{item.subtitle}</Text>
-              </>
-            )}
-          />
+          <Animated.View
+            entering={FadeIn.duration(1500)}
+            exiting={FadeOut.duration(1500)}
+          >
+            <Carousel
+              layout="default"
+              data={data}
+              disableIntervalMomentum
+              onSnapToItem={(index) => onSelect(index)}
+              sliderWidth={width - 32}
+              itemWidth={width - 32}
+              useExperimentalSnap
+              renderItem={({ item, index }) => (
+                <>
+                  <FastImage
+                    key={index}
+                    style={styles.displayImage}
+                    transition={1000}
+                    resizeMode="contain"
+                    source={item.image}
+                    progressiveRenderingEnabled={true}
+                    cache={FastImage.cacheControl.immutable}
+                    priority={FastImage.priority.normal}
+                  />
+                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.content}>{item.subtitle}</Text>
+                </>
+              )}
+            />
+          </Animated.View>
           <Pagination
             inactiveDotColor="#546593"
             dotColor="#C4FFF9"

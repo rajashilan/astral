@@ -232,7 +232,7 @@ export default function SignupDetails({ navigation, route }) {
       <FastImage
         style={styles.image}
         source={logo}
-        resizeMode="cover"
+        resizeMode="contain"
         transition={1000}
       />
       <View style={styles.progressContainer}>
