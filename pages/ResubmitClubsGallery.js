@@ -50,7 +50,6 @@ export default function ResubmitClubsGallery({ navigation, route }) {
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
   const campusID = useSelector((state) => state.data.campus.campusID);
-
   //get current member data from redux
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -59,6 +58,7 @@ export default function ResubmitClubsGallery({ navigation, route }) {
   const [imageType, setImageType] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [rejectionReason, setRejectionReason] = useState("");
   const [submittedImage, setSubmittedImage] = useState("");
 
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
@@ -77,6 +77,7 @@ export default function ResubmitClubsGallery({ navigation, route }) {
     setTitle(gallery.title);
     setContent(gallery.content);
     setImage(gallery.image);
+    setRejectionReason(gallery.rejectionReason);
   }, []);
 
   const toggleSideMenu = () => {
@@ -307,7 +308,7 @@ export default function ResubmitClubsGallery({ navigation, route }) {
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
             <Header header="resubmit photo" />
-            <Text style={styles.disclaimer}>{club.name}</Text>
+            <Text style={styles.disclaimer}>{rejectionReason}</Text>
 
             <View
               style={{
@@ -469,10 +470,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   disclaimer: {
-    marginTop: pixelSizeVertical(-18),
-    fontSize: fontPixel(20),
+    marginTop: pixelSizeVertical(-8),
+    fontSize: fontPixel(18),
     fontWeight: "400",
-    color: "#C6CDE2",
+    color: "#C8A427",
+    paddingLeft: pixelSizeHorizontal(2),
   },
   imagePicker: {
     backgroundColor: "#232F52",

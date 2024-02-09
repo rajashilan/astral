@@ -61,6 +61,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
   const [imageType, setImageType] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [rejectionReason, setRejectionReason] = useState("");
   const [date, setDate] = useState("");
   const [submittedImage, setSubmittedImage] = useState("");
 
@@ -92,6 +93,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
     setContent(event.content);
     setDate(event.date);
     setImage(event.image);
+    setRejectionReason(event.rejectionReason);
   }, []);
 
   const handleAddPhoto = () => {
@@ -148,7 +150,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
             return storage().ref(firebasePath).getDownloadURL();
           })
           .then((url) => {
-            //store in gallery db and update in local
+            //store in event db and update in local
             let hasEvents = true;
             if (!club.events) hasEvents = false;
 
@@ -315,7 +317,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
             <Header header="resubmit event" />
-            <Text style={styles.disclaimer}>{club.name}</Text>
+            <Text style={styles.disclaimer}>{rejectionReason}</Text>
 
             <View
               style={{
@@ -518,10 +520,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   disclaimer: {
-    marginTop: pixelSizeVertical(-18),
-    fontSize: fontPixel(20),
+    marginTop: pixelSizeVertical(-8),
+    fontSize: fontPixel(18),
     fontWeight: "400",
-    color: "#C6CDE2",
+    color: "#C8A427",
+    paddingLeft: pixelSizeHorizontal(2),
   },
   imagePicker: {
     backgroundColor: "#232F52",
