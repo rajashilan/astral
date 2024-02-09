@@ -169,27 +169,25 @@ export default React.memo(function Clubs({ navigation }) {
         onLayout={onLayout}
         style={{ display: "flex", flexDirection: "row" }}
       >
-        {all.length > 0 && (
-          <>
-            <Pressable onPress={() => setTab("all clubs")}>
-              <Text
-                style={
-                  tab === "all clubs" ? styles.tabActive : styles.tabInactive
-                }
-              >
-                all clubs
-              </Text>
-            </Pressable>
+        <>
+          <Pressable onPress={() => setTab("all clubs")}>
+            <Text
+              style={
+                tab === "all clubs" ? styles.tabActive : styles.tabInactive
+              }
+            >
+              all clubs
+            </Text>
+          </Pressable>
 
-            <Pressable onPress={() => setTab("yours")}>
-              <Text
-                style={tab === "yours" ? styles.tabActive : styles.tabInactive}
-              >
-                yours
-              </Text>
-            </Pressable>
-          </>
-        )}
+          <Pressable onPress={() => setTab("yours")}>
+            <Text
+              style={tab === "yours" ? styles.tabActive : styles.tabInactive}
+            >
+              yours
+            </Text>
+          </Pressable>
+        </>
       </View>
       {(tab === "all clubs" && all.length > 0) || yours.length > 2 ? (
         <View
@@ -363,7 +361,14 @@ export default React.memo(function Clubs({ navigation }) {
         >
           <Text style={styles.joinClubSmallButton}>Create your own club</Text>
         </Pressable>
-      ) : null}
+      ) : (
+        <Pressable
+          onPress={() => navigation.navigate("CreateAClub")}
+          style={{ alignItems: "center" }}
+        >
+          <Text style={styles.joinClubButton}>Create your own club</Text>
+        </Pressable>
+      )}
       <EmptyView />
       <EmptyView />
     </ScrollView>
