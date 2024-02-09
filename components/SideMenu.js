@@ -25,6 +25,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import EmptyView from "./EmptyView";
+import IosHeight from "./IosHeight";
 
 const SideMenu = (props) => {
   const navigation = useNavigation();
@@ -71,6 +72,7 @@ const SideMenu = (props) => {
 
   return (
     <ScrollView stickyHeaderIndices={[0]} style={styles.safeAreaView}>
+      <IosHeight />
       <View style={styles.closeContainer}>
         <Pressable
           onPress={props.callParentScreenFunction}
