@@ -15,7 +15,6 @@ import CustomTextInput from "../components/CustomTextInput";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import WebView from "react-native-webview";
 import { useSelector } from "react-redux";
 
 import hamburgerIcon from "../assets/hamburger_icon.png";
@@ -24,7 +23,6 @@ import IosHeight from "../components/IosHeight";
 import SideMenu from "../components/SideMenu";
 import {
   fontPixel,
-  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";

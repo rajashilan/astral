@@ -38,6 +38,7 @@ const { width } = Dimensions.get("window");
 
 export default function GeneralForms({ navigation }) {
   const campus = useSelector((state) => state.data.campus);
+  const user = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -52,6 +53,8 @@ export default function GeneralForms({ navigation }) {
 
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  const cacheKey = `@astral:generalForms:${user.credentials.userId}`;
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -74,7 +77,7 @@ export default function GeneralForms({ navigation }) {
       }
 
       try {
-        const data = await retrieveData("@astral:generalForms");
+        const data = await retrieveData(cacheKey);
         if (data) {
           setData(data);
         } else {
@@ -86,7 +89,7 @@ export default function GeneralForms({ navigation }) {
               setLoading(false);
               const temp = doc.data().forms;
               setData([...temp]);
-              saveData("@astral:generalForms", [...temp]);
+              saveData(cacheKey, [...temp]);
             })
             .catch((error) => {
               setLoading(false);
@@ -116,7 +119,7 @@ export default function GeneralForms({ navigation }) {
         setRefreshing(false);
         const temp = doc.data().forms;
         setData([...temp]);
-        saveData("@astral:generalForms", [...temp]);
+        saveData(cacheKey, [...temp]);
       })
       .catch((error) => {
         setLoading(false);

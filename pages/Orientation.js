@@ -55,6 +55,8 @@ export default function Orientation({ navigation }) {
   const [show, setShow] = useState(false);
   const [fetch, setFetch] = useState(false);
 
+  const cacheKey = `@astral:orientation:${user.credentials.userId}`;
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setShow(true);
@@ -72,7 +74,7 @@ export default function Orientation({ navigation }) {
       }
 
       try {
-        const data = await retrieveData("@astral:orientation");
+        const data = await retrieveData(cacheKey);
         if (data) {
           setOverview(data);
         } else {
@@ -100,7 +102,7 @@ export default function Orientation({ navigation }) {
   useEffect(() => {
     if (fetch) {
       setOverview({ ...orientation.overview });
-      saveData("@astral:orientation", { ...orientation.overview });
+      saveData(cacheKey, { ...orientation.overview });
       setRefreshing(false);
     }
 
