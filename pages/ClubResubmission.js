@@ -22,8 +22,6 @@ import {
 } from "../src/redux/actions/dataActions";
 import {
   fontPixel,
-  widthPixel,
-  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
@@ -41,6 +39,7 @@ export default function ClubResubmission({ navigation, route }) {
 
   const user = useSelector((state) => state.user.credentials);
   const club = useSelector((state) => state.data.clubData.club);
+  const state = useSelector((state) => state.data);
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -62,15 +61,17 @@ export default function ClubResubmission({ navigation, route }) {
 
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
+  const clubCreationDocName = state.campus.clubCreationDocName;
+
   useEffect(() => {
     dispatch(getAClub(clubID, user.userId));
   }, []);
 
   useEffect(() => {
     setName(club.name);
-    if (club.fpfForms) {
-      setDocument(club.fpfForms[0]);
-      setSubmittedDocument(club.fpfForms[0]);
+    if (club.clubCreationDocs) {
+      setDocument(club.clubCreationDocs[0]);
+      setSubmittedDocument(club.clubCreationDocs[0]);
     }
   }, [club]);
 
@@ -150,7 +151,7 @@ export default function ClubResubmission({ navigation, route }) {
 
     if (!name.trim()) errors.name = "Please enter your club's name";
     if (!document && step === "step2")
-      errors.document = "Please upload your FPF form.";
+      errors.document = `Please upload ${clubCreationDocName}.`;
     if (!isChecked && step === "step2")
       errors.checkBox = "Please acknowledge the above.";
 
@@ -229,7 +230,6 @@ export default function ClubResubmission({ navigation, route }) {
           const nameForDoc = Crypto.randomUUID();
           const documentName = `${nameForDoc}.${documentType}`;
           const firebasePath = `clubs/forms/uploaded/${documentName}`;
-          console.log(documentName);
 
           uriToBlob(document)
             .then((blob) => {
@@ -279,7 +279,11 @@ export default function ClubResubmission({ navigation, route }) {
                   return db
                     .collection("clubs")
                     .doc(club.clubID)
-                    .update({ name, approval: "pending", fpfForms: [url] });
+                    .update({
+                      name,
+                      approval: "pending",
+                      clubCreationDocs: [url],
+                    });
                 })
                 .then(() => {
                   setLoading(false);
@@ -399,7 +403,7 @@ export default function ClubResubmission({ navigation, route }) {
     </>
   );
 
-  const fpf = (
+  const stepClubCreationDoc = (
     <>
       <View
         style={{
@@ -434,7 +438,7 @@ export default function ClubResubmission({ navigation, route }) {
               await WebBrowser.openBrowserAsync(submittedDocument)
             }
           >
-            previously submitted FPF form
+            previously submitted {clubCreationDocName}
           </Text>
           <Text
             style={{
@@ -464,7 +468,7 @@ export default function ClubResubmission({ navigation, route }) {
               color: "#DFE5F8",
             }}
           >
-            {document ? "upload new FPF form" : "upload FPF form"}
+            {document ? "upload new form" : "upload form"}
           </Text>
         </Pressable>
       </View>
@@ -508,8 +512,8 @@ export default function ClubResubmission({ navigation, route }) {
           }}
         >
           I acknowledge that by submitting this request I, as the president of
-          the club have completed the Affiliate Future Annual Planning form and
-          that all the information filled in is correct.
+          the club have completed the {clubCreationDocName} and that all the
+          information filled in is correct.
         </Text>
       </View>
       {errors.checkBox ? (
@@ -558,7 +562,7 @@ export default function ClubResubmission({ navigation, route }) {
         ) : null}
       </View>
       {step === "step1" ? clubName : null}
-      {step === "step2" ? fpf : null}
+      {step === "step2" ? stepClubCreationDoc : null}
       <PrimaryButton
         onPress={handleSubmit}
         loading={loading}
@@ -674,11 +678,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   disclaimer: {
-    marginTop: pixelSizeVertical(-18),
-    fontSize: fontPixel(14),
+    marginTop: pixelSizeVertical(-8),
+    fontSize: fontPixel(18),
     fontWeight: "400",
-    color: "#C6CDE2",
-    lineHeight: 18,
+    color: "#C8A427",
     paddingLeft: pixelSizeHorizontal(2),
   },
   disclaimerPadding: {

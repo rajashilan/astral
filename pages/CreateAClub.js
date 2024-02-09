@@ -74,8 +74,8 @@ export default function CreateAClub({ navigation, route }) {
   //if sa is filled, and logged in user is admin, everything else as usual, but clubs request only show reviewLevel = "admin"
   //in request show feedback from SA if rejected
 
-  const FPFUrl =
-    "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fforms%2FFPF.docx?alt=media&token=57914608-4192-47cf-ad75-fdcfb8b3ac9c&_gl=1*1haaz37*_ga*NTQ3Njc0ODExLjE2ODA3MTQ2Mjg.*_ga_CW55HF8NVT*MTY5ODI5NzM4MS4xOTUuMS4xNjk4Mjk5OTg5LjMuMC4w";
+  const clubCreationDoc = state.campus.clubCreationDoc;
+  const clubCreationDocName = state.campus.clubCreationDocName;
 
   const pickDocument = async () => {
     try {
@@ -153,7 +153,7 @@ export default function CreateAClub({ navigation, route }) {
 
     if (!name.trim()) errors.name = "Please enter your club's name";
     if (!document && step === "step2")
-      errors.document = "Please upload your FPF form.";
+      errors.document = `Please upload ${clubCreationDocName}.`;
     if (!isChecked && step === "step2")
       errors.checkBox = "Please acknowledge the above.";
 
@@ -262,7 +262,7 @@ export default function CreateAClub({ navigation, route }) {
             createdAt,
             createdBy,
             campusID: state.campus.campusID,
-            fpfForms: [url],
+            clubCreationDocs: [url],
           };
 
           const eventData = {
@@ -470,7 +470,7 @@ export default function CreateAClub({ navigation, route }) {
     </>
   );
 
-  const fpf = (
+  const stepClubCreationDoc = (
     <>
       <View
         style={{
@@ -501,9 +501,11 @@ export default function CreateAClub({ navigation, route }) {
               fontWeight: "500",
               color: "#07BEB8",
             }}
-            onPress={async () => await WebBrowser.openBrowserAsync(FPFUrl)}
+            onPress={async () =>
+              await WebBrowser.openBrowserAsync(clubCreationDoc)
+            }
           >
-            Affiliate Future Annual Planning form
+            {clubCreationDocName}
           </Text>
           <Text
             style={{
@@ -533,7 +535,7 @@ export default function CreateAClub({ navigation, route }) {
               color: "#DFE5F8",
             }}
           >
-            upload FPF form
+            upload
           </Text>
         </Pressable>
       </View>
@@ -577,8 +579,8 @@ export default function CreateAClub({ navigation, route }) {
           }}
         >
           I acknowledge that by submitting this request I, as the president of
-          the club have completed the Affiliate Future Annual Planning form and
-          that all the information filled in is correct.
+          the club have completed the {clubCreationDocName} and that all the
+          information filled in is correct.
         </Text>
       </View>
       {errors.checkBox ? (
@@ -630,7 +632,7 @@ export default function CreateAClub({ navigation, route }) {
         ) : null}
       </View>
       {step === "step1" ? clubName : null}
-      {step === "step2" ? fpf : null}
+      {step === "step2" ? stepClubCreationDoc : null}
       <PrimaryButton
         loading={loading}
         onPress={handleSubmit}
