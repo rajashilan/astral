@@ -323,7 +323,7 @@ export default function CreateAClub({ navigation, route }) {
             name,
             memberID,
             role: "president",
-            approval: "approved",
+            approval: "pending",
             createdBy,
             createdAt,
           };
