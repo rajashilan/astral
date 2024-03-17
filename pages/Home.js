@@ -32,6 +32,7 @@ export default function Home({ navigation }) {
   const state = useSelector((state) => state.user);
   const loading = useSelector((state) => state.user.loading);
   const user = useSelector((state) => state.user.credentials);
+  const campusLogo = useSelector((state) => state.data.campus.logo);
   const hasNotification = useSelector(
     (state) => state.user.notificationAvailable
   );
@@ -147,7 +148,30 @@ export default function Home({ navigation }) {
     >
       <IosHeight />
       <View style={styles.list}>
-        {!loading ? <Text style={styles.college}>{user.campus}</Text> : null}
+        {/* {!loading ? <Text style={styles.college}>{user.campus}</Text> : null} */}
+        {!loading ? (
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              marginBottom: pixelSizeVertical(24),
+              backgroundColor: "#F7F7F7",
+              paddingRight: pixelSizeHorizontal(16),
+              paddingLeft: pixelSizeHorizontal(16),
+              paddingTop: pixelSizeVertical(12),
+              paddingBottom: pixelSizeVertical(12),
+            }}
+          >
+            <FastImage
+              style={styles.campusLogo}
+              resizeMode="contain"
+              source={{ uri: campusLogo }}
+              progressiveRenderingEnabled={true}
+              cache={FastImage.cacheControl.immutable}
+              priority={FastImage.priority.normal}
+            />
+          </View>
+        ) : null}
         {userProfileDisplay}
         {!loading ? (
           <FlatList
@@ -212,5 +236,9 @@ const styles = StyleSheet.create({
     marginTop: "auto",
     marginBottom: "auto",
     borderRadius: 50,
+  },
+  campusLogo: {
+    flex: 2,
+    aspectRatio: 9,
   },
 });

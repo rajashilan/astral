@@ -35,6 +35,7 @@ const SideMenu = (props) => {
   const hasNotification = useSelector(
     (state) => state.user.notificationAvailable
   );
+  const campusLogo = useSelector((state) => state.data.campus.logo);
 
   const handleMenuNavigation = (name) => {
     props.callParentScreenFunction();
@@ -94,7 +95,27 @@ const SideMenu = (props) => {
         </Pressable>
       </View>
 
-      <Text style={styles.college}>{user.campus}</Text>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          marginBottom: pixelSizeVertical(8),
+          backgroundColor: "#F7F7F7",
+          paddingRight: pixelSizeHorizontal(16),
+          paddingLeft: pixelSizeHorizontal(16),
+          paddingTop: pixelSizeVertical(12),
+          paddingBottom: pixelSizeVertical(12),
+        }}
+      >
+        <FastImage
+          style={styles.campusLogo}
+          resizeMode="contain"
+          source={{ uri: campusLogo }}
+          progressiveRenderingEnabled={true}
+          cache={FastImage.cacheControl.immutable}
+          priority={FastImage.priority.normal}
+        />
+      </View>
       <View style={styles.userDetailsContainer}>
         <Pressable onPress={handleNavigateToProfile}>
           <FastImage
@@ -277,6 +298,10 @@ const styles = StyleSheet.create({
     paddingBottom: pixelSizeVertical(12),
     borderWidth: widthPixel(4),
     borderColor: "#C4FFF9",
+  },
+  campusLogo: {
+    flex: 2,
+    aspectRatio: 9,
   },
 });
 
