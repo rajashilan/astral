@@ -50,63 +50,35 @@ export default function GeneralForms({ navigation }) {
   const [search, setSearch] = useState("");
 
   const [data, setData] = useState([]);
-
-  const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-
-  const cacheKey = `@astral:generalForms:${user.credentials.userId}`;
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShow(true);
-    }, 260);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, []);
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0;
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!campus.campusID || !show) {
-        return;
-      }
+    if (!campus.campusID) {
+      return;
+    }
 
-      try {
-        const data = await retrieveData(cacheKey);
-        if (data) {
-          setData(data);
-        } else {
-          setLoading(true);
-          db.collection("generalFormsOverview")
-            .doc(campus.campusID)
-            .get()
-            .then((doc) => {
-              setLoading(false);
-              const temp = doc.data().forms;
-              setData([...temp]);
-              saveData(cacheKey, [...temp]);
-            })
-            .catch((error) => {
-              setLoading(false);
-              console.error(error);
-              Toast.show({
-                type: "error",
-                text1: "something went wrong",
-              });
-            });
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [campus.campusID, show]);
+    setLoading(true);
+    db.collection("generalFormsOverview")
+      .doc(campus.campusID)
+      .get()
+      .then((doc) => {
+        setLoading(false);
+        const temp = doc.data().forms;
+        setData([...temp]);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error(error);
+        Toast.show({
+          type: "error",
+          text1: "something went wrong",
+        });
+      });
+  }, [campus.campusID]);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -119,7 +91,6 @@ export default function GeneralForms({ navigation }) {
         setRefreshing(false);
         const temp = doc.data().forms;
         setData([...temp]);
-        saveData(cacheKey, [...temp]);
       })
       .catch((error) => {
         setLoading(false);

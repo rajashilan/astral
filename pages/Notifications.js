@@ -56,18 +56,6 @@ export default function Notifications({ navigation }) {
   const [data, setData] = useState([]);
   const [lastDoc, setLastDoc] = useState(null);
 
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShow(true);
-    }, 260);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, []);
-
   const fetchNotifications = () => {
     if (!lastDoc) setLoading(true);
 
@@ -107,12 +95,12 @@ export default function Notifications({ navigation }) {
   };
 
   useEffect(() => {
-    if (show) fetchNotifications();
+    fetchNotifications();
     return () => {
       setLastDoc(null);
       setData([]);
     };
-  }, [show]);
+  }, []);
 
   useEffect(() => {
     if (data.length > 0) {
@@ -297,7 +285,7 @@ export default function Notifications({ navigation }) {
               </Pressable>
             )}
           />
-        ) : show ? (
+        ) : (
           <Text
             style={{
               fontSize: fontPixel(16),
@@ -309,7 +297,7 @@ export default function Notifications({ navigation }) {
           >
             no notifications yet
           </Text>
-        ) : null}
+        )}
       </View>
     </ScrollView>
   );

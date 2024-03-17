@@ -51,27 +51,15 @@ export default React.memo(function OrientationPages({ navigation, route }) {
   // const [focusImage, setFocusImage] = useState("");
   // const [isImageModalVisible, setIsImageModalVisible] = useState(false);
 
-  const [show, setShow] = useState(false);
-
-  //on mount
-  //set render to true
-  //dispatches get orientation page -> loading data
-  //if
-
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShow(true);
-    }, 240);
-
     return () => {
-      clearTimeout(timeout);
       dispatch({ type: RESET_ORIENTATION_PAGE });
     };
   }, []);
 
   useEffect(() => {
-    if (show) dispatch(getOrientationPage(orientationPageID));
-  }, [show]);
+    dispatch(getOrientationPage(orientationPageID));
+  }, []);
 
   useEffect(() => {
     setData([page]);

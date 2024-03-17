@@ -56,35 +56,21 @@ export default React.memo(function Clubs({ navigation }) {
 
   const [search, setSearch] = useState("");
 
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShow(true);
-    }, 260);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, []);
-
   useEffect(() => {
     //get clubs from clubs overview
-    if (show) {
-      setLoading(true);
-      db.collection("clubsOverview")
-        .doc(state.campus.campusID)
-        .get()
-        .then((doc) => {
-          setLoading(false);
-          if (doc.data()) setAll(doc.data().clubs);
-        })
-        .catch((error) => {
-          console.error(error);
-          setLoading(false);
-        });
-    }
-  }, [state.campus.campusID, show]);
+    setLoading(true);
+    db.collection("clubsOverview")
+      .doc(state.campus.campusID)
+      .get()
+      .then((doc) => {
+        setLoading(false);
+        if (doc.data()) setAll(doc.data().clubs);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  }, [state.campus.campusID]);
 
   const onRefresh = React.useCallback(() => {
     //get clubs from clubs overview

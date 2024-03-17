@@ -26,7 +26,7 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import EmptyView from "../components/EmptyView";
-import { RESET_ORIENTATION_PAGE } from "../src/redux/type";
+import { RESET_ORIENTATION, RESET_ORIENTATION_PAGE } from "../src/redux/type";
 import { useFocusEffect } from "@react-navigation/native";
 import { retrieveData, saveData } from "../utils/cache";
 import CustomTextInput from "../components/CustomTextInput";
@@ -52,64 +52,28 @@ export default function Orientation({ navigation }) {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const [show, setShow] = useState(false);
-  const [fetch, setFetch] = useState(false);
-
-  const cacheKey = `@astral:orientation:${user.credentials.userId}`;
-
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShow(true);
-    }, 260);
-
     return () => {
-      clearTimeout(timeout);
+      dispatch({ type: RESET_ORIENTATION });
     };
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!user.authenticated || !show) {
-        return;
-      }
-
-      try {
-        const data = await retrieveData(cacheKey);
-        if (data) {
-          setOverview(data);
-        } else {
-          dispatch(getOrientation(state.campus.campusID));
-          setFetch(true);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-
+    dispatch(getOrientation(state.campus.campusID));
     return () => {
       setSearch("");
     };
-  }, [user.authenticated, show]);
+  }, []);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     dispatch(getOrientation(state.campus.campusID));
-    setFetch(true);
   });
 
   useEffect(() => {
-    if (fetch) {
-      setOverview({ ...orientation.overview });
-      saveData(cacheKey, { ...orientation.overview });
-      setRefreshing(false);
-    }
-
-    return () => {
-      setFetch(false);
-    };
-  }, [orientation.overview, fetch]);
+    setOverview({ ...orientation.overview });
+    setRefreshing(false);
+  }, [orientation.overview]);
 
   const handlePageItemPress = (orientationPageID) => {
     navigation.navigate("OrientationPages", {

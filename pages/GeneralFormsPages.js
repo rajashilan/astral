@@ -54,8 +54,6 @@ export default function GeneralFormsPage({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState("");
 
-  const [show, setShow] = useState(false);
-
   const [data, setData] = useState({
     title: "",
     id: "",
@@ -67,80 +65,68 @@ export default function GeneralFormsPage({ navigation, route }) {
   }
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShow(true);
-    }, 160);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (show) {
-      setLoading(true);
-      db.collection("generalForms")
-        .doc(id)
-        .get()
-        .then((doc) => {
-          setLoading(false);
-          setData({
-            title: doc.data().title,
-            id: doc.data().generalFormID,
-            link: doc.data().link,
-          });
-          setFormData([...doc.data().fields]);
-          const temp = {};
-          const tempFields = {};
-          doc.data().fields.forEach((field) => {
-            if (field.fieldName === "matriculationNo") {
-              temp[field.fieldName] = undefined;
-              tempFields[field.fieldName] = user.email.split("@")[0];
-            } else if (field.fieldName === "dateSigned") {
-              // Create a Date object
-              const currentDate = new Date();
-
-              // Get the day, month, and year
-              const day = currentDate.getDate();
-              const month = currentDate.getMonth() + 1; // Note: Months are zero-indexed
-              const year = currentDate.getFullYear();
-
-              // Format the date string as dd/mm/yyyy
-              const formattedDate = `${day.toString().padStart(2, "0")}/${month
-                .toString()
-                .padStart(2, "0")}/${year}`;
-
-              tempFields[field.fieldName] = formattedDate;
-            } else if (field.fieldName === "name") {
-              temp[field.fieldName] = undefined;
-              tempFields[field.fieldName] = user.name;
-            } else if (field.fieldName === "session") {
-              temp[field.fieldName] = undefined;
-              tempFields[field.fieldName] = user.intake;
-            } else if (field.fieldName === "email") {
-              temp[field.fieldName] = undefined;
-              tempFields[field.fieldName] = user.email;
-            } else if (field.fieldName === "signature") {
-              temp[field.fieldName] = undefined;
-              tempFields[field.fieldName] = user.name;
-            } else {
-              temp[field.fieldName] = undefined;
-              tempFields[field.fieldName] = "";
-            }
-          });
-          setErrors({ ...temp });
-          setFieldValues({ ...tempFields });
-        })
-        .catch((error) => {
-          console.error(error);
-          Toast.show({
-            type: "error",
-            text1: "something went wrong",
-          });
-          setLoading(false);
+    setLoading(true);
+    db.collection("generalForms")
+      .doc(id)
+      .get()
+      .then((doc) => {
+        setLoading(false);
+        setData({
+          title: doc.data().title,
+          id: doc.data().generalFormID,
+          link: doc.data().link,
         });
-    }
-  }, [show]);
+        setFormData([...doc.data().fields]);
+        const temp = {};
+        const tempFields = {};
+        doc.data().fields.forEach((field) => {
+          if (field.fieldName === "matriculationNo") {
+            temp[field.fieldName] = undefined;
+            tempFields[field.fieldName] = user.email.split("@")[0];
+          } else if (field.fieldName === "dateSigned") {
+            // Create a Date object
+            const currentDate = new Date();
+
+            // Get the day, month, and year
+            const day = currentDate.getDate();
+            const month = currentDate.getMonth() + 1; // Note: Months are zero-indexed
+            const year = currentDate.getFullYear();
+
+            // Format the date string as dd/mm/yyyy
+            const formattedDate = `${day.toString().padStart(2, "0")}/${month
+              .toString()
+              .padStart(2, "0")}/${year}`;
+
+            tempFields[field.fieldName] = formattedDate;
+          } else if (field.fieldName === "name") {
+            temp[field.fieldName] = undefined;
+            tempFields[field.fieldName] = user.name;
+          } else if (field.fieldName === "session") {
+            temp[field.fieldName] = undefined;
+            tempFields[field.fieldName] = user.intake;
+          } else if (field.fieldName === "email") {
+            temp[field.fieldName] = undefined;
+            tempFields[field.fieldName] = user.email;
+          } else if (field.fieldName === "signature") {
+            temp[field.fieldName] = undefined;
+            tempFields[field.fieldName] = user.name;
+          } else {
+            temp[field.fieldName] = undefined;
+            tempFields[field.fieldName] = "";
+          }
+        });
+        setErrors({ ...temp });
+        setFieldValues({ ...tempFields });
+      })
+      .catch((error) => {
+        console.error(error);
+        Toast.show({
+          type: "error",
+          text1: "something went wrong",
+        });
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     if (url !== "") WebBrowser.openBrowserAsync(url);
