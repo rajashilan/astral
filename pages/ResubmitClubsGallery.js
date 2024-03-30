@@ -123,7 +123,7 @@ export default function ResubmitClubsGallery({ navigation, route }) {
 
       const name = Crypto.randomUUID();
       const imageFileName = `${name}.${imageType}`;
-      const firebasePath = `clubs/gallery/photos/${imageFileName}`;
+      const firebasePath = `clubs/gallery/photos/${club.clubID}/${imageFileName}`;
 
       if (image !== submittedImage) {
         //first upload image and get url
@@ -244,7 +244,7 @@ export default function ResubmitClubsGallery({ navigation, route }) {
       const storageRef = storage().ref();
 
       storageRef
-        .child(`clubs/gallery/photos/${imageFileName}`)
+        .child(`clubs/gallery/photos/${club.clubID}/${imageFileName}`)
         .put(blob)
         .then((snapshot) => {
           blob.close();

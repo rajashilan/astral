@@ -104,7 +104,7 @@ export default function AddClubsGallery({ navigation }) {
 
       const name = Crypto.randomUUID();
       const imageFileName = `${name}.${imageType}`;
-      const firebasePath = `clubs/gallery/photos/${imageFileName}`;
+      const firebasePath = `clubs/gallery/photos/${club.clubID}/${imageFileName}`;
 
       //first upload image and get url
       uriToBlob(image)
@@ -180,7 +180,7 @@ export default function AddClubsGallery({ navigation }) {
       const storageRef = storage().ref();
 
       storageRef
-        .child(`clubs/gallery/photos/${imageFileName}`)
+        .child(`clubs/gallery/photos/${club.clubID}/${imageFileName}`)
         .put(blob)
         .then((snapshot) => {
           blob.close();

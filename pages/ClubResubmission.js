@@ -134,7 +134,7 @@ export default function ClubResubmission({ navigation, route }) {
       const storageRef = storage().ref();
 
       storageRef
-        .child(`clubs/forms/uploaded/${imageFileName}`)
+        .child(`clubs/forms/reuploaded/${club.clubID}/${imageFileName}`)
         .put(blob)
         .then((snapshot) => {
           blob.close();
@@ -229,7 +229,7 @@ export default function ClubResubmission({ navigation, route }) {
         if (document) {
           const nameForDoc = Crypto.randomUUID();
           const documentName = `${nameForDoc}.${documentType}`;
-          const firebasePath = `clubs/forms/uploaded/${documentName}`;
+          const firebasePath = `clubs/forms/reuploaded/${club.clubID}/${documentName}`;
 
           uriToBlob(document)
             .then((blob) => {

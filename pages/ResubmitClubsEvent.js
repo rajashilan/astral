@@ -140,7 +140,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
 
         const name = Crypto.randomUUID();
         const imageFileName = `${name}.${imageType}`;
-        const firebasePath = `clubs/events/photos/${imageFileName}`;
+        const firebasePath = `clubs/events/photos/${club.clubID}/${imageFileName}`;
         //first upload image and get url
         uriToBlob(image)
           .then((blob) => {
@@ -253,7 +253,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
       const storageRef = storage().ref();
 
       storageRef
-        .child(`clubs/events/photos/${imageFileName}`)
+        .child(`clubs/events/photos/${club.clubID}/${imageFileName}`)
         .put(blob)
         .then((snapshot) => {
           blob.close();

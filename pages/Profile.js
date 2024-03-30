@@ -81,7 +81,7 @@ export default function ClubCurrentMembers({ navigation }) {
   const handleUpdatePhoto = () => {
     const name = Crypto.randomUUID();
     const imageFileName = `${name}.${imageType}`;
-    const firebasePath = `users/profileImage/${imageFileName}`;
+    const firebasePath = `users/profileImage/${user.userId}/${imageFileName}`;
 
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: "Images",
@@ -142,7 +142,7 @@ export default function ClubCurrentMembers({ navigation }) {
       const storageRef = storage().ref();
 
       storageRef
-        .child(`users/profileImage/${imageFileName}`)
+        .child(`users/profileImage/${user.userId}/${imageFileName}`)
         .put(blob)
         .then((snapshot) => {
           blob.close();

@@ -140,7 +140,7 @@ export default function EditClub({ navigation }) {
   const handleUpdatePhoto = () => {
     const name = Crypto.randomUUID();
     const imageFileName = `${name}.${imageType}`;
-    const firebasePath = `clubs/photos/${imageFileName}`;
+    const firebasePath = `clubs/photos/${club.clubID}/${imageFileName}`;
 
     ImagePicker.launchImageLibraryAsync({
       mediaTypes: "Images",
@@ -201,7 +201,7 @@ export default function EditClub({ navigation }) {
       const storageRef = storage().ref();
 
       storageRef
-        .child(`clubs/photos/${imageFileName}`)
+        .child(`clubs/photos/${club.clubID}/${imageFileName}`)
         .put(blob)
         .then((snapshot) => {
           blob.close();
