@@ -9,9 +9,6 @@
       "ios": {
         "simulator": true,
         "cocoapods": "1.14.3"
-      },
-      "android-apk": {
-        "buildType": "apk"
       }
     },
     "preview": {
@@ -21,6 +18,11 @@
         "cocoapods": "1.14.3"
       }
     },
-    "production": {}
+    "production": {},
+    "apk": {
+      "android": {
+        "buildType": "apk"
+      }
+    }
   }
 }
