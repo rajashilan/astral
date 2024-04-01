@@ -120,7 +120,7 @@ export default React.memo(function Clubs({ navigation }) {
   };
 
   const handlePageItemResubmit = (clubID) => {
-    navigation.navigate("ClubResubmission", { clubID });
+    navigation.replace("ClubResubmission", { clubID });
   };
 
   const toggleSideMenu = () => {

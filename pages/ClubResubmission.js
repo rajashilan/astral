@@ -219,7 +219,7 @@ export default function ClubResubmission({ navigation, route }) {
               type: "success",
               text1: "Club resubmitted successfully",
             });
-            navigation.navigate("Clubs");
+            navigation.replace("Clubs");
           })
           .catch((error) => {
             console.error(error);
@@ -291,7 +291,7 @@ export default function ClubResubmission({ navigation, route }) {
                     type: "success",
                     text1: "Club resubmitted successfully",
                   });
-                  navigation.navigate("Clubs");
+                  navigation.replace("Clubs");
                 })
                 .catch((error) => {
                   console.error(error);
@@ -372,7 +372,7 @@ export default function ClubResubmission({ navigation, route }) {
           type: "success",
           text1: "Club application withdrawn successfully",
         });
-        navigation.navigate("Clubs");
+        navigation.replace("Clubs");
       })
       .catch((error) => {
         console.error(error);
@@ -385,7 +385,7 @@ export default function ClubResubmission({ navigation, route }) {
   };
 
   const handleNavigateBack = () => {
-    navigation.navigate("Clubs");
+    navigation.replace("Clubs");
   };
 
   const clubName = (
