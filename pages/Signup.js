@@ -81,7 +81,7 @@ export default function Signup({ navigation }) {
   //getting college details on load
   useEffect(() => {
     setLoadingColleges(true);
-    db.collection("colleges")
+    db.collection("collegeNames")
       .get()
       .then((data) => {
         const colleges = [];
@@ -106,7 +106,7 @@ export default function Signup({ navigation }) {
     resetAllForCollege();
     setLoadingCampuses(true);
 
-    db.collection("colleges")
+    db.collection("collegeNames")
       .where("name", "==", selectedCollege)
       .get()
       .then((data) => {
@@ -114,7 +114,7 @@ export default function Signup({ navigation }) {
           setCollegeSuffix(doc.data().suffix);
         });
 
-        db.collection("campuses")
+        db.collection("campusNames")
           .where("college", "==", selectedCollege)
           .get()
           .then((data) => {
@@ -149,7 +149,7 @@ export default function Signup({ navigation }) {
     resetAllForCampus();
     setLoadingCampusDetails(true);
 
-    db.collection("campuses")
+    db.collection("campusNames")
       .where("name", "==", selectedCampus)
       .get()
       .then((data) => {
