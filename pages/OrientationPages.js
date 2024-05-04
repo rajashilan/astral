@@ -13,12 +13,13 @@ import {
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Carousel, { Pagination } from "react-native-snap-carousel";
-import { useDispatch, useSelector } from "react-redux";
 
+//images
 import hamburgerIcon from "../assets/hamburger_icon.png";
+
+//components
 import IosHeight from "../components/IosHeight";
 import SideMenu from "../components/SideMenu";
-import { getOrientationPage } from "../src/redux/actions/dataActions";
 import {
   fontPixel,
   heightPixel,
@@ -26,8 +27,12 @@ import {
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import EmptyView from "../components/EmptyView";
-import { RESET_ORIENTATION_PAGE } from "../src/redux/type";
 import Loader from "../components/Loader";
+
+//redux
+import { useDispatch, useSelector } from "react-redux";
+import { getOrientationPage } from "../src/redux/actions/dataActions";
+import { RESET_ORIENTATION_PAGE } from "../src/redux/type";
 
 const { width } = Dimensions.get("window");
 
@@ -48,17 +53,11 @@ export default React.memo(function OrientationPages({ navigation, route }) {
 
   const [data, setData] = useState([]);
 
-  // const [focusImage, setFocusImage] = useState("");
-  // const [isImageModalVisible, setIsImageModalVisible] = useState(false);
-
   useEffect(() => {
+    dispatch(getOrientationPage(orientationPageID));
     return () => {
       dispatch({ type: RESET_ORIENTATION_PAGE });
     };
-  }, []);
-
-  useEffect(() => {
-    dispatch(getOrientationPage(orientationPageID));
   }, []);
 
   useEffect(() => {
@@ -81,16 +80,6 @@ export default React.memo(function OrientationPages({ navigation, route }) {
   const onSelect = (indexSelected) => {
     setIndexSelected(indexSelected);
   };
-
-  // const handleFocusImage = (image) => {
-  //   if (image) {
-  //     setFocusImage(image);
-  //     setIsImageModalVisible(!isImageModalVisible);
-  //   } else {
-  //     setFocusImage("");
-  //     setIsImageModalVisible(!isImageModalVisible);
-  //   }
-  // };
 
   useEffect(() => {
     //if scroll height is more than header height and the header is not shown, show
