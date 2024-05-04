@@ -1,6 +1,5 @@
-import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect, useMemo, memo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,34 +10,40 @@ import {
   RefreshControl,
   ScrollView,
 } from "react-native";
+import { Video } from "expo-av";
+import FastImage from "react-native-fast-image";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { useDispatch, useSelector } from "react-redux";
-import { Video } from "expo-av";
+
+//images
 import hamburgerIcon from "../assets/hamburger_icon.png";
+
+//components
+import EmptyView from "../components/EmptyView";
+import CustomTextInput from "../components/CustomTextInput";
 import Header from "../components/Header";
 import IosHeight from "../components/IosHeight";
+import Loader from "../components/Loader";
 import SideMenu from "../components/SideMenu";
+
+//redux
+import { useDispatch, useSelector } from "react-redux";
 import { getOrientation } from "../src/redux/actions/dataActions";
+import { RESET_ORIENTATION } from "../src/redux/type";
+
+//utils
 import {
   fontPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
-import EmptyView from "../components/EmptyView";
-import { RESET_ORIENTATION, RESET_ORIENTATION_PAGE } from "../src/redux/type";
-import { useFocusEffect } from "@react-navigation/native";
-import { retrieveData, saveData } from "../utils/cache";
-import CustomTextInput from "../components/CustomTextInput";
-import Loader from "../components/Loader";
 
 const { width } = Dimensions.get("window");
 
 export default function Orientation({ navigation }) {
-  const orientation = useSelector((state) => state.data.orientation);
   const state = useSelector((state) => state.data);
-  const user = useSelector((state) => state.user);
-  const loading = useSelector((state) => state.data.loading);
+  const loading = state.loading;
+  const orientation = state.orientation;
   const dispatch = useDispatch();
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -53,15 +58,10 @@ export default function Orientation({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    return () => {
-      dispatch({ type: RESET_ORIENTATION });
-    };
-  }, []);
-
-  useEffect(() => {
     dispatch(getOrientation(state.campus.campusID));
     return () => {
       setSearch("");
+      dispatch({ type: RESET_ORIENTATION });
     };
   }, []);
 
