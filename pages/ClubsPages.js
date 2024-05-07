@@ -160,11 +160,11 @@ export default function ClubsPages({ navigation, route }) {
 
   //handle scroll for components
   const handleScroll = (scrollHeight) => {
-    let show = true;
-    if (scrollHeight > 400) show = false;
-    else if (scrollHeight < 150) show = true;
+    let tempShow = show;
+    if (scrollHeight > 400) tempShow = false;
+    else if (scrollHeight < 150) tempShow = true;
 
-    setShow(show);
+    setShow(tempShow);
   };
 
   const UI = UIloading ? (
