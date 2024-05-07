@@ -54,9 +54,12 @@ export default React.memo(function OrientationPages({ navigation, route }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    dispatch(getOrientationPage(orientationPageID));
+    const timeout = setTimeout(() => {
+      dispatch(getOrientationPage(orientationPageID));
+    }, 200);
     return () => {
       dispatch({ type: RESET_ORIENTATION_PAGE });
+      clearTimeout(timeout);
     };
   }, []);
 
