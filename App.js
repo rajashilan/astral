@@ -6,7 +6,7 @@ import {
   createStackNavigator,
   TransitionPresets,
 } from "@react-navigation/stack";
-import React from "react";
+import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 
 import AddClubsEvent from "./pages/AddClubsEvent";
@@ -36,6 +36,7 @@ import ResubmitClubsGallery from "./pages/ResubmitClubsGallery";
 import Signup from "./pages/Signup";
 import SignupDetails from "./pages/SignupDetails";
 import { store } from "./src/redux/store";
+import * as Updates from "expo-updates";
 
 const Stack = createStackNavigator();
 
@@ -77,6 +78,24 @@ const firebaseAppCheckToken = async () => {
 };
 
 firebaseAppCheckToken();
+
+async function onFetchUpdateAsync() {
+  try {
+    const update = await Updates.checkForUpdateAsync();
+
+    if (update.isAvailable) {
+      await Updates.fetchUpdateAsync();
+      await Updates.reloadAsync();
+    }
+  } catch (error) {
+    // You can also add an alert() to see the error message in case of an error when fetching updates.
+    alert(`Error fetching latest Expo update: ${error}`);
+  }
+}
+
+useEffect(() => {
+  onFetchUpdateAsync();
+}, []);
 
 const animationConfig = {
   animation: "timing",

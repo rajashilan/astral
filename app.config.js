@@ -39,6 +39,12 @@ export default {
             "The app accesses your photos to let you share them with your friends.",
         },
       ],
+      [
+        "expo-updates",
+        {
+          username: "rajashilan",
+        },
+      ],
       "expo-font",
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
@@ -63,6 +69,12 @@ export default {
       eas: {
         projectId: "9658f287-3074-4ba6-bc82-8c9934ebc656",
       },
+    },
+    updates: {
+      url: "https://u.expo.dev/9658f287-3074-4ba6-bc82-8c9934ebc656",
+    },
+    runtimeVersion: {
+      policy: "appVersion",
     },
   },
 };

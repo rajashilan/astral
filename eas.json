@@ -10,25 +10,29 @@
         "simulator": true,
         "cocoapods": "1.14.3",
         "image": "latest"
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
       "ios": {
         "simulator": true,
         "cocoapods": "1.14.3"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "ios": {
         "simulator": false,
         "cocoapods": "1.14.3"
-      }
+      },
+      "channel": "production"
     },
     "apk": {
       "android": {
         "buildType": "apk"
-      }
+      },
+      "channel": "apk"
     }
   }
 }
