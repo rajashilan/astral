@@ -40,7 +40,7 @@ export default function Login({ navigation, route }) {
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;
 
   const handleLogin = () => {
-    const errors = [...errors];
+    const errors = { ...errors };
 
     if (!email.trim()) errors.email = "Please enter your email address";
     else if (email.trim() && !email.trim().match(emailRegex))

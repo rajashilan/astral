@@ -72,7 +72,7 @@ export default function EditClub({ navigation }) {
   };
 
   const handleEditActiveStatus = () => {
-    const errors = [...errors];
+    const errors = { ...errors };
 
     if (
       (!club.gallery ||

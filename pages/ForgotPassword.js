@@ -28,7 +28,7 @@ export default function ForgotPassword({ navigation, route }) {
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;
 
   const handleSubmit = () => {
-    const errors = [...errors];
+    const errors = { ...errors };
 
     if (!email.trim()) errors.email = "Please enter your email address";
     else if (email && !email.match(emailRegex))

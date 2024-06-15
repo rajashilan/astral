@@ -137,7 +137,7 @@ export default function EditClubRoles({ navigation }) {
   const handleAddRole = () => {
     let temp = newRole.toLowerCase();
     temp = temp.split(" ").join("");
-    const errors = [...errors];
+    const errors = { ...errors };
 
     if (temp === "") errors.role = "please enter a new role";
     if (roles.includes(temp))

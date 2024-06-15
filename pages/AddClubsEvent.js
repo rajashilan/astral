@@ -105,7 +105,7 @@ export default function AddClubsEvent({ navigation }) {
 
   const handleAddToEvent = () => {
     //verify image and title
-    const errors = [...errors];
+    const errors = { ...errors };
 
     if (!title.trim()) errors.title = "Please enter a title for your event.";
     if (!content) errors.content = "Please explain about your event.";

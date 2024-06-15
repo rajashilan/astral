@@ -149,7 +149,7 @@ export default function CreateAClub({ navigation, route }) {
   };
 
   const handleSubmit = () => {
-    const errors = [...errors];
+    const errors = { ...errors };
 
     if (!name.trim()) errors.name = "Please enter your club's name";
     if (!document && step === "step2")

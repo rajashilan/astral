@@ -94,7 +94,7 @@ export default function AddClubsGallery({ navigation }) {
 
   const handleAddToGallery = () => {
     //verify image and title
-    const errors = [...errors];
+    const errors = { ...errors };
 
     if (!title.trim()) errors.title = "Please enter a title for your photo.";
     if (!image) errors.image = "Please choose a photo to add.";

@@ -243,17 +243,17 @@ const styles = StyleSheet.create({
   },
   inactiveMenuItem: {
     fontSize: fontPixel(48),
-    fontWeight: 400,
+    fontWeight: "400",
     color: "#07BEB8",
   },
   activeMenuItem: {
     fontSize: fontPixel(48),
-    fontWeight: 700,
+    fontWeight: "700",
     color: "#C4FFF9",
   },
   logout: {
     fontSize: fontPixel(32),
-    fontWeight: 400,
+    fontWeight: "400",
     color: "#8C91FB",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),

@@ -71,7 +71,7 @@ export default function SignupDetails({ navigation, route }) {
   };
 
   const handleNext = () => {
-    const errors = [...errors];
+    const errors = { ...errors };
     if (!email.trim()) errors.email = "Please enter your email address";
     else if (email && !email.match(emailRegex))
       errors.email = "Please enter a valid email address";
@@ -214,7 +214,7 @@ export default function SignupDetails({ navigation, route }) {
     const birthday = dayjs(selectedDate);
     const now = dayjs(new Date());
 
-    const errors = [...errors];
+    const errors = { ...errors };
 
     if (now.diff(birthday, "year") < 16) {
       errors.birthday =
