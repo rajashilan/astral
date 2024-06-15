@@ -7,7 +7,15 @@ import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, View, Dimensions } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import Modal from "react-native-modal";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
@@ -602,7 +610,11 @@ export default function CreateAClub({ navigation, route }) {
   );
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+      style={styles.container}
+    >
       <IosHeight />
       <View style={styles.headerContainerShowMiniHeader}>
         <Pressable
@@ -670,7 +682,7 @@ export default function CreateAClub({ navigation, route }) {
         />
       </Modal>
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

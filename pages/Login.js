@@ -9,6 +9,9 @@ import {
   Text,
   View,
   ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -163,18 +166,30 @@ export default function Login({ navigation, route }) {
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
     </ImageBackground>
   ) : (
-    <View style={styles.container}>
-      <IosHeight />
-      <FastImage
-        style={styles.image}
-        source={logo}
-        resizeMode="contain"
-        transition={1000}
-      />
-      {loginInputs}
-      <Toast config={toastConfig} />
-      <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+      style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <IosHeight />
+
+        <FastImage
+          style={styles.image}
+          source={logo}
+          resizeMode="contain"
+          transition={1000}
+        />
+        {loginInputs}
+
+        <Toast config={toastConfig} />
+        <StatusBar
+          style="light"
+          translucent={false}
+          backgroundColor="#0C111F"
+        />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 
   return <>{loginDisplay}</>;

@@ -1,7 +1,14 @@
 import auth from "@react-native-firebase/auth";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import Toast from "react-native-toast-message";
 
 import IosHeight from "../components/IosHeight";
@@ -61,7 +68,11 @@ export default function ForgotPassword({ navigation, route }) {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+      style={styles.container}
+    >
       <IosHeight />
       <Text style={styles.title}>Forgot your password?</Text>
       <Text style={styles.content}>
@@ -89,7 +100,7 @@ export default function ForgotPassword({ navigation, route }) {
       </Pressable>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

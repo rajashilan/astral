@@ -8,7 +8,8 @@ import {
   Pressable,
   Dimensions,
   RefreshControl,
-  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Video } from "expo-av";
 import FastImage from "react-native-fast-image";
@@ -178,7 +179,11 @@ export default function Orientation({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+      style={styles.container}
+    >
       <IosHeight />
       <View
         style={
@@ -232,7 +237,7 @@ export default function Orientation({ navigation }) {
         />
       </Modal>
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

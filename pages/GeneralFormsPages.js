@@ -10,6 +10,8 @@ import {
   Dimensions,
   Pressable,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import CustomTextInput from "../components/CustomTextInput";
 import Modal from "react-native-modal";
@@ -288,7 +290,11 @@ export default function GeneralFormsPage({ navigation, route }) {
   );
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+      style={styles.container}
+    >
       <IosHeight />
       <View style={styles.headerContainerShowMiniHeader}>
         <Pressable
@@ -344,7 +350,7 @@ export default function GeneralFormsPage({ navigation, route }) {
       ) : null} */}
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

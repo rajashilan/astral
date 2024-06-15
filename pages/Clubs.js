@@ -10,7 +10,8 @@ import {
   RefreshControl,
   Pressable,
   Dimensions,
-  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut, FadeInDown } from "react-native-reanimated";
@@ -365,7 +366,11 @@ export default React.memo(function Clubs({ navigation }) {
 
   return (
     <>
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+        style={styles.container}
+      >
         <IosHeight />
         <View
           style={
@@ -405,7 +410,7 @@ export default React.memo(function Clubs({ navigation }) {
         </View>
 
         {UI}
-      </View>
+      </KeyboardAvoidingView>
       <Modal
         isVisible={isSideMenuVisible}
         onBackdropPress={toggleSideMenu} // Android back press

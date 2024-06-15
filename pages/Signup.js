@@ -2,7 +2,15 @@ import firestore from "@react-native-firebase/firestore";
 import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useRef } from "react";
-import { Pressable, StyleSheet, Text, View, ScrollView } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import SelectDropdown from "react-native-select-dropdown";
 import Toast from "react-native-toast-message";
@@ -180,7 +188,11 @@ export default function Signup({ navigation }) {
   }, [selectedCampus]);
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+      style={styles.container}
+    >
       <IosHeight />
       <FastImage
         style={styles.image}
@@ -496,7 +508,7 @@ export default function Signup({ navigation }) {
       </ScrollView>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

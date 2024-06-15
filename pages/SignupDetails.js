@@ -12,6 +12,8 @@ import {
   TextInput,
   View,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import Toast from "react-native-toast-message";
@@ -227,7 +229,11 @@ export default function SignupDetails({ navigation, route }) {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+      style={styles.container}
+    >
       <IosHeight />
       <FastImage
         style={styles.image}
@@ -447,7 +453,7 @@ export default function SignupDetails({ navigation, route }) {
       </ScrollView>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

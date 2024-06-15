@@ -267,13 +267,11 @@ export default function EditClub({ navigation }) {
             )}
 
             <SelectDropdown
-              search
               searchInputStyle={{
                 backgroundColor: "#232D4A",
               }}
               disabled={loading}
               searchPlaceHolder="select active status"
-              searchInputTxtColor="#DFE5F8"
               defaultButtonText={`current status: ${activeStatus}`}
               showsVerticalScrollIndicator
               buttonStyle={{

@@ -11,7 +11,8 @@ import {
   Pressable,
   Dimensions,
   RefreshControl,
-  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut, FadeInDown } from "react-native-reanimated";
@@ -203,7 +204,11 @@ export default function GeneralForms({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+      style={styles.container}
+    >
       <IosHeight />
       <View
         style={
@@ -256,7 +261,7 @@ export default function GeneralForms({ navigation }) {
       </Modal>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

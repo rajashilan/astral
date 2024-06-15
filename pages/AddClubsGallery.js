@@ -11,6 +11,8 @@ import {
   Dimensions,
   Pressable,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import Modal from "react-native-modal";
 import Toast from "react-native-toast-message";
@@ -193,7 +195,11 @@ export default function AddClubsGallery({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+      style={styles.container}
+    >
       <IosHeight />
       <View style={styles.headerContainerShowMiniHeader}>
         <Pressable
@@ -301,7 +307,7 @@ export default function AddClubsGallery({ navigation }) {
       </Modal>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
