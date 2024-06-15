@@ -28,6 +28,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import CustomTextInput from "../components/CustomTextInput";
+import EmptyView from "../components/EmptyView";
 
 export default function Login({ navigation, route }) {
   const [loading, setLoading] = useState(false);
@@ -142,34 +143,58 @@ export default function Login({ navigation, route }) {
   );
 
   const loginDisplay = route.params?.signedUp ? (
-    <ImageBackground
-      source={rocketBg}
-      style={styles.imageBackground}
-      transition={3000}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
+        paddingTop: pixelSizeVertical(60),
+      }}
     >
-      <IosHeight />
-      <FastImage
-        style={styles.image}
-        source={logo}
-        resizeMode="contain"
-        transition={1000}
-      />
-      <Text style={styles.welcomeTitle}>
-        Wohoo! Welcome to astral! &#128075;
-      </Text>
-      <Text style={styles.welcomeSubheading}>
-        You’re only one step away! We have sent you a verification email. Please
-        click on the link to complete your registration, and you'll be off!
-      </Text>
-      {loginInputs}
-      <Toast config={toastConfig} />
-      <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
-    </ImageBackground>
+      <ScrollView>
+        <ImageBackground
+          source={rocketBg}
+          style={styles.imageBackground}
+          transition={3000}
+        >
+          <IosHeight />
+          <FastImage
+            style={styles.image}
+            source={logo}
+            resizeMode="contain"
+            transition={1000}
+          />
+          <Text style={styles.welcomeTitle}>
+            Wohoo! Welcome to astral! &#128075;
+          </Text>
+          <Text style={styles.welcomeSubheading}>
+            You’re only one step away! We have sent you a verification email.
+            Please click on the link to complete your registration, and you'll
+            be off!
+          </Text>
+          {loginInputs}
+          <Toast config={toastConfig} />
+          <StatusBar
+            style="light"
+            translucent={false}
+            backgroundColor="#0C111F"
+          />
+        </ImageBackground>
+        <EmptyView />
+      </ScrollView>
+    </KeyboardAvoidingView>
   ) : (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
-      style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
+        paddingTop: pixelSizeVertical(60),
+      }}
     >
       <ScrollView contentContainerStyle={styles.container}>
         <IosHeight />
@@ -197,7 +222,6 @@ export default function Login({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#0C111F",
     alignItems: "center",
     justifyContent: "center",
