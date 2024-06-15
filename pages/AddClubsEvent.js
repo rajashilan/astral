@@ -334,6 +334,8 @@ export default function AddClubsEvent({ navigation }) {
                 value={new Date()}
                 maximumDate={new Date(2030, 10, 20)}
                 mode="date"
+                display="spinner"
+                textColor="white"
                 onChange={handleConfirmDatePicker}
                 onConfirm={() => setDatePickerVisibility(!isDatePickerVisible)}
                 onCancel={() => setDatePickerVisibility(!isDatePickerVisible)}
