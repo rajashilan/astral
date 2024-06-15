@@ -14,7 +14,7 @@ import {
   ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut, FadeInDown } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
 
@@ -80,7 +80,7 @@ export default function GeneralForms({ navigation }) {
       });
   }, [campus.campusID]);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = () => {
     setRefreshing(true);
     setLoading(true);
     db.collection("generalFormsOverview")
@@ -101,7 +101,7 @@ export default function GeneralForms({ navigation }) {
           text1: "something went wrong",
         });
       });
-  });
+  };
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -130,7 +130,8 @@ export default function GeneralForms({ navigation }) {
   const UI = loading ? (
     <Loader />
   ) : (
-    <ScrollView
+    <Animated.ScrollView
+      entering={FadeInDown.duration(300)}
       scrollEventThrottle={16}
       stickyHeaderIndices={[1]}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
@@ -161,6 +162,7 @@ export default function GeneralForms({ navigation }) {
       <FlatList
         style={styles.list}
         scrollEnabled={false}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         initialNumToRender={10}
         maxToRenderPerBatch={10}
@@ -197,7 +199,7 @@ export default function GeneralForms({ navigation }) {
         )}
       />
       <EmptyView />
-    </ScrollView>
+    </Animated.ScrollView>
   );
 
   return (

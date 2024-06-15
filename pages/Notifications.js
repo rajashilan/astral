@@ -15,7 +15,7 @@ import {
   RefreshControl,
 } from "react-native";
 import Modal from "react-native-modal";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut, FadeInDown } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -113,11 +113,12 @@ export default function Notifications({ navigation }) {
     }
   }, [data]);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = () => {
     setRefreshing(true);
     setLastDoc(null);
+    setLoading(true);
     fetchNotifications();
-  }, []);
+  };
 
   const handleScroll = ({ nativeEvent }) => {
     const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
@@ -149,7 +150,8 @@ export default function Notifications({ navigation }) {
   const UI = loading ? (
     <Loader />
   ) : (
-    <ScrollView
+    <Animated.ScrollView
+      entering={FadeInDown.duration(300)}
       scrollEventThrottle={16}
       stickyHeaderIndices={[1]}
       onScroll={(event) => {
@@ -299,7 +301,7 @@ export default function Notifications({ navigation }) {
           </Text>
         )}
       </View>
-    </ScrollView>
+    </Animated.ScrollView>
   );
 
   return (

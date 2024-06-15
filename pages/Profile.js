@@ -13,7 +13,7 @@ import {
   ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut, FadeInDown } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -182,7 +182,8 @@ export default function ClubCurrentMembers({ navigation }) {
           />
         </Pressable>
       </View>
-      <ScrollView
+      <Animated.ScrollView
+        entering={FadeInDown.duration(300)}
         scrollEventThrottle={16}
         stickyHeaderIndices={[1]}
         onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
@@ -276,7 +277,7 @@ export default function ClubCurrentMembers({ navigation }) {
           </View>
         </View>
         <EmptyView />
-      </ScrollView>
+      </Animated.ScrollView>
 
       <Modal
         isVisible={isSideMenuVisible}

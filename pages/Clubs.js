@@ -13,7 +13,7 @@ import {
   ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut, FadeInDown } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -56,6 +56,8 @@ export default React.memo(function Clubs({ navigation }) {
 
   const [search, setSearch] = useState("");
 
+  const [isFirstTimeLoaded, setIsFirstTimeLoaded] = useState(false);
+
   useEffect(() => {
     //get clubs from clubs overview
     setLoading(true);
@@ -72,7 +74,7 @@ export default React.memo(function Clubs({ navigation }) {
       });
   }, [state.campus.campusID]);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = () => {
     //get clubs from clubs overview
     setRefreshing(true);
     setSearch("");
@@ -91,7 +93,7 @@ export default React.memo(function Clubs({ navigation }) {
         setRefreshing(false);
         setLoading(false);
       });
-  }, []);
+  };
 
   useEffect(() => {
     const temp = [];
@@ -142,7 +144,8 @@ export default React.memo(function Clubs({ navigation }) {
   const UI = loading ? (
     <Loader />
   ) : (
-    <ScrollView
+    <Animated.ScrollView
+      entering={FadeInDown.duration(300)}
       stickyHeaderIndices={[1]}
       scrollEventThrottle={16}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
@@ -357,7 +360,7 @@ export default React.memo(function Clubs({ navigation }) {
       )}
       <EmptyView />
       <EmptyView />
-    </ScrollView>
+    </Animated.ScrollView>
   );
 
   return (

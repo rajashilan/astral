@@ -13,7 +13,7 @@ import {
 import { Video } from "expo-av";
 import FastImage from "react-native-fast-image";
 import Modal from "react-native-modal";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut, FadeInDown } from "react-native-reanimated";
 
 //images
 import hamburgerIcon from "../assets/hamburger_icon.png";
@@ -65,10 +65,10 @@ export default function Orientation({ navigation }) {
     };
   }, []);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = () => {
     setRefreshing(true);
     dispatch(getOrientation(state.campus.campusID));
-  });
+  };
 
   useEffect(() => {
     setOverview({ ...orientation.overview });
@@ -119,7 +119,8 @@ export default function Orientation({ navigation }) {
   const UI = loading ? (
     <Loader />
   ) : (
-    <ScrollView
+    <Animated.ScrollView
+      entering={FadeInDown.duration(300)}
       scrollEventThrottle={16}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
       showsVerticalScrollIndicator={false}
@@ -173,7 +174,7 @@ export default function Orientation({ navigation }) {
         )}
       />
       <EmptyView />
-    </ScrollView>
+    </Animated.ScrollView>
   );
 
   return (
