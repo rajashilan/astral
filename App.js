@@ -1,3 +1,4 @@
+import "react-native-reanimated";
 import "react-native-gesture-handler";
 import { firebase } from "@react-native-firebase/app-check";
 import { NavigationContainer } from "@react-navigation/native";
@@ -47,11 +48,11 @@ const firebaseAppCheckToken = async () => {
     rnfbProvider.configure({
       android: {
         provider: __DEV__ ? "debug" : "playIntegrity",
-        debugToken: "FC26A58E-03DE-4B9A-A1AE-6ED5C12C1606",
+        debugToken: "",
       },
       apple: {
         provider: __DEV__ ? "debug" : "appAttestWithDeviceCheckFallback",
-        debugToken: "xxxx-xxxx-xxxx",
+        debugToken: "",
       },
     });
 
