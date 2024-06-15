@@ -31,6 +31,7 @@ export default function Home({ navigation }) {
   const dispatch = useDispatch();
   const state = useSelector((state) => state.user);
   const loading = useSelector((state) => state.user.loading);
+  const dataLoading = useSelector((state) => state.data.loading);
   const user = useSelector((state) => state.user.credentials);
   const campusLogo = useSelector((state) => state.data.campus.logo);
   const hasNotification = useSelector(
@@ -149,7 +150,7 @@ export default function Home({ navigation }) {
       <IosHeight />
       <View style={styles.list}>
         {/* {!loading ? <Text style={styles.college}>{user.campus}</Text> : null} */}
-        {!loading ? (
+        {!loading && !dataLoading ? (
           <View
             style={{
               display: "flex",
@@ -173,7 +174,7 @@ export default function Home({ navigation }) {
           </View>
         ) : null}
         {userProfileDisplay}
-        {!loading ? (
+        {!loading && !dataLoading ? (
           <FlatList
             style={{
               paddingRight: pixelSizeHorizontal(16),
@@ -184,7 +185,7 @@ export default function Home({ navigation }) {
             data={menuItems}
             renderItem={({ item }) => (
               <Pressable
-                disabled={loading}
+                disabled={loading || dataLoading}
                 onPress={() => handleMenuNavigation(item.name)}
               >
                 <Text style={styles.menuItems}>{item.name}</Text>
