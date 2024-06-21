@@ -33,6 +33,7 @@ import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import CustomTextInput from "../components/CustomTextInput";
+import * as WebBrowser from "expo-web-browser";
 
 const db = firestore();
 
@@ -71,6 +72,11 @@ export default function SignupDetails({ navigation, route }) {
   const capitalize = (string) => {
     return [...string.slice(0, 1).toUpperCase(), ...string.slice(1)].join("");
   };
+
+  const TERMS_AND_CONDITION =
+    "https://medium.com/@astral-app/astral-terms-and-conditions-4aa4b212a074";
+  const PRIVACY_POLICY =
+    "https://medium.com/@astral-app/astral-privacy-policy-a8908d091ed6";
 
   const handleNext = () => {
     const errors = { ...errors };
@@ -218,7 +224,7 @@ export default function SignupDetails({ navigation, route }) {
 
     const errors = { ...errors };
 
-    if (now.diff(birthday, "year") < 16) {
+    if (now.diff(birthday, "year") < 17) {
       errors.birthday =
         "You have to be at least 16 years old to use this application.";
     } else {
@@ -226,6 +232,10 @@ export default function SignupDetails({ navigation, route }) {
       errors.birthday = undefined;
     }
     setErrors(errors);
+  };
+
+  const handleOnPress = (item) => {
+    WebBrowser.openBrowserAsync(item.link);
   };
 
   return (
@@ -434,13 +444,21 @@ export default function SignupDetails({ navigation, route }) {
           <Text style={styles.disclaimerNoMargin}>
             By registering, you agree to our
           </Text>
-          <Pressable>
-            <Text style={styles.disclaimerLink}>Terms of Service</Text>
+          <Pressable
+            onPress={() => {
+              handleOnPress({ link: TERMS_AND_CONDITION });
+            }}
+          >
+            <Text style={styles.disclaimerLink}>Terms and Conditions</Text>
           </Pressable>
           <Text style={styles.disclaimerNoMargin}>
             and you acknowledge you have read our
           </Text>
-          <Pressable>
+          <Pressable
+            onPress={() => {
+              handleOnPress({ link: PRIVACY_POLICY });
+            }}
+          >
             <Text style={styles.disclaimerLink}>Privacy Policy</Text>
           </Pressable>
         </View>
