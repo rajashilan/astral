@@ -4,7 +4,7 @@ export default {
   expo: {
     name: "astral",
     slug: "astral",
-    version: "1.0.1",
+    version: "1.0.2",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -19,6 +19,7 @@ export default {
       bundleIdentifier: "com.codeloomventures.astral",
       googleServicesFile:
         process.env.GOOGLE_SERVICES_PLIST ?? "./GoogleService-Info.plist",
+      buildNumber: "1.0.2",
     },
     android: {
       adaptiveIcon: {
@@ -27,6 +28,7 @@ export default {
       },
       package: "com.codeloomventures.astral",
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
+      versionCode: 2,
     },
     web: {
       favicon: "./assets/favicon.png",
