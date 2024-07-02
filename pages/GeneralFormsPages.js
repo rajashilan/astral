@@ -259,6 +259,7 @@ export default function GeneralFormsPage({ navigation, route }) {
       scrollEventThrottle={16}
       stickyHeaderIndices={[1]}
       showsHorizontalScrollIndicator={false}
+      scrollIndicatorInsets={{ right: 1 }}
       onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
     >
       <View style={styles.paddingContainer}>
