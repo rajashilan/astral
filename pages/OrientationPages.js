@@ -108,9 +108,9 @@ export default React.memo(function OrientationPages({ navigation, route }) {
       renderItem={({ item }) => (
         <React.Fragment>
           <View onLayout={onLayout}>
-            <Text style={styles.header}>{item.title}</Text>
+            <Text style={styles.title}>{item.title}</Text>
           </View>
-          {item.header && <Text style={styles.title}>{item.header}</Text>}
+          {item.header && <Text style={styles.header}>{item.header}</Text>}
           {item.content && <Text style={styles.content}>{item.content}</Text>}
           {item.subcontent &&
             item.subcontent.map((content, index) => {
@@ -254,19 +254,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0C111F",
   },
-  header: {
-    fontSize: fontPixel(34),
+  title: {
+    fontSize: fontPixel(26),
     fontWeight: "700",
     color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(26),
+    marginBottom: pixelSizeVertical(8),
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
   },
-  title: {
-    fontSize: fontPixel(28),
+  header: {
+    fontSize: fontPixel(18),
     fontWeight: "500",
     color: "#DFE5F8",
-    marginBottom: pixelSizeVertical(8),
+    marginBottom: pixelSizeVertical(16),
     paddingLeft: pixelSizeHorizontal(16),
     paddingRight: pixelSizeHorizontal(16),
   },
