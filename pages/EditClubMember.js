@@ -104,15 +104,16 @@ export default function EditClubMember({ navigation, route }) {
   const handleAssignRole = () => {
     //if role being assigned belongs to another member, show warning message
     const role = selectedRole.split(" ").join("");
-    console.log(member);
-    if (selectedRole !== "member" && club.roles[role].userID !== "")
+    if (member.role === "president") handleShowPresidentRoleWarningPopUp();
+    else if (selectedRole !== "member" && club.roles[role].userID !== "")
       handleShowRoleWarningPopUp();
-    else if (member.role === "president") handleShowPresidentRoleWarningPopUp();
     else {
       const newMember = {
         userID: member.userID,
         memberID: member.memberID,
+        role: member.role,
       };
+      //if current user is just a member, normal handling
       if (member.role === "member")
         dispatch(
           assignNewClubRole(
@@ -125,6 +126,7 @@ export default function EditClubMember({ navigation, route }) {
           )
         );
       else {
+        //if current user has a role, empty that role in clubs, proceed as usual
         dispatch(
           assignNewClubRole(
             selectedRole,
@@ -145,10 +147,12 @@ export default function EditClubMember({ navigation, route }) {
     setShowRoleWarningPopUp(!showRoleWarningPopUp);
   };
 
+  //handles when the role is currently assigned to another user
   const handleAssignCommitteeRole = () => {
     const newMember = {
       userID: member.userID,
       memberID: member.memberID,
+      role: member.role,
     };
     const role = selectedRole.split(" ").join("");
     const prevMember = {

@@ -942,6 +942,9 @@ export const assignNewClubRole =
       .get()
       .then((doc) => {
         if (role === "member" && prevRole) {
+          console.log("----- 1st called: ", role, newMember);
+          //handling changing user's current role to a member's role
+          //eg treasurer -> member
           const temp = { ...doc.data().roles };
           const tempRole = prevRole.split(" ").join("");
           temp[tempRole].userID = "";
@@ -951,11 +954,20 @@ export const assignNewClubRole =
             .doc(clubID)
             .update({ roles: { ...temp } });
         } else if (role === "member" && !prevRole) {
+          console.log("----- 2nd called: ", role, newMember);
         } else {
+          console.log("----- 3rd called: ", role, newMember);
           const temp = { ...doc.data().roles };
           const tempRole = role.split(" ").join("");
           temp[tempRole].userID = newMember.userID;
           temp[tempRole].memberID = newMember.memberID;
+
+          //check if current member has a previous role, if yes, reset it.
+          if (newMember.role !== "member") {
+            const tempRole = newMember.role.split(" ").join("");
+            temp[tempRole].userID = "";
+            temp[tempRole].memberID = "";
+          }
 
           return db
             .collection("clubs")
@@ -996,7 +1008,7 @@ export const assignNewClubRole =
       .then(() => {
         //if previous member, change that member's role to "member"
         //else proceed as usual
-        if (previousMember)
+        if (previousMember) {
           dispatch(
             assignNewClubRole(
               "member",
@@ -1007,6 +1019,7 @@ export const assignNewClubRole =
               true
             )
           );
+        }
         if (!secondRound) {
           dispatch({ type: STOP_LOADING_DATA });
           dispatch({
