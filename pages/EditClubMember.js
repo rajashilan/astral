@@ -93,58 +93,69 @@ export default function EditClubMember({ navigation, route }) {
     navigation.goBack();
   };
 
+  //the basic first pop up
   const handleShowAssignRolePopUp = () => {
     setSelectedRole("");
     setShowAssignRolePopUp(!showAssignRolePopUp);
+  };
+
+  //basic deactivate member pop up
+  const handleShowDeactivateMemberPopUp = () => {
+    setShowDeactivateMemberPopUp(!showDeactivateMemberPopUp);
+  };
+
+  //assign role pop up -> this pop up
+  const handleShowPresidentRoleWarningPopUp = () => {
+    setShowPresidentRoleWarningPopUp(!showPresidentRoleWarningPopUp);
+  };
+
+  //assign role pop up -> this pop up
+  const handleShowRoleWarningPopUp = () => {
+    setShowRoleWarningPopUp(!showRoleWarningPopUp);
   };
 
   //create new roles
   //delete created roles
 
   const handleAssignRole = () => {
-    //if role being assigned belongs to another member, show warning message
-    const role = selectedRole.split(" ").join("");
-    if (member.role === "president") handleShowPresidentRoleWarningPopUp();
-    else if (selectedRole !== "member" && club.roles[role].userID !== "")
+    // Remove spaces from the selected role
+    const role = selectedRole.replace(/\s+/g, "");
+
+    console.log(role, club.roles[role]?.userID);
+
+    // Show warnings based on role conditions
+    if (member.role === "president") {
+      handleShowPresidentRoleWarningPopUp();
+    } else if (selectedRole !== "member" && club.roles[role]?.userID) {
       handleShowRoleWarningPopUp();
-    else {
+    } else {
       const newMember = {
         userID: member.userID,
         memberID: member.memberID,
         role: member.role,
       };
-      //if current user is just a member, normal handling
-      if (member.role === "member")
-        dispatch(
-          assignNewClubRole(
-            selectedRole,
-            newMember,
-            club.clubID,
-            undefined,
-            undefined,
-            false
-          )
-        );
-      else {
-        //if current user has a role, empty that role in clubs, proceed as usual
-        dispatch(
-          assignNewClubRole(
-            selectedRole,
-            newMember,
-            club.clubID,
-            undefined,
-            member.role,
-            false
-          )
-        );
-      }
+
+      console.log(newMember);
+
+      // Determine if the current member has a role other than "member"
+      const currentRole = member.role === "member" ? undefined : member.role;
+
+      // Dispatch the action to assign a new role
+      dispatch(
+        assignNewClubRole(
+          selectedRole,
+          newMember,
+          club.clubID,
+          undefined,
+          currentRole,
+          false
+        )
+      );
+
+      // Show the assign role pop-up and reset the selected role
       handleShowAssignRolePopUp();
       setSelectedRole("");
     }
-  };
-
-  const handleShowRoleWarningPopUp = () => {
-    setShowRoleWarningPopUp(!showRoleWarningPopUp);
   };
 
   //handles when the role is currently assigned to another user
@@ -174,14 +185,6 @@ export default function EditClubMember({ navigation, route }) {
     setSelectedRole("");
     if (selectedRole === "president")
       navigation.replace("ClubsPages", { clubID: club.clubID });
-  };
-
-  const handleShowDeactivateMemberPopUp = () => {
-    setShowDeactivateMemberPopUp(!showDeactivateMemberPopUp);
-  };
-
-  const handleShowPresidentRoleWarningPopUp = () => {
-    setShowPresidentRoleWarningPopUp(!showPresidentRoleWarningPopUp);
   };
 
   const handleDeactivateMember = () => {
@@ -408,43 +411,72 @@ export default function EditClubMember({ navigation, route }) {
             </Pressable>
           )}
         </View>
-      </Modal>
-
-      <Modal
-        isVisible={showRoleWarningPopUp}
-        onBackdropPress={handleShowRoleWarningPopUp} // Android back press
-        animationIn="bounceIn" // Has others, we want slide in from the left
-        animationOut="bounceOut" // When discarding the drawer
-        useNativeDriver // Faster animation
-        hideModalContentWhileAnimating // Better performance, try with/without
-        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
-        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
-      >
-        <View style={styles.withdrawMenu}>
-          <Text
-            style={{
-              fontSize: fontPixel(20),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              marginBottom: pixelSizeVertical(12),
-              textAlign: "center",
-            }}
-          >
-            {selectedRole === "president"
-              ? "Assigning this member the President's role will remove your role as a president and reassign your role as a member. Do you wish to continue?"
-              : "Reassigning this role will reset the previous member's role. Do you wish to continue?"}
-          </Text>
-          <PrimaryButton
-            loading={loading}
-            text="continue"
-            onPress={handleAssignCommitteeRole}
-          />
-          {!loading && (
-            <Pressable onPress={handleShowRoleWarningPopUp}>
-              <Text style={styles.withdrawButton}>cancel</Text>
-            </Pressable>
-          )}
-        </View>
+        <Modal
+          isVisible={showRoleWarningPopUp}
+          onBackdropPress={handleShowRoleWarningPopUp} // Android back press
+          animationIn="bounceIn" // Has others, we want slide in from the left
+          animationOut="bounceOut" // When discarding the drawer
+          useNativeDriver // Faster animation
+          hideModalContentWhileAnimating // Better performance, try with/without
+          propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+          style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
+        >
+          <View style={styles.withdrawMenu}>
+            <Text
+              style={{
+                fontSize: fontPixel(20),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                marginBottom: pixelSizeVertical(12),
+                textAlign: "center",
+              }}
+            >
+              {selectedRole === "president"
+                ? "Assigning this member the President's role will remove your role as a president and reassign your role as a member. Do you wish to continue?"
+                : "Reassigning this role will reset the previous member's role. Do you wish to continue?"}
+            </Text>
+            <PrimaryButton
+              loading={loading}
+              text="continue"
+              onPress={handleAssignCommitteeRole}
+            />
+            {!loading && (
+              <Pressable onPress={handleShowRoleWarningPopUp}>
+                <Text style={styles.withdrawButton}>cancel</Text>
+              </Pressable>
+            )}
+          </View>
+        </Modal>
+        <Modal
+          isVisible={showPresidentRoleWarningPopUp}
+          onBackdropPress={handleShowPresidentRoleWarningPopUp} // Android back press
+          animationIn="bounceIn" // Has others, we want slide in from the left
+          animationOut="bounceOut" // When discarding the drawer
+          useNativeDriver // Faster animation
+          hideModalContentWhileAnimating // Better performance, try with/without
+          propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+          style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
+        >
+          <View style={styles.withdrawMenu}>
+            <Text
+              style={{
+                fontSize: fontPixel(20),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                marginBottom: pixelSizeVertical(12),
+                textAlign: "center",
+              }}
+            >
+              To change your role as president, appoint a new member as the club
+              president first.
+            </Text>
+            <PrimaryButton
+              loading={loading}
+              onPress={handleShowPresidentRoleWarningPopUp}
+              text={"Ok"}
+            />
+          </View>
+        </Modal>
       </Modal>
 
       <Modal
@@ -479,37 +511,6 @@ export default function EditClubMember({ navigation, route }) {
               <Text style={styles.withdrawButton}>cancel</Text>
             </Pressable>
           )}
-        </View>
-      </Modal>
-
-      <Modal
-        isVisible={showPresidentRoleWarningPopUp}
-        onBackdropPress={handleShowPresidentRoleWarningPopUp} // Android back press
-        animationIn="bounceIn" // Has others, we want slide in from the left
-        animationOut="bounceOut" // When discarding the drawer
-        useNativeDriver // Faster animation
-        hideModalContentWhileAnimating // Better performance, try with/without
-        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
-        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
-      >
-        <View style={styles.withdrawMenu}>
-          <Text
-            style={{
-              fontSize: fontPixel(20),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              marginBottom: pixelSizeVertical(12),
-              textAlign: "center",
-            }}
-          >
-            To change your role as president, appoint a new member as the club
-            president first.
-          </Text>
-          <PrimaryButton
-            loading={loading}
-            onPress={handleShowPresidentRoleWarningPopUp}
-            text={"Ok"}
-          />
         </View>
       </Modal>
       <Toast config={toastConfig} />
