@@ -194,7 +194,7 @@ export default function Home({ navigation }) {
           />
         ) : null}
       </View>
-      <Text style={styles.version}>v 1.0.3</Text>
+      <Text style={styles.version}>v 1.0.4</Text>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#363BB1" />
       <EmptyView backgroundColor={"#363BB1"} />
