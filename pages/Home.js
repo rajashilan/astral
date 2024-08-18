@@ -194,6 +194,7 @@ export default function Home({ navigation }) {
           />
         ) : null}
       </View>
+      <Text style={styles.version}>v 1.0.3</Text>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#363BB1" />
       <EmptyView backgroundColor={"#363BB1"} />
@@ -241,5 +242,13 @@ const styles = StyleSheet.create({
   campusLogo: {
     flex: 2,
     aspectRatio: 9,
+  },
+  version: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    opacity: 0.5,
+    color: "#C6CDE2",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
   },
 });
