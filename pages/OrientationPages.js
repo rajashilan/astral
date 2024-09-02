@@ -13,6 +13,7 @@ import {
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Carousel, { Pagination } from "react-native-snap-carousel";
+import { Video } from "expo-av";
 
 //images
 import hamburgerIcon from "../assets/hamburger_icon.png";
@@ -112,8 +113,25 @@ export default React.memo(function OrientationPages({ navigation, route }) {
           </View>
           {item.header && <Text style={styles.header}>{item.header}</Text>}
           {item.content && <Text style={styles.content}>{item.content}</Text>}
+          {item.videos &&
+            item.videos.map((video) => {
+              let videoID = video.url.split("/");
+              videoID = videoID[videoID.length - 2];
+              return (
+                <Video
+                  key={video.videoID}
+                  source={{
+                    uri: `https://drive.google.com/uc?id=${videoID}`,
+                  }}
+                  style={styles.video}
+                  useNativeControls
+                  resizeMode="contain"
+                />
+              );
+            })}
           {item.subcontent &&
             item.subcontent.map((content, index) => {
+              console.log("subcontent", content);
               return (
                 <View
                   key={(index * 321).toString()}
@@ -355,5 +373,12 @@ const styles = StyleSheet.create({
     paddingRight: pixelSizeHorizontal(16),
     backgroundColor: "#131A2E",
     marginBottom: pixelSizeVertical(10),
+  },
+  video: {
+    alignSelf: "center",
+    width: width - 32,
+    height: 180,
+    backgroundColor: "#1A2238",
+    marginBottom: pixelSizeVertical(16),
   },
 });
