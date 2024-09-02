@@ -21,6 +21,7 @@ export default {
         process.env.GOOGLE_SERVICES_PLIST ?? "./GoogleService-Info.plist",
       buildNumber: "1.0.4",
     },
+    //have to change the ios build number
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
@@ -28,7 +29,7 @@ export default {
       },
       package: "com.codeloomventures.astral",
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
-      versionCode: 2,
+      versionCode: 3,
     },
     web: {
       favicon: "./assets/favicon.png",
@@ -76,7 +77,7 @@ export default {
       url: "https://u.expo.dev/9658f287-3074-4ba6-bc82-8c9934ebc656",
     },
     runtimeVersion: {
-      policy: "appVersion",
+      policy: "nativeVersion",
     },
   },
 };
