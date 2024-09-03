@@ -52,6 +52,8 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
 
   const [indexSelected, setIndexSelected] = useState(0);
 
+  console.log(currentMember);
+
   const [data, setData] = useState({
     past: [],
     future: [],
@@ -249,42 +251,36 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
           ></View>
         </View>
       ) : null}
-      {(innerTab === "past" &&
-        data.past.length === 0 &&
-        !currentMember.role === "president") ||
-        (innerTab === "past" &&
-          data.past.length === 0 &&
-          Object.keys(currentMember).length === 0 && (
-            <Text
-              style={{
-                fontSize: fontPixel(20),
-                fontWeight: "400",
-                color: "#F5F5F5",
-                marginTop: pixelSizeVertical(12),
-                textAlign: "center",
-              }}
-            >
-              nothing to see here...yet
-            </Text>
-          ))}
-      {(innerTab === "future" &&
-        data.future.length === 0 &&
-        !currentMember.role === "president") ||
-        (innerTab === "future" &&
-          data.future.length === 0 &&
-          Object.keys(currentMember).length === 0 && (
-            <Text
-              style={{
-                fontSize: fontPixel(20),
-                fontWeight: "400",
-                color: "#F5F5F5",
-                marginTop: pixelSizeVertical(12),
-                textAlign: "center",
-              }}
-            >
-              nothing to see here...yet
-            </Text>
-          ))}
+      {innerTab === "past" &&
+      data.past.length === 0 &&
+      !currentMember.role === "president" ? (
+        <Text
+          style={{
+            fontSize: fontPixel(20),
+            fontWeight: "400",
+            color: "#F5F5F5",
+            marginTop: pixelSizeVertical(12),
+            textAlign: "center",
+          }}
+        >
+          oops, nothing to see here...yet 👀
+        </Text>
+      ) : null}
+      {innerTab === "future" &&
+      data.future.length === 0 &&
+      !currentMember.role === "president" ? (
+        <Text
+          style={{
+            fontSize: fontPixel(20),
+            fontWeight: "400",
+            color: "#F5F5F5",
+            marginTop: pixelSizeVertical(12),
+            textAlign: "center",
+          }}
+        >
+          oops, nothing to see here...yet 👀
+        </Text>
+      ) : null}
       {innerTab === "past" ? (
         <Carousel
           layout="default"
