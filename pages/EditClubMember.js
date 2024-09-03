@@ -121,8 +121,6 @@ export default function EditClubMember({ navigation, route }) {
     // Remove spaces from the selected role
     const role = selectedRole.replace(/\s+/g, "");
 
-    console.log(role, club.roles[role]?.userID);
-
     // Show warnings based on role conditions
     if (member.role === "president") {
       handleShowPresidentRoleWarningPopUp();
@@ -134,8 +132,6 @@ export default function EditClubMember({ navigation, route }) {
         memberID: member.memberID,
         role: member.role,
       };
-
-      console.log(newMember);
 
       // Determine if the current member has a role other than "member"
       const currentRole = member.role === "member" ? undefined : member.role;

@@ -145,7 +145,6 @@ export default function SignupDetails({ navigation, route }) {
               .createUserWithEmailAndPassword(data.email, password)
               .then((res) => {
                 data.userId = res.user.uid;
-                console.log(res);
 
                 res.user
                   .sendEmailVerification()

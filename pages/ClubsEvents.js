@@ -52,8 +52,6 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
 
   const [indexSelected, setIndexSelected] = useState(0);
 
-  console.log(currentMember);
-
   const [data, setData] = useState({
     past: [],
     future: [],

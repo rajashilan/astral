@@ -131,7 +131,6 @@ export default React.memo(function OrientationPages({ navigation, route }) {
             })}
           {item.subcontent &&
             item.subcontent.map((content, index) => {
-              console.log("subcontent", content);
               return (
                 <View
                   key={(index * 321).toString()}

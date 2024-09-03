@@ -90,7 +90,6 @@ export default function ClubsYou({ navigation }) {
           // User picked an image
           const uri = result.assets[0].uri;
           setImageType(uri.split(".")[uri.split(".").length - 1]);
-          console.log("uri: ", uri);
           return uriToBlob(uri);
         }
       })
@@ -99,7 +98,6 @@ export default function ClubsYou({ navigation }) {
         return uploadToFirebase(blob, imageFileName);
       })
       .then((snapshot) => {
-        console.log("snapshot");
         return storage().ref(firebasePath).getDownloadURL();
       })
       .then((url) => {
