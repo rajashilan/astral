@@ -1,8 +1,9 @@
 import FastImage from "react-native-fast-image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions, ScrollView } from "react-native";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import { useSelector } from "react-redux";
+import { useIsFocused } from "@react-navigation/native";
 
 import {
   fontPixel,
@@ -17,12 +18,19 @@ const { width } = Dimensions.get("window");
 const ClubsMembers = React.memo(({ onScroll }) => {
   const members = useSelector((state) => state.data.clubData.members);
   const numberOfMembers = `${members.length} members`;
+  const isFocused = useIsFocused();
 
   const [indexSelected, setIndexSelected] = useState(0);
 
   const onSelect = (indexSelected) => {
     setIndexSelected(indexSelected);
   };
+
+  useEffect(() => {
+    if (isFocused) {
+      handleScroll(0);
+    }
+  }, [isFocused]);
 
   const handleScroll = (scrollHeight) => {
     onScroll(scrollHeight);

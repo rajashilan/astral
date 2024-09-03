@@ -12,6 +12,7 @@ import Modal from "react-native-modal";
 import Carousel from "react-native-snap-carousel";
 import Toast from "react-native-toast-message";
 import { useSelector, useDispatch } from "react-redux";
+import { useIsFocused } from "@react-navigation/native";
 
 import {
   createNotification,
@@ -41,12 +42,20 @@ const ClubsGallery = React.memo(({ navigation, onScroll }) => {
   const gallery = useSelector((state) => state.data.clubData.gallery);
   const loading = useSelector((state) => state.data.loading);
 
+  const isFocused = useIsFocused();
+
   const [indexSelected, setIndexSelected] = useState(0);
 
   const [data, setData] = useState([]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [galleryID, setDeleteGalleryID] = useState("");
+
+  useEffect(() => {
+    if (isFocused) {
+      handleScroll(0);
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     dispatch(getClubGallery(club.clubID));

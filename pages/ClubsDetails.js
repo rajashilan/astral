@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, Pressable, ScrollView } from "react-native";
 import Toast from "react-native-toast-message";
 import { useSelector, useDispatch } from "react-redux";
+import { useIsFocused } from "@react-navigation/native";
 
 import {
   createNotification,
@@ -30,6 +31,8 @@ const ClubsDetails = React.memo(({ onScroll }) => {
   const data = useSelector((state) => state.data.clubData.club.details);
   const loading = useSelector((state) => state.data.loading);
 
+  const isFocused = useIsFocused();
+
   const [meetings, setMeetings] = useState("");
   const [fees, setFees] = useState("");
   const [more, setMore] = useState("");
@@ -37,6 +40,12 @@ const ClubsDetails = React.memo(({ onScroll }) => {
   function isEmpty(obj) {
     return Object.keys(obj).length === 0;
   }
+
+  useEffect(() => {
+    if (isFocused) {
+      handleScroll(0);
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     setDetails();
