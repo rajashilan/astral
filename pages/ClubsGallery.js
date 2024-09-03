@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     paddingBottom: pixelSizeVertical(12),
   },
   image: {
-    width: "99%",
+    width: width - pixelSizeHorizontal(33),
     height: 170,
     marginBottom: pixelSizeVertical(12),
     borderRadius: 5,
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     paddingTop: pixelSizeVertical(18),
     paddingBottom: pixelSizeVertical(18),
     marginTop: pixelSizeVertical(24),
-    width: "99%",
+    width: width - pixelSizeHorizontal(33),
     borderRadius: 5,
     borderColor: "#C6CDE2",
     borderWidth: 1,
