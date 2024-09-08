@@ -13,7 +13,7 @@ import {
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Carousel, { Pagination } from "react-native-snap-carousel";
-import { Video } from "expo-av";
+import { WebView } from "react-native-webview";
 
 //images
 import hamburgerIcon from "../assets/hamburger_icon.png";
@@ -118,13 +118,14 @@ export default React.memo(function OrientationPages({ navigation, route }) {
               let videoID = video.url.split("/");
               videoID = videoID[videoID.length - 2];
               return (
-                <Video
+                <WebView
                   key={video.videoID}
                   source={{
-                    uri: `https://drive.google.com/uc?id=${videoID}`,
+                    uri: video.url,
                   }}
                   style={styles.video}
                   useNativeControls
+                  nestedScrollEnabled
                   resizeMode="contain"
                 />
               );

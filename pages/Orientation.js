@@ -11,7 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { Video } from "expo-av";
+import { WebView } from "react-native-webview";
 import FastImage from "react-native-fast-image";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut, FadeInDown } from "react-native-reanimated";
@@ -97,13 +97,14 @@ export default function Orientation({ navigation }) {
         let videoID = video.url.split("/");
         videoID = videoID[videoID.length - 2];
         return (
-          <Video
+          <WebView
             key={video.videoID}
             source={{
-              uri: `https://drive.google.com/uc?id=${videoID}`,
+              uri: video.url,
             }}
             style={styles.video}
             useNativeControls
+            nestedScrollEnabled
             resizeMode="contain"
           />
         );
