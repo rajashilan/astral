@@ -102,6 +102,7 @@ export default function Home({ navigation }) {
         style={{
           marginRight: pixelSizeHorizontal(10),
           marginLeft: pixelSizeHorizontal(10),
+          maxWidth: "68%",
         }}
         onPress={() => navigation.replace("Profile")}
       >
@@ -111,7 +112,6 @@ export default function Home({ navigation }) {
             fontSize: fontPixel(22),
             marginBottom: pixelSizeVertical(2),
             fontWeight: "500",
-            maxWidth: "84%",
           }}
         >
           {user.name}
@@ -121,7 +121,6 @@ export default function Home({ navigation }) {
             color: "#C6CDE2",
             fontSize: fontPixel(14),
             fontWeight: "400",
-            maxWidth: "94%",
           }}
         >
           {user.intake}, {user.department}

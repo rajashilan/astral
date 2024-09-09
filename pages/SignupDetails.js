@@ -270,8 +270,8 @@ export default function SignupDetails({ navigation, route }) {
         {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
 
         <CustomTextInput
-          placeholder="enter your full name"
-          label="full name"
+          placeholder="enter your name"
+          label="name"
           value={name}
           onChangeText={(name) => setName(name)}
           editable={!loading}
