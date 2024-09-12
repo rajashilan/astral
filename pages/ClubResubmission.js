@@ -93,9 +93,9 @@ export default function ClubResubmission({ navigation, route }) {
         ], // Specify the type of document you want to pick (e.g., PDF)
       });
 
-      if (result.type === "success") {
+      if (!result.canceled) {
         // User picked an image
-        const uri = result.uri;
+        const uri = result.assets[0].uri;
         setDocumentType(uri.split(".")[uri.split(".").length - 1]);
         setDocument(uri);
         Toast.show({

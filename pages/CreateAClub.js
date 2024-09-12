@@ -92,12 +92,11 @@ export default function CreateAClub({ navigation, route }) {
           "application/pdf",
           "application/msword",
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ], // Specify the type of document you want to pick (e.g., PDF)
+        ],
       });
-
-      if (result.type === "success") {
-        // User picked an image
-        const uri = result.uri;
+      if (!result.canceled) {
+        // user picked an image
+        const uri = result.assets[0].uri;
         setDocumentType(uri.split(".")[uri.split(".").length - 1]);
         setDocument(uri);
         Toast.show({
