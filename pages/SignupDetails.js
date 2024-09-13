@@ -54,6 +54,7 @@ export default function SignupDetails({ navigation, route }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [birthdayToShow, setBirthdayToShow] = useState(undefined);
   const [password, setPassword] = useState("");
 
   const [gender] = useState(["Male", "Female", "Rather not say"]);
@@ -218,12 +219,12 @@ export default function SignupDetails({ navigation, route }) {
     )
       setShowDatePicker(!showDatePicker);
 
-    const birthday = dayjs(selectedDate);
+    const getBirthday = dayjs(selectedDate);
     const now = dayjs(new Date());
-
+    setBirthdayToShow(new Date(getBirthday.toString()));
     const errors = { ...errors };
 
-    if (now.diff(birthday, "year") < 17) {
+    if (now.diff(getBirthday, "year") < 17) {
       errors.birthday =
         "You have to be at least 16 years old to use this application.";
     } else {
@@ -384,9 +385,8 @@ export default function SignupDetails({ navigation, route }) {
         {showDatePicker && (
           <DateTimePicker
             mode="date"
-            value={new Date()}
+            value={birthdayToShow ? birthdayToShow : new Date()}
             display="spinner"
-            maximumDate={new Date(2012, 11, 25)}
             onChange={onChange}
             textColor="white"
           />
