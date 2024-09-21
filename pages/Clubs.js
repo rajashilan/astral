@@ -213,10 +213,10 @@ export default React.memo(function Clubs({ navigation }) {
               )
         }
         renderItem={({ item }) => (
-          <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
+          <>
             {item.approval === "pending" ? (
               item.createdBy === user.userId && (
-                <>
+                <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
                   <FastImage
                     style={styles.imageHalfOpacity}
                     source={{ uri: item.image }}
@@ -230,50 +230,56 @@ export default React.memo(function Clubs({ navigation }) {
                   <Text style={styles.pageItemSubtitlePending}>
                     {item.approvalText}
                   </Text>
-                </>
+                </View>
               )
             ) : item.approval === "rejected" ? (
               item.createdBy === user.userId && (
-                <Pressable onPress={() => handlePageItemResubmit(item.clubID)}>
-                  <FastImage
-                    style={styles.imageHalfOpacity}
-                    source={{ uri: item.image }}
-                    resizeMode="cover"
-                    transition={1000}
-                    progressiveRenderingEnabled={true}
-                    cache={FastImage.cacheControl.immutable}
-                    priority={FastImage.priority.normal}
-                  />
-                  <Text style={styles.pageItemsPending}>{item.name}</Text>
-                  <Text style={styles.pageItemSubtitleSuspendedSmaller}>
-                    {item.approval}
-                  </Text>
-                  <Text style={styles.pageItemSubtitleRejected}>
-                    {item.rejectionReason}
-                  </Text>
-                </Pressable>
+                <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
+                  <Pressable
+                    onPress={() => handlePageItemResubmit(item.clubID)}
+                  >
+                    <FastImage
+                      style={styles.imageHalfOpacity}
+                      source={{ uri: item.image }}
+                      resizeMode="cover"
+                      transition={1000}
+                      progressiveRenderingEnabled={true}
+                      cache={FastImage.cacheControl.immutable}
+                      priority={FastImage.priority.normal}
+                    />
+                    <Text style={styles.pageItemsPending}>{item.name}</Text>
+                    <Text style={styles.pageItemSubtitleSuspendedSmaller}>
+                      {item.approval}
+                    </Text>
+                    <Text style={styles.pageItemSubtitleRejected}>
+                      {item.rejectionReason}
+                    </Text>
+                  </Pressable>
+                </View>
               )
             ) : item.status === "inactive" ? (
               item.createdBy === user.userId && (
-                <Pressable onPress={() => handlePageItemPress(item.clubID)}>
-                  <FastImage
-                    style={styles.imageHalfOpacity}
-                    source={{ uri: item.image }}
-                    resizeMode="cover"
-                    transition={1000}
-                    progressiveRenderingEnabled={true}
-                    cache={FastImage.cacheControl.immutable}
-                    priority={FastImage.priority.normal}
-                  />
-                  <Text style={styles.pageItemsInactive}>{item.name}</Text>
-                  <Text style={styles.pageItemSubtitleInactive}>
-                    {item.status}
-                  </Text>
-                </Pressable>
+                <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
+                  <Pressable onPress={() => handlePageItemPress(item.clubID)}>
+                    <FastImage
+                      style={styles.imageHalfOpacity}
+                      source={{ uri: item.image }}
+                      resizeMode="cover"
+                      transition={1000}
+                      progressiveRenderingEnabled={true}
+                      cache={FastImage.cacheControl.immutable}
+                      priority={FastImage.priority.normal}
+                    />
+                    <Text style={styles.pageItemsInactive}>{item.name}</Text>
+                    <Text style={styles.pageItemSubtitleInactive}>
+                      {item.status}
+                    </Text>
+                  </Pressable>
+                </View>
               )
             ) : item.status === "suspended" ? (
               item.createdBy === user.userId && (
-                <>
+                <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
                   <FastImage
                     style={styles.imageHalfOpacity}
                     source={{ uri: item.image }}
@@ -287,13 +293,33 @@ export default React.memo(function Clubs({ navigation }) {
                   <Text style={styles.pageItemSubtitleSuspendedSmaller}>
                     {item.status}
                   </Text>
-                </>
+                </View>
               )
             ) : item.status === "deactivated" ? (
               item.createdBy === user.userId && (
+                <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
+                  <Pressable onPress={() => handlePageItemPress(item.clubID)}>
+                    <FastImage
+                      style={styles.imageHalfOpacity}
+                      source={{ uri: item.image }}
+                      resizeMode="cover"
+                      transition={1000}
+                      progressiveRenderingEnabled={true}
+                      cache={FastImage.cacheControl.immutable}
+                      priority={FastImage.priority.normal}
+                    />
+                    <Text style={styles.pageItemsInactive}>{item.name}</Text>
+                    <Text style={styles.pageItemSubtitleInactive}>
+                      {item.status}
+                    </Text>
+                  </Pressable>
+                </View>
+              )
+            ) : (
+              <View style={{ marginBottom: pixelSizeHorizontal(30) }}>
                 <Pressable onPress={() => handlePageItemPress(item.clubID)}>
                   <FastImage
-                    style={styles.imageHalfOpacity}
+                    style={styles.image}
                     source={{ uri: item.image }}
                     resizeMode="cover"
                     transition={1000}
@@ -301,27 +327,11 @@ export default React.memo(function Clubs({ navigation }) {
                     cache={FastImage.cacheControl.immutable}
                     priority={FastImage.priority.normal}
                   />
-                  <Text style={styles.pageItemsInactive}>{item.name}</Text>
-                  <Text style={styles.pageItemSubtitleInactive}>
-                    {item.status}
-                  </Text>
+                  <Text style={styles.pageItems}>{item.name}</Text>
                 </Pressable>
-              )
-            ) : (
-              <Pressable onPress={() => handlePageItemPress(item.clubID)}>
-                <FastImage
-                  style={styles.image}
-                  source={{ uri: item.image }}
-                  resizeMode="cover"
-                  transition={1000}
-                  progressiveRenderingEnabled={true}
-                  cache={FastImage.cacheControl.immutable}
-                  priority={FastImage.priority.normal}
-                />
-                <Text style={styles.pageItems}>{item.name}</Text>
-              </Pressable>
+              </View>
             )}
-          </View>
+          </>
         )}
       />
       {tab === "yours" && yours.length === 0 ? (
