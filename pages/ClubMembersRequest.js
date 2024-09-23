@@ -20,8 +20,8 @@ import IosHeight from "../components/IosHeight";
 import SideMenu from "../components/SideMenu";
 import {
   acceptNewMember,
-  createNotification,
   rejectNewMember,
+  sendPushNotification,
 } from "../src/redux/actions/dataActions";
 import {
   fontPixel,
@@ -42,6 +42,7 @@ export default function ClubMembersRequest({ navigation }) {
   );
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
+  const campusID = useSelector((state) => state.data.campus.campusID);
   const rejectLoading = useSelector((state) => state.UI.loading);
   const membersRequests = useSelector(
     (state) => state.data.clubData.club.membersRequests
@@ -84,7 +85,7 @@ export default function ClubMembersRequest({ navigation }) {
         notificationID: "",
       };
       const userIDs = [item.userID];
-      dispatch(createNotification(notification, userIDs));
+      dispatch(sendPushNotification(notification, userIDs, campusID));
     } else {
       dispatch(rejectNewMember(item, club.clubID));
       const notification = {
@@ -101,7 +102,7 @@ export default function ClubMembersRequest({ navigation }) {
         notificationID: "",
       };
       const userIDs = [item];
-      dispatch(createNotification(notification, userIDs));
+      dispatch(sendPushNotification(notification, userIDs, campusID));
     }
   };
 
