@@ -36,24 +36,6 @@ export default {
     },
     plugins: [
       [
-        "expo-image-picker",
-        {
-          photosPermission:
-            "The app accesses your photos to let you share them with your friends.",
-        },
-      ],
-      [
-        "expo-updates",
-        {
-          username: "rajashilan",
-        },
-      ],
-      "expo-font",
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
-      "@react-native-firebase/perf",
-      "@react-native-firebase/crashlytics",
-      [
         "expo-build-properties",
         {
           android: {
@@ -67,6 +49,32 @@ export default {
           },
         },
       ],
+      [
+        "expo-image-picker",
+        {
+          photosPermission:
+            "The app accesses your photos to let you share them with your friends.",
+        },
+      ],
+      [
+        "expo-notifications",
+        {
+          defaultChannel: "default",
+          icon: "./local/assets/icon.png",
+          color: "#07BEB8",
+        },
+      ],
+      [
+        "expo-updates",
+        {
+          username: "rajashilan",
+        },
+      ],
+      "expo-font",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/perf",
+      "@react-native-firebase/crashlytics",
     ],
     extra: {
       eas: {
@@ -76,8 +84,9 @@ export default {
     updates: {
       url: "https://u.expo.dev/9658f287-3074-4ba6-bc82-8c9934ebc656",
     },
-    runtimeVersion: {
-      policy: "nativeVersion",
-    },
+    //need to change runtime version to 1.0.4(3) to update android and 1.0.4 to update ios
+    //make sure in the next build both version are the same to avoid this shit
+    runtimeVersion: "1.0.4(3)",
   },
 };
+// runtimeVersion: "1.0.4(3)",
