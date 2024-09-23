@@ -15,10 +15,7 @@
     },
     "preview": {
       "distribution": "internal",
-      "ios": {
-        "simulator": true,
-        "cocoapods": "1.14.3"
-      },
+      "developmentClient": true,
       "channel": "preview"
     },
     "production": {
