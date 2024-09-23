@@ -116,3 +116,16 @@ export const updateUserBio = (userID, bio) => (dispatch) => {
       });
     });
 };
+
+export const updateUserPushNotificationToken = (userID, token) => {
+  console.log(userID, token);
+  db.collection("users")
+    .doc(userID)
+    .update({ pushNotificationToken: token })
+    .then(() => {
+      console.log("successfully updated user's push notification token");
+    })
+    .catch((error) => {
+      console.error("failed to update user's push notification token: ", error);
+    });
+};
