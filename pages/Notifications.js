@@ -95,12 +95,14 @@ export default function Notifications({ navigation }) {
   };
 
   useEffect(() => {
-    fetchNotifications();
+    if (user.userId) {
+      fetchNotifications();
+    }
     return () => {
       setLastDoc(null);
       setData([]);
     };
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (data.length > 0) {
