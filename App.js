@@ -37,6 +37,8 @@ import Signup from "./pages/Signup";
 import SignupDetails from "./pages/SignupDetails";
 import { store } from "./src/redux/store";
 import * as Updates from "expo-updates";
+import { NotificationProvider } from "./context/NotificationContext";
+import * as ExpoNotifications from "expo-notifications";
 
 const Stack = createStackNavigator();
 
@@ -103,6 +105,14 @@ export default function App() {
     onFetchUpdateAsync();
   }, []);
 
+  ExpoNotifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+
   return (
     <Provider store={store}>
       <NavigationContainer
@@ -111,325 +121,327 @@ export default function App() {
           colors: { background: "#0C111F" },
         }}
       >
-        <Stack.Navigator
-          screenOptions={{
-            header: () => null,
-          }}
-          initialRouteName="Main"
-        >
-          <Stack.Screen
-            name="Main"
-            component={Main}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
+        <NotificationProvider>
+          <Stack.Navigator
+            screenOptions={{
+              header: () => null,
             }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="ForgotPassword"
-            component={ForgotPassword}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="Signup"
-            component={Signup}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="SignupDetails"
-            component={SignupDetails}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="Orientation"
-            component={Orientation}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="OrientationPages"
-            component={OrientationPages}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="Clubs"
-            component={Clubs}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="ClubsPages"
-            component={ClubsPages}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="ClubResubmission"
-            component={ClubResubmission}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="ClubsYou"
-            component={ClubsYou}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="AddClubsGallery"
-            component={AddClubsGallery}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="ResubmitClubsGallery"
-            component={ResubmitClubsGallery}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="AddClubsEvent"
-            component={AddClubsEvent}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="ResubmitClubsEvent"
-            component={ResubmitClubsEvent}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="EditClub"
-            component={EditClub}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="ClubCurrentMembers"
-            component={ClubCurrentMembers}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="ClubMembersRequest"
-            component={ClubMembersRequest}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="EditClubMember"
-            component={EditClubMember}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="EditClubRoles"
-            component={EditClubRoles}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="Notifications"
-            component={Notifications}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="GeneralForms"
-            component={GeneralForms}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="GeneralFormsPage"
-            component={GeneralFormsPage}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="Profile"
-            component={Profile}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-          <Stack.Screen
-            name="CreateAClub"
-            component={CreateAClub}
-            options={{
-              transitionSpec: {
-                open: animationConfig,
-                close: animationConfig,
-              }, // added
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          />
-        </Stack.Navigator>
+            initialRouteName="Main"
+          >
+            <Stack.Screen
+              name="Main"
+              component={Main}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPassword}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={Signup}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="SignupDetails"
+              component={SignupDetails}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="Orientation"
+              component={Orientation}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="OrientationPages"
+              component={OrientationPages}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="Clubs"
+              component={Clubs}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ClubsPages"
+              component={ClubsPages}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ClubResubmission"
+              component={ClubResubmission}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ClubsYou"
+              component={ClubsYou}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="AddClubsGallery"
+              component={AddClubsGallery}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ResubmitClubsGallery"
+              component={ResubmitClubsGallery}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="AddClubsEvent"
+              component={AddClubsEvent}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ResubmitClubsEvent"
+              component={ResubmitClubsEvent}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="EditClub"
+              component={EditClub}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ClubCurrentMembers"
+              component={ClubCurrentMembers}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ClubMembersRequest"
+              component={ClubMembersRequest}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="EditClubMember"
+              component={EditClubMember}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="EditClubRoles"
+              component={EditClubRoles}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="Notifications"
+              component={Notifications}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="GeneralForms"
+              component={GeneralForms}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="GeneralFormsPage"
+              component={GeneralFormsPage}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={Profile}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="CreateAClub"
+              component={CreateAClub}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+          </Stack.Navigator>
+        </NotificationProvider>
       </NavigationContainer>
     </Provider>
   );

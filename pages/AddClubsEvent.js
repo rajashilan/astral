@@ -60,6 +60,7 @@ export default function AddClubsEvent({ navigation }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
+  const [birthdayToShow, setBirthdayToShow] = useState(undefined);
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -101,8 +102,16 @@ export default function AddClubsEvent({ navigation }) {
   };
 
   const handleConfirmDatePicker = (event, date) => {
+    if (
+      event.type === "dismissed" ||
+      event.type === "neutralButtonPressed" ||
+      event.type === "set"
+    )
+      setDatePickerVisibility(!isDatePickerVisible);
+
+    const getBirthday = dayjs(date);
+    setBirthdayToShow(new Date(getBirthday.toString()));
     setDate(date.toISOString());
-    setDatePickerVisibility(!isDatePickerVisible);
   };
 
   const handleAddToEvent = () => {
@@ -331,14 +340,12 @@ export default function AddClubsEvent({ navigation }) {
             ) : null}
             {isDatePickerVisible && (
               <DateTimePicker
-                value={new Date()}
+                value={birthdayToShow ? birthdayToShow : new Date()}
                 maximumDate={new Date(2030, 10, 20)}
                 mode="date"
                 display="spinner"
                 textColor="white"
                 onChange={handleConfirmDatePicker}
-                onConfirm={() => setDatePickerVisibility(!isDatePickerVisible)}
-                onCancel={() => setDatePickerVisibility(!isDatePickerVisible)}
               />
             )}
             <PrimaryButton

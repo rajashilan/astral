@@ -30,9 +30,9 @@ import hamburgerIcon from "../assets/hamburger_icon.png";
 import IosHeight from "../components/IosHeight";
 import SideMenu from "../components/SideMenu";
 import {
-  createNotification,
   getAClub,
   joinClub,
+  sendPushNotification,
 } from "../src/redux/actions/dataActions";
 import {
   fontPixel,
@@ -56,6 +56,7 @@ export default function ClubsPages({ navigation, route }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.credentials);
   const data = useSelector((state) => state.data.clubData.club);
+  const campusID = useSelector((state) => state.data.campus.campusID);
   const loading = useSelector((state) => state.data.loading);
   const UIloading = useSelector((state) => state.UI.loading);
   const currentMember = useSelector(
@@ -157,7 +158,8 @@ export default function ClubsPages({ navigation, route }) {
     const userIDs = [data.roles.president.userID];
 
     dispatch(joinClub(joinData, clubsData, data.clubID));
-    dispatch(createNotification(notification, userIDs));
+    // dispatch(createNotification(notification, userIDs));
+    dispatch(sendPushNotification(notification, userIDs, campusID));
   };
 
   //handle scroll for components

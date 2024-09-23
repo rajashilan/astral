@@ -1276,3 +1276,26 @@ export const sendAdminNotification =
       }
     });
   };
+
+export const sendPushNotification =
+  (notification, userIDs, campusID) => (dispatch) => {
+    const data = {
+      notification: { ...notification },
+      userIDs: [...userIDs],
+    };
+
+    auth().onAuthStateChanged((user) => {
+      if (user) {
+        user.getIdToken().then((idToken) => {
+          axios
+            .post(
+              `https://asia-southeast1-astral-d3ff5.cloudfunctions.net/api/notification/${campusID}`,
+              data,
+              { headers: { Authorization: `Bearer ${idToken}` } }
+            )
+            .then((res) => {})
+            .catch((error) => console.error(error));
+        });
+      }
+    });
+  };

@@ -251,7 +251,7 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
       ) : null}
       {innerTab === "past" &&
       data.past.length === 0 &&
-      !currentMember.role === "president" ? (
+      currentMember.role !== "president" ? (
         <Text
           style={{
             fontSize: fontPixel(20),
@@ -266,7 +266,7 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
       ) : null}
       {innerTab === "future" &&
       data.future.length === 0 &&
-      !currentMember.role === "president" ? (
+      currentMember.role !== "president" ? (
         <Text
           style={{
             fontSize: fontPixel(20),

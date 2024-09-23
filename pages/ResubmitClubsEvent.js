@@ -66,6 +66,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
   const [rejectionReason, setRejectionReason] = useState("");
   const [date, setDate] = useState("");
   const [submittedImage, setSubmittedImage] = useState("");
+  const [birthdayToShow, setBirthdayToShow] = useState(undefined);
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -122,8 +123,16 @@ export default function ResubmitClubsEvent({ navigation, route }) {
   };
 
   const handleConfirmDatePicker = (event, date) => {
+    if (
+      event.type === "dismissed" ||
+      event.type === "neutralButtonPressed" ||
+      event.type === "set"
+    )
+      setDatePickerVisibility(!isDatePickerVisible);
+
+    const getBirthday = dayjs(date);
+    setBirthdayToShow(new Date(getBirthday.toString()));
     setDate(date.toISOString());
-    setDatePickerVisibility(!isDatePickerVisible);
   };
 
   const handleAddToEvent = () => {
@@ -385,7 +394,7 @@ export default function ResubmitClubsEvent({ navigation, route }) {
             ) : null}
             {isDatePickerVisible && (
               <DateTimePicker
-                value={new Date()}
+                value={birthdayToShow ? birthdayToShow : new Date()}
                 maximumDate={new Date(2030, 10, 20)}
                 mode="date"
                 onChange={handleConfirmDatePicker}
