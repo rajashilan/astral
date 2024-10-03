@@ -45,6 +45,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { RESET_CLUB_DATA } from "../src/redux/type";
 import Loader from "../components/Loader";
+import RedDot from "../assets/RedDot";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -63,7 +64,7 @@ export default function ClubsPages({ navigation, route }) {
     (state) => state.data.clubData.currentMember
   );
   const [hasRequested, setHasRequested] = useState(false);
-
+  const [membersRequests, setMembersRequests] = useState([]);
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
   const [showAgreementPopUp, setShowAgreementPopUp] = useState(false);
 
@@ -82,6 +83,7 @@ export default function ClubsPages({ navigation, route }) {
 
   useEffect(() => {
     if (!isEmpty(data)) {
+      setMembersRequests(data.membersRequests);
       const temp = [...data.membersRequests];
       const index = temp.findIndex((member) => member.userID === user.userId);
       if (index !== -1)
@@ -298,11 +300,25 @@ export default function ClubsPages({ navigation, route }) {
         )}
         {!isEmpty(currentMember) &&
           currentMember.role === "president" &&
-          !UIloading && (
+          !UIloading &&
+          //if members requests > 0 show red dot
+          (membersRequests.length === 0 ? (
             <Pressable onPress={handleEditClub} style={styles.youButtonNoAuto}>
               <Text style={styles.youText}>club</Text>
             </Pressable>
-          )}
+          ) : (
+            <Pressable onPress={handleEditClub} style={styles.youButtonNoAuto}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.youText}>club</Text>
+                <RedDot />
+              </View>
+            </Pressable>
+          ))}
         <Pressable
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
