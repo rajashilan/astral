@@ -36,6 +36,10 @@ const SideMenu = (props) => {
     (state) => state.user.notificationAvailable
   );
   const campusLogo = useSelector((state) => state.data.campus.logo);
+  const logoBackground = useSelector(
+    (state) => state.data.campus.logoBackground
+  );
+  const aspectRatio = useSelector((state) => state.data.campus.aspectRatio);
 
   const handleMenuNavigation = (name) => {
     props.callParentScreenFunction();
@@ -100,7 +104,7 @@ const SideMenu = (props) => {
           display: "flex",
           flexDirection: "row",
           marginBottom: pixelSizeVertical(8),
-          backgroundColor: "#F7F7F7",
+          backgroundColor: logoBackground,
           paddingRight: pixelSizeHorizontal(16),
           paddingLeft: pixelSizeHorizontal(16),
           paddingTop: pixelSizeVertical(12),
@@ -108,7 +112,10 @@ const SideMenu = (props) => {
         }}
       >
         <FastImage
-          style={styles.campusLogo}
+          style={{
+            flex: 2,
+            aspectRatio: aspectRatio,
+          }}
           resizeMode="contain"
           source={{ uri: campusLogo }}
           progressiveRenderingEnabled={true}
@@ -298,10 +305,6 @@ const styles = StyleSheet.create({
     paddingBottom: pixelSizeVertical(12),
     borderWidth: widthPixel(4),
     borderColor: "#C4FFF9",
-  },
-  campusLogo: {
-    flex: 2,
-    aspectRatio: 9,
   },
 });
 

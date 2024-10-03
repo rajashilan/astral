@@ -34,6 +34,10 @@ export default function Home({ navigation }) {
   const dataLoading = useSelector((state) => state.data.loading);
   const user = useSelector((state) => state.user.credentials);
   const campusLogo = useSelector((state) => state.data.campus.logo);
+  const logoBackground = useSelector(
+    (state) => state.data.campus.logoBackground
+  );
+  const aspectRatio = useSelector((state) => state.data.campus.aspectRatio);
   const hasNotification = useSelector(
     (state) => state.user.notificationAvailable
   );
@@ -155,7 +159,7 @@ export default function Home({ navigation }) {
               display: "flex",
               flexDirection: "row",
               marginBottom: pixelSizeVertical(24),
-              backgroundColor: "#F7F7F7",
+              backgroundColor: logoBackground,
               paddingRight: pixelSizeHorizontal(16),
               paddingLeft: pixelSizeHorizontal(16),
               paddingTop: pixelSizeVertical(12),
@@ -163,7 +167,10 @@ export default function Home({ navigation }) {
             }}
           >
             <FastImage
-              style={styles.campusLogo}
+              style={{
+                flex: 2,
+                aspectRatio: aspectRatio,
+              }}
               resizeMode="contain"
               source={{ uri: campusLogo }}
               progressiveRenderingEnabled={true}
@@ -194,7 +201,7 @@ export default function Home({ navigation }) {
         ) : null}
       </View>
       {!loading && !dataLoading ? (
-        <Text style={styles.version}>v 1.0.4</Text>
+        <Text style={styles.version}>v 1.0.5</Text>
       ) : null}
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#363BB1" />
@@ -239,10 +246,6 @@ const styles = StyleSheet.create({
     marginTop: "auto",
     marginBottom: "auto",
     borderRadius: 50,
-  },
-  campusLogo: {
-    flex: 2,
-    aspectRatio: 9,
   },
   version: {
     fontSize: fontPixel(14),
