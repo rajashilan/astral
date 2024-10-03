@@ -42,20 +42,24 @@ export const NotificationProvider = ({ children }) => {
       registerForPushNotificationsAsync().then(
         (token) => {
           setExpoPushToken(token);
-          console.log("userID: ", userID);
-          console.log(
-            "user's push notification token: ",
-            userCurrentPushNotificationToken
-          );
           if (
+            token &&
             (!userCurrentPushNotificationToken ||
               userCurrentPushNotificationToken !== token) &&
             userID
           ) {
-            dispatch(updateUserPushNotificationToken(userID, token));
+            try {
+              dispatch(updateUserPushNotificationToken(userID, token));
+            } catch (error) {
+              console.error("error updating user push notification: ", error);
+              throw new Error(error);
+            }
           }
         },
-        (error) => setError(error)
+        (error) => {
+          setError(error);
+          console.error(error);
+        }
       );
 
       notificationListener.current =

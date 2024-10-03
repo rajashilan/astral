@@ -118,7 +118,6 @@ export const updateUserBio = (userID, bio) => (dispatch) => {
 };
 
 export const updateUserPushNotificationToken = (userID, token) => {
-  console.log(userID, token);
   db.collection("users")
     .doc(userID)
     .update({ pushNotificationToken: token })
@@ -127,5 +126,32 @@ export const updateUserPushNotificationToken = (userID, token) => {
     })
     .catch((error) => {
       console.error("failed to update user's push notification token: ", error);
+    });
+};
+
+export const deleteAccount = (userID, username) => {
+  db.collection("users")
+    .doc(userID)
+    .delete()
+    .then(() => {
+      return db.collection("usernames").where("username", "==", username).get();
+    })
+    .then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        return db.collection("usernames").doc(doc.id).delete();
+      } else {
+        throw new Error("No document found for the username");
+      }
+    })
+    .then(() => {
+      console.log("successfully deleted user");
+      Toast.show({
+        type: "success",
+        text1: "account deleted successfully",
+      });
+    })
+    .catch((error) => {
+      console.log("failed to delete user: ", error);
     });
 };
