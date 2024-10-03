@@ -44,7 +44,7 @@ export default function Home({ navigation }) {
     { name: "orientation" },
     { name: "clubs" },
     { name: "general forms" },
-    { name: "profile" },
+    { name: "account" },
   ]);
 
   const handleMenuNavigation = (name) => {

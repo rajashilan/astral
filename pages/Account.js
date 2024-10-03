@@ -1,7 +1,9 @@
 import storage from "@react-native-firebase/storage";
+import auth from "@react-native-firebase/auth";
 import * as Crypto from "expo-crypto";
 import FastImage from "react-native-fast-image";
 import * as ImagePicker from "expo-image-picker";
+import firestore from "@react-native-firebase/firestore";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -26,7 +28,7 @@ import {
   updateUserBio,
   updateUserPhoto,
 } from "../src/redux/actions/userActions";
-import { SET_LOADING_USER, STOP_LOADING_USER } from "../src/redux/type";
+import { SET_LOADING_USER, STOP_LOADING_USER, LOGOUT } from "../src/redux/type";
 import {
   fontPixel,
   heightPixel,
@@ -37,12 +39,17 @@ import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import CustomTextInput from "../components/CustomTextInput";
+import PhotoHintText from "../components/PhotoHintText";
 
 const { width } = Dimensions.get("window");
 
-export default function ClubCurrentMembers({ navigation }) {
+const db = firestore();
+
+export default function Account({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.credentials);
+  const userID = user.userId;
+  const username = user.username;
   const loading = useSelector((state) => state.data.loading);
   const imageLoading = useSelector((state) => state.user.loading);
 
@@ -54,6 +61,12 @@ export default function ClubCurrentMembers({ navigation }) {
 
   const [bio, setBio] = useState("");
   const [imageType, setImageType] = useState("");
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [errors, setErrors] = useState({ auth: null });
+  const [loginLoading, setLoginLoading] = useState(false);
 
   const onLayout = (event) => {
     const { height } = event.nativeEvent.layout;
@@ -95,6 +108,8 @@ export default function ClubCurrentMembers({ navigation }) {
           const uri = result.assets[0].uri;
           setImageType(uri.split(".")[uri.split(".").length - 1]);
           return uriToBlob(uri);
+        } else {
+          return Promise.reject("cancelled");
         }
       })
       .then((blob) => {
@@ -109,7 +124,7 @@ export default function ClubCurrentMembers({ navigation }) {
         dispatch(updateUserPhoto(user.userId, url));
       })
       .catch((error) => {
-        if (!error === "cancelled")
+        if (error !== "cancelled")
           Toast.show({
             type: "error",
             text1: "Something went wrong",
@@ -156,6 +171,84 @@ export default function ClubCurrentMembers({ navigation }) {
     });
   };
 
+  const signOutUser = () => {
+    auth()
+      .signOut()
+      .then(() => {
+        dispatch({ type: LOGOUT });
+        navigation.replace("Login");
+      })
+      .catch(function (error) {
+        // An error happened.
+        console.error(error);
+      });
+  };
+
+  const handleDeleteAccount = async () => {
+    // Clear previous errors
+    setErrors({ auth: null });
+
+    // Validate input fields
+    if (email.trim() === "" || password.trim() === "") {
+      setErrors({ auth: "Please fill up both fields." });
+      return;
+    }
+
+    setLoginLoading(true);
+
+    try {
+      // Sign in the user
+      const authUser = await auth().signInWithEmailAndPassword(
+        email.trim().toLowerCase(),
+        password
+      );
+
+      // Dispatch the delete account action
+      if (userID && username) {
+        await db.collection("users").doc(userID).delete();
+        const querySnapshot = await db
+          .collection("usernames")
+          .where("username", "==", username)
+          .get();
+
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          await db.collection("usernames").doc(doc.id).delete();
+        } else {
+          throw new Error("No document found for the username");
+        }
+      }
+
+      // Show the delete account pop-up
+      handleShowDeleteAccountPopUp();
+
+      // Check if the user is still authenticated and delete the account
+      const user = await new Promise((resolve) => {
+        const unsubscribe = auth().onAuthStateChanged((user) => {
+          unsubscribe(); // Cleanup listener
+          resolve(user);
+        });
+      });
+
+      if (user) {
+        await user.delete(); // Delete the user from auth
+        navigation.replace("Login"); // Navigate to login
+      }
+    } catch (error) {
+      console.error(error);
+      setErrors({ auth: "Invalid user credentials. Please try again." });
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
+  const handleShowDeleteAccountPopUp = () => {
+    setEmail("");
+    setPassword("");
+    setErrors({ auth: undefined });
+    setShowDeleteAccountModal(!showDeleteAccountModal);
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -170,7 +263,7 @@ export default function ClubCurrentMembers({ navigation }) {
             exiting={FadeOut.duration(300)}
           >
             <Text style={styles.headerMini} numberOfLines={1}>
-              profile
+              account
             </Text>
           </Animated.View>
         ) : (
@@ -196,20 +289,23 @@ export default function ClubCurrentMembers({ navigation }) {
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
             <View onLayout={onLayout}>
-              <Header header="profile" />
+              <Header header="account" />
             </View>
 
             {!imageLoading ? (
-              <Pressable onPress={handleUpdatePhoto}>
-                <FastImage
-                  style={styles.image}
-                  resizeMode="cover"
-                  source={{ uri: user.profileImage }}
-                  progressiveRenderingEnabled={true}
-                  cache={FastImage.cacheControl.immutable}
-                  priority={FastImage.priority.normal}
-                />
-              </Pressable>
+              <>
+                <Pressable onPress={handleUpdatePhoto}>
+                  <FastImage
+                    style={[styles.image]}
+                    resizeMode="cover"
+                    source={{ uri: user.profileImage }}
+                    progressiveRenderingEnabled={true}
+                    cache={FastImage.cacheControl.immutable}
+                    priority={FastImage.priority.normal}
+                  />
+                </Pressable>
+                <PhotoHintText />
+              </>
             ) : (
               <View
                 style={{
@@ -279,6 +375,30 @@ export default function ClubCurrentMembers({ navigation }) {
                   </View>
                 );
               })}
+            <Pressable onPress={signOutUser}>
+              <Text
+                style={[
+                  styles.logout,
+                  {
+                    marginTop: pixelSizeVertical(20),
+                  },
+                ]}
+              >
+                logout
+              </Text>
+            </Pressable>
+            <Pressable onPress={handleShowDeleteAccountPopUp}>
+              <Text
+                style={[
+                  styles.logout,
+                  {
+                    marginTop: pixelSizeVertical(8),
+                  },
+                ]}
+              >
+                delete account
+              </Text>
+            </Pressable>
           </View>
         </View>
         <EmptyView />
@@ -298,9 +418,60 @@ export default function ClubCurrentMembers({ navigation }) {
       >
         <SideMenu
           callParentScreenFunction={toggleSideMenu}
-          currentPage="profile"
+          currentPage="account"
           navigation={navigation}
         />
+      </Modal>
+
+      <Modal
+        isVisible={showDeleteAccountModal}
+        onBackdropPress={handleShowDeleteAccountPopUp} // Android back press
+        animationIn="bounceIn" // Has others, we want slide in from the left
+        animationOut="bounceOut" // When discarding the drawer
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
+      >
+        <View style={styles.withdrawMenu}>
+          <Text
+            style={{
+              fontSize: fontPixel(18),
+              fontWeight: "400",
+              color: "#DFE5F8",
+              marginBottom: pixelSizeVertical(12),
+              textAlign: "center",
+            }}
+          >
+            {`it's sad to see you go, but you'll always be welcomed :D`}
+          </Text>
+          <CustomTextInput
+            placeholder="email"
+            value={email}
+            editable={!loginLoading}
+            onChangeText={(email) => setEmail(email)}
+            inputStyle={{ backgroundColor: "#212A46" }}
+          />
+          <CustomTextInput
+            placeholder="password"
+            value={password}
+            editable={!loginLoading}
+            onChangeText={(password) => setPassword(password)}
+            inputStyle={{ backgroundColor: "#212A46" }}
+            secureTextEntry={true}
+          />
+          {errors.auth ? <Text style={styles.error}>{errors.auth}</Text> : null}
+          <PrimaryButton
+            loading={loginLoading}
+            onPress={handleDeleteAccount}
+            text="delete permanently"
+          />
+          {!loginLoading && (
+            <Pressable onPress={handleShowDeleteAccountPopUp}>
+              <Text style={styles.withdrawButton}>cancel</Text>
+            </Pressable>
+          )}
+        </View>
       </Modal>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
@@ -385,5 +556,37 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#07BEB8",
+  },
+  logout: {
+    fontSize: fontPixel(22),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    opacity: 0.5,
+  },
+  withdrawMenu: {
+    height: "auto",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    backgroundColor: "#131A2E",
+    display: "flex",
+    borderRadius: 5,
+  },
+  withdrawButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#A7AFC7",
+    marginTop: pixelSizeVertical(2),
+    textAlign: "center",
+  },
+  error: {
+    marginTop: pixelSizeVertical(8),
+    marginBottom: pixelSizeVertical(8),
+    fontSize: fontPixel(12),
+    fontWeight: "400",
+    color: "#ed3444",
+    paddingLeft: pixelSizeHorizontal(5),
+    paddingRight: pixelSizeHorizontal(5),
   },
 });

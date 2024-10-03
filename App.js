@@ -30,7 +30,7 @@ import Main from "./pages/Main";
 import Notifications from "./pages/Notifications";
 import Orientation from "./pages/Orientation";
 import OrientationPages from "./pages/OrientationPages";
-import Profile from "./pages/Profile";
+import Account from "./pages/Account";
 import ResubmitClubsEvent from "./pages/ResubmitClubsEvent";
 import ResubmitClubsGallery from "./pages/ResubmitClubsGallery";
 import Signup from "./pages/Signup";
@@ -417,8 +417,8 @@ export default function App() {
               }}
             />
             <Stack.Screen
-              name="Profile"
-              component={Profile}
+              name="Account"
+              component={Account}
               options={{
                 transitionSpec: {
                   open: animationConfig,

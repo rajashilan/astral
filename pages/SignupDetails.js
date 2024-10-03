@@ -156,7 +156,7 @@ export default function SignupDetails({ navigation, route }) {
                       .then(() => {
                         return db
                           .collection("usernames")
-                          .add({ username: username });
+                          .add({ username: username.trim().toLowerCase() });
                       })
                       .then(() => {
                         setLoading(false);

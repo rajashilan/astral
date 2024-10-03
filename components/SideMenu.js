@@ -48,7 +48,7 @@ const SideMenu = (props) => {
 
   const handleNavigateToProfile = () => {
     props.callParentScreenFunction();
-    if (props.currentPage !== "profile") navigation.replace("Profile");
+    if (props.currentPage !== "account") navigation.replace("Account");
   };
 
   const handleNavigateToNotifications = () => {
@@ -187,7 +187,7 @@ const SideMenu = (props) => {
             name: "general forms",
           },
           {
-            name: "profile",
+            name: "account",
           },
         ]}
         renderItem={({ item }) => (
@@ -210,9 +210,9 @@ const SideMenu = (props) => {
           </>
         )}
       />
-      <Pressable onPress={signOutUser}>
+      {/* <Pressable onPress={signOutUser}>
         <Text style={styles.logout}>logout</Text>
-      </Pressable>
+      </Pressable> */}
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
       <EmptyView backgroundColor={"#363BB1"} />
     </ScrollView>
