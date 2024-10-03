@@ -36,6 +36,7 @@ import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import CustomTextInput from "../components/CustomTextInput";
+import PhotoHintText from "../components/PhotoHintText";
 
 const { width } = Dimensions.get("window");
 
@@ -91,6 +92,8 @@ export default function ClubsYou({ navigation }) {
           const uri = result.assets[0].uri;
           setImageType(uri.split(".")[uri.split(".").length - 1]);
           return uriToBlob(uri);
+        } else {
+          return Promise.reject("cancelled");
         }
       })
       .then((blob) => {
@@ -107,7 +110,7 @@ export default function ClubsYou({ navigation }) {
         );
       })
       .catch((error) => {
-        if (!error === "cancelled")
+        if (error !== "cancelled")
           Toast.show({
             type: "error",
             text1: "Something went wrong",
@@ -182,16 +185,19 @@ export default function ClubsYou({ navigation }) {
       <ScrollView>
         <View style={styles.paddingContainer}>
           {!imageLoading ? (
-            <Pressable onPress={handleUpdatePhoto}>
-              <FastImage
-                style={styles.image}
-                resizeMode="cover"
-                source={{ uri: currentMember.profileImage }}
-                progressiveRenderingEnabled={true}
-                cache={FastImage.cacheControl.immutable}
-                priority={FastImage.priority.normal}
-              />
-            </Pressable>
+            <>
+              <Pressable onPress={handleUpdatePhoto}>
+                <FastImage
+                  style={styles.image}
+                  resizeMode="cover"
+                  source={{ uri: currentMember.profileImage }}
+                  progressiveRenderingEnabled={true}
+                  cache={FastImage.cacheControl.immutable}
+                  priority={FastImage.priority.normal}
+                />
+              </Pressable>
+              <PhotoHintText />
+            </>
           ) : (
             <View
               style={{

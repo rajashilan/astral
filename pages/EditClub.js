@@ -38,6 +38,7 @@ import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import WarningContainer from "../components/WarningContainer";
+import PhotoHintText from "../components/PhotoHintText";
 
 const { width } = Dimensions.get("window");
 
@@ -153,6 +154,8 @@ export default function EditClub({ navigation }) {
           const uri = result.assets[0].uri;
           setImageType(uri.split(".")[uri.split(".").length - 1]);
           return uriToBlob(uri);
+        } else {
+          return Promise.reject("cancelled");
         }
       })
       .then((blob) => {
@@ -167,7 +170,7 @@ export default function EditClub({ navigation }) {
         dispatch(updateClubImage(club.clubID, url, campusID));
       })
       .catch((error) => {
-        if (!error === "cancelled")
+        if (error !== "cancelled")
           Toast.show({
             type: "error",
             text1: "Something went wrong",
@@ -243,16 +246,19 @@ export default function EditClub({ navigation }) {
             <Text style={styles.disclaimer}>{club.name}</Text>
 
             {!imageLoading ? (
-              <Pressable onPress={handleUpdatePhoto}>
-                <FastImage
-                  style={styles.image}
-                  resizeMode="cover"
-                  source={{ uri: club.image }}
-                  progressiveRenderingEnabled={true}
-                  cache={FastImage.cacheControl.immutable}
-                  priority={FastImage.priority.normal}
-                />
-              </Pressable>
+              <>
+                <Pressable onPress={handleUpdatePhoto}>
+                  <FastImage
+                    style={styles.image}
+                    resizeMode="cover"
+                    source={{ uri: club.image }}
+                    progressiveRenderingEnabled={true}
+                    cache={FastImage.cacheControl.immutable}
+                    priority={FastImage.priority.normal}
+                  />
+                </Pressable>
+                <PhotoHintText />
+              </>
             ) : (
               <View
                 style={{
