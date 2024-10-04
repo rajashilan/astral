@@ -13,7 +13,7 @@ export default function PhotoHintText() {
 
 const styles = StyleSheet.create({
   changeImageText: {
-    fontSize: fontPixel(14),
+    fontSize: fontPixel(12),
     fontWeight: "400",
     color: "#DFE5F8",
     opacity: 0.4,
