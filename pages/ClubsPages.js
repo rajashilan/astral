@@ -67,6 +67,7 @@ export default function ClubsPages({ navigation, route }) {
   const [membersRequests, setMembersRequests] = useState([]);
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
   const [showAgreementPopUp, setShowAgreementPopUp] = useState(false);
+  const [canBeActivated, setCanBeActivated] = useState(false);
 
   const [show, setShow] = useState(true);
 
@@ -84,6 +85,19 @@ export default function ClubsPages({ navigation, route }) {
   useEffect(() => {
     if (!isEmpty(data)) {
       setMembersRequests(data.membersRequests);
+
+      if (
+        data.gallery &&
+        data.events &&
+        data.details.schedule !== "" &&
+        data.details.fees !== "" &&
+        data.status === "inactive"
+      ) {
+        setCanBeActivated(true);
+      } else {
+        setCanBeActivated(false);
+      }
+
       const temp = [...data.membersRequests];
       const index = temp.findIndex((member) => member.userID === user.userId);
       if (index !== -1)
@@ -303,11 +317,25 @@ export default function ClubsPages({ navigation, route }) {
           !UIloading &&
           //if members requests > 0 show red dot
           (membersRequests.length === 0 ? (
-            <Pressable onPress={handleEditClub} style={styles.youButtonNoAuto}>
+            <Pressable
+              onPress={handleEditClub}
+              style={
+                canBeActivated
+                  ? styles.youButtonNoAutoWarning
+                  : styles.youButtonNoAuto
+              }
+            >
               <Text style={styles.youText}>club</Text>
             </Pressable>
           ) : (
-            <Pressable onPress={handleEditClub} style={styles.youButtonNoAuto}>
+            <Pressable
+              onPress={handleEditClub}
+              style={
+                canBeActivated
+                  ? styles.youButtonNoAutoWarning
+                  : styles.youButtonNoAuto
+              }
+            >
               <View
                 style={{
                   flexDirection: "row",

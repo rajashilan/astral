@@ -3,7 +3,7 @@ import * as Crypto from "expo-crypto";
 import FastImage from "react-native-fast-image";
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -39,10 +39,11 @@ import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import WarningContainer from "../components/WarningContainer";
 import PhotoHintText from "../components/PhotoHintText";
+import HintText from "../components/HintText";
 
 const { width } = Dimensions.get("window");
 
-export default function EditClub({ navigation }) {
+export default function EditClub({ navigation, route }) {
   const dispatch = useDispatch();
   const club = useSelector((state) => state.data.clubData.club);
   const loading = useSelector((state) => state.data.loading);
@@ -54,9 +55,31 @@ export default function EditClub({ navigation }) {
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
-  const [activeStatus] = useState(club.status);
+  const [activeStatus, setActiveStatus] = useState("");
   const [activeSelection] = useState(["activate", "deactivate"]);
   const [selectedActive, setSelectedActive] = useState("");
+
+  const DEFAULT_DROPDOWN_BG = "#232D4A";
+  const CAN_BE_ACTIVATED_DROPDOWN_BG = "#a68107";
+  const [activateDropDownBgColour, setActivateDropDownBgColour] =
+    useState(DEFAULT_DROPDOWN_BG);
+
+  const activationDropdown = useRef(null);
+
+  useEffect(() => {
+    if (
+      club.gallery &&
+      club.events &&
+      club.details.schedule !== "" &&
+      club.details.fees !== "" &&
+      club.status === "inactive"
+    ) {
+      setActivateDropDownBgColour(CAN_BE_ACTIVATED_DROPDOWN_BG);
+    } else {
+      setActivateDropDownBgColour(DEFAULT_DROPDOWN_BG);
+    }
+    setActiveStatus(club.status);
+  }, [club]);
 
   const [imageType, setImageType] = useState("");
 
@@ -107,10 +130,9 @@ export default function EditClub({ navigation }) {
         temp.forEach((role) => {
           if (role.userID && role.userID !== "") userIDs.push(role.userID);
         });
-
+        canBeActivated = false;
         dispatch(createNotification(notification, userIDs));
-      }
-      if (selectedActive === "deactivate") {
+      } else if (selectedActive === "deactivate") {
         dispatch(handleDeactivateClub(club.clubID, campusID, true));
 
         const notification = {
@@ -134,8 +156,14 @@ export default function EditClub({ navigation }) {
 
         dispatch(createNotification(notification, userIDs));
       }
+      resetDropdown();
     }
     setErrors(errors);
+  };
+
+  const resetDropdown = () => {
+    setSelectedActive("");
+    activationDropdown.current.reset();
   };
 
   const handleUpdatePhoto = () => {
@@ -274,14 +302,15 @@ export default function EditClub({ navigation }) {
 
             <SelectDropdown
               searchInputStyle={{
-                backgroundColor: "#232D4A",
+                backgroundColor: activateDropDownBgColour,
               }}
+              ref={activationDropdown}
               disabled={loading}
               searchPlaceHolder="select active status"
               defaultButtonText={`current status: ${activeStatus}`}
               showsVerticalScrollIndicator
               buttonStyle={{
-                backgroundColor: "#1A2238",
+                backgroundColor: activateDropDownBgColour,
                 marginTop: pixelSizeVertical(10),
                 marginBottom: pixelSizeVertical(10),
                 height: heightPixel(58),
@@ -376,20 +405,20 @@ export default function EditClub({ navigation }) {
               <Text style={styles.altButton}>edit roles</Text>
             </Pressable>
 
-            {selectedActive && (
+            {/* show button if user has made selection or if the ui is loading after saving */}
+            {(selectedActive || loading) && (
               <>
                 <PrimaryButton
                   loading={loading}
                   onPress={handleEditActiveStatus}
                   text="save"
                 />
-                <Pressable
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                >
-                  <Text style={styles.secondaryButton}>back</Text>
-                </Pressable>
+                {/* only show cancel button if ui is not loading as then there is no need for it anymore */}
+                {!loading && (
+                  <Pressable onPress={resetDropdown}>
+                    <Text style={styles.secondaryButton}>cancel</Text>
+                  </Pressable>
+                )}
               </>
             )}
           </View>
@@ -473,8 +502,8 @@ const styles = StyleSheet.create({
     color: "#C6CDE2",
   },
   secondaryButton: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
+    fontSize: fontPixel(18),
+    fontWeight: "400",
     color: "#A7AFC7",
     marginTop: pixelSizeVertical(2),
     textAlign: "center",

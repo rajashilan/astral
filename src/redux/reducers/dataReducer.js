@@ -342,12 +342,12 @@ export default function (state = initialState, action) {
       };
     }
     case ACTIVATE_CLUB: {
-      const club = { ...state.clubData.club };
-      club.status = "active";
+      let temp = { ...state.clubData.club };
+      temp.status = "active";
       return {
         ...state,
         clubData: {
-          club: { ...club },
+          club: { ...temp },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
@@ -356,12 +356,12 @@ export default function (state = initialState, action) {
       };
     }
     case DEACTIVATE_CLUB: {
-      const club = { ...state.clubData.club };
-      club.status = "inactive";
+      let temp = { ...state.clubData.club };
+      temp.status = "inactive";
       return {
         ...state,
         clubData: {
-          club: { ...club },
+          club: { ...temp },
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
           gallery: [...state.clubData.gallery],
