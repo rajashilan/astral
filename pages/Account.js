@@ -574,8 +574,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   withdrawButton: {
-    fontSize: fontPixel(22),
-    fontWeight: "500",
+    fontSize: fontPixel(18),
+    fontWeight: "400",
     color: "#A7AFC7",
     marginTop: pixelSizeVertical(2),
     textAlign: "center",
