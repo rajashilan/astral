@@ -100,12 +100,16 @@ export default React.memo(function Clubs({ navigation }) {
     const temp = [];
     if (all && user && all.length > 0 && user.clubs && user.clubs.length > 0) {
       user.clubs.forEach((club) => {
-        const foundClub = all.find((allClub) => allClub.clubID === club.clubID);
-        if (foundClub) {
-          temp.push({
-            ...foundClub,
-            role: club.role,
-          });
+        if (club.approval !== "rejected") {
+          const foundClub = all.find(
+            (allClub) => allClub.clubID === club.clubID
+          );
+          if (foundClub) {
+            temp.push({
+              ...foundClub,
+              role: club.role,
+            });
+          }
         }
       });
     }
