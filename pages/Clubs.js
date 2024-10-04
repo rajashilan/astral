@@ -195,6 +195,41 @@ export default React.memo(function Clubs({ navigation }) {
           />
         </View>
       ) : null}
+      {tab === "yours" && yours.length === 0 ? (
+        <View style={styles.joinClubContainer}>
+          <View style={styles.joinClubInnerContainer}>
+            <Pressable onPress={() => setTab("all clubs")}>
+              <Text style={styles.joinClubButton}>Find your club,</Text>
+            </Pressable>
+            <Text style={styles.joinClubText}>
+              make friends, and share your passion!
+            </Text>
+          </View>
+
+          <View style={styles.joinClubInnerContainer}>
+            <Text style={styles.joinClubText}>
+              Can't find the perfect club?
+            </Text>
+            <Pressable onPress={() => navigation.navigate("CreateAClub")}>
+              <Text style={styles.joinClubButton}>Create your own!</Text>
+            </Pressable>
+          </View>
+        </View>
+      ) : all.length > 0 ? (
+        <Pressable
+          onPress={() => navigation.navigate("CreateAClub")}
+          style={{ paddingLeft: pixelSizeHorizontal(5) }}
+        >
+          <Text style={styles.joinClubSmallButton}>Create your own club</Text>
+        </Pressable>
+      ) : (
+        <Pressable
+          onPress={() => navigation.navigate("CreateAClub")}
+          style={{ paddingLeft: pixelSizeHorizontal(5) }}
+        >
+          <Text style={styles.joinClubButton}>Create your own club</Text>
+        </Pressable>
+      )}
       <FlatList
         keyExtractor={(item, index) => index.toString()}
         removeClippedSubviews={true}
@@ -334,41 +369,6 @@ export default React.memo(function Clubs({ navigation }) {
           </>
         )}
       />
-      {tab === "yours" && yours.length === 0 ? (
-        <View style={styles.joinClubContainer}>
-          <View style={styles.joinClubInnerContainer}>
-            <Pressable onPress={() => setTab("all clubs")}>
-              <Text style={styles.joinClubButton}>Find your club,</Text>
-            </Pressable>
-            <Text style={styles.joinClubText}>
-              make friends, and share your passion!
-            </Text>
-          </View>
-
-          <View style={styles.joinClubInnerContainer}>
-            <Text style={styles.joinClubText}>
-              Can't find the perfect club?
-            </Text>
-            <Pressable onPress={() => navigation.navigate("CreateAClub")}>
-              <Text style={styles.joinClubButton}>Create your own!</Text>
-            </Pressable>
-          </View>
-        </View>
-      ) : all.length > 0 ? (
-        <Pressable
-          onPress={() => navigation.navigate("CreateAClub")}
-          style={{ alignItems: "center" }}
-        >
-          <Text style={styles.joinClubSmallButton}>Create your own club</Text>
-        </Pressable>
-      ) : (
-        <Pressable
-          onPress={() => navigation.navigate("CreateAClub")}
-          style={{ alignItems: "center" }}
-        >
-          <Text style={styles.joinClubButton}>Create your own club</Text>
-        </Pressable>
-      )}
       <EmptyView />
       <EmptyView />
     </Animated.ScrollView>
@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
   joinClubContainer: {
     display: "flex",
     flexDirection: "column",
-    marginTop: pixelSizeVertical(24),
+    marginBottom: pixelSizeVertical(24),
   },
   joinClubInnerContainer: {
     display: "flex",
@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#07BEB8",
     textDecorationLine: "underline",
-    marginTop: pixelSizeVertical(42),
+    marginBottom: pixelSizeVertical(22),
   },
   joinClubText: {
     fontSize: fontPixel(20),
