@@ -10,7 +10,8 @@ const RedDot = (props) => (
     fill="none"
     style={{
       marginLeft: -8,
-      marginBottom: -14,
+      marginBottom: 2,
+      marginRight: -8,
     }}
   >
     {/* Use Circle instead of circle */}
