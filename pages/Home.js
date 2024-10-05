@@ -201,7 +201,7 @@ export default function Home({ navigation }) {
         ) : null}
       </View>
       {!loading && !dataLoading ? (
-        <Text style={styles.version}>v 1.0.5</Text>
+        <Text style={styles.version}>v 1.0.6</Text>
       ) : null}
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#363BB1" />
