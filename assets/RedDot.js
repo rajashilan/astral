@@ -10,7 +10,7 @@ const RedDot = (props) => (
     fill="none"
     style={{
       marginLeft: -8,
-      marginBottom: 2,
+      marginBottom: -2,
       marginRight: -8,
     }}
   >
