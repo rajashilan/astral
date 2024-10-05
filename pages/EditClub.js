@@ -60,8 +60,12 @@ export default function EditClub({ navigation, route }) {
   const [selectedActive, setSelectedActive] = useState("");
 
   const DEFAULT_DROPDOWN_BG = "#232D4A";
-  const CAN_BE_ACTIVATED_DROPDOWN_BG = "#a68107";
+  const CAN_BE_ACTIVATED_DROPDOWN_BG = "#C4FFF9";
+  const DEFAULT_DROPDOWN_TEXT = "#DFE5F8";
+  const CAN_BE_ACTIVATED_TEXT = "#0C111F";
   const [activateDropDownBgColour, setActivateDropDownBgColour] =
+    useState(DEFAULT_DROPDOWN_BG);
+  const [activateDropDownTextColour, setActivateDropDownTextColour] =
     useState(DEFAULT_DROPDOWN_BG);
 
   const activationDropdown = useRef(null);
@@ -75,8 +79,10 @@ export default function EditClub({ navigation, route }) {
       club.status === "inactive"
     ) {
       setActivateDropDownBgColour(CAN_BE_ACTIVATED_DROPDOWN_BG);
+      setActivateDropDownTextColour(CAN_BE_ACTIVATED_TEXT);
     } else {
       setActivateDropDownBgColour(DEFAULT_DROPDOWN_BG);
+      setActivateDropDownTextColour(DEFAULT_DROPDOWN_TEXT);
     }
     setActiveStatus(club.status);
   }, [club]);
@@ -320,7 +326,7 @@ export default function EditClub({ navigation, route }) {
               buttonTextStyle={{
                 fontSize: fontPixel(16),
                 fontWeight: "400",
-                color: "#DFE5F8",
+                color: activateDropDownTextColour,
                 textAlign: "left",
               }}
               dropdownStyle={{

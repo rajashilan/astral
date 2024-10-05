@@ -325,7 +325,15 @@ export default function ClubsPages({ navigation, route }) {
                   : styles.youButtonNoAuto
               }
             >
-              <Text style={styles.youText}>club</Text>
+              <Text
+                style={
+                  canBeActivated
+                    ? styles.youTextExtraMarginWarning
+                    : styles.youTextExtraMargin
+                }
+              >
+                club
+              </Text>
             </Pressable>
           ) : (
             <Pressable
@@ -342,7 +350,15 @@ export default function ClubsPages({ navigation, route }) {
                   alignItems: "center",
                 }}
               >
-                <Text style={styles.youText}>club</Text>
+                <Text
+                  style={
+                    canBeActivated
+                      ? styles.youTextExtraMarginWarning
+                      : styles.youTextExtraMargin
+                  }
+                >
+                  club
+                </Text>
                 <RedDot />
               </View>
             </Pressable>
@@ -535,7 +551,7 @@ const styles = StyleSheet.create({
     paddingLeft: pixelSizeHorizontal(16),
     paddingTop: pixelSizeVertical(1),
     paddingBottom: pixelSizeVertical(6),
-    backgroundColor: "#a68107",
+    backgroundColor: "#C4FFF9",
     borderRadius: 5,
   },
   youButton: {
@@ -552,6 +568,18 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#DFE5F8",
+  },
+  youTextExtraMargin: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    marginTop: pixelSizeVertical(1.5),
+    color: "#DFE5F8",
+  },
+  youTextExtraMarginWarning: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    marginTop: pixelSizeVertical(1.5),
+    color: "#0C111F",
   },
   withdrawMenu: {
     height: "auto",
