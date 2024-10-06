@@ -15,7 +15,7 @@ export default function PhotoHintText(props) {
         !highlight ? styles.changeImageText : styles.changeImageTextHighlight
       }
     >
-      tap on the photo to update
+      tap on the photo to add a way better one
     </Text>
   );
 }
@@ -36,5 +36,6 @@ const styles = StyleSheet.create({
     opacity: 1,
     marginBottom: pixelSizeVertical(12),
     textAlign: "center",
+    textDecorationLine: "underline",
   },
 });
