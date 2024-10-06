@@ -120,7 +120,7 @@ const SideMenu = (props) => {
           source={{ uri: campusLogo }}
           progressiveRenderingEnabled={true}
           cache={FastImage.cacheControl.immutable}
-          priority={FastImage.priority.normal}
+          priority={FastImage.priority.high}
         />
       </View>
       <View style={styles.userDetailsContainer}>
