@@ -8,11 +8,14 @@ const RedDot = (props) => (
     height="28"
     viewBox="0 0 24 28"
     fill="none"
-    style={{
-      marginLeft: -8,
-      marginBottom: -2,
-      marginRight: -8,
-    }}
+    style={[
+      {
+        marginLeft: -8,
+        marginBottom: -2,
+        marginRight: -8,
+      },
+      props.style,
+    ]}
   >
     {/* Use Circle instead of circle */}
     <Circle cx="18" cy="8" r="6" fill="#E03241" />
