@@ -56,11 +56,16 @@ export default function ClubsYou({ navigation }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
   const [bio, setBio] = useState("");
+  const [isUserFirstTime, setIsUserFirstTime] = useState(false);
   const [imageType, setImageType] = useState("");
 
   useEffect(() => {
     setBio(currentMember.bio);
-  }, []);
+
+    if (currentMember.isFirstTime && currentMember.isFirstTime === true) {
+      setIsUserFirstTime(true);
+    }
+  }, [currentMember]);
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
@@ -196,7 +201,7 @@ export default function ClubsYou({ navigation }) {
                   priority={FastImage.priority.normal}
                 />
               </Pressable>
-              <PhotoHintText />
+              <PhotoHintText highlight={isUserFirstTime} />
             </>
           ) : (
             <View

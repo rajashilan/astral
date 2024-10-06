@@ -40,6 +40,7 @@ import EmptyView from "../components/EmptyView";
 import WarningContainer from "../components/WarningContainer";
 import PhotoHintText from "../components/PhotoHintText";
 import HintText from "../components/HintText";
+import RedDot from "../assets/RedDot";
 
 const { width } = Dimensions.get("window");
 
@@ -397,15 +398,25 @@ export default function EditClub({ navigation, route }) {
             <Pressable
               onPress={() => navigation.navigate("ClubMembersRequest")}
             >
-              <Text
-                style={
-                  club.membersRequests && club.membersRequests.length > 0
-                    ? styles.altButton
-                    : styles.altButtonInactive
-                }
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
               >
-                members' requests
-              </Text>
+                <Text
+                  style={
+                    club.membersRequests && club.membersRequests.length > 0
+                      ? styles.altButton
+                      : styles.altButtonInactive
+                  }
+                >
+                  members' requests
+                </Text>
+                {club.membersRequests && club.membersRequests.length > 0 && (
+                  <RedDot style={{ marginBottom: -12 }} />
+                )}
+              </View>
             </Pressable>
             <Pressable onPress={() => navigation.navigate("EditClubRoles")}>
               <Text style={styles.altButton}>edit roles</Text>

@@ -117,17 +117,21 @@ export const updateUserBio = (userID, bio) => (dispatch) => {
     });
 };
 
-export const updateUserPushNotificationToken = (userID, token) => {
-  db.collection("users")
-    .doc(userID)
-    .update({ pushNotificationToken: token })
-    .then(() => {
-      console.log("successfully updated user's push notification token");
-    })
-    .catch((error) => {
-      console.error("failed to update user's push notification token: ", error);
-    });
-};
+export const updateUserPushNotificationToken =
+  (userID, token) => (dispatch) => {
+    db.collection("users")
+      .doc(userID)
+      .update({ pushNotificationToken: token })
+      .then(() => {
+        console.log("successfully updated user's push notification token");
+      })
+      .catch((error) => {
+        console.error(
+          "failed to update user's push notification token: ",
+          error
+        );
+      });
+  };
 
 export const deleteAccount = (userID, username) => {
   db.collection("users")
@@ -153,5 +157,25 @@ export const deleteAccount = (userID, username) => {
     })
     .catch((error) => {
       console.log("failed to delete user: ", error);
+    });
+};
+
+export const setClubMemberFirstTimeToFalse = (clubID, userID) => (dispatch) => {
+  db.collection("clubMembers")
+    .doc(clubID)
+    .get()
+    .then((doc) => {
+      const temp = [...doc.data().members];
+      const index = temp.findIndex((member) => member.userID === userID);
+      temp[index].isFirstTime = false;
+
+      return db
+        .collection("clubMembers")
+        .doc(clubID)
+        .update({ members: [...temp] });
+    })
+    .then(() => {})
+    .catch((error) => {
+      console.error(error);
     });
 };

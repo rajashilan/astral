@@ -764,6 +764,8 @@ export const acceptNewMember = (data, clubID) => (dispatch) => {
   //clubsData = user's club data to be added under users collection in clubs field
   dispatch({ type: SET_LOADING_DATA });
 
+  data.isFirstTime = true;
+
   //add to clubMembers -> clubID -> members
   db.collection("clubMembers")
     .doc(clubID)

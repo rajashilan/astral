@@ -46,6 +46,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { RESET_CLUB_DATA } from "../src/redux/type";
 import Loader from "../components/Loader";
 import RedDot from "../assets/RedDot";
+import { setClubMemberFirstTimeToFalse } from "../src/redux/actions/userActions";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -68,6 +69,7 @@ export default function ClubsPages({ navigation, route }) {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
   const [showAgreementPopUp, setShowAgreementPopUp] = useState(false);
   const [canBeActivated, setCanBeActivated] = useState(false);
+  const [isUserFirstTime, setIsUserFirstTime] = useState(false);
 
   const [show, setShow] = useState(true);
 
@@ -104,6 +106,16 @@ export default function ClubsPages({ navigation, route }) {
         if (temp[index].approval !== "rejected") setHasRequested(true);
     }
   }, [data]);
+
+  useEffect(() => {
+    //check if this is the user's first time
+    if (!isEmpty(currentMember) && clubID) {
+      if (currentMember.isFirstTime && currentMember.isFirstTime === true) {
+        dispatch(setClubMemberFirstTimeToFalse(clubID, currentMember.userID));
+        setIsUserFirstTime(true);
+      }
+    }
+  }, [clubID, currentMember]);
 
   //show edit buttons based on the user data logic
   //if filter returns null, show join button, dont show you button or add button
@@ -309,7 +321,15 @@ export default function ClubsPages({ navigation, route }) {
         )}
         {!isEmpty(currentMember) && !UIloading && (
           <Pressable onPress={handleYou} style={styles.youButton}>
-            <Text style={styles.youText}>you</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text style={styles.youText}>you</Text>
+              {isUserFirstTime && <RedDot />}
+            </View>
           </Pressable>
         )}
         {!isEmpty(currentMember) &&
