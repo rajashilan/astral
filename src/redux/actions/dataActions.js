@@ -1301,3 +1301,13 @@ export const sendPushNotification =
       }
     });
   };
+
+export const setClubFirstTimeToFalse = (clubID) => (dispatch) => {
+  db.collection("clubs")
+    .doc(clubID)
+    .update({ isFirstTime: false })
+    .then(() => {})
+    .catch((error) => {
+      console.error(error);
+    });
+};

@@ -37,9 +37,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
-import WarningContainer from "../components/WarningContainer";
 import PhotoHintText from "../components/PhotoHintText";
-import HintText from "../components/HintText";
 import RedDot from "../assets/RedDot";
 
 const { width } = Dimensions.get("window");
@@ -59,6 +57,8 @@ export default function EditClub({ navigation, route }) {
   const [activeStatus, setActiveStatus] = useState("");
   const [activeSelection] = useState(["activate", "deactivate"]);
   const [selectedActive, setSelectedActive] = useState("");
+
+  const [isClubFirstTime, setIsClubFirstTime] = useState(false);
 
   const DEFAULT_DROPDOWN_BG = "#232D4A";
   const CAN_BE_ACTIVATED_DROPDOWN_BG = "#C4FFF9";
@@ -86,6 +86,10 @@ export default function EditClub({ navigation, route }) {
       setActivateDropDownTextColour(DEFAULT_DROPDOWN_TEXT);
     }
     setActiveStatus(club.status);
+
+    if (club.isFirstTime) {
+      setIsClubFirstTime(true);
+    }
   }, [club]);
 
   const [imageType, setImageType] = useState("");
@@ -292,7 +296,7 @@ export default function EditClub({ navigation, route }) {
                     priority={FastImage.priority.normal}
                   />
                 </Pressable>
-                <PhotoHintText />
+                <PhotoHintText highlight={isClubFirstTime} />
               </>
             ) : (
               <View

@@ -33,6 +33,7 @@ import {
   getAClub,
   joinClub,
   sendPushNotification,
+  setClubFirstTimeToFalse,
 } from "../src/redux/actions/dataActions";
 import {
   fontPixel,
@@ -70,6 +71,7 @@ export default function ClubsPages({ navigation, route }) {
   const [showAgreementPopUp, setShowAgreementPopUp] = useState(false);
   const [canBeActivated, setCanBeActivated] = useState(false);
   const [isUserFirstTime, setIsUserFirstTime] = useState(false);
+  const [isClubFirstTime, setIsClubFirstTime] = useState(false);
 
   const [show, setShow] = useState(true);
 
@@ -104,6 +106,14 @@ export default function ClubsPages({ navigation, route }) {
       const index = temp.findIndex((member) => member.userID === user.userId);
       if (index !== -1)
         if (temp[index].approval !== "rejected") setHasRequested(true);
+
+      //check if its the first time the club page is being visited by the president
+      //set isClubFirstTime is data.isFirstTime and current member is president, just in case
+      if (data.isFirstTime && currentMember.role === "president") {
+        dispatch(setClubFirstTimeToFalse(clubID));
+        setIsClubFirstTime(true);
+        console.log("Setting club is first time to false");
+      }
     }
   }, [data]);
 
@@ -334,28 +344,8 @@ export default function ClubsPages({ navigation, route }) {
         )}
         {!isEmpty(currentMember) &&
           currentMember.role === "president" &&
-          !UIloading &&
-          //if members requests > 0 show red dot
-          (membersRequests.length === 0 ? (
-            <Pressable
-              onPress={handleEditClub}
-              style={
-                canBeActivated
-                  ? styles.youButtonNoAutoWarning
-                  : styles.youButtonNoAuto
-              }
-            >
-              <Text
-                style={
-                  canBeActivated
-                    ? styles.youTextExtraMarginWarning
-                    : styles.youTextExtraMargin
-                }
-              >
-                club
-              </Text>
-            </Pressable>
-          ) : (
+          !UIloading && (
+            //if members requests > 0 show red dot
             <Pressable
               onPress={handleEditClub}
               style={
@@ -379,10 +369,10 @@ export default function ClubsPages({ navigation, route }) {
                 >
                   club
                 </Text>
-                <RedDot />
+                {(membersRequests.length > 0 || isClubFirstTime) && <RedDot />}
               </View>
             </Pressable>
-          ))}
+          )}
         <Pressable
           onPress={toggleSideMenu}
           hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
