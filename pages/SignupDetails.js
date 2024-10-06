@@ -246,22 +246,23 @@ export default function SignupDetails({ navigation, route }) {
       style={styles.container}
     >
       <IosHeight />
-      <FastImage
-        style={styles.image}
-        source={logo}
-        resizeMode="contain"
-        transition={1000}
-      />
-      <View style={styles.progressContainer}>
-        <View style={styles.progressInactive} />
-        <View style={styles.progressActive} />
-      </View>
-      <Text style={styles.title}>Now for your details</Text>
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         style={{ width: "100%" }}
       >
+        <FastImage
+          style={styles.image}
+          source={logo}
+          resizeMode="contain"
+          transition={1000}
+        />
+        <View style={styles.progressContainer}>
+          <View style={styles.progressInactive} />
+          <View style={styles.progressActive} />
+        </View>
+        <Text style={styles.title}>Now for your details</Text>
+
         <CustomTextInput
           placeholder="enter your student email"
           label="student email"
@@ -489,12 +490,14 @@ const styles = StyleSheet.create({
     height: heightPixel(93),
     marginTop: pixelSizeVertical(80),
     marginBottom: pixelSizeVertical(24),
+    alignSelf: "center",
   },
   title: {
     fontSize: fontPixel(22),
     fontWeight: "500",
     color: "#DFE5F8",
     marginBottom: pixelSizeVertical(12),
+    textAlign: "center",
   },
   text: {
     color: "#fff",
@@ -560,6 +563,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: pixelSizeVertical(24),
+    justifyContent: "center",
   },
   progressActive: {
     display: "flex",
