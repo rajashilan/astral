@@ -15,7 +15,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Notification_Alert_Icon from "../assets/Notification_Alert_Icon";
 import Notification_Icon from "../assets/Notification_Icon";
 import IosHeight from "../components/IosHeight";
-import { getAuthenticatedUser } from "../src/redux/actions/userActions";
+import {
+  getAuthenticatedUser,
+  setUserFirstTimeToFalse,
+} from "../src/redux/actions/userActions";
 import {
   fontPixel,
   widthPixel,
@@ -26,6 +29,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import EmptyView from "../components/EmptyView";
 import Loader from "../components/Loader";
+import RedDot from "../assets/RedDot";
 
 export default function Home({ navigation }) {
   const dispatch = useDispatch();
@@ -41,6 +45,8 @@ export default function Home({ navigation }) {
   const hasNotification = useSelector(
     (state) => state.user.notificationAvailable
   );
+
+  const [isUserFirstTime, setIsUserFirstTime] = useState(false);
 
   //show user's name, intake... photo, and notifications icon
 
@@ -76,6 +82,11 @@ export default function Home({ navigation }) {
         type: "neutral",
         text1: `Welcome back, ${user.name}!`,
       });
+
+    if (user.isFirstTime && user.isFirstTime === true) {
+      setIsUserFirstTime(true);
+      dispatch(setUserFirstTimeToFalse(user.userId));
+    }
   }, [user]);
 
   const userProfileDisplay = loading ? (
@@ -194,7 +205,17 @@ export default function Home({ navigation }) {
                 disabled={loading || dataLoading}
                 onPress={() => handleMenuNavigation(item.name)}
               >
-                <Text style={styles.menuItems}>{item.name}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={styles.menuItems}>{item.name}</Text>
+                  {item.name === "account" && isUserFirstTime && (
+                    <RedDot style={{ marginBottom: 40 }} />
+                  )}
+                </View>
               </Pressable>
             )}
           />

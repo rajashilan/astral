@@ -2,7 +2,7 @@ import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   ScrollView,
   Text,
@@ -26,6 +26,7 @@ import {
 } from "../utils/responsive-font";
 import EmptyView from "./EmptyView";
 import IosHeight from "./IosHeight";
+import RedDot from "../assets/RedDot";
 
 const SideMenu = (props) => {
   const navigation = useNavigation();
@@ -40,6 +41,14 @@ const SideMenu = (props) => {
     (state) => state.data.campus.logoBackground
   );
   const aspectRatio = useSelector((state) => state.data.campus.aspectRatio);
+
+  const [isUserFirstTime, setIsUserFirstTime] = useState(false);
+
+  useEffect(() => {
+    if (user.isFirstTime && user.isFirstTime === true) {
+      setIsUserFirstTime(true);
+    }
+  }, [user]);
 
   const handleMenuNavigation = (name) => {
     props.callParentScreenFunction();
@@ -200,18 +209,28 @@ const SideMenu = (props) => {
         renderItem={({ item }) => (
           <>
             <Pressable onPress={() => handleMenuNavigation(item.name)}>
-              <Text
-                style={
-                  props.currentPage === item.name
-                    ? styles.activeMenuItem
-                    : props.currentPage === "clubspages" &&
-                        item.name === "clubs"
-                      ? styles.activeMenuItem
-                      : styles.inactiveMenuItem
-                }
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
               >
-                {item.name}
-              </Text>
+                <Text
+                  style={
+                    props.currentPage === item.name
+                      ? styles.activeMenuItem
+                      : props.currentPage === "clubspages" &&
+                          item.name === "clubs"
+                        ? styles.activeMenuItem
+                        : styles.inactiveMenuItem
+                  }
+                >
+                  {item.name}
+                </Text>
+                {item.name === "account" && isUserFirstTime && (
+                  <RedDot style={{ marginBottom: 14 }} />
+                )}
+              </View>
             </Pressable>
             <View style={styles.emptyView} />
           </>

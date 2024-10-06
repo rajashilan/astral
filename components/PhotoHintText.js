@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#C4FFF9",
     opacity: 1,
-    marginBottom: pixelSizeVertical(12),
+    marginBottom: pixelSizeVertical(18),
     textAlign: "center",
     textDecorationLine: "underline",
   },

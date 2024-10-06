@@ -214,6 +214,7 @@ export default function CreateAClub({ navigation, route }) {
           const clubsData = {
             clubID: "", //get it later after adding
             name,
+            isFirstTime: true,
             image:
               "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fclub_default_img.png?alt=media&token=cbd925cb-bfc3-4b9f-80e5-3895099f8477",
             gallery: false,

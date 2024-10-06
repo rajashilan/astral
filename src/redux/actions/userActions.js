@@ -179,3 +179,13 @@ export const setClubMemberFirstTimeToFalse = (clubID, userID) => (dispatch) => {
       console.error(error);
     });
 };
+
+export const setUserFirstTimeToFalse = (userID) => (dispatch) => {
+  db.collection("users")
+    .doc(userID)
+    .update({ isFirstTime: false })
+    .then(() => {})
+    .catch((error) => {
+      console.error(error);
+    });
+};

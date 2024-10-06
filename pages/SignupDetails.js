@@ -126,6 +126,7 @@ export default function SignupDetails({ navigation, route }) {
             const data = {
               email: email.trim().toLowerCase(),
               name: capitalize(name),
+              isFirstTime: true,
               username: username.trim().toLowerCase(),
               gender: selectedGender,
               birthday,

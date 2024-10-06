@@ -68,6 +68,8 @@ export default function Account({ navigation }) {
   const [errors, setErrors] = useState({ auth: null });
   const [loginLoading, setLoginLoading] = useState(false);
 
+  const [isUserFirstTime, setIsUserFirstTime] = useState(false);
+
   const onLayout = (event) => {
     const { height } = event.nativeEvent.layout;
     setHeaderHeight(height);
@@ -75,7 +77,11 @@ export default function Account({ navigation }) {
 
   useEffect(() => {
     setBio(user.bio);
-  }, []);
+
+    if (user.isFirstTime && user.isFirstTime === true) {
+      setIsUserFirstTime(true);
+    }
+  }, [user]);
 
   useEffect(() => {
     //if scroll height is more than header height and the header is not shown, show
@@ -304,7 +310,7 @@ export default function Account({ navigation }) {
                     priority={FastImage.priority.normal}
                   />
                 </Pressable>
-                <PhotoHintText />
+                <PhotoHintText highlight={isUserFirstTime} />
               </>
             ) : (
               <View
