@@ -292,6 +292,7 @@ export default function CreateAClub({ navigation, route }) {
                 department: user.department,
                 memberID, //to be generated
                 userID: createdBy,
+                isFirstTime: true,
                 role: "president", //by default
                 createdAt,
                 profileImage: user.profileImage,

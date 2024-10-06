@@ -82,7 +82,9 @@ export default function Home({ navigation }) {
         type: "neutral",
         text1: `Welcome back, ${user.name}!`,
       });
+  }, []);
 
+  useEffect(() => {
     if (user.isFirstTime && user.isFirstTime === true) {
       setIsUserFirstTime(true);
       dispatch(setUserFirstTimeToFalse(user.userId));
