@@ -19,6 +19,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import CustomTextInput from "../components/CustomTextInput";
 import WarningContainer from "../components/WarningContainer";
+import LinksView from "../components/LinksView";
 
 const ClubsDetails = React.memo(({ onScroll }) => {
   const dispatch = useDispatch();
@@ -106,6 +107,7 @@ const ClubsDetails = React.memo(({ onScroll }) => {
       {fees && <Text style={styles.content}>{fees}</Text>}
       {more && <Text style={styles.titleMarginTop}>More...</Text>}
       {more && <Text style={styles.content}>{more}</Text>}
+      <LinksView content={`${meetings} ${fees} ${more}`} />
     </>
   );
 

@@ -30,6 +30,7 @@ import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import WarningContainer from "../components/WarningContainer";
+import LinksView from "../components/LinksView";
 
 const { width } = Dimensions.get("window");
 
@@ -330,6 +331,7 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
                     {item.content && (
                       <Text style={styles.content}>{item.content}</Text>
                     )}
+                    <LinksView content={item.content} />
                   </>
                 ) : null}
                 {!isEmpty(currentMember) &&
@@ -437,6 +439,7 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
                     {item.content && (
                       <Text style={styles.content}>{item.content}</Text>
                     )}
+                    <LinksView content={item.content} />
                   </>
                 ) : null}
                 {!isEmpty(currentMember) &&
