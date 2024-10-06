@@ -5,6 +5,7 @@ import Toast from "react-native-toast-message";
 import { getUserCampus, getUserCollege } from "./dataActions";
 import {
   GET_AUTHENTICATED_USER,
+  RESET_USER,
   SET_LOADING_DATA,
   SET_LOADING_USER,
   SET_NOTIFICATION_AVAILABLE,
@@ -149,6 +150,7 @@ export const deleteAccount = (userID, username) => {
       }
     })
     .then(() => {
+      dispatch({ type: RESET_USER });
       console.log("successfully deleted user");
       Toast.show({
         type: "success",

@@ -28,7 +28,12 @@ import {
   updateUserBio,
   updateUserPhoto,
 } from "../src/redux/actions/userActions";
-import { SET_LOADING_USER, STOP_LOADING_USER, LOGOUT } from "../src/redux/type";
+import {
+  SET_LOADING_USER,
+  STOP_LOADING_USER,
+  LOGOUT,
+  RESET_USER,
+} from "../src/redux/type";
 import {
   fontPixel,
   heightPixel,
@@ -182,6 +187,7 @@ export default function Account({ navigation }) {
       .signOut()
       .then(() => {
         dispatch({ type: LOGOUT });
+        dispatch({ type: RESET_USER });
         navigation.replace("Login");
       })
       .catch(function (error) {

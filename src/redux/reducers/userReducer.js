@@ -7,6 +7,7 @@ import {
   STOP_LOADING_USER,
   UPDATE_USER_BIO,
   UPDATE_USER_PHOTO,
+  RESET_USER,
 } from "../type";
 
 const initialState = {
@@ -64,6 +65,8 @@ export default function (state = initialState, action) {
         ...state,
         notificationAvailable: action.payload,
       };
+    case RESET_USER:
+      return initialState;
     default:
       return state;
   }
