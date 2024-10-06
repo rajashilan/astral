@@ -174,7 +174,21 @@ export default function Signup({ navigation }) {
         });
 
         setDepartments(departments);
-        setIntakeMonths(intakes);
+        //setIntakeMonths(intakes);
+        setIntakeMonths([
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ]);
         setLoadingCampusDetails(false);
       })
       .catch((error) => {
