@@ -25,5 +25,5 @@ In this shared journey, together we’ll trace.`,
   8: "Nice, a new feedback, time to start working on it.",
   9: "Thanks for doing the heavy lifting for us.",
   10: "Big dawg.",
-  11: "The rare alien Scoobert McDoobert has decided to bless you for your kindndess.",
+  11: "The rare alien Scoobert McDoobert has decided to bless you for your kindness.",
 };
