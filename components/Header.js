@@ -4,7 +4,8 @@ import { StyleSheet, Text } from "react-native";
 import { fontPixel, pixelSizeVertical } from "../utils/responsive-font";
 
 export default function Header(props) {
-  return <Text style={styles.header}>{props.header}</Text>;
+  const { style } = props;
+  return <Text style={[styles.header, style]}>{props.header}</Text>;
 }
 
 const styles = StyleSheet.create({

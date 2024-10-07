@@ -49,6 +49,7 @@ export default function CustomTextInput(props) {
         numberOfLines={numberOfLines}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
+        textAlignVertical="top"
       />
     </>
   );

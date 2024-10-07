@@ -16,7 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Notification_Icon from "../assets/Notification_Icon";
 import Notification_Alert_Icon from "../assets/Notification_Alert_Icon";
 import closeIcon from "../assets/close_icon.png";
-import { LOGOUT } from "../src/redux/type";
+import { feedback } from "../src/redux/type";
 import {
   fontPixel,
   widthPixel,
@@ -59,6 +59,11 @@ const SideMenu = (props) => {
     }
   };
 
+  const handleNavigateToFeedback = () => {
+    props.callParentScreenFunction();
+    if (props.currentPage !== "feedback") navigation.replace("Feedback");
+  };
+
   const handleNavigateToProfile = () => {
     props.callParentScreenFunction();
     if (props.currentPage !== "account") navigation.replace("Account");
@@ -75,7 +80,7 @@ const SideMenu = (props) => {
       .signOut()
       .then(() => {
         props.callParentScreenFunction();
-        dispatch({ type: LOGOUT });
+        dispatch({ type: feedback });
         navigation.replace("Login");
       })
       .catch(function (error) {
@@ -236,9 +241,17 @@ const SideMenu = (props) => {
           </>
         )}
       />
-      {/* <Pressable onPress={signOutUser}>
-        <Text style={styles.logout}>logout</Text>
-      </Pressable> */}
+      <Pressable onPress={handleNavigateToFeedback}>
+        <Text
+          style={
+            props.currentPage === "feedback"
+              ? styles.activeFeedback
+              : styles.inactiveFeedback
+          }
+        >
+          feedback
+        </Text>
+      </Pressable>
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
       <EmptyView backgroundColor={"#363BB1"} />
     </ScrollView>
@@ -277,10 +290,17 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#C4FFF9",
   },
-  logout: {
+  inactiveFeedback: {
     fontSize: fontPixel(32),
     fontWeight: "400",
     color: "#8C91FB",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+  },
+  activeFeedback: {
+    fontSize: fontPixel(32),
+    fontWeight: "700",
+    color: "#C4FFF9",
     paddingRight: pixelSizeHorizontal(16),
     paddingLeft: pixelSizeHorizontal(16),
   },
