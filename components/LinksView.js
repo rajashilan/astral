@@ -13,9 +13,6 @@ const urlRegex =
 export default function LinksView(props) {
   let { content } = props;
 
-  content +=
-    " https://github.com/rajashilan/astral/commit/97f9d78bfbfa3573427d6cf3a930832a7be41da1#diff-04f3b59cb7790de19621f76e2410d07da27134925645965d299e961f227a2c93R83";
-
   const handleOpenLink = (link) => {
     WebBrowser.openBrowserAsync(link);
   };
