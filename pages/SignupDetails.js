@@ -15,7 +15,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import SelectDropdown from "react-native-select-dropdown";
 import Toast from "react-native-toast-message";
 
 import logo from "../assets/logo.png";
@@ -34,6 +33,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import CustomTextInput from "../components/CustomTextInput";
 import * as WebBrowser from "expo-web-browser";
+import CustomSelectDropdown from "../components/CustomSelectDropdown";
 
 const db = firestore();
 
@@ -304,49 +304,17 @@ export default function SignupDetails({ navigation, route }) {
           Your contact details will only be shared with clubs that you join.
         </Text>
 
-        <SelectDropdown
-          defaultButtonText="gender"
-          disabled={loading}
-          buttonStyle={{
-            backgroundColor: "#1A2238",
-            marginTop: pixelSizeVertical(10),
-            height: heightPixel(58),
-            width: "100%",
-            borderRadius: 5,
-          }}
-          buttonTextStyle={{
-            fontSize: fontPixel(16),
-            fontWeight: "400",
-            color: "#A7AFC7",
-            textAlign: "left",
-          }}
-          dropdownStyle={{
-            backgroundColor: "#1A2238",
-            borderRadius: 5,
-          }}
-          rowStyle={{
-            backgroundColor: "#1A2238",
-            borderBottomWidth: 0,
-          }}
-          rowTextStyle={{
-            fontSize: fontPixel(16),
-            fontWeight: "400",
-            color: "#DFE5F8",
-            textAlign: "left",
-          }}
-          selectedRowStyle={{
-            backgroundColor: "#C4FFF9",
-          }}
-          selectedRowTextStyle={{
-            color: "#0C111F",
-            fontSize: fontPixel(16),
-            fontWeight: "400",
-            textAlign: "left",
-          }}
+        <CustomSelectDropdown
           data={gender}
           onSelect={(selectedItem, index) => {
             setSelectedGender(selectedItem);
           }}
+          customDropDownButtonTxtStyle={{
+            color: "#A7AFC7",
+          }}
+          defaultText="gender"
+          loadingText="gender"
+          loading={loading}
         />
         {errors.gender ? (
           <Text style={styles.error}>{errors.gender}</Text>

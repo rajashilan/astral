@@ -10,9 +10,9 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import SelectDropdown from "react-native-select-dropdown";
 import Toast from "react-native-toast-message";
 
 import logo from "../assets/logo.png";
@@ -27,6 +27,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
+import CustomSelectDropdown from "../components/CustomSelectDropdown";
 
 const db = firestore();
 
@@ -224,58 +225,14 @@ export default function Signup({ navigation }) {
         showsVerticalScrollIndicator={false}
         style={{ width: "100%" }}
       >
-        <SelectDropdown
-          search
-          searchInputStyle={{
-            backgroundColor: "#232D4A",
-          }}
-          disabled={loadingColleges}
-          searchPlaceHolder="Search colleges..."
-          searchInputTxtColor="#DFE5F8"
-          defaultButtonText={
-            loadingColleges ? "Loading colleges..." : "Select your college"
-          }
-          showsVerticalScrollIndicator
-          buttonStyle={{
-            backgroundColor: "#1A2238",
-            marginTop: pixelSizeVertical(10),
-            height: heightPixel(58),
-            width: "100%",
-            borderRadius: 5,
-          }}
-          buttonTextStyle={{
-            fontSize: fontPixel(16),
-            fontWeight: "400",
-            color: "#DFE5F8",
-            textAlign: "left",
-          }}
-          dropdownStyle={{
-            backgroundColor: "#1A2238",
-            borderRadius: 5,
-          }}
-          rowStyle={{
-            backgroundColor: "#1A2238",
-            borderBottomWidth: 0,
-          }}
-          rowTextStyle={{
-            fontSize: fontPixel(16),
-            fontWeight: "400",
-            color: "#DFE5F8",
-            textAlign: "left",
-          }}
-          selectedRowStyle={{
-            backgroundColor: "#C4FFF9",
-          }}
-          selectedRowTextStyle={{
-            color: "#0C111F",
-            fontSize: fontPixel(16),
-            fontWeight: "400",
-            textAlign: "left",
-          }}
+        <CustomSelectDropdown
           data={colleges}
           onSelect={(selectedItem, index) => {
             setSelectedCollege(selectedItem);
           }}
+          defaultText="Select your college"
+          loadingText="Loading colleges..."
+          loading={loadingColleges}
         />
         {selectedCollege && (
           <Animated.View
@@ -283,59 +240,15 @@ export default function Signup({ navigation }) {
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
           >
-            <SelectDropdown
-              search
-              searchInputStyle={{
-                backgroundColor: "#232D4A",
-              }}
-              ref={campusDropDownRef}
-              searchPlaceHolder="Search campuses..."
-              searchInputTxtColor="#DFE5F8"
-              showsVerticalScrollIndicator
-              disabled={loadingCampuses}
-              defaultButtonText={
-                loadingCampuses ? "Loading campuses..." : "Select your campus"
-              }
-              buttonStyle={{
-                backgroundColor: "#1A2238",
-                marginTop: pixelSizeVertical(10),
-                height: heightPixel(58),
-                width: "100%",
-                borderRadius: 5,
-              }}
-              buttonTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              dropdownStyle={{
-                backgroundColor: "#1A2238",
-                borderRadius: 5,
-              }}
-              rowStyle={{
-                backgroundColor: "#1A2238",
-                borderBottomWidth: 0,
-              }}
-              rowTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              selectedRowStyle={{
-                backgroundColor: "#C4FFF9",
-              }}
-              selectedRowTextStyle={{
-                color: "#0C111F",
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                textAlign: "left",
-              }}
+            <CustomSelectDropdown
               data={campuses}
               onSelect={(selectedItem, index) => {
                 setSelectedCampus(selectedItem);
               }}
+              defaultText="Select your campus"
+              loadingText="Loading campuses..."
+              loading={loadingCampuses}
+              ref={campusDropDownRef}
             />
           </Animated.View>
         )}
@@ -346,61 +259,15 @@ export default function Signup({ navigation }) {
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
           >
-            <SelectDropdown
-              search
-              searchInputStyle={{
-                backgroundColor: "#232D4A",
-              }}
-              ref={departmentDropDownRef}
-              searchPlaceHolder="Search departments..."
-              searchInputTxtColor="#DFE5F8"
-              showsVerticalScrollIndicator
-              disabled={loadingCampusDetails}
-              defaultButtonText={
-                loadingCampusDetails
-                  ? "Loading departments..."
-                  : "Select your department"
-              }
-              buttonStyle={{
-                backgroundColor: "#1A2238",
-                marginTop: pixelSizeVertical(10),
-                height: heightPixel(58),
-                width: "100%",
-                borderRadius: 5,
-              }}
-              buttonTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              dropdownStyle={{
-                backgroundColor: "#1A2238",
-                borderRadius: 5,
-              }}
-              rowStyle={{
-                backgroundColor: "#1A2238",
-                borderBottomWidth: 0,
-              }}
-              rowTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              selectedRowStyle={{
-                backgroundColor: "#C4FFF9",
-              }}
-              selectedRowTextStyle={{
-                color: "#0C111F",
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                textAlign: "left",
-              }}
+            <CustomSelectDropdown
               data={departments}
               onSelect={(selectedItem, index) => {
                 setSelectedDepartment(selectedItem);
               }}
+              defaultText="Select your department"
+              loadingText="Loading departments..."
+              loading={loadingCampusDetails}
+              ref={departmentDropDownRef}
             />
           </Animated.View>
         )}
@@ -415,92 +282,25 @@ export default function Signup({ navigation }) {
             entering={FadeIn.duration(300)}
             exiting={FadeOut.duration(300)}
           >
-            <SelectDropdown
-              showsVerticalScrollIndicator
-              defaultButtonText="Intake month"
-              buttonStyle={{
-                backgroundColor: "#1A2238",
-                marginTop: pixelSizeVertical(10),
-                height: heightPixel(58),
-                borderRadius: 5,
-                width: "48%",
-              }}
-              buttonTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              dropdownStyle={{
-                backgroundColor: "#1A2238",
-                borderRadius: 5,
-              }}
-              rowStyle={{
-                backgroundColor: "#1A2238",
-                borderBottomWidth: 0,
-              }}
-              rowTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              selectedRowStyle={{
-                backgroundColor: "#C4FFF9",
-              }}
-              selectedRowTextStyle={{
-                color: "#0C111F",
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                textAlign: "left",
-              }}
+            <CustomSelectDropdown
               data={intakeMonths}
               onSelect={(selectedItem, index) => {
                 setSelectedIntakeMonth(selectedItem);
               }}
-            />
-            <SelectDropdown
-              showsVerticalScrollIndicator
-              defaultButtonText="Intake year"
-              buttonStyle={{
-                backgroundColor: "#1A2238",
-                marginTop: pixelSizeVertical(10),
-                height: heightPixel(58),
-                borderRadius: 5,
+              defaultText="Intake month"
+              customDropdownButtonStyle={{
                 width: "48%",
               }}
-              buttonTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              dropdownStyle={{
-                backgroundColor: "#1A2238",
-                borderRadius: 5,
-              }}
-              rowStyle={{
-                backgroundColor: "#1A2238",
-                borderBottomWidth: 0,
-              }}
-              rowTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              selectedRowStyle={{
-                backgroundColor: "#C4FFF9",
-              }}
-              selectedRowTextStyle={{
-                color: "#0C111F",
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                textAlign: "left",
-              }}
+            />
+
+            <CustomSelectDropdown
               data={intakeYears}
               onSelect={(selectedItem, index) => {
                 setSelectedIntakeYear(selectedItem);
+              }}
+              defaultText="Intake year"
+              customDropdownButtonStyle={{
+                width: "48%",
               }}
             />
           </Animated.View>

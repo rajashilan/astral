@@ -13,7 +13,6 @@ import {
   ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
-import SelectDropdown from "react-native-select-dropdown";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -39,6 +38,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import PhotoHintText from "../components/PhotoHintText";
 import RedDot from "../assets/RedDot";
+import CustomSelectDropdown from "../components/CustomSelectDropdown";
 
 const { width } = Dimensions.get("window");
 
@@ -310,57 +310,21 @@ export default function EditClub({ navigation, route }) {
                 }}
               />
             )}
-
-            <SelectDropdown
-              searchInputStyle={{
-                backgroundColor: activateDropDownBgColour,
-              }}
-              ref={activationDropdown}
-              disabled={loading}
-              searchPlaceHolder="select active status"
-              defaultButtonText={`current status: ${activeStatus}`}
-              showsVerticalScrollIndicator
-              buttonStyle={{
-                backgroundColor: activateDropDownBgColour,
-                marginTop: pixelSizeVertical(10),
-                marginBottom: pixelSizeVertical(10),
-                height: heightPixel(58),
-                width: "100%",
-                borderRadius: 5,
-              }}
-              buttonTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: activateDropDownTextColour,
-                textAlign: "left",
-              }}
-              dropdownStyle={{
-                backgroundColor: "#1A2238",
-                borderRadius: 5,
-              }}
-              rowStyle={{
-                backgroundColor: "#1A2238",
-                borderBottomWidth: 0,
-              }}
-              rowTextStyle={{
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                color: "#DFE5F8",
-                textAlign: "left",
-              }}
-              selectedRowStyle={{
-                backgroundColor: "#C4FFF9",
-              }}
-              selectedRowTextStyle={{
-                color: "#0C111F",
-                fontSize: fontPixel(16),
-                fontWeight: "400",
-                textAlign: "left",
-              }}
+            <CustomSelectDropdown
               data={activeSelection}
               onSelect={(selectedItem, index) => {
                 setSelectedActive(selectedItem);
               }}
+              defaultText={`current status: ${activeStatus}`}
+              loadingText={`current status: ${activeStatus}`}
+              loading={loading}
+              customDropdownButtonStyle={{
+                backgroundColor: activateDropDownBgColour,
+              }}
+              customDropDownButtonTxtStyle={{
+                color: activateDropDownTextColour,
+              }}
+              ref={activationDropdown}
             />
             {errors.active ? (
               <Text style={styles.error}>{errors.active}</Text>

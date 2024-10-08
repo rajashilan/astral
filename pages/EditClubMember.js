@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import SelectDropdown from "react-native-select-dropdown";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -32,6 +31,7 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
+import CustomSelectDropdown from "../components/CustomSelectDropdown";
 
 const { width } = Dimensions.get("window");
 
@@ -340,52 +340,7 @@ export default function EditClubMember({ navigation, route }) {
           >
             {`Assign new role for ${member.name}`}
           </Text>
-          <SelectDropdown
-            search
-            searchInputStyle={{
-              backgroundColor: "#232D4A",
-            }}
-            disabled={loading}
-            searchPlaceHolder="select new role"
-            searchInputTxtColor="#DFE5F8"
-            defaultButtonText={`current role: ${member.role}`}
-            showsVerticalScrollIndicator
-            buttonStyle={{
-              backgroundColor: "#1A2238",
-              marginTop: pixelSizeVertical(10),
-              height: heightPixel(58),
-              width: "100%",
-              borderRadius: 5,
-            }}
-            buttonTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            dropdownStyle={{
-              backgroundColor: "#1A2238",
-              borderRadius: 5,
-            }}
-            rowStyle={{
-              backgroundColor: "#1A2238",
-              borderBottomWidth: 0,
-            }}
-            rowTextStyle={{
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              textAlign: "left",
-            }}
-            selectedRowStyle={{
-              backgroundColor: "#C4FFF9",
-            }}
-            selectedRowTextStyle={{
-              color: "#0C111F",
-              fontSize: fontPixel(16),
-              fontWeight: "400",
-              textAlign: "left",
-            }}
+          <CustomSelectDropdown
             data={roles.filter(
               (role) =>
                 role.split(" ").join("") !== member.role.split(" ").join("")
@@ -393,6 +348,9 @@ export default function EditClubMember({ navigation, route }) {
             onSelect={(selectedItem, index) => {
               setSelectedRole(selectedItem);
             }}
+            defaultText={`current role: ${member.role}`}
+            loadingText={`current role: ${member.role}`}
+            loading={loading}
           />
           {errors.role ? <Text style={styles.error}>{errors.role}</Text> : null}
           <PrimaryButton
