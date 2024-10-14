@@ -389,6 +389,9 @@ export default function EditClub({ navigation, route }) {
             <Pressable onPress={() => navigation.navigate("EditClubRoles")}>
               <Text style={styles.altButton}>edit roles</Text>
             </Pressable>
+            <Pressable onPress={() => navigation.navigate("ClubRenewal")}>
+              <Text style={styles.altButton}>club renewal</Text>
+            </Pressable>
 
             {/* show button if user has made selection or if the ui is loading after saving */}
             {(selectedActive || loading) && (

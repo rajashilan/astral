@@ -40,6 +40,7 @@ import * as Updates from "expo-updates";
 import { NotificationProvider } from "./context/NotificationContext";
 import * as ExpoNotifications from "expo-notifications";
 import Feedback from "./pages/Feedback";
+import ClubRenewal from "./pages/ClubRenewal";
 
 const Stack = createStackNavigator();
 
@@ -372,6 +373,18 @@ export default function App() {
             <Stack.Screen
               name="EditClubRoles"
               component={EditClubRoles}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ClubRenewal"
+              component={ClubRenewal}
               options={{
                 transitionSpec: {
                   open: animationConfig,
