@@ -8,6 +8,7 @@ export const UPDATE_USER_PHOTO = "UPDATE_USER_PHOTO";
 export const UPDATE_USER_BIO = "UPDATE_USER_BIO";
 export const SET_NOTIFICATION_AVAILABLE = "SET_NOTIFICATION_AVAILABLE";
 export const RESET_USER = "RESET_USER";
+export const SHOW_CLUB_ONBOARDING = "SHOW_CLUB_ONBOARDING";
 
 //data types
 //orientation

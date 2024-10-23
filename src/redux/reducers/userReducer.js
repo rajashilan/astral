@@ -8,6 +8,7 @@ import {
   UPDATE_USER_BIO,
   UPDATE_USER_PHOTO,
   RESET_USER,
+  SHOW_CLUB_ONBOARDING,
 } from "../type";
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
   authenticated: false,
   loading: false,
   notificationAvailable: false,
+  showClubOnboarding: false,
 };
 
 export default function (state = initialState, action) {
@@ -64,6 +66,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         notificationAvailable: action.payload,
+      };
+    case SHOW_CLUB_ONBOARDING:
+      return {
+        ...state,
+        showClubOnboarding: action.payload,
       };
     case RESET_USER:
       return initialState;

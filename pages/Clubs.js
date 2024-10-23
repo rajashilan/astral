@@ -39,6 +39,9 @@ const db = firestore();
 
 export default React.memo(function Clubs({ navigation }) {
   const user = useSelector((state) => state.user.credentials);
+  const showClubOnboarding = useSelector(
+    (state) => state.user.showClubOnboarding
+  );
   const state = useSelector((state) => state.data);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -57,7 +60,11 @@ export default React.memo(function Clubs({ navigation }) {
 
   const [search, setSearch] = useState("");
 
-  const [isFirstTimeLoaded, setIsFirstTimeLoaded] = useState(false);
+  useEffect(() => {
+    if (user.isFirstTime && user.isFirstTime === true && showClubOnboarding) {
+      navigation.navigate("ClubsOnboarding");
+    }
+  }, [user]);
 
   useEffect(() => {
     //get clubs from clubs overview

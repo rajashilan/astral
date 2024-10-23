@@ -30,6 +30,7 @@ import { toastConfig } from "../utils/toast-config";
 import EmptyView from "../components/EmptyView";
 import Loader from "../components/Loader";
 import RedDot from "../assets/RedDot";
+import { SHOW_CLUB_ONBOARDING } from "../src/redux/type";
 
 export default function Home({ navigation }) {
   const dispatch = useDispatch();
@@ -88,6 +89,7 @@ export default function Home({ navigation }) {
     if (user.isFirstTime && user.isFirstTime === true) {
       setIsUserFirstTime(true);
       dispatch(setUserFirstTimeToFalse(user.userId));
+      dispatch({ type: SHOW_CLUB_ONBOARDING, payload: true });
     }
   }, [user]);
 
