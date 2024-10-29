@@ -39,11 +39,14 @@ export default function Login({ navigation, route }) {
     password: undefined,
     general: undefined,
   });
+  const [emailNotVerified, setEmailNotVerified] = useState(false);
 
   const emailRegex =
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;
 
   const handleLogin = () => {
+    if (emailNotVerified) setEmailNotVerified(false);
+
     const errors = { ...errors };
 
     if (!email.trim()) errors.email = "Please enter your email address";
@@ -58,21 +61,23 @@ export default function Login({ navigation, route }) {
       auth()
         .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
         .then((authUser) => {
-          // if (authUser.user.emailVerified) {
-          // } else {
-          //   Toast.show({
-          //     type: "neutral",
-          //     text1:
-          //       "Oops, please verify your email to complete your registration!",
-          //   });
-          // }
-          //dispatch(getAuthenticatedUser(authUser.email));
-          navigation.dispatch((state) => {
-            return CommonActions.reset({
-              index: 0,
-              routes: [{ name: "Home" }],
+          if (authUser.user.emailVerified) {
+            navigation.dispatch((state) => {
+              return CommonActions.reset({
+                index: 0,
+                routes: [{ name: "Home" }],
+              });
             });
-          });
+          } else {
+            Toast.show({
+              type: "neutral",
+              text1:
+                "Oops, please verify your email to complete your registration!",
+            });
+            setEmailNotVerified(true);
+            setLoading(false);
+            return;
+          }
           setLoading(false);
         })
         .catch(function (error) {
@@ -83,6 +88,38 @@ export default function Login({ navigation, route }) {
     }
 
     setErrors(errors);
+  };
+
+  const resendVerificationLink = () => {
+    setLoading(true);
+
+    const user = auth().currentUser; // Get the current user directly
+
+    if (user) {
+      user
+        .sendEmailVerification()
+        .then(() => {
+          setLoading(false);
+          Toast.show({
+            type: "success",
+            text1: "Verification link sent successfully.",
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          setLoading(false);
+          Toast.show({
+            type: "error",
+            text1: "Something went wrong",
+          });
+        });
+    } else {
+      setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "No user is currently logged in.",
+      });
+    }
   };
 
   const handleSignup = () => {
@@ -130,6 +167,14 @@ export default function Login({ navigation, route }) {
       <PrimaryButton loading={loading} onPress={handleLogin} text="login" />
       {errors.general ? (
         <Text style={styles.errorUnderButton}>{errors.general}</Text>
+      ) : null}
+
+      {emailNotVerified ? (
+        <Pressable disabled={loading} onPress={resendVerificationLink}>
+          <Text style={styles.resetVerificationLinkButton}>
+            {!loading ? "resend verification link" : "sending..."}
+          </Text>
+        </Pressable>
       ) : null}
 
       <Pressable onPress={() => navigation.navigate("ForgotPassword")}>
@@ -257,6 +302,19 @@ const styles = StyleSheet.create({
     textTransform: "lowercase",
     fontWeight: "400",
     marginBottom: pixelSizeVertical(34),
+  },
+  resetVerificationLinkButton: {
+    color: "#C4FFF9",
+    fontSize: fontPixel(16),
+    textTransform: "lowercase",
+    fontWeight: "400",
+    marginBottom: pixelSizeVertical(34),
+    paddingVertical: pixelSizeVertical(8),
+    paddingHorizontal: pixelSizeHorizontal(16),
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#C4FFF9",
+    borderRadius: 5,
   },
   welcomeTitle: {
     fontSize: fontPixel(22),

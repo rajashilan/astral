@@ -63,14 +63,19 @@ export default function Main({ navigation }) {
   ]);
 
   useEffect(() => {
-    auth().onAuthStateChanged((user) => {
+    const unsubscribe = auth().onAuthStateChanged((user) => {
       if (user) {
         //get user details
-        console.log("FIX THE BUG BY USING user.emailVerified");
-        dispatch(getAuthenticatedUser(user.email));
-        navigation.replace("Home");
+        if (user.emailVerified) {
+          dispatch(getAuthenticatedUser(user.email));
+          navigation.replace("Home");
+        }
       }
     });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const handleLogin = () => {

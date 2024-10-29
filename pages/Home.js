@@ -70,11 +70,14 @@ export default function Home({ navigation }) {
   }
 
   useEffect(() => {
-    auth().onAuthStateChanged((user) => {
+    const unsubscribe = auth().onAuthStateChanged((user) => {
       if (user && isEmpty(state.credentials) && !loading) {
         dispatch(getAuthenticatedUser(user.email));
       }
     });
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -83,9 +86,7 @@ export default function Home({ navigation }) {
         type: "neutral",
         text1: `Welcome back, ${user.name}!`,
       });
-  }, []);
 
-  useEffect(() => {
     if (user.isFirstTime && user.isFirstTime === true) {
       setIsUserFirstTime(true);
       dispatch(setUserFirstTimeToFalse(user.userId));

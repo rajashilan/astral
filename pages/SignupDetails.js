@@ -46,6 +46,8 @@ export default function SignupDetails({ navigation, route }) {
   const emailRegex =
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;
 
+  const testEmail = "rajashilan77@gmail.com";
+
   const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -84,8 +86,10 @@ export default function SignupDetails({ navigation, route }) {
     if (!email.trim()) errors.email = "Please enter your email address";
     else if (email && !email.match(emailRegex))
       errors.email = "Please enter a valid email address";
-    else if (email.split("@")[1] !== suffix)
-      errors.email = "Invalid student email";
+    else if (email.split("@")[1] !== suffix) {
+      if (email.toLowerCase().trim() !== testEmail)
+        errors.email = "Invalid student email";
+    }
 
     if (!name.trim()) errors.name = "Please enter your name";
     if (!username.trim()) errors.username = "Please enter your username";
