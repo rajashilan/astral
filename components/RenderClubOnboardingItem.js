@@ -103,7 +103,7 @@ export default function RenderClubOnboardingItem(props) {
       ) : null}
 
       <View style={styles.dotsContainer}>
-        {Array.from({ length: 4 }).map((_, dotIndex) => (
+        {Array.from({ length: 3 }).map((_, dotIndex) => (
           <View
             key={dotIndex}
             style={[
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     marginHorizontal: pixelSizeHorizontal(20),
     marginTop: pixelSizeVertical(50),
     width: "100%",
-    textAlign: "center",
+    textAlign: "left",
   },
   subtitle: {
     fontSize: fontPixel(18),
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     marginHorizontal: pixelSizeHorizontal(20),
     marginTop: pixelSizeVertical(12),
     width: "100%",
-    textAlign: "center",
+    textAlign: "left",
     lineHeight: 26,
   },
   dotsContainer: {
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: pixelSizeHorizontal(16),
     paddingVertical: pixelSizeVertical(12),
     borderRadius: 5,
-    borderWidth: 3,
+    borderWidth: 2,
     marginTop: pixelSizeVertical(24),
   },
   buttonText: {
