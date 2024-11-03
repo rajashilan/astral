@@ -42,6 +42,9 @@ import * as ExpoNotifications from "expo-notifications";
 import Feedback from "./pages/Feedback";
 import ClubRenewal from "./pages/ClubRenewal";
 import ClubsOnboarding from "./pages/ClubsOnboarding";
+import ClubsMembers from "./pages/ClubsMembers";
+import ClubsEvents from "./pages/ClubsEvents";
+import ClubsDetails from "./pages/ClubsDetails";
 
 const Stack = createStackNavigator();
 
@@ -386,6 +389,42 @@ export default function App() {
             <Stack.Screen
               name="ClubRenewal"
               component={ClubRenewal}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ClubsMembers"
+              component={ClubsMembers}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ClubsEvents"
+              component={ClubsEvents}
+              options={{
+                transitionSpec: {
+                  open: animationConfig,
+                  close: animationConfig,
+                }, // added
+                headerShown: false,
+                ...TransitionPresets.SlideFromRightIOS,
+              }}
+            />
+            <Stack.Screen
+              name="ClubsDetails"
+              component={ClubsDetails}
               options={{
                 transitionSpec: {
                   open: animationConfig,

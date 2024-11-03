@@ -24,8 +24,8 @@ const PrimaryButton = ({
     <Pressable
       style={[
         styles.loginButton,
-        buttonStyle,
         { opacity: loading ? 0.5 : conditionToDisable ? 0.5 : 1 },
+        buttonStyle,
       ]}
       onPress={onPress}
       disabled={conditionToDisable ? loading || conditionToDisable : loading}

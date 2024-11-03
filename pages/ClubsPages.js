@@ -11,6 +11,8 @@ import {
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  FlatList,
 } from "react-native";
 import Modal from "react-native-modal";
 import Animated, {
@@ -21,11 +23,6 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
-
-import ClubsDetails from "./ClubsDetails";
-import ClubsEvents from "./ClubsEvents";
-import ClubsGallery from "./ClubsGallery";
-import ClubsMembers from "./ClubsMembers";
 import hamburgerIcon from "../assets/hamburger_icon.png";
 import IosHeight from "../components/IosHeight";
 import SideMenu from "../components/SideMenu";
@@ -39,6 +36,8 @@ import {
   fontPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
+  widthPixel,
+  heightPixel,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
@@ -48,10 +47,14 @@ import { RESET_CLUB_DATA } from "../src/redux/type";
 import Loader from "../components/Loader";
 import RedDot from "../assets/RedDot";
 import { setClubMemberFirstTimeToFalse } from "../src/redux/actions/userActions";
+import PostsAdapter from "../components/Posts/PostsAdapter";
+import EmptyView from "../components/EmptyView";
 
 const Tab = createMaterialTopTabNavigator();
 
 const { width } = Dimensions.get("window");
+
+const context = "club";
 
 export default function ClubsPages({ navigation, route }) {
   const { clubID } = route.params;
@@ -65,6 +68,7 @@ export default function ClubsPages({ navigation, route }) {
   const currentMember = useSelector(
     (state) => state.data.clubData.currentMember
   );
+  const members = useSelector((state) => state.data.clubData.members);
   const [hasRequested, setHasRequested] = useState(false);
   const [membersRequests, setMembersRequests] = useState([]);
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
@@ -72,8 +76,150 @@ export default function ClubsPages({ navigation, route }) {
   const [canBeActivated, setCanBeActivated] = useState(false);
   const [isUserFirstTime, setIsUserFirstTime] = useState(false);
   const [isClubFirstTime, setIsClubFirstTime] = useState(false);
+  const numberOfMembers =
+    members.length === 1
+      ? `${members.length} member`
+      : `${members.length} members`;
 
   const [show, setShow] = useState(true);
+
+  const posts = [
+    {
+      postID: "1",
+      text: "Hello everybody welcome to my youtube channel",
+      type: "photo", //photo, file, text, poll, ?event?
+      createdBy: "1",
+      createdByUsername: "rajashilan",
+      createdByRole: "president",
+      createdAt: "2024-09-25T11:20:18.153Z",
+      clubID: "1",
+      clubName: "Computer Science Club",
+      clubImageUrl:
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+      campusID: "1",
+      photos: [
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2F180c02d6-d20c-4360-a258-182c261c5a0d.jpg?alt=media&token=76adef5d-3969-4c5b-b797-25b1ec4ef5a4",
+
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2F620f06be-b62d-4eb3-aa6a-1bdeca51e64a.jpg?alt=media&token=ee373f91-e59b-458d-b309-d18d5b172dca",
+      ],
+    },
+    {
+      postID: "3",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      type: "file", //photo, file, text, poll, ?event?
+      createdBy: "1",
+      createdByUsername: "rajashilan",
+      createdAt: "2024-09-25T11:20:18.153Z",
+      createdByRole: "president",
+      clubID: "1",
+      clubImageUrl:
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+      clubName:
+        "Engineering and Computing Club for INTI International College Penang",
+      campusID: "1",
+      file: {
+        name: "internal_testers_testers_export.csv",
+        url: "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/orientation%2Fpages%2Ffiles%2Fhb75RnF3COn7w3JQeoF6%2Fe99f06f47d61f9152115.csv?alt=media&token=db99d18791db94177ca9fb077d3568efab06b2a6",
+      },
+    },
+    {
+      postID: "2",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
+      type: "photo", //photo, file, text, poll, ?event?
+      createdBy: "1",
+      createdByUsername: "rajashilan",
+      createdAt: "2024-09-25T11:20:18.153Z",
+      createdByRole: "president",
+      clubID: "1",
+      clubImageUrl:
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+      clubName:
+        "Engineering and Computing Club for INTI International College Penang",
+      campusID: "1",
+      photos: [
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2F620f06be-b62d-4eb3-aa6a-1bdeca51e64a.jpg?alt=media&token=ee373f91-e59b-458d-b309-d18d5b172dca",
+      ],
+    },
+    {
+      postID: "2",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
+      type: "text", //photo, file, text, poll, ?event?
+      createdBy: "1",
+      createdByUsername: "rajashilan",
+      createdAt: "2024-09-25T11:20:18.153Z",
+      createdByRole: "president",
+      clubID: "1",
+      clubImageUrl:
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+      clubName:
+        "Engineering and Computing Club for INTI International College Penang",
+      campusID: "1",
+    },
+    {
+      postID: "5",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
+      type: "poll", //photo, file, text, poll, ?event?
+      createdBy: "1",
+      createdByUsername: "rajashilan",
+      createdAt: "2024-09-25T11:20:18.153Z",
+      createdByRole: "president",
+      clubID: "1",
+      clubImageUrl:
+        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+      clubName:
+        "Engineering and Computing Club for INTI International College Penang",
+      campusID: "1",
+      poll: {
+        options: [
+          {
+            optionID: 0,
+            text: "Get KFC from FoodPanda and chill in class.",
+            votes: 5,
+          },
+          {
+            optionID: 1,
+            text: "Go lepak at Nasi Kandar Kayu",
+            votes: 3,
+          },
+          {
+            optionID: 2,
+            text: "Go for shopping at Gurney Plaza",
+            votes: 7,
+          },
+          {
+            optionID: 3,
+            text: "Maybe just save the money and use for something else and then later can consider?",
+            votes: 2,
+          },
+        ],
+        votes: {
+          1234: {
+            optionID: 0,
+            createdAt: "2024-09-25T11:20:18.153Z",
+          },
+          2531: {
+            optionID: 1,
+            createdAt: "2024-09-25T11:20:18.153Z",
+          },
+        },
+        createdAt: "2024-11-01T11:20:18.153Z",
+        expiresAt: "2024-11-03T11:20:18.153Z",
+      },
+    },
+  ];
+
+  const [tabs] = useState(["posts", "members", "events", "details", "extra"]);
+
+  const tabNavigation = (selectedTab) => {
+    if (selectedTab === "members") {
+      navigation.navigate("ClubsMembers");
+    } else if (selectedTab === "events") {
+      navigation.navigate("ClubsEvents");
+    } else if (selectedTab === "details") {
+      navigation.navigate("ClubsDetails");
+    }
+  };
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0;
@@ -115,6 +261,8 @@ export default function ClubsPages({ navigation, route }) {
         console.log("Setting club is first time to false");
       }
     }
+
+    console.log(currentMember);
   }, [data]);
 
   useEffect(() => {
@@ -212,7 +360,10 @@ export default function ClubsPages({ navigation, route }) {
   const UI = UIloading ? (
     <Loader />
   ) : (
-    <>
+    <ScrollView
+      showsHorizontalScrollIndicator={false}
+      stickyHeaderIndices={[2]}
+    >
       {show && (
         <Animated.View
           entering={FadeInUp.duration(100)}
@@ -223,13 +374,42 @@ export default function ClubsPages({ navigation, route }) {
               <ImageBackground
                 source={{ uri: data.image }}
                 style={styles.imageHeaderContainer}
-              >
-                <View style={styles.overlayContainer}>
-                  <Text style={styles.header}>{data.name}</Text>
-                </View>
-              </ImageBackground>
+              ></ImageBackground>
             </View>
           )}
+          <View
+            style={{
+              paddingHorizontal: pixelSizeHorizontal(16),
+              flexDirection: "column",
+              marginTop: pixelSizeVertical(10),
+            }}
+          >
+            <Text style={styles.header}>{data.name}</Text>
+            <Text
+              style={{
+                marginTop: pixelSizeVertical(4),
+                fontSize: fontPixel(14),
+                fontWeight: "400",
+                color: "#C6CDE2",
+              }}
+            >
+              {numberOfMembers}
+            </Text>
+            {!isEmpty(currentMember) ? (
+              <PrimaryButton
+                conditionToDisable={true}
+                text="joined"
+                textStyle={{
+                  color: "#DFE5F8",
+                }}
+                buttonStyle={{
+                  marginBottom: pixelSizeVertical(4),
+                  backgroundColor: "#232F52",
+                  opacity: 1,
+                }}
+              />
+            ) : null}
+          </View>
         </Animated.View>
       )}
 
@@ -239,68 +419,106 @@ export default function ClubsPages({ navigation, route }) {
           paddingLeft: pixelSizeHorizontal(16),
         }}
       >
-        {isEmpty(currentMember) && !hasRequested && (
+        {isEmpty(currentMember) && !hasRequested ? (
           <PrimaryButton
             onPress={() => setShowAgreementPopUp(!showAgreementPopUp)}
-            text="join"
+            text="join club"
             loading={loading}
             buttonStyle={{ marginBottom: pixelSizeVertical(4) }}
           />
-        )}
+        ) : null}
       </View>
-
-      <Tab.Navigator
-        screenOptions={{
-          lazy: true,
-          lazyPreloadDistance: 1,
-          tabBarAllowFontScaling: true,
-          tabBarActiveTintColor: "#DFE5F8",
-          tabBarIndicator: null,
-          lazyPlaceholder: () => (
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: "#232F52",
-              }}
-            ></View>
-          ),
-          swipeEnabled: false,
-          tabBarStyle: {
-            backgroundColor: "transparent",
-            marginBottom: -8,
-          },
-          style: {
-            elevation: 0, // for Android
-            shadowOffset: {
-              width: 0,
-              height: 0, // for iOS
-            },
-          },
-          tabBarIndicatorStyle: {
-            width: 0,
-            height: 0,
-            elevation: 0,
-          },
+      <ScrollView
+        horizontal={true}
+        scrollEnabled={true}
+        showsHorizontalScrollIndicator={false}
+        style={{
+          flexDirection: "row",
+          paddingHorizontal: pixelSizeHorizontal(16),
+          flexWrap: "wrap",
+          backgroundColor: "#0C111F",
         }}
       >
-        <Tab.Screen name="members">
-          {() => <ClubsMembers onScroll={handleScroll} />}
-        </Tab.Screen>
-        <Tab.Screen name="gallery">
-          {() => (
-            <ClubsGallery navigation={navigation} onScroll={handleScroll} />
-          )}
-        </Tab.Screen>
-        <Tab.Screen name="events">
-          {() => (
-            <ClubsEvents navigation={navigation} onScroll={handleScroll} />
-          )}
-        </Tab.Screen>
-        <Tab.Screen name="details">
-          {() => <ClubsDetails onScroll={handleScroll} />}
-        </Tab.Screen>
-      </Tab.Navigator>
-    </>
+        {tabs.map((tab) => {
+          return (
+            <Pressable
+              key={tab}
+              style={{
+                paddingVertical: pixelSizeVertical(8),
+                paddingHorizontal: pixelSizeHorizontal(12),
+                backgroundColor: tab === "posts" ? "#6072A5" : "#232F52",
+                marginHorizontal: pixelSizeHorizontal(4),
+                borderRadius: 5,
+                marginTop: pixelSizeVertical(16),
+                marginBottom: pixelSizeVertical(16),
+                opacity: tab === "extra" ? 0 : 1,
+              }}
+              onPress={() => tabNavigation(tab)}
+            >
+              <Text
+                style={{
+                  fontSize: fontPixel(14),
+                  fontWeight: "500",
+                  textAlign: "center",
+                  color: "#DFE5F8",
+                }}
+              >
+                {tab}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+      <Pressable
+        style={{
+          flexDirection: "row",
+          paddingVertical: pixelSizeVertical(12),
+          borderStyle: "solid",
+          borderWidth: 1,
+          borderTopColor: "#232F52",
+          borderBottomColor: "#232F52",
+          marginTop: pixelSizeVertical(24),
+          paddingHorizontal: pixelSizeHorizontal(16),
+        }}
+      >
+        <FastImage
+          style={{
+            width: widthPixel(40),
+            height: heightPixel(40),
+            marginTop: "auto",
+            marginBottom: "auto",
+            borderRadius: 50,
+          }}
+          resizeMode="cover"
+          source={{ uri: currentMember.profileImage }}
+          progressiveRenderingEnabled={true}
+          cache={FastImage.cacheControl.immutable}
+          priority={FastImage.priority.normal}
+        />
+        <Text
+          style={{
+            fontSize: fontPixel(14),
+            fontWeight: "400",
+            color: "#C6CDE2",
+            marginLeft: pixelSizeHorizontal(12),
+          }}
+        >
+          Write something...
+        </Text>
+      </Pressable>
+
+      <FlatList
+        scrollEnabled={false}
+        keyExtractor={(item, index) => index.toString()}
+        initialNumToRender={3}
+        maxToRenderPerBatch={3}
+        data={posts}
+        renderItem={({ item }) => (
+          <PostsAdapter item={item} context={context} />
+        )}
+      />
+      <EmptyView />
+    </ScrollView>
   );
 
   return (
@@ -453,7 +671,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#0C111F",
   },
   imageHeaderContainer: {
-    height: pixelSizeVertical(120),
+    height: pixelSizeVertical(180),
     width: "100%",
   },
   overlayContainer: {
@@ -467,8 +685,8 @@ const styles = StyleSheet.create({
     paddingBottom: pixelSizeVertical(16),
   },
   header: {
-    fontSize: fontPixel(34),
-    fontWeight: "500",
+    fontSize: fontPixel(24),
+    fontWeight: "600",
     color: "#DFE5F8",
   },
   navigationContainer: {
