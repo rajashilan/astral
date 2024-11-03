@@ -41,6 +41,11 @@ export default function Login({ navigation, route }) {
   });
   const [emailNotVerified, setEmailNotVerified] = useState(false);
 
+  const testEmails = [
+    "p20012892@student.newinti.edu.my",
+    "shahmina@railways.edu.my",
+  ];
+
   const emailRegex =
     /^(?![\w\.@]*\.\.)(?![\w\.@]*\.@)(?![\w\.]*@\.)\w+[\w\.]*@[\w\.]+\.\w{2,}$/;
 
@@ -61,7 +66,10 @@ export default function Login({ navigation, route }) {
       auth()
         .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
         .then((authUser) => {
-          if (authUser.user.emailVerified) {
+          if (
+            authUser.user.emailVerified ||
+            testEmails.includes(email.trim().toLowerCase())
+          ) {
             navigation.dispatch((state) => {
               return CommonActions.reset({
                 index: 0,

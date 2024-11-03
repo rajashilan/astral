@@ -36,6 +36,11 @@ const { width } = Dimensions.get("window");
 export default function Main({ navigation }) {
   const dispatch = useDispatch();
 
+  const testEmails = [
+    "p20012892@student.newinti.edu.my",
+    "shahmina@railways.edu.my",
+  ];
+
   const [data] = useState([
     {
       image: welcome,
@@ -66,7 +71,7 @@ export default function Main({ navigation }) {
     const unsubscribe = auth().onAuthStateChanged((user) => {
       if (user) {
         //get user details
-        if (user.emailVerified) {
+        if (user.emailVerified || testEmails.includes(user.email)) {
           dispatch(getAuthenticatedUser(user.email));
           navigation.replace("Home");
         }
