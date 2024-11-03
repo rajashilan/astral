@@ -13,7 +13,12 @@ import Modal from "react-native-modal";
 import Carousel from "react-native-snap-carousel";
 import Toast from "react-native-toast-message";
 import { useSelector, useDispatch } from "react-redux";
-import { useIsFocused } from "@react-navigation/native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import IosHeight from "../components/IosHeight";
+import hamburgerIcon from "../assets/hamburger_icon.png";
+import Header from "../components/Header";
+import SideMenu from "../components/SideMenu";
+import { StatusBar } from "expo-status-bar";
 
 import {
   createNotification,
@@ -23,6 +28,7 @@ import {
 } from "../src/redux/actions/dataActions";
 import {
   fontPixel,
+  heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
@@ -34,7 +40,7 @@ import LinksView from "../components/LinksView";
 
 const { width } = Dimensions.get("window");
 
-const ClubsEvents = React.memo(({ navigation, onScroll }) => {
+const ClubsEvents = React.memo(({ navigation }) => {
   //can have image, must have title, must have date, can have text
 
   const [innerTab, setInnerTab] = useState("past");
@@ -48,9 +54,6 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
     (state) => state.data.clubData.currentMember
   );
   const loading = useSelector((state) => state.data.loading);
-
-  const isFocused = useIsFocused();
-
   const [indexSelected, setIndexSelected] = useState(0);
 
   const [data, setData] = useState({
@@ -61,11 +64,31 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [eventID, setEventID] = useState("");
 
+  const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+
+  const [headerHeight, setHeaderHeight] = useState(300);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [showMiniHeader, setShowMiniHeader] = useState(false);
+
+  const onLayout = (event) => {
+    const { height } = event.nativeEvent.layout;
+    setHeaderHeight(height);
+  };
+
   useEffect(() => {
-    if (isFocused) {
-      handleScroll(0);
-    }
-  }, [isFocused]);
+    //if scroll height is more than header height and the header is not shown, show
+    if (scrollHeight > headerHeight && !showMiniHeader) setShowMiniHeader(true);
+    else if (scrollHeight < headerHeight && showMiniHeader)
+      setShowMiniHeader(false);
+  }, [scrollHeight, showMiniHeader]);
+
+  const toggleSideMenu = () => {
+    setIsSideMenuVisible(!isSideMenuVisible);
+  };
+
+  const handleNavigateBack = () => {
+    navigation.goBack();
+  };
 
   useEffect(() => {
     dispatch(getClubEvent(club.clubID));
@@ -151,226 +174,370 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
     }
   };
 
-  const handleScroll = (scrollHeight) => {
-    onScroll(scrollHeight);
-  };
-
   return (
-    <ScrollView
-      style={styles.container}
-      scrollEventThrottle={16}
-      onScroll={(event) => handleScroll(event.nativeEvent.contentOffset.y)}
-    >
-      {!isEmpty(currentMember) && currentMember.role === "president" && (
-        <PrimaryButton
-          onPress={() => navigation.navigate("AddClubsEvent")}
-          text="add an event"
-          buttonStyle={{ marginTop: 0 }}
-        />
-      )}
-      {!loading &&
-        data.past.length + data.future.length === 0 &&
-        !isEmpty(currentMember) &&
-        currentMember.role === "president" && (
-          <WarningContainer
-            style={{
-              marginBottom: pixelSizeVertical(16),
-              marginTop: pixelSizeVertical(-8),
-            }}
+    <View style={styles.container}>
+      <IosHeight />
+      <View style={styles.headerContainerShowMiniHeader}>
+        <Pressable
+          onPress={handleNavigateBack}
+          hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
+        >
+          <Text style={styles.backButton}>back</Text>
+        </Pressable>
+        {showMiniHeader ? (
+          <Animated.View
+            entering={FadeIn.duration(300)}
+            exiting={FadeOut.duration(300)}
           >
-            <Text style={styles.warningText}>
-              add an event to be able to activate your club.
+            <Text style={styles.headerMini} numberOfLines={1}>
+              events
             </Text>
-          </WarningContainer>
+          </Animated.View>
+        ) : (
+          <Text style={styles.headerMiniInvisible}>title</Text>
         )}
-      {!loading && data.past.length + data.future.length !== 0 && (
-        <View style={styles.onlySpan}>
-          <Pressable
-            onPress={() => {
-              setInnerTab("past");
-              setIndexSelected(0);
-            }}
-          >
-            <Text
-              style={
-                innerTab === "past"
-                  ? styles.innerTabActive
-                  : styles.innerTabInactive
-              }
+        <Pressable
+          onPress={toggleSideMenu}
+          hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
+        >
+          <FastImage
+            style={styles.hamburgerIcon}
+            source={hamburgerIcon}
+            resizeMode="contain"
+          />
+        </Pressable>
+      </View>
+      <ScrollView
+        scrollEventThrottle={16}
+        onScroll={(event) => setScrollHeight(event.nativeEvent.contentOffset.y)}
+        style={{
+          paddingHorizontal: pixelSizeHorizontal(16),
+        }}
+      >
+        <View onLayout={onLayout}>
+          <Header header="events" />
+        </View>
+        {!isEmpty(currentMember) && currentMember.role === "president" && (
+          <PrimaryButton
+            onPress={() => navigation.navigate("AddClubsEvent")}
+            text="add an event"
+            buttonStyle={{ marginTop: 0 }}
+          />
+        )}
+        {!loading &&
+          data.past.length + data.future.length === 0 &&
+          !isEmpty(currentMember) &&
+          currentMember.role === "president" && (
+            <WarningContainer
+              style={{
+                marginBottom: pixelSizeVertical(16),
+                marginTop: pixelSizeVertical(-8),
+              }}
             >
-              past
-            </Text>
-          </Pressable>
-          <Pressable>
-            <Text
-              style={
-                innerTab === "future"
-                  ? styles.innerTabActive
-                  : styles.innerTabInactive
-              }
+              <Text style={styles.warningText}>
+                add an event to be able to activate your club.
+              </Text>
+            </WarningContainer>
+          )}
+        {!loading && data.past.length + data.future.length !== 0 && (
+          <View style={styles.onlySpan}>
+            <Pressable
               onPress={() => {
-                setInnerTab("future");
+                setInnerTab("past");
                 setIndexSelected(0);
               }}
             >
-              future
-            </Text>
-          </Pressable>
-        </View>
-      )}
-      {data.past.length > 0 || data.future.length > 0 ? (
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: pixelSizeVertical(12),
-          }}
-        >
-          <View
-            style={
-              innerTab === "past"
-                ? indexSelected > 0 && data.past.length > 1
-                  ? styles.activeDot
-                  : styles.inactiveDot
-                : indexSelected > 0 && data.future.length > 1
-                  ? styles.activeDot
-                  : styles.inactiveDot
-            }
-          ></View>
-          <View
-            style={
-              innerTab === "past"
-                ? indexSelected < data.past.length - 1
-                  ? styles.activeDot
-                  : styles.inactiveDot
-                : indexSelected < data.future.length - 1
-                  ? styles.activeDot
-                  : styles.inactiveDot
-            }
-          ></View>
-        </View>
-      ) : null}
-      {innerTab === "past" &&
-      data.past.length === 0 &&
-      currentMember.role !== "president" ? (
-        <Text
-          style={{
-            fontSize: fontPixel(20),
-            fontWeight: "400",
-            color: "#F5F5F5",
-            marginTop: pixelSizeVertical(12),
-            textAlign: "center",
-          }}
-        >
-          oops, nothing to see here...yet 👀
-        </Text>
-      ) : null}
-      {innerTab === "future" &&
-      data.future.length === 0 &&
-      currentMember.role !== "president" ? (
-        <Text
-          style={{
-            fontSize: fontPixel(20),
-            fontWeight: "400",
-            color: "#F5F5F5",
-            marginTop: pixelSizeVertical(12),
-            textAlign: "center",
-          }}
-        >
-          oops, nothing to see here...yet 👀
-        </Text>
-      ) : null}
-      {innerTab === "past" ? (
-        <Carousel
-          layout="default"
-          data={data.past}
-          onSnapToItem={(index) => onSelect(index)}
-          sliderWidth={width - 32}
-          itemWidth={width - 32}
-          disableIntervalMomentum
-          useExperimentalSnap
-          renderItem={({ item, index }) => (
-            <>
-              <Pressable
+              <Text
+                style={
+                  innerTab === "past"
+                    ? styles.innerTabActive
+                    : styles.innerTabInactive
+                }
+              >
+                past
+              </Text>
+            </Pressable>
+            <Pressable>
+              <Text
+                style={
+                  innerTab === "future"
+                    ? styles.innerTabActive
+                    : styles.innerTabInactive
+                }
                 onPress={() => {
-                  if (item.approval === "rejected")
-                    navigation.navigate("ResubmitClubsEvent", { event: item });
+                  setInnerTab("future");
+                  setIndexSelected(0);
                 }}
               >
-                {item.image && (
-                  <FastImage
-                    key={index}
+                future
+              </Text>
+            </Pressable>
+          </View>
+        )}
+        {data.past.length > 0 || data.future.length > 0 ? (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginBottom: pixelSizeVertical(12),
+            }}
+          >
+            <View
+              style={
+                innerTab === "past"
+                  ? indexSelected > 0 && data.past.length > 1
+                    ? styles.activeDot
+                    : styles.inactiveDot
+                  : indexSelected > 0 && data.future.length > 1
+                    ? styles.activeDot
+                    : styles.inactiveDot
+              }
+            ></View>
+            <View
+              style={
+                innerTab === "past"
+                  ? indexSelected < data.past.length - 1
+                    ? styles.activeDot
+                    : styles.inactiveDot
+                  : indexSelected < data.future.length - 1
+                    ? styles.activeDot
+                    : styles.inactiveDot
+              }
+            ></View>
+          </View>
+        ) : null}
+        {innerTab === "past" &&
+        data.past.length === 0 &&
+        currentMember.role !== "president" ? (
+          <Text
+            style={{
+              fontSize: fontPixel(20),
+              fontWeight: "400",
+              color: "#F5F5F5",
+              marginTop: pixelSizeVertical(12),
+              textAlign: "center",
+            }}
+          >
+            oops, nothing to see here...yet 👀
+          </Text>
+        ) : null}
+        {innerTab === "future" &&
+        data.future.length === 0 &&
+        currentMember.role !== "president" ? (
+          <Text
+            style={{
+              fontSize: fontPixel(20),
+              fontWeight: "400",
+              color: "#F5F5F5",
+              marginTop: pixelSizeVertical(12),
+              textAlign: "center",
+            }}
+          >
+            oops, nothing to see here...yet 👀
+          </Text>
+        ) : null}
+        {innerTab === "past" ? (
+          <Carousel
+            layout="default"
+            data={data.past}
+            onSnapToItem={(index) => onSelect(index)}
+            sliderWidth={width - 32}
+            itemWidth={width - 32}
+            disableIntervalMomentum
+            useExperimentalSnap
+            renderItem={({ item, index }) => (
+              <>
+                <Pressable
+                  onPress={() => {
+                    if (item.approval === "rejected")
+                      navigation.navigate("ResubmitClubsEvent", {
+                        event: item,
+                      });
+                  }}
+                >
+                  {item.image && (
+                    <FastImage
+                      key={index}
+                      style={
+                        item.approval === "approved"
+                          ? styles.image
+                          : [styles.image, { opacity: 0.5 }]
+                      }
+                      resizeMode="cover"
+                      source={{ uri: item.image }}
+                      progressiveRenderingEnabled={true}
+                      cache={FastImage.cacheControl.immutable}
+                      priority={FastImage.priority.normal}
+                    />
+                  )}
+                  <Text
                     style={
                       item.approval === "approved"
-                        ? styles.image
-                        : [styles.image, { opacity: 0.5 }]
+                        ? styles.title
+                        : item.approval === "rejected"
+                          ? [styles.title, { color: "#ed3444" }]
+                          : [styles.title, { opacity: 0.5 }]
                     }
-                    resizeMode="cover"
-                    source={{ uri: item.image }}
-                    progressiveRenderingEnabled={true}
-                    cache={FastImage.cacheControl.immutable}
-                    priority={FastImage.priority.normal}
-                  />
-                )}
-                <Text
-                  style={
-                    item.approval === "approved"
-                      ? styles.title
-                      : item.approval === "rejected"
-                        ? [styles.title, { color: "#ed3444" }]
-                        : [styles.title, { opacity: 0.5 }]
-                  }
-                >
-                  {item.title}
-                </Text>
-                {item.approval === "approved" ? (
-                  <>
-                    <Text style={styles.date}>
-                      {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
-                    </Text>
-                    {item.content && (
-                      <Text style={styles.content}>{item.content}</Text>
+                  >
+                    {item.title}
+                  </Text>
+                  {item.approval === "approved" ? (
+                    <>
+                      <Text style={styles.date}>
+                        {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
+                      </Text>
+                      {item.content && (
+                        <Text style={styles.content}>{item.content}</Text>
+                      )}
+                      <LinksView content={item.content} />
+                    </>
+                  ) : null}
+                  {!isEmpty(currentMember) &&
+                    currentMember.role === "president" &&
+                    item.approval === "approved" && (
+                      <Pressable
+                        style={styles.borderButton}
+                        onPress={() => {
+                          handleShowDeleteModal(item.eventID);
+                        }}
+                      >
+                        <Text style={styles.borderButtonText}>delete</Text>
+                      </Pressable>
                     )}
-                    <LinksView content={item.content} />
-                  </>
-                ) : null}
-                {!isEmpty(currentMember) &&
-                  currentMember.role === "president" &&
-                  item.approval === "approved" && (
-                    <Pressable
-                      style={styles.borderButton}
-                      onPress={() => {
-                        handleShowDeleteModal(item.eventID);
-                      }}
-                    >
-                      <Text style={styles.borderButtonText}>delete</Text>
-                    </Pressable>
+                  {item.approval === "rejected" && (
+                    <>
+                      <Text
+                        style={{
+                          fontSize: fontPixel(16),
+                          fontWeight: "400",
+                          color: "#ed3444",
+                        }}
+                      >
+                        rejected
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: fontPixel(16),
+                          fontWeight: "400",
+                          color: "#C6CDE2",
+                          marginTop: pixelSizeVertical(2),
+                        }}
+                      >
+                        {item.rejectionReason}
+                      </Text>
+                    </>
                   )}
-                {item.approval === "rejected" && (
-                  <>
-                    <Text
-                      style={{
-                        fontSize: fontPixel(16),
-                        fontWeight: "400",
-                        color: "#ed3444",
-                      }}
-                    >
-                      rejected
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: fontPixel(16),
-                        fontWeight: "400",
-                        color: "#C6CDE2",
-                        marginTop: pixelSizeVertical(2),
-                      }}
-                    >
-                      {item.rejectionReason}
-                    </Text>
-                  </>
-                )}
-                {item.approval === "pending" && (
-                  <>
+                  {item.approval === "pending" && (
+                    <>
+                      <Text
+                        style={{
+                          fontSize: fontPixel(16),
+                          fontWeight: "400",
+                          color: "#C6CDE2",
+                          marginTop: pixelSizeVertical(2),
+                        }}
+                      >
+                        pending approval
+                      </Text>
+                    </>
+                  )}
+                </Pressable>
+              </>
+            )}
+          />
+        ) : null}
+        {innerTab === "future" ? (
+          <Carousel
+            layout="default"
+            data={data.future}
+            onSnapToItem={(index) => onSelect(index)}
+            sliderWidth={width - 32}
+            itemWidth={width - 32}
+            disableIntervalMomentum
+            useExperimentalSnap
+            renderItem={({ item, index }) => (
+              <>
+                <Pressable
+                  onPress={() => {
+                    if (item.approval === "rejected")
+                      navigation.navigate("ResubmitClubsEvent", {
+                        event: item,
+                      });
+                  }}
+                >
+                  {item.image && (
+                    <FastImage
+                      key={index}
+                      style={
+                        item.approval === "approved"
+                          ? styles.image
+                          : [styles.image, { opacity: 0.5 }]
+                      }
+                      resizeMode="cover"
+                      source={{ uri: item.image }}
+                      progressiveRenderingEnabled={true}
+                      cache={FastImage.cacheControl.immutable}
+                      priority={FastImage.priority.normal}
+                    />
+                  )}
+                  <Text
+                    style={
+                      item.approval === "approved"
+                        ? styles.title
+                        : item.approval === "rejected"
+                          ? [styles.title, { color: "#ed3444" }]
+                          : [styles.title, { opacity: 0.5 }]
+                    }
+                  >
+                    {item.title}
+                  </Text>
+                  {item.approval === "approved" ? (
+                    <>
+                      <Text style={styles.date}>
+                        {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
+                      </Text>
+                      {item.content && (
+                        <Text style={styles.content}>{item.content}</Text>
+                      )}
+                      <LinksView content={item.content} />
+                    </>
+                  ) : null}
+                  {!isEmpty(currentMember) &&
+                    currentMember.role === "president" &&
+                    item.approval === "approved" && (
+                      <Pressable
+                        style={styles.borderButton}
+                        onPress={() => {
+                          handleShowDeleteModal(item.eventID);
+                        }}
+                      >
+                        <Text style={styles.borderButtonText}>delete</Text>
+                      </Pressable>
+                    )}
+                  {item.approval === "rejected" && (
+                    <>
+                      <Text
+                        style={{
+                          fontSize: fontPixel(16),
+                          fontWeight: "400",
+                          color: "#ed3444",
+                        }}
+                      >
+                        rejected
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: fontPixel(16),
+                          fontWeight: "400",
+                          color: "#C6CDE2",
+                          marginTop: pixelSizeVertical(2),
+                        }}
+                      >
+                        {item.rejectionReason}
+                      </Text>
+                    </>
+                  )}
+                  {item.approval === "pending" && (
                     <Text
                       style={{
                         fontSize: fontPixel(16),
@@ -381,119 +548,14 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
                     >
                       pending approval
                     </Text>
-                  </>
-                )}
-              </Pressable>
-            </>
-          )}
-        />
-      ) : null}
-      {innerTab === "future" ? (
-        <Carousel
-          layout="default"
-          data={data.future}
-          onSnapToItem={(index) => onSelect(index)}
-          sliderWidth={width - 32}
-          itemWidth={width - 32}
-          disableIntervalMomentum
-          useExperimentalSnap
-          renderItem={({ item, index }) => (
-            <>
-              <Pressable
-                onPress={() => {
-                  if (item.approval === "rejected")
-                    navigation.navigate("ResubmitClubsEvent", { event: item });
-                }}
-              >
-                {item.image && (
-                  <FastImage
-                    key={index}
-                    style={
-                      item.approval === "approved"
-                        ? styles.image
-                        : [styles.image, { opacity: 0.5 }]
-                    }
-                    resizeMode="cover"
-                    source={{ uri: item.image }}
-                    progressiveRenderingEnabled={true}
-                    cache={FastImage.cacheControl.immutable}
-                    priority={FastImage.priority.normal}
-                  />
-                )}
-                <Text
-                  style={
-                    item.approval === "approved"
-                      ? styles.title
-                      : item.approval === "rejected"
-                        ? [styles.title, { color: "#ed3444" }]
-                        : [styles.title, { opacity: 0.5 }]
-                  }
-                >
-                  {item.title}
-                </Text>
-                {item.approval === "approved" ? (
-                  <>
-                    <Text style={styles.date}>
-                      {dayjs(item.date.split("T")[0]).format("D MMM YYYY")}
-                    </Text>
-                    {item.content && (
-                      <Text style={styles.content}>{item.content}</Text>
-                    )}
-                    <LinksView content={item.content} />
-                  </>
-                ) : null}
-                {!isEmpty(currentMember) &&
-                  currentMember.role === "president" &&
-                  item.approval === "approved" && (
-                    <Pressable
-                      style={styles.borderButton}
-                      onPress={() => {
-                        handleShowDeleteModal(item.eventID);
-                      }}
-                    >
-                      <Text style={styles.borderButtonText}>delete</Text>
-                    </Pressable>
                   )}
-                {item.approval === "rejected" && (
-                  <>
-                    <Text
-                      style={{
-                        fontSize: fontPixel(16),
-                        fontWeight: "400",
-                        color: "#ed3444",
-                      }}
-                    >
-                      rejected
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: fontPixel(16),
-                        fontWeight: "400",
-                        color: "#C6CDE2",
-                        marginTop: pixelSizeVertical(2),
-                      }}
-                    >
-                      {item.rejectionReason}
-                    </Text>
-                  </>
-                )}
-                {item.approval === "pending" && (
-                  <Text
-                    style={{
-                      fontSize: fontPixel(16),
-                      fontWeight: "400",
-                      color: "#C6CDE2",
-                      marginTop: pixelSizeVertical(2),
-                    }}
-                  >
-                    pending approval
-                  </Text>
-                )}
-              </Pressable>
-            </>
-          )}
-        />
-      ) : null}
+                </Pressable>
+              </>
+            )}
+          />
+        ) : null}
+        <EmptyView />
+      </ScrollView>
       <Modal
         isVisible={showDeleteModal}
         onBackdropPress={() => setShowDeleteModal(!showDeleteModal)} // Android back press
@@ -527,10 +589,28 @@ const ClubsEvents = React.memo(({ navigation, onScroll }) => {
           )}
         </View>
       </Modal>
-      <EmptyView />
-      <EmptyView />
+
       <Toast config={toastConfig} />
-    </ScrollView>
+      <Modal
+        isVisible={isSideMenuVisible}
+        onBackdropPress={toggleSideMenu} // Android back press
+        onSwipeComplete={toggleSideMenu} // Swipe to discard
+        animationIn="slideInRight" // Has others, we want slide in from the left
+        animationOut="slideOutRight" // When discarding the drawer
+        swipeDirection="left" // Discard the drawer with swipe to left
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
+      >
+        <SideMenu
+          callParentScreenFunction={toggleSideMenu}
+          currentPage="clubspages"
+          navigation={navigation}
+        />
+      </Modal>
+      <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
+    </View>
   );
 });
 
@@ -538,10 +618,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    paddingTop: pixelSizeVertical(14),
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
-    paddingBottom: pixelSizeVertical(12),
   },
   innerTabActive: {
     fontSize: fontPixel(22),
@@ -645,6 +721,45 @@ const styles = StyleSheet.create({
     width: 10,
     backgroundColor: "#C4FFF9",
     borderRadius: 50,
+  },
+  sideMenuStyle: {
+    margin: 0,
+    width: width * 0.85, // SideMenu width
+    alignSelf: "flex-end",
+  },
+  hamburgerIcon: {
+    height: pixelSizeVertical(20),
+    width: pixelSizeHorizontal(30),
+  },
+  backButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#C4FFF9",
+    marginTop: pixelSizeVertical(2),
+  },
+  headerMini: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    maxWidth: width - 180,
+    marginLeft: pixelSizeHorizontal(-10),
+  },
+  headerMiniInvisible: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#DFE5F8",
+    marginRight: pixelSizeHorizontal(16),
+    maxWidth: "80%",
+    opacity: 0,
+  },
+  headerContainerShowMiniHeader: {
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });
 
