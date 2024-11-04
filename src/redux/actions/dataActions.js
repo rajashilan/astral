@@ -9,6 +9,7 @@ import {
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
   ADD_NEW_CLUB_ROLE,
+  ADD_NEW_POST,
   ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
   DEACTIVATE_CLUB_MEMBER,
@@ -32,6 +33,7 @@ import {
   SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
   SET_NOTIFICATION_AVAILABLE,
+  SET_POSTS,
   SET_UI_LOADING,
   STOP_LOADING_DATA,
   STOP_LOADING_USER,
@@ -151,11 +153,24 @@ export const getAClub = (clubID, userID) => (dispatch) => {
       return db.collection("clubMembers").doc(clubID).get();
     })
     .then((doc) => {
-      dispatch({ type: STOP_UI_LOADING });
       dispatch({
         type: SET_CLUB_MEMBERS_DATA,
         payload: { members: [...doc.data().members], userID },
       });
+
+      return db
+        .collection("posts")
+        .where("clubID", "==", clubID)
+        .orderBy("createdAt", "desc")
+        .get();
+    })
+    .then((data) => {
+      let temp = [];
+      data.forEach((doc) => {
+        temp.push({ ...doc.data() });
+      });
+      dispatch({ type: STOP_UI_LOADING });
+      dispatch({ type: SET_POSTS, payload: temp });
     })
     .catch((error) => {
       dispatch({ type: STOP_UI_LOADING });
@@ -1309,5 +1324,39 @@ export const setClubFirstTimeToFalse = (clubID) => (dispatch) => {
     .then(() => {})
     .catch((error) => {
       console.error(error);
+    });
+};
+
+export const addNewPost = (post) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+  let postID;
+  db.collection("posts")
+    .add(post)
+    .then((data) => {
+      postID = data.id;
+      return db.collection("posts").doc(data.id).update({ postID: data.id });
+    })
+    .then(() => {
+      Toast.show({
+        type: "success",
+        text1: "new post added successfully.",
+      });
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({
+        type: ADD_NEW_POST,
+        payload: {
+          ...post,
+          postID,
+        },
+      });
+    })
+    .catch((error) => {
+      dispatch({ type: STOP_UI_LOADING });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
     });
 };

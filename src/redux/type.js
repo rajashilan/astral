@@ -49,6 +49,8 @@ export const ADD_NEW_CLUB_ROLE = "ADD_NEW_CLUB_ROLE";
 export const DELETE_CLUB_ROLE = "DELETE_CLUB_ROLE";
 export const DEACTIVATE_CLUB_MEMBER = "DEACTIVATE_CLUB_MEMBER";
 export const UPDATE_CLUB_IMAGE = "UPDATE_CLUB_IMAGE";
+export const ADD_NEW_POST = "ADD_NEW_POST";
+export const SET_POSTS = "SET_POSTS";
 
 //ui types
 export const SET_UI_LOADING = "SET_UI_LOADING";

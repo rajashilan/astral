@@ -60,6 +60,7 @@ export default function ClubsPages({ navigation, route }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.credentials);
   const data = useSelector((state) => state.data.clubData.club);
+  const posts = useSelector((state) => state.data.clubData.posts);
   const campusID = useSelector((state) => state.data.campus.campusID);
   const loading = useSelector((state) => state.data.loading);
   const UIloading = useSelector((state) => state.UI.loading);
@@ -83,131 +84,136 @@ export default function ClubsPages({ navigation, route }) {
 
   const [show, setShow] = useState(true);
 
-  const posts = [
-    {
-      postID: "1",
-      text: "Hello everybody welcome to my youtube channel",
-      type: "photo", //photo, file, text, poll, ?event?
-      createdBy: "1",
-      createdByUsername: "rajashilan",
-      createdByRole: "president",
-      createdAt: "2024-09-25T11:20:18.153Z",
-      clubID: "1",
-      clubName: "Computer Science Club",
-      clubImageUrl:
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
-      campusID: "1",
-      photos: [
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2F180c02d6-d20c-4360-a258-182c261c5a0d.jpg?alt=media&token=76adef5d-3969-4c5b-b797-25b1ec4ef5a4",
+  // const posts = [
+  //   {
+  //     postID: "1",
+  //     text: "Hello everybody welcome to my youtube channel",
+  //     type: "photo", //photo, file, text, poll, ?event?
+  //     createdBy: "1",
+  //     createdByUsername: "rajashilan",
+  //     createdByRole: "president",
+  //     createdAt: "2024-09-25T11:20:18.153Z",
+  //     clubID: "1",
+  //     clubName: "Computer Science Club",
+  //     clubImageUrl:
+  //       "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+  //     campusID: "1",
+  //     photos: [
+  //       "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2F180c02d6-d20c-4360-a258-182c261c5a0d.jpg?alt=media&token=76adef5d-3969-4c5b-b797-25b1ec4ef5a4",
 
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2F620f06be-b62d-4eb3-aa6a-1bdeca51e64a.jpg?alt=media&token=ee373f91-e59b-458d-b309-d18d5b172dca",
-      ],
-    },
-    {
-      postID: "3",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      type: "file", //photo, file, text, poll, ?event?
-      createdBy: "1",
-      createdByUsername: "rajashilan",
-      createdAt: "2024-09-25T11:20:18.153Z",
-      createdByRole: "president",
-      clubID: "1",
-      clubImageUrl:
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
-      clubName:
-        "Engineering and Computing Club for INTI International College Penang",
-      campusID: "1",
-      file: {
-        name: "internal_testers_testers_export.csv",
-        url: "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/orientation%2Fpages%2Ffiles%2Fhb75RnF3COn7w3JQeoF6%2Fe99f06f47d61f9152115.csv?alt=media&token=db99d18791db94177ca9fb077d3568efab06b2a6",
-      },
-    },
-    {
-      postID: "2",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
-      type: "photo", //photo, file, text, poll, ?event?
-      createdBy: "1",
-      createdByUsername: "rajashilan",
-      createdAt: "2024-09-25T11:20:18.153Z",
-      createdByRole: "president",
-      clubID: "1",
-      clubImageUrl:
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
-      clubName:
-        "Engineering and Computing Club for INTI International College Penang",
-      campusID: "1",
-      photos: [
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2F620f06be-b62d-4eb3-aa6a-1bdeca51e64a.jpg?alt=media&token=ee373f91-e59b-458d-b309-d18d5b172dca",
-      ],
-    },
-    {
-      postID: "2",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
-      type: "text", //photo, file, text, poll, ?event?
-      createdBy: "1",
-      createdByUsername: "rajashilan",
-      createdAt: "2024-09-25T11:20:18.153Z",
-      createdByRole: "president",
-      clubID: "1",
-      clubImageUrl:
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
-      clubName:
-        "Engineering and Computing Club for INTI International College Penang",
-      campusID: "1",
-    },
-    {
-      postID: "5",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
-      type: "poll", //photo, file, text, poll, ?event?
-      createdBy: "1",
-      createdByUsername: "rajashilan",
-      createdAt: "2024-09-25T11:20:18.153Z",
-      createdByRole: "president",
-      clubID: "1",
-      clubImageUrl:
-        "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
-      clubName:
-        "Engineering and Computing Club for INTI International College Penang",
-      campusID: "1",
-      poll: {
-        options: [
-          {
-            optionID: 0,
-            text: "Get KFC from FoodPanda and chill in class.",
-            votes: 5,
-          },
-          {
-            optionID: 1,
-            text: "Go lepak at Nasi Kandar Kayu",
-            votes: 3,
-          },
-          {
-            optionID: 2,
-            text: "Go for shopping at Gurney Plaza",
-            votes: 7,
-          },
-          {
-            optionID: 3,
-            text: "Maybe just save the money and use for something else and then later can consider?",
-            votes: 2,
-          },
-        ],
-        votes: {
-          1234: {
-            optionID: 0,
-            createdAt: "2024-09-25T11:20:18.153Z",
-          },
-          2531: {
-            optionID: 1,
-            createdAt: "2024-09-25T11:20:18.153Z",
-          },
-        },
-        createdAt: "2024-11-01T11:20:18.153Z",
-        expiresAt: "2024-11-03T11:20:18.153Z",
-      },
-    },
-  ];
+  //       "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+  //       "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2F620f06be-b62d-4eb3-aa6a-1bdeca51e64a.jpg?alt=media&token=ee373f91-e59b-458d-b309-d18d5b172dca",
+  //     ],
+  //     visibility: "public",
+  //   },
+  //   {
+  //     postID: "3",
+  //     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //     type: "file", //photo, file, text, poll, ?event?
+  //     createdBy: "1",
+  //     createdByUsername: "rajashilan",
+  //     createdAt: "2024-09-25T11:20:18.153Z",
+  //     createdByRole: "president",
+  //     clubID: "1",
+  //     clubImageUrl:
+  //       "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+  //     clubName:
+  //       "Engineering and Computing Club for INTI International College Penang",
+  //     campusID: "1",
+  //     file: {
+  //       name: "internal_testers_testers_export.csv",
+  //       url: "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/orientation%2Fpages%2Ffiles%2Fhb75RnF3COn7w3JQeoF6%2Fe99f06f47d61f9152115.csv?alt=media&token=db99d18791db94177ca9fb077d3568efab06b2a6",
+  //     },
+  //     visibility: "public",
+  //   },
+  //   {
+  //     postID: "2",
+  //     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
+  //     type: "photo", //photo, file, text, poll, ?event?
+  //     createdBy: "1",
+  //     createdByUsername: "rajashilan",
+  //     createdAt: "2024-09-25T11:20:18.153Z",
+  //     createdByRole: "president",
+  //     clubID: "1",
+  //     clubImageUrl:
+  //       "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+  //     clubName:
+  //       "Engineering and Computing Club for INTI International College Penang",
+  //     campusID: "1",
+  //     photos: [
+  //       "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2F620f06be-b62d-4eb3-aa6a-1bdeca51e64a.jpg?alt=media&token=ee373f91-e59b-458d-b309-d18d5b172dca",
+  //     ],
+  //     visibility: "public",
+  //   },
+  //   {
+  //     postID: "2",
+  //     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
+  //     type: "text", //photo, file, text, poll, ?event?
+  //     createdBy: "1",
+  //     createdByUsername: "rajashilan",
+  //     createdAt: "2024-09-25T11:20:18.153Z",
+  //     createdByRole: "president",
+  //     clubID: "1",
+  //     clubImageUrl:
+  //       "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+  //     clubName:
+  //       "Engineering and Computing Club for INTI International College Penang",
+  //     campusID: "1",
+  //     visibility: "public",
+  //   },
+  //   {
+  //     postID: "5",
+  //     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris",
+  //     type: "poll", //photo, file, text, poll, ?event?
+  //     createdBy: "1",
+  //     createdByUsername: "rajashilan",
+  //     createdAt: "2024-09-25T11:20:18.153Z",
+  //     createdByRole: "president",
+  //     clubID: "1",
+  //     clubImageUrl:
+  //       "https://firebasestorage.googleapis.com/v0/b/astral-d3ff5.appspot.com/o/clubs%2Fgallery%2Fphotos%2F1Z0lUDASLWZMwiJK7HtT%2Fa5450289-3f81-4175-b66a-1158b7102cb0.jpg?alt=media&token=c5ceb722-74a0-4dc8-b152-6c2b346d886e",
+  //     clubName:
+  //       "Engineering and Computing Club for INTI International College Penang",
+  //     campusID: "1",
+  //     poll: {
+  //       options: [
+  //         {
+  //           optionID: 0,
+  //           text: "Get KFC from FoodPanda and chill in class.",
+  //           votes: 5,
+  //         },
+  //         {
+  //           optionID: 1,
+  //           text: "Go lepak at Nasi Kandar Kayu",
+  //           votes: 3,
+  //         },
+  //         {
+  //           optionID: 2,
+  //           text: "Go for shopping at Gurney Plaza",
+  //           votes: 7,
+  //         },
+  //         {
+  //           optionID: 3,
+  //           text: "Maybe just save the money and use for something else and then later can consider?",
+  //           votes: 2,
+  //         },
+  //       ],
+  //       votes: {
+  //         1234: {
+  //           optionID: 0,
+  //           createdAt: "2024-09-25T11:20:18.153Z",
+  //         },
+  //         2531: {
+  //           optionID: 1,
+  //           createdAt: "2024-09-25T11:20:18.153Z",
+  //         },
+  //       },
+  //       createdAt: "2024-11-01T11:20:18.153Z",
+  //       expiresAt: "2024-11-03T11:20:18.153Z",
+  //     },
+  //     visibility: "public",
+  //   },
+  // ];
 
   const [tabs] = useState(["posts", "members", "events", "details", "extra"]);
 
@@ -744,6 +750,7 @@ const styles = StyleSheet.create({
   },
   createAPostMenuStyle: {
     margin: 0,
+    marginTop: pixelSizeVertical(150),
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),

@@ -1,5 +1,12 @@
-import React, { useRef, useState } from "react";
-import { Pressable, Text, View, ScrollView } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Pressable,
+  Text,
+  View,
+  ScrollView,
+  Platform,
+  KeyboardAvoidingView,
+} from "react-native";
 import {
   fontPixel,
   heightPixel,
@@ -14,6 +21,12 @@ import FastImage from "react-native-fast-image";
 import CustomTextInput from "./CustomTextInput";
 import PrimaryButton from "./PrimaryButton";
 import CustomSelectDropdown from "./CustomSelectDropdown";
+import * as Crypto from "expo-crypto";
+import { addNewPost } from "../src/redux/actions/dataActions";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../utils/toast-config";
+import { StatusBar } from "expo-status-bar";
+import EmptyView from "./EmptyView";
 
 export default function CreateAPostModal(props) {
   const dispatch = useDispatch();
@@ -29,6 +42,15 @@ export default function CreateAPostModal(props) {
 
   //photos, events, poll, files
   const [selectedOption, setSelectedOption] = useState(null);
+
+  const [images, setImages] = useState([]);
+  const [file, setFile] = useState(null);
+  const [poll, setPoll] = useState({});
+
+  const [postType, setPostType] = useState("text");
+
+  const [errors, setErrors] = useState({});
+
   const [visibility, setVisibility] = useState("public");
   const [visibilityOptions] = useState(["public", "private"]);
   const [showVisibilityModal, setShowVisibilityModal] = useState(false);
@@ -37,7 +59,59 @@ export default function CreateAPostModal(props) {
 
   const [text, setText] = useState("");
 
-  const handlePost = () => {};
+  const handlePost = () => {
+    //type text -> check if text is empty
+    let tempErrors = {};
+    if (text.trim() === "" && postType === "text") {
+      tempErrors.post = "Please type something to post";
+    }
+
+    if (!tempErrors.post) {
+      let postData;
+      if (postType === "text") {
+        postData = {
+          postID: "", //update after adding to collection
+          text: text,
+          type: postType, //photo, file, text, poll, ?event?
+          createdBy: user.userId,
+          createdByUsername: user.username,
+          createdByRole: currentMember.role,
+          createdAt: new Date().toISOString(),
+          clubID: data.clubID,
+          clubName: data.name,
+          clubImageUrl: data.image,
+          campusID: data.campusID,
+          visibility: visibility,
+        };
+      }
+      dispatch(addNewPost(postData));
+    }
+
+    setErrors(tempErrors);
+  };
+
+  //when an option is selected or unselected, reset all data, excluding text
+  const handleSelectOption = (option) => {
+    if (option === selectedOption) {
+      setSelectedOption(null);
+    } else {
+      setSelectedOption(option);
+    }
+    resetOptions();
+  };
+
+  const resetOptions = () => {
+    setImages([]);
+    setFile(null);
+    setPoll({});
+  };
+
+  useEffect(() => {
+    return () => {
+      setText("");
+      resetOptions();
+    };
+  }, []);
 
   const toggleVisibilityModal = () => {
     setIsVisibilityChanged(false);
@@ -50,13 +124,17 @@ export default function CreateAPostModal(props) {
   };
 
   return (
-    <View
+    <KeyboardAvoidingView
       style={{
         flex: 1,
         backgroundColor: "#0C111F",
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
         paddingHorizontal: pixelSizeHorizontal(16),
         flexDirection: "column",
       }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
     >
       <IosHeight />
       <View
@@ -66,251 +144,278 @@ export default function CreateAPostModal(props) {
           borderRadius: 5,
           width: "50%",
           alignSelf: "center",
-          marginTop: pixelSizeVertical(40),
           marginBottom: pixelSizeVertical(30),
         }}
       />
-      <Text
-        style={{
-          fontSize: fontPixel(16),
-          fontWeight: "500",
-          color: "#DFE5F8",
-        }}
-      >
-        {data.name}
-      </Text>
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: pixelSizeVertical(14),
-          alignItems: "center",
-        }}
-      >
-        <FastImage
+      <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
+        <Text
           style={{
-            width: widthPixel(40),
-            height: heightPixel(40),
-            marginTop: "auto",
-            marginBottom: "auto",
-            borderRadius: 50,
+            fontSize: fontPixel(16),
+            fontWeight: "500",
+            color: "#DFE5F8",
           }}
-          resizeMode="cover"
-          source={{ uri: currentMember.profileImage }}
-          progressiveRenderingEnabled={true}
-          cache={FastImage.cacheControl.immutable}
-          priority={FastImage.priority.normal}
-        />
+        >
+          {data.name}
+        </Text>
         <View
           style={{
-            flexDirection: "column",
-            marginLeft: pixelSizeHorizontal(5),
+            flexDirection: "row",
+            marginTop: pixelSizeVertical(14),
+            alignItems: "center",
           }}
         >
-          <Text
+          <FastImage
             style={{
-              fontSize: fontPixel(14),
-              fontWeight: "500",
-              color: "#DFE5F8",
+              width: widthPixel(40),
+              height: heightPixel(40),
+              marginTop: "auto",
+              marginBottom: "auto",
+              borderRadius: 50,
+            }}
+            resizeMode="cover"
+            source={{ uri: currentMember.profileImage }}
+            progressiveRenderingEnabled={true}
+            cache={FastImage.cacheControl.immutable}
+            priority={FastImage.priority.normal}
+          />
+          <View
+            style={{
+              flexDirection: "column",
+              marginLeft: pixelSizeHorizontal(5),
             }}
           >
-            @{user.username}
-          </Text>
-          <Text
-            style={{
-              fontSize: fontPixel(14),
-              fontWeight: "400",
-              color: "#C6CDE2",
-              marginLeft: pixelSizeHorizontal(2),
-            }}
-          >
-            {currentMember.role}
-          </Text>
+            <Text
+              style={{
+                fontSize: fontPixel(14),
+                fontWeight: "500",
+                color: "#DFE5F8",
+              }}
+            >
+              @{user.username}
+            </Text>
+            <Text
+              style={{
+                fontSize: fontPixel(14),
+                fontWeight: "400",
+                color: "#C6CDE2",
+                marginLeft: pixelSizeHorizontal(2),
+              }}
+            >
+              {currentMember.role}
+            </Text>
+          </View>
         </View>
-      </View>
 
-      <ScrollView
-        horizontal={true}
-        scrollEnabled={true}
-        showsHorizontalScrollIndicator={false}
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          backgroundColor: "#0C111F",
-          maxHeight: heightPixel(65),
-        }}
-      >
-        {/* --------------------------------------------- start of visibility options */}
-        <Pressable
+        <ScrollView
+          horizontal={true}
+          scrollEnabled={true}
+          showsHorizontalScrollIndicator={false}
           style={{
-            paddingVertical: pixelSizeVertical(8),
-            paddingHorizontal: pixelSizeHorizontal(12),
-            backgroundColor: "#232F52",
-            marginHorizontal: pixelSizeHorizontal(4),
-            borderRadius: 5,
-            marginTop: pixelSizeVertical(16),
-            marginBottom: pixelSizeVertical(16),
+            flexDirection: "row",
+            flexWrap: "wrap",
+            backgroundColor: "#0C111F",
+            maxHeight: heightPixel(65),
           }}
-          onPress={toggleVisibilityModal}
         >
-          <Text
+          {/* --------------------------------------------- start of visibility options */}
+          <Pressable
             style={{
-              fontSize: fontPixel(14),
-              fontWeight: "500",
-              textAlign: "center",
-              color: "#DFE5F8",
+              paddingVertical: pixelSizeVertical(8),
+              paddingHorizontal: pixelSizeHorizontal(12),
+              backgroundColor: "#232F52",
+              marginHorizontal: pixelSizeHorizontal(4),
+              borderRadius: 5,
+              marginTop: pixelSizeVertical(16),
+              marginBottom: pixelSizeVertical(16),
+            }}
+            onPress={toggleVisibilityModal}
+          >
+            <Text
+              style={{
+                fontSize: fontPixel(14),
+                fontWeight: "500",
+                textAlign: "center",
+                color: "#DFE5F8",
+              }}
+            >
+              public
+            </Text>
+          </Pressable>
+          {/* --------------------------------------------- start of photos option */}
+          <Pressable
+            style={{
+              paddingVertical: pixelSizeVertical(8),
+              paddingHorizontal: pixelSizeHorizontal(12),
+              backgroundColor:
+                selectedOption === "photos" ? "#6072A5" : "#232F52",
+              marginHorizontal: pixelSizeHorizontal(4),
+              borderRadius: 5,
+              marginTop: pixelSizeVertical(16),
+              marginBottom: pixelSizeVertical(16),
+            }}
+            onPress={() => {
+              handleSelectOption("photos");
             }}
           >
-            public
-          </Text>
-        </Pressable>
-        {/* --------------------------------------------- start of photos option */}
-        <Pressable
-          style={{
-            paddingVertical: pixelSizeVertical(8),
-            paddingHorizontal: pixelSizeHorizontal(12),
-            backgroundColor:
-              selectedOption === "photos" ? "#6072A5" : "#232F52",
-            marginHorizontal: pixelSizeHorizontal(4),
-            borderRadius: 5,
-            marginTop: pixelSizeVertical(16),
-            marginBottom: pixelSizeVertical(16),
-          }}
-          onPress={() => {}}
-        >
-          <Text
+            <Text
+              style={{
+                fontSize: fontPixel(14),
+                fontWeight: "500",
+                textAlign: "center",
+                color: "#DFE5F8",
+              }}
+            >
+              photos
+            </Text>
+          </Pressable>
+          {/* --------------------------------------------- start of events option */}
+          <Pressable
             style={{
-              fontSize: fontPixel(14),
-              fontWeight: "500",
-              textAlign: "center",
-              color: "#DFE5F8",
+              paddingVertical: pixelSizeVertical(8),
+              paddingHorizontal: pixelSizeHorizontal(12),
+              backgroundColor:
+                selectedOption === "events" ? "#6072A5" : "#232F52",
+              marginHorizontal: pixelSizeHorizontal(4),
+              borderRadius: 5,
+              marginTop: pixelSizeVertical(16),
+              marginBottom: pixelSizeVertical(16),
+            }}
+            onPress={() => {
+              handleSelectOption("events");
             }}
           >
-            photos
-          </Text>
-        </Pressable>
-        {/* --------------------------------------------- start of events option */}
-        <Pressable
-          style={{
-            paddingVertical: pixelSizeVertical(8),
-            paddingHorizontal: pixelSizeHorizontal(12),
-            backgroundColor:
-              selectedOption === "events" ? "#6072A5" : "#232F52",
-            marginHorizontal: pixelSizeHorizontal(4),
-            borderRadius: 5,
-            marginTop: pixelSizeVertical(16),
-            marginBottom: pixelSizeVertical(16),
-          }}
-          onPress={() => {}}
-        >
-          <Text
+            <Text
+              style={{
+                fontSize: fontPixel(14),
+                fontWeight: "500",
+                textAlign: "center",
+                color: "#DFE5F8",
+              }}
+            >
+              events
+            </Text>
+          </Pressable>
+          {/* --------------------------------------------- start of poll option */}
+          <Pressable
             style={{
-              fontSize: fontPixel(14),
-              fontWeight: "500",
-              textAlign: "center",
-              color: "#DFE5F8",
+              paddingVertical: pixelSizeVertical(8),
+              paddingHorizontal: pixelSizeHorizontal(12),
+              backgroundColor:
+                selectedOption === "poll" ? "#6072A5" : "#232F52",
+              marginHorizontal: pixelSizeHorizontal(4),
+              borderRadius: 5,
+              marginTop: pixelSizeVertical(16),
+              marginBottom: pixelSizeVertical(16),
+            }}
+            onPress={() => {
+              handleSelectOption("poll");
             }}
           >
-            events
-          </Text>
-        </Pressable>
-        {/* --------------------------------------------- start of poll option */}
-        <Pressable
-          style={{
-            paddingVertical: pixelSizeVertical(8),
-            paddingHorizontal: pixelSizeHorizontal(12),
-            backgroundColor: selectedOption === "poll" ? "#6072A5" : "#232F52",
-            marginHorizontal: pixelSizeHorizontal(4),
-            borderRadius: 5,
-            marginTop: pixelSizeVertical(16),
-            marginBottom: pixelSizeVertical(16),
-          }}
-          onPress={() => {}}
-        >
-          <Text
+            <Text
+              style={{
+                fontSize: fontPixel(14),
+                fontWeight: "500",
+                textAlign: "center",
+                color: "#DFE5F8",
+              }}
+            >
+              poll
+            </Text>
+          </Pressable>
+          {/* --------------------------------------------- start of files option */}
+          <Pressable
             style={{
-              fontSize: fontPixel(14),
-              fontWeight: "500",
-              textAlign: "center",
-              color: "#DFE5F8",
+              paddingVertical: pixelSizeVertical(8),
+              paddingHorizontal: pixelSizeHorizontal(12),
+              backgroundColor:
+                selectedOption === "files" ? "#6072A5" : "#232F52",
+              marginHorizontal: pixelSizeHorizontal(4),
+              borderRadius: 5,
+              marginTop: pixelSizeVertical(16),
+              marginBottom: pixelSizeVertical(16),
+            }}
+            onPress={() => {
+              handleSelectOption("files");
             }}
           >
-            poll
-          </Text>
-        </Pressable>
-        {/* --------------------------------------------- start of files option */}
-        <Pressable
-          style={{
-            paddingVertical: pixelSizeVertical(8),
-            paddingHorizontal: pixelSizeHorizontal(12),
-            backgroundColor: selectedOption === "files" ? "#6072A5" : "#232F52",
-            marginHorizontal: pixelSizeHorizontal(4),
-            borderRadius: 5,
-            marginTop: pixelSizeVertical(16),
-            marginBottom: pixelSizeVertical(16),
-          }}
-          onPress={() => {}}
-        >
-          <Text
+            <Text
+              style={{
+                fontSize: fontPixel(14),
+                fontWeight: "500",
+                textAlign: "center",
+                color: "#DFE5F8",
+              }}
+            >
+              files
+            </Text>
+          </Pressable>
+          {/* --------------------------------------------- start of extra */}
+          <Pressable
             style={{
-              fontSize: fontPixel(14),
-              fontWeight: "500",
-              textAlign: "center",
-              color: "#DFE5F8",
+              paddingVertical: pixelSizeVertical(8),
+              paddingHorizontal: pixelSizeHorizontal(12),
+              backgroundColor: "#232F52",
+              marginHorizontal: pixelSizeHorizontal(4),
+              borderRadius: 5,
+              marginTop: pixelSizeVertical(16),
+              marginBottom: pixelSizeVertical(16),
+              opacity: 0,
             }}
+            onPress={() => {}}
           >
-            files
-          </Text>
-        </Pressable>
-        {/* --------------------------------------------- start of extra */}
-        <Pressable
-          style={{
-            paddingVertical: pixelSizeVertical(8),
-            paddingHorizontal: pixelSizeHorizontal(12),
-            backgroundColor: "#232F52",
-            marginHorizontal: pixelSizeHorizontal(4),
-            borderRadius: 5,
-            marginTop: pixelSizeVertical(16),
-            marginBottom: pixelSizeVertical(16),
-            opacity: 0,
-          }}
-          onPress={() => {}}
-        >
+            <Text
+              style={{
+                fontSize: fontPixel(14),
+                fontWeight: "500",
+                textAlign: "center",
+                color: "#DFE5F8",
+              }}
+            >
+              extra
+            </Text>
+          </Pressable>
+        </ScrollView>
+        <CustomTextInput
+          placeholder={`create a ${visibility} post...`}
+          value={text}
+          multiline={true}
+          numberOfLines={4}
+          editable={!loading}
+          onChangeText={(text) => setText(text)}
+        />
+        {errors.post ? (
           <Text
             style={{
-              fontSize: fontPixel(14),
-              fontWeight: "500",
-              textAlign: "center",
-              color: "#DFE5F8",
-            }}
-          >
-            extra
-          </Text>
-        </Pressable>
-      </ScrollView>
-      <CustomTextInput
-        placeholder={`create a ${visibility} post...`}
-        value={text}
-        multiline={true}
-        numberOfLines={4}
-        editable={!loading}
-        onChangeText={(text) => setText(text)}
-      />
-      <PrimaryButton loading={loading} onPress={handlePost} text="post" />
-      {!loading && (
-        <Pressable onPress={props.callParentScreenFunction}>
-          <Text
-            style={{
-              fontSize: fontPixel(16),
+              marginTop: pixelSizeVertical(8),
+              marginBottom: pixelSizeVertical(8),
+              fontSize: fontPixel(12),
               fontWeight: "400",
-              color: "#A7AFC7",
-              marginTop: pixelSizeVertical(2),
-              textAlign: "center",
+              color: "#ed3444",
+              paddingLeft: pixelSizeHorizontal(16),
+              paddingRight: pixelSizeHorizontal(16),
             }}
           >
-            back
+            {errors.post}
           </Text>
-        </Pressable>
-      )}
+        ) : null}
+        <PrimaryButton loading={loading} onPress={handlePost} text="post" />
+        {!loading && (
+          <Pressable onPress={props.callParentScreenFunction}>
+            <Text
+              style={{
+                fontSize: fontPixel(16),
+                fontWeight: "400",
+                color: "#A7AFC7",
+                marginTop: pixelSizeVertical(2),
+                textAlign: "center",
+              }}
+            >
+              back
+            </Text>
+          </Pressable>
+        )}
+        <EmptyView />
+      </ScrollView>
 
       <Modal
         isVisible={showVisibilityModal}
@@ -374,6 +479,8 @@ export default function CreateAPostModal(props) {
           )}
         </View>
       </Modal>
-    </View>
+      <Toast config={toastConfig} />
+      <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
+    </KeyboardAvoidingView>
   );
 }

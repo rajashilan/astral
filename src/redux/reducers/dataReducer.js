@@ -31,6 +31,7 @@ import {
   SET_CLUB_GALLERY_TO_TRUE,
   SET_CLUB_MEMBERS_DATA,
   SET_LOADING_DATA,
+  SET_POSTS,
   STOP_LOADING_DATA,
   UPDATE_CLUB_DETAILS,
   UPDATE_CLUB_IMAGE,
@@ -127,6 +128,7 @@ export default function (state = initialState, action) {
         ...state,
         clubData: {
           club: {},
+          posts: [],
           members: [],
           gallery: [],
           event: [],
@@ -473,6 +475,27 @@ export default function (state = initialState, action) {
         clubData: {
           ...state.clubData,
           club: { ...club },
+        },
+      };
+    }
+    case ADD_NEW_POST: {
+      let temp = [...state.clubData.posts];
+      temp.unshift(action.payload);
+
+      return {
+        ...state,
+        clubData: {
+          ...state.clubData,
+          posts: [...temp],
+        },
+      };
+    }
+    case SET_POSTS: {
+      return {
+        ...state,
+        clubData: {
+          ...state.clubData,
+          posts: [...action.payload],
         },
       };
     }
