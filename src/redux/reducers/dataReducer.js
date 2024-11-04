@@ -4,6 +4,7 @@ import {
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
   ADD_NEW_CLUB_ROLE,
+  ADD_NEW_POST,
   ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
   DEACTIVATE_CLUB_MEMBER,
@@ -48,6 +49,7 @@ const initialState = {
   loading: false,
   clubData: {
     club: {},
+    posts: [],
     members: [],
     gallery: [],
     event: [],
@@ -116,11 +118,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          members: [...state.clubData.members],
-          currentMember: { ...state.clubData.currentMember },
+          ...state.clubData,
           club: { ...action.payload },
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     case RESET_CLUB_DATA:
@@ -141,11 +140,9 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
+          ...state.clubData,
           currentMember: { ...action.payload.members[currentMember] },
           members: [...action.payload.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -158,11 +155,9 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
+          ...state.clubData,
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -176,11 +171,9 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
+          ...state.clubData,
           currentMember: { ...state.clubData.currentMember },
           members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -190,11 +183,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -205,11 +195,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -217,11 +204,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
+          ...state.clubData,
           gallery: [...action.payload.gallery],
-          event: [...state.clubData.event],
         },
       };
     case ADD_CLUB_GALLERY: {
@@ -230,11 +214,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
+          ...state.clubData,
           gallery: [...gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -247,11 +228,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
+          ...state.clubData,
           gallery: [...gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -261,11 +239,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -276,11 +251,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -288,10 +260,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
+          ...state.clubData,
           event: [...action.payload.event],
         },
       };
@@ -302,10 +271,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
+          ...state.clubData,
           event: [...event],
         },
       };
@@ -319,10 +285,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
+          ...state.clubData,
           event: [...event],
         },
       };
@@ -333,10 +296,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
+          ...state.clubData,
           club: { ...club },
         },
       };
@@ -347,11 +307,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...temp },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -361,11 +318,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...temp },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -382,11 +336,9 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...removeMemberRequest },
-          currentMember: { ...state.clubData.currentMember },
           members: [...acceptNewClubMemberList],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -398,11 +350,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -416,11 +365,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -467,11 +413,10 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...newRoleClub },
           currentMember: { ...newRoleCurrentMember },
           members: [...newRoleMembers],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -487,11 +432,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -502,11 +444,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -520,11 +459,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
-          club: { ...state.clubData.club },
-          currentMember: { ...state.clubData.currentMember },
+          ...state.clubData,
           members: [...deactivateMembers],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
@@ -535,11 +471,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         clubData: {
+          ...state.clubData,
           club: { ...club },
-          currentMember: { ...state.clubData.currentMember },
-          members: [...state.clubData.members],
-          gallery: [...state.clubData.gallery],
-          event: [...state.clubData.event],
         },
       };
     }
