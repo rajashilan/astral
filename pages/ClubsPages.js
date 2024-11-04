@@ -612,7 +612,6 @@ export default function ClubsPages({ navigation, route }) {
         onSwipeComplete={toggleCreateAPostModal} // Swipe to discard
         animationIn="slideInUp" // Has others, we want slide in from the left
         animationOut="slideOutDown" // When discarding the drawer
-        swipeDirection="down" // Discard the drawer with swipe to left
         useNativeDriver // Faster animation
         hideModalContentWhileAnimating // Better performance, try with/without
         propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)

@@ -27,6 +27,7 @@ import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 import { StatusBar } from "expo-status-bar";
 import EmptyView from "./EmptyView";
+import CreateAPhotosPost from "./CreateAPhotosPost";
 
 export default function CreateAPostModal(props) {
   const dispatch = useDispatch();
@@ -41,13 +42,11 @@ export default function CreateAPostModal(props) {
   const members = useSelector((state) => state.data.clubData.members);
 
   //photos, events, poll, files
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("text");
 
   const [images, setImages] = useState([]);
   const [file, setFile] = useState(null);
   const [poll, setPoll] = useState({});
-
-  const [postType, setPostType] = useState("text");
 
   const [errors, setErrors] = useState({});
 
@@ -62,17 +61,17 @@ export default function CreateAPostModal(props) {
   const handlePost = () => {
     //type text -> check if text is empty
     let tempErrors = {};
-    if (text.trim() === "" && postType === "text") {
+    if (text.trim() === "" && selectedOption === "text") {
       tempErrors.post = "Please type something to post";
     }
 
     if (!tempErrors.post) {
       let postData;
-      if (postType === "text") {
+      if (selectedOption === "text") {
         postData = {
           postID: "", //update after adding to collection
           text: text,
-          type: postType, //photo, file, text, poll, ?event?
+          type: selectedOption, //photo, file, text, poll, ?event?
           createdBy: user.userId,
           createdByUsername: user.username,
           createdByRole: currentMember.role,
@@ -93,7 +92,7 @@ export default function CreateAPostModal(props) {
   //when an option is selected or unselected, reset all data, excluding text
   const handleSelectOption = (option) => {
     if (option === selectedOption) {
-      setSelectedOption(null);
+      setSelectedOption("text");
     } else {
       setSelectedOption(option);
     }
@@ -122,6 +121,35 @@ export default function CreateAPostModal(props) {
     setVisibility("public");
     visibilityDropDown.current.reset();
   };
+
+  const textPost = (
+    <>
+      <CustomTextInput
+        placeholder={`create a ${visibility} post...`}
+        value={text}
+        multiline={true}
+        numberOfLines={4}
+        editable={!loading}
+        onChangeText={(text) => setText(text)}
+      />
+      {errors.post ? (
+        <Text
+          style={{
+            marginTop: pixelSizeVertical(8),
+            marginBottom: pixelSizeVertical(8),
+            fontSize: fontPixel(12),
+            fontWeight: "400",
+            color: "#ed3444",
+            paddingLeft: pixelSizeHorizontal(16),
+            paddingRight: pixelSizeHorizontal(16),
+          }}
+        >
+          {errors.post}
+        </Text>
+      ) : null}
+      <PrimaryButton loading={loading} onPress={handlePost} text="post" />
+    </>
+  );
 
   return (
     <KeyboardAvoidingView
@@ -375,30 +403,12 @@ export default function CreateAPostModal(props) {
             </Text>
           </Pressable>
         </ScrollView>
-        <CustomTextInput
-          placeholder={`create a ${visibility} post...`}
-          value={text}
-          multiline={true}
-          numberOfLines={4}
-          editable={!loading}
-          onChangeText={(text) => setText(text)}
-        />
-        {errors.post ? (
-          <Text
-            style={{
-              marginTop: pixelSizeVertical(8),
-              marginBottom: pixelSizeVertical(8),
-              fontSize: fontPixel(12),
-              fontWeight: "400",
-              color: "#ed3444",
-              paddingLeft: pixelSizeHorizontal(16),
-              paddingRight: pixelSizeHorizontal(16),
-            }}
-          >
-            {errors.post}
-          </Text>
+
+        {selectedOption === "text" ? textPost : null}
+        {selectedOption === "photos" ? (
+          <CreateAPhotosPost visibility={visibility} />
         ) : null}
-        <PrimaryButton loading={loading} onPress={handlePost} text="post" />
+
         {!loading && (
           <Pressable onPress={props.callParentScreenFunction}>
             <Text
@@ -414,6 +424,7 @@ export default function CreateAPostModal(props) {
             </Text>
           </Pressable>
         )}
+        <EmptyView />
         <EmptyView />
       </ScrollView>
 
