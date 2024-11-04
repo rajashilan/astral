@@ -42,17 +42,15 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { RESET_CLUB_DATA } from "../src/redux/type";
 import Loader from "../components/Loader";
 import RedDot from "../assets/RedDot";
 import { setClubMemberFirstTimeToFalse } from "../src/redux/actions/userActions";
 import PostsAdapter from "../components/Posts/PostsAdapter";
 import EmptyView from "../components/EmptyView";
+import CreateAPostModal from "../components/CreateAPostModal";
 
-const Tab = createMaterialTopTabNavigator();
-
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const context = "club";
 
@@ -76,6 +74,8 @@ export default function ClubsPages({ navigation, route }) {
   const [canBeActivated, setCanBeActivated] = useState(false);
   const [isUserFirstTime, setIsUserFirstTime] = useState(false);
   const [isClubFirstTime, setIsClubFirstTime] = useState(false);
+  const [showCreateAPostModal, setShowCreateAPostModal] = useState(false);
+
   const numberOfMembers =
     members.length === 1
       ? `${members.length} member`
@@ -286,6 +286,10 @@ export default function ClubsPages({ navigation, route }) {
     setIsSideMenuVisible(!isSideMenuVisible);
   };
 
+  const toggleCreateAPostModal = () => {
+    setShowCreateAPostModal(!showCreateAPostModal);
+  };
+
   const handleNavigateBack = () => {
     navigation.goBack();
   };
@@ -346,15 +350,6 @@ export default function ClubsPages({ navigation, route }) {
     dispatch(joinClub(joinData, clubsData, data.clubID));
     // dispatch(createNotification(notification, userIDs));
     dispatch(sendPushNotification(notification, userIDs, campusID));
-  };
-
-  //handle scroll for components
-  const handleScroll = (scrollHeight) => {
-    let tempShow = show;
-    if (scrollHeight > 400) tempShow = false;
-    else if (scrollHeight < 150) tempShow = true;
-
-    setShow(tempShow);
   };
 
   const UI = UIloading ? (
@@ -480,6 +475,7 @@ export default function ClubsPages({ navigation, route }) {
           marginTop: pixelSizeVertical(24),
           paddingHorizontal: pixelSizeHorizontal(16),
         }}
+        onPress={toggleCreateAPostModal}
       >
         <FastImage
           style={{
@@ -603,6 +599,22 @@ export default function ClubsPages({ navigation, route }) {
         </Pressable>
       </View>
       {UI}
+
+      <Modal
+        isVisible={showCreateAPostModal}
+        onBackdropPress={toggleCreateAPostModal} // Android back press
+        onSwipeComplete={toggleCreateAPostModal} // Swipe to discard
+        animationIn="slideInUp" // Has others, we want slide in from the left
+        animationOut="slideOutDown" // When discarding the drawer
+        swipeDirection="down" // Discard the drawer with swipe to left
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={styles.createAPostMenuStyle} // Needs to contain the width, 75% of screen width in our case
+      >
+        <CreateAPostModal callParentScreenFunction={toggleCreateAPostModal} />
+      </Modal>
+
       <Modal
         isVisible={isSideMenuVisible}
         onBackdropPress={toggleSideMenu} // Android back press
@@ -729,6 +741,9 @@ const styles = StyleSheet.create({
     margin: 0,
     width: width * 0.85, // SideMenu width
     alignSelf: "flex-end",
+  },
+  createAPostMenuStyle: {
+    margin: 0,
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
