@@ -274,25 +274,27 @@ export default function CreateAPhotosPost(props) {
           Choose photos
         </Text>
       </Pressable>
-      <Pressable
-        onPress={() => {
-          setImages([]);
-        }}
-        style={{
-          marginVertical: pixelSizeVertical(15),
-        }}
-      >
-        <Text
+      {images.length > 0 ? (
+        <Pressable
+          onPress={() => {
+            setImages([]);
+          }}
           style={{
-            fontSize: fontPixel(14),
-            fontWeight: "400",
-            color: "#A7AFC7",
-            marginLeft: pixelSizeHorizontal(16),
+            marginVertical: pixelSizeVertical(15),
           }}
         >
-          Reset photos
-        </Text>
-      </Pressable>
+          <Text
+            style={{
+              fontSize: fontPixel(14),
+              fontWeight: "400",
+              color: "#A7AFC7",
+              marginLeft: pixelSizeHorizontal(16),
+            }}
+          >
+            Reset photos
+          </Text>
+        </Pressable>
+      ) : null}
       {errors.post ? (
         <Text
           style={{
