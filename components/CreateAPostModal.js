@@ -28,6 +28,8 @@ import { toastConfig } from "../utils/toast-config";
 import { StatusBar } from "expo-status-bar";
 import EmptyView from "./EmptyView";
 import CreateAPhotosPost from "./CreateAPhotosPost";
+import CreateAFilePost from "./CreateAFilePost";
+import WarningDot from "../assets/WarningDot";
 
 export default function CreateAPostModal(props) {
   const dispatch = useDispatch();
@@ -258,16 +260,29 @@ export default function CreateAPostModal(props) {
             }}
             onPress={toggleVisibilityModal}
           >
-            <Text
+            <View
               style={{
-                fontSize: fontPixel(14),
-                fontWeight: "500",
-                textAlign: "center",
-                color: "#DFE5F8",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              public
-            </Text>
+              <Text
+                style={{
+                  fontSize: fontPixel(14),
+                  fontWeight: "500",
+                  textAlign: "center",
+                  color: "#DFE5F8",
+                }}
+              >
+                {visibility}
+              </Text>
+              <WarningDot
+                style={{
+                  marginBottom: pixelSizeVertical(-12),
+                  marginRight: pixelSizeHorizontal(1),
+                }}
+              />
+            </View>
           </Pressable>
           {/* --------------------------------------------- start of photos option */}
           <Pressable
@@ -356,14 +371,14 @@ export default function CreateAPostModal(props) {
               paddingVertical: pixelSizeVertical(8),
               paddingHorizontal: pixelSizeHorizontal(12),
               backgroundColor:
-                selectedOption === "files" ? "#6072A5" : "#232F52",
+                selectedOption === "file" ? "#6072A5" : "#232F52",
               marginHorizontal: pixelSizeHorizontal(4),
               borderRadius: 5,
               marginTop: pixelSizeVertical(16),
               marginBottom: pixelSizeVertical(16),
             }}
             onPress={() => {
-              handleSelectOption("files");
+              handleSelectOption("file");
             }}
           >
             <Text
@@ -374,7 +389,7 @@ export default function CreateAPostModal(props) {
                 color: "#DFE5F8",
               }}
             >
-              files
+              file
             </Text>
           </Pressable>
           {/* --------------------------------------------- start of extra */}
@@ -407,6 +422,9 @@ export default function CreateAPostModal(props) {
         {selectedOption === "text" ? textPost : null}
         {selectedOption === "photos" ? (
           <CreateAPhotosPost visibility={visibility} />
+        ) : null}
+        {selectedOption === "file" ? (
+          <CreateAFilePost visibility={visibility} />
         ) : null}
 
         {!loading && (
