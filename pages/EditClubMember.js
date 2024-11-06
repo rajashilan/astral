@@ -8,6 +8,7 @@ import {
   Dimensions,
   Pressable,
   ScrollView,
+  Alert,
 } from "react-native";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -58,9 +59,6 @@ export default function EditClubMember({ navigation, route }) {
   const [showAssignRolePopUp, setShowAssignRolePopUp] = useState(false);
   const [showRoleWarningPopUp, setShowRoleWarningPopUp] = useState(false);
 
-  const [showDeactivateMemberPopUp, setShowDeactivateMemberPopUp] =
-    useState(false);
-
   const [showPresidentRoleWarningPopUp, setShowPresidentRoleWarningPopUp] =
     useState(false);
 
@@ -101,7 +99,21 @@ export default function EditClubMember({ navigation, route }) {
 
   //basic deactivate member pop up
   const handleShowDeactivateMemberPopUp = () => {
-    setShowDeactivateMemberPopUp(!showDeactivateMemberPopUp);
+    Alert.alert(
+      "Remove member",
+      "Are you sure you want to remove this member?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Remove",
+          onPress: () => handleDeactivateMember(),
+          style: "destructive",
+        },
+      ]
+    );
   };
 
   //assign role pop up -> this pop up
@@ -431,41 +443,6 @@ export default function EditClubMember({ navigation, route }) {
             />
           </View>
         </Modal>
-      </Modal>
-
-      <Modal
-        isVisible={showDeactivateMemberPopUp}
-        onBackdropPress={handleShowDeactivateMemberPopUp} // Android back press
-        animationIn="bounceIn" // Has others, we want slide in from the left
-        animationOut="bounceOut" // When discarding the drawer
-        useNativeDriver // Faster animation
-        hideModalContentWhileAnimating // Better performance, try with/without
-        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
-        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
-      >
-        <View style={styles.withdrawMenu}>
-          <Text
-            style={{
-              fontSize: fontPixel(20),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              marginBottom: pixelSizeVertical(12),
-              textAlign: "center",
-            }}
-          >
-            are you sure to remove this member?
-          </Text>
-          <PrimaryButton
-            loading={loading}
-            onPress={handleDeactivateMember}
-            text={"remove"}
-          />
-          {!loading && (
-            <Pressable onPress={handleShowDeactivateMemberPopUp}>
-              <Text style={styles.withdrawButton}>cancel</Text>
-            </Pressable>
-          )}
-        </View>
       </Modal>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />

@@ -11,6 +11,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -57,13 +58,9 @@ export default function EditClubRoles({ navigation }) {
   const [scrollHeight, setScrollHeight] = useState(0);
   const [showMiniHeader, setShowMiniHeader] = useState(false);
 
-  const [showDeletePopUp, setShowDeletePopUp] = useState(false);
   const [showAddPopUp, setShowAddPopUp] = useState(false);
-  const [showWarningPopUp, setShowWarningPopUp] = useState(false);
-  const [warningPopUpData, setWarningPopUpData] = useState("");
   const [newRole, setNewRole] = useState("");
   const [errors, setErrors] = useState({ role: undefined });
-  const [deleteRole, setDeleteRole] = useState("");
 
   const onLayout = (event) => {
     const { height } = event.nativeEvent.layout;
@@ -101,18 +98,34 @@ export default function EditClubRoles({ navigation }) {
     setNewRole("");
   };
   const handleShowDeletePopUp = (item) => {
-    setShowDeletePopUp(!showDeletePopUp);
-    if (item) setDeleteRole(item);
-    else setDeleteRole("");
-  };
-  const handleShowWarningPopUp = (item) => {
-    setShowWarningPopUp(!showWarningPopUp);
-    if (item) {
-      setWarningPopUpData(item);
-    } else setWarningPopUpData("");
+    Alert.alert("Delete role", `Are you sure to delete the "${item}" role?`, [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        onPress: () => handleDeleteRole(item),
+        style: "destructive",
+      },
+    ]);
   };
 
-  const handleDeleteRole = () => {
+  const handleShowWarningPopUp = (item) => {
+    console.log(item);
+    Alert.alert(
+      "Role is assigned",
+      `Role currently assigned to ${item}. Reassign them as a regular member before deleting this role.`,
+      [
+        {
+          text: "Ok",
+          style: "default",
+        },
+      ]
+    );
+  };
+
+  const handleDeleteRole = (deleteRole) => {
     const temp = deleteRole.split(" ").join("");
 
     //check if role to delete has a member in it
@@ -123,16 +136,12 @@ export default function EditClubRoles({ navigation }) {
     members.forEach((member) => {
       if (member.role === deleteRole) {
         handleShowWarningPopUp(member.name);
-        handleShowDeletePopUp();
         warning = true;
       }
     });
 
     if (!warning) {
       dispatch(deleteClubRole(temp, club.clubID));
-
-      handleShowDeletePopUp();
-      setDeleteRole("");
     }
   };
 
@@ -341,71 +350,6 @@ export default function EditClubRoles({ navigation }) {
               <Text style={styles.withdrawButton}>cancel</Text>
             </Pressable>
           )}
-        </View>
-      </Modal>
-      <Modal
-        isVisible={showDeletePopUp}
-        onBackdropPress={handleShowDeletePopUp} // Android back press
-        animationIn="bounceIn" // Has others, we want slide in from the left
-        animationOut="bounceOut" // When discarding the drawer
-        useNativeDriver // Faster animation
-        hideModalContentWhileAnimating // Better performance, try with/without
-        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
-        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
-      >
-        <View style={styles.withdrawMenu}>
-          <Text
-            style={{
-              fontSize: fontPixel(20),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              marginBottom: pixelSizeVertical(12),
-              textAlign: "center",
-            }}
-          >
-            {` are you sure to delete the "${deleteRole}" role?`}
-          </Text>
-          <PrimaryButton
-            loading={loading}
-            onPress={handleDeleteRole}
-            text="delete"
-          />
-          {!loading && (
-            <Pressable onPress={handleShowDeletePopUp}>
-              <Text style={styles.withdrawButton}>cancel</Text>
-            </Pressable>
-          )}
-        </View>
-      </Modal>
-
-      <Modal
-        isVisible={showWarningPopUp}
-        onBackdropPress={handleShowWarningPopUp} // Android back press
-        animationIn="bounceIn" // Has others, we want slide in from the left
-        animationOut="bounceOut" // When discarding the drawer
-        useNativeDriver // Faster animation
-        hideModalContentWhileAnimating // Better performance, try with/without
-        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
-        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
-      >
-        <View style={styles.withdrawMenu}>
-          <Text
-            style={{
-              fontSize: fontPixel(20),
-              fontWeight: "400",
-              color: "#DFE5F8",
-              marginBottom: pixelSizeVertical(12),
-              textAlign: "center",
-            }}
-          >
-            {`Role currently assigned to ${warningPopUpData}. Reassign them as a regular member before deleting this role.`}
-          </Text>
-
-          <PrimaryButton
-            loading={loading}
-            onPress={handleShowWarningPopUp}
-            text="ok"
-          />
         </View>
       </Modal>
       <Toast config={toastConfig} />

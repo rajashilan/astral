@@ -15,6 +15,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import Modal from "react-native-modal";
 import Toast from "react-native-toast-message";
@@ -66,8 +67,6 @@ export default function ClubResubmission({ navigation, route }) {
   const [step, setStep] = useState("step1");
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
-
-  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
   const clubCreationDocName = state.campus.clubCreationDocName;
 
@@ -320,6 +319,24 @@ export default function ClubResubmission({ navigation, route }) {
     setErrors(errors);
   };
 
+  const showWithdrawAlert = () => {
+    Alert.alert(
+      "Withdraw submission",
+      `Are you sure to withdraw this submission?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Withdraw",
+          onPress: () => handleWithdraw(),
+          style: "destructive",
+        },
+      ]
+    );
+  };
+
   const handleWithdraw = () => {
     //delete the club using the clubID from user clubs, clubsOverview, and clubs
     //delete data locally in redux
@@ -375,7 +392,6 @@ export default function ClubResubmission({ navigation, route }) {
       })
       .then(() => {
         setLoading(false);
-        setShowWithdrawModal(!showWithdrawModal);
         Toast.show({
           type: "success",
           text1: "Club application withdrawn successfully",
@@ -589,7 +605,7 @@ export default function ClubResubmission({ navigation, route }) {
           <Text style={styles.secondaryButton}>back</Text>
         </Pressable>
       ) : step === "step1" && !loading ? (
-        <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
+        <Pressable onPress={() => showWithdrawAlert()}>
           <Text style={styles.secondaryButton}>withdraw</Text>
         </Pressable>
       ) : null}
@@ -614,35 +630,6 @@ export default function ClubResubmission({ navigation, route }) {
           currentPage="clubspages"
           navigation={navigation}
         />
-      </Modal>
-      <Modal
-        isVisible={showWithdrawModal}
-        onBackdropPress={() => setShowWithdrawModal(!showWithdrawModal)} // Android back press
-        animationIn="bounceIn" // Has others, we want slide in from the left
-        animationOut="bounceOut" // When discarding the drawer
-        useNativeDriver // Faster animation
-        hideModalContentWhileAnimating // Better performance, try with/without
-        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
-        style={styles.withdrawPopupStyle} // Needs to contain the width, 75% of screen width in our case
-      >
-        <View style={styles.withdrawMenu}>
-          <Text
-            style={[
-              styles.rejectionReason,
-              { textAlign: "center", marginBottom: pixelSizeHorizontal(8) },
-            ]}
-          >
-            Are you sure to withdraw your application?
-          </Text>
-          <PrimaryButton
-            loading={loading}
-            onPress={handleWithdraw}
-            text="withdraw"
-          />
-          <Pressable onPress={() => setShowWithdrawModal(!showWithdrawModal)}>
-            <Text style={styles.withdrawButton}>back</Text>
-          </Pressable>
-        </View>
       </Modal>
       <EmptyView />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
