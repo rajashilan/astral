@@ -1432,3 +1432,33 @@ export const deletePost = (postID) => (dispatch) => {
       });
     });
 };
+
+//1. add the entire post to reports collection
+//2. need to notify the admin
+export const reportPost = (postID, currentUserID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+  db.collection("posts")
+    .doc(postID)
+    .get()
+    .then((doc) => {
+      let temp = { ...doc.data() };
+      temp.reportedBy = currentUserID;
+
+      return db.collection("reports").add(temp);
+    })
+    .then(() => {
+      Toast.show({
+        type: "success",
+        text1: "post reported successfully.",
+      });
+      dispatch({ type: STOP_LOADING_DATA });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};

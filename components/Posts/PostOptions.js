@@ -16,7 +16,11 @@ import {
 } from "react-native-popup-menu";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../Loader";
-import { deletePost } from "../../src/redux/actions/dataActions";
+import {
+  deletePost,
+  reportPost,
+  sendAdminNotification,
+} from "../../src/redux/actions/dataActions";
 
 export default function PostOptions(props) {
   const { postID, createdBy } = props;
@@ -25,13 +29,27 @@ export default function PostOptions(props) {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.credentials);
+  const club = useSelector((state) => state.data.clubData.club);
+  const campusID = useSelector((state) => state.data.campus.campusID);
   const loading = useSelector((state) => state.data.loading);
   const currentUserID = user.userId;
 
   //for report option to be available: currentUserID !== createdBy
   //for delete option to be available: currentUserID === createdBy
 
-  const reportPost = () => {};
+  const onReportSelected = () => {
+    Alert.alert("Report post", "Are you sure you want to report this post?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Report",
+        onPress: () => handleReportPost(),
+        style: "destructive",
+      },
+    ]);
+  };
 
   const onDeleteSelected = () => {
     Alert.alert("Delete post", "Are you sure you want to delete this post?", [
@@ -51,6 +69,11 @@ export default function PostOptions(props) {
     dispatch(deletePost(postID));
   };
 
+  const handleReportPost = () => {
+    dispatch(reportPost(postID, currentUserID));
+    dispatch(sendAdminNotification("report", club.name, "", "", campusID));
+  };
+
   return (
     <Menu
       style={{
@@ -63,7 +86,8 @@ export default function PostOptions(props) {
           style={{
             flexDirection: "row",
             marginLeft: "auto",
-            height: 20,
+            height: heightPixel(20),
+            paddingTop: pixelSizeVertical(10),
             backgroundColor: "#0C111F",
           }}
         >
@@ -121,7 +145,7 @@ export default function PostOptions(props) {
       >
         {currentUserID !== createdBy ? (
           <MenuOption
-            onSelect={reportPost}
+            onSelect={onReportSelected}
             text="Report"
             customStyles={{
               optionText: {
