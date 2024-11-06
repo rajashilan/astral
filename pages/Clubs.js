@@ -61,7 +61,6 @@ export default React.memo(function Clubs({ navigation }) {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    navigation.navigate("ClubsOnboarding");
     if (user.isFirstTime && user.isFirstTime === true && showClubOnboarding) {
       navigation.navigate("ClubsOnboarding");
     }
