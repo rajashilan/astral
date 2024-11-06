@@ -9,6 +9,7 @@ import PostsHeader from "./PostsHeader";
 import Photos from "./Photos";
 import File from "./File";
 import Poll from "./Poll";
+import Event from "./Event";
 
 export default function PostsAdapter(props) {
   const { context, item } = props;
@@ -49,7 +50,16 @@ export default function PostsAdapter(props) {
           {item.text}
         </Text>
       ) : null}
+
       {item.type === "photo" ? <Photos data={item.photos} /> : null}
+      {item.type === "event" ? (
+        <Event
+          data={item.photos}
+          title={item.title}
+          content={item.content}
+          date={item.date}
+        />
+      ) : null}
       {item.type === "file" ? <File file={item.file} /> : null}
       {item.type === "poll" ? (
         <Poll

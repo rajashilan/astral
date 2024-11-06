@@ -31,6 +31,7 @@ import CreateAPhotosPost from "./CreateAPhotosPost";
 import CreateAFilePost from "./CreateAFilePost";
 import WarningDot from "../assets/WarningDot";
 import CreateAPollPost from "./CreateAPollPost";
+import CreateAnEventPost from "./CreateAnEventPost";
 
 export default function CreateAPostModal(props) {
   const dispatch = useDispatch();
@@ -324,14 +325,14 @@ export default function CreateAPostModal(props) {
               paddingVertical: pixelSizeVertical(8),
               paddingHorizontal: pixelSizeHorizontal(12),
               backgroundColor:
-                selectedOption === "events" ? "#6072A5" : "#232F52",
+                selectedOption === "event" ? "#6072A5" : "#232F52",
               marginHorizontal: pixelSizeHorizontal(4),
               borderRadius: 5,
               marginTop: pixelSizeVertical(16),
               marginBottom: pixelSizeVertical(16),
             }}
             onPress={() => {
-              handleSelectOption("events");
+              handleSelectOption("event");
             }}
           >
             <Text
@@ -342,7 +343,7 @@ export default function CreateAPostModal(props) {
                 color: "#DFE5F8",
               }}
             >
-              events
+              event
             </Text>
           </Pressable>
           {/* --------------------------------------------- start of poll option */}
@@ -441,6 +442,12 @@ export default function CreateAPostModal(props) {
         ) : null}
         {selectedOption === "poll" ? (
           <CreateAPollPost
+            visibility={visibility}
+            callParentScreenFunction={props.callParentScreenFunction}
+          />
+        ) : null}
+        {selectedOption === "event" ? (
+          <CreateAnEventPost
             visibility={visibility}
             callParentScreenFunction={props.callParentScreenFunction}
           />
