@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React, { useRef, useState } from "react";
+import { Text, View, Pressable } from "react-native";
 import {
   fontPixel,
   pixelSizeHorizontal,
@@ -17,6 +17,22 @@ export default function PostsAdapter(props) {
   //header remains the same for all posts, so need a separate component for that
   //text also the same, if available, show
   //diff components: photos, files, polls, ?events?
+
+  const [isExpanded, setIsExpanded] = useState(false); // State to toggle full text
+  const [isClipped, setIsClipped] = useState(false); // State to check if text is clipped
+  const textRef = useRef(null); // Ref to access the text element
+
+  const handleTextLayout = (e) => {
+    const { height } = e.nativeEvent.layout; // Get the height of the Text component
+    if (height > 45) {
+      // Threshold to decide if the text is clipped (adjust as needed)
+      setIsClipped(true);
+    }
+  };
+
+  const toggleExpand = () => {
+    setIsExpanded((prev) => !prev);
+  };
 
   return (
     <View
@@ -42,6 +58,10 @@ export default function PostsAdapter(props) {
       />
       {item.text ? (
         <Text
+          ref={textRef}
+          onLayout={handleTextLayout} // Track the layout of the Text component
+          numberOfLines={isExpanded ? 0 : 3} // Show 3 lines or full text based on `isExpanded`
+          ellipsizeMode="tail" // Show ellipsis ("...") when text overflows
           style={{
             marginTop: pixelSizeVertical(8),
             fontSize: fontPixel(14),
@@ -52,6 +72,17 @@ export default function PostsAdapter(props) {
           {item.text}
         </Text>
       ) : null}
+      {isClipped && !isExpanded && (
+        <Pressable onPress={toggleExpand}>
+          <Text style={{ color: "#8C91FB", marginTop: 5 }}>Show more</Text>
+        </Pressable>
+      )}
+
+      {isExpanded && (
+        <Pressable onPress={toggleExpand}>
+          <Text style={{ color: "#8C91FB", marginTop: 5 }}>Show less</Text>
+        </Pressable>
+      )}
 
       {item.type === "photo" ? <Photos data={item.photos} /> : null}
       {item.type === "event" ? (
