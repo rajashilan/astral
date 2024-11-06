@@ -1462,3 +1462,28 @@ export const reportPost = (postID, currentUserID) => (dispatch) => {
       });
     });
 };
+
+export const getEventPosts = (clubID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+  db.collection("posts")
+    .where("clubID", "==", clubID)
+    .where("type", "==", "event")
+    .orderBy("createdAt", "desc")
+    .get()
+    .then((data) => {
+      let temp = [];
+      data.forEach((doc) => {
+        temp.push({ ...doc.data() });
+      });
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({ type: SET_CLUB_EVENT, payload: { event: temp } });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
