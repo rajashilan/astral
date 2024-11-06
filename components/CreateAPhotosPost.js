@@ -63,7 +63,7 @@ export default function CreateAPhotosPost(props) {
 
     if (!tempErrors.post) {
       uploadImagesAndGetUrls(images)
-        .then((urls) => {
+        .then(async (urls) => {
           let postData = {
             postID: "", //update after adding to collection
             text: text,
@@ -79,7 +79,12 @@ export default function CreateAPhotosPost(props) {
             visibility: visibility,
             photos: urls,
           };
-          dispatch(addNewPost(postData));
+          try {
+            await dispatch(addNewPost(postData));
+            props.callParentScreenFunction();
+          } catch (error) {
+            console.error(error);
+          }
         })
         .catch((error) => {
           console.error("Error uploading images:", error);

@@ -87,7 +87,7 @@ export default function CreateAPollPost(props) {
     });
   };
 
-  const handlePost = () => {
+  const handlePost = async () => {
     let tempErrors = {};
     poll.options.forEach((option) => {
       if (pollText[option.optionID].trim() === "") {
@@ -123,7 +123,12 @@ export default function CreateAPollPost(props) {
           text: pollText[option.optionID],
         });
       });
-      dispatch(addNewPost(postData));
+      try {
+        await dispatch(addNewPost(postData));
+        props.callParentScreenFunction();
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     setErrors(tempErrors);

@@ -1332,35 +1332,39 @@ export const setClubFirstTimeToFalse = (clubID) => (dispatch) => {
 };
 
 export const addNewPost = (post) => (dispatch) => {
-  dispatch({ type: SET_LOADING_DATA });
-  let postID;
-  db.collection("posts")
-    .add(post)
-    .then((data) => {
-      postID = data.id;
-      return db.collection("posts").doc(data.id).update({ postID: data.id });
-    })
-    .then(() => {
-      Toast.show({
-        type: "success",
-        text1: "new post added successfully.",
+  return new Promise((resolve, reject) => {
+    dispatch({ type: SET_LOADING_DATA });
+    let postID;
+    db.collection("posts")
+      .add(post)
+      .then((data) => {
+        postID = data.id;
+        return db.collection("posts").doc(data.id).update({ postID: data.id });
+      })
+      .then(() => {
+        Toast.show({
+          type: "success",
+          text1: "new post added successfully.",
+        });
+        dispatch({ type: STOP_LOADING_DATA });
+        dispatch({
+          type: ADD_NEW_POST,
+          payload: {
+            ...post,
+            postID,
+          },
+        });
+        resolve();
+      })
+      .catch((error) => {
+        dispatch({ type: STOP_UI_LOADING });
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+        console.error(error);
+        dispatch({ type: STOP_LOADING_DATA });
+        reject(error);
       });
-      dispatch({ type: STOP_LOADING_DATA });
-      dispatch({
-        type: ADD_NEW_POST,
-        payload: {
-          ...post,
-          postID,
-        },
-      });
-    })
-    .catch((error) => {
-      dispatch({ type: STOP_UI_LOADING });
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
-      console.error(error);
-      dispatch({ type: STOP_LOADING_DATA });
-    });
+  });
 };

@@ -49,7 +49,7 @@ export default function CreateAFilePost(props) {
 
     if (!tempErrors.post) {
       uploadFileAndGetUrl([{ ...file }])
-        .then((url) => {
+        .then(async (url) => {
           let postData = {
             postID: "", //update after adding to collection
             text: text,
@@ -68,7 +68,12 @@ export default function CreateAFilePost(props) {
               url: url[0],
             },
           };
-          dispatch(addNewPost(postData));
+          try {
+            await dispatch(addNewPost(postData));
+            props.callParentScreenFunction();
+          } catch (error) {
+            console.error(error);
+          }
         })
         .catch((error) => {
           console.error("Error uploading images:", error);

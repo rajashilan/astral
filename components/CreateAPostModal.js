@@ -61,7 +61,7 @@ export default function CreateAPostModal(props) {
 
   const [text, setText] = useState("");
 
-  const handlePost = () => {
+  const handlePost = async () => {
     //type text -> check if text is empty
     let tempErrors = {};
     if (text.trim() === "" && selectedOption === "text") {
@@ -86,7 +86,13 @@ export default function CreateAPostModal(props) {
           visibility: visibility,
         };
       }
-      dispatch(addNewPost(postData));
+
+      try {
+        await dispatch(addNewPost(postData));
+        props.callParentScreenFunction();
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     setErrors(tempErrors);
@@ -422,13 +428,22 @@ export default function CreateAPostModal(props) {
 
         {selectedOption === "text" ? textPost : null}
         {selectedOption === "photos" ? (
-          <CreateAPhotosPost visibility={visibility} />
+          <CreateAPhotosPost
+            visibility={visibility}
+            callParentScreenFunction={props.callParentScreenFunction}
+          />
         ) : null}
         {selectedOption === "file" ? (
-          <CreateAFilePost visibility={visibility} />
+          <CreateAFilePost
+            visibility={visibility}
+            callParentScreenFunction={props.callParentScreenFunction}
+          />
         ) : null}
         {selectedOption === "poll" ? (
-          <CreateAPollPost visibility={visibility} />
+          <CreateAPollPost
+            visibility={visibility}
+            callParentScreenFunction={props.callParentScreenFunction}
+          />
         ) : null}
 
         {!loading && (
