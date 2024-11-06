@@ -51,7 +51,16 @@ export default function PostsAdapter(props) {
       ) : null}
       {item.type === "photo" ? <Photos data={item.photos} /> : null}
       {item.type === "file" ? <File file={item.file} /> : null}
-      {item.type === "poll" ? <Poll data={item.poll} /> : null}
+      {item.type === "poll" ? (
+        <Poll
+          data={{
+            createdAt: item.createdAt,
+            expiresAt: item.expiresAt,
+            options: item.options,
+            votes: item.votes,
+          }}
+        />
+      ) : null}
     </View>
   );
 }

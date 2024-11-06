@@ -109,15 +109,13 @@ export default function CreateAPollPost(props) {
         clubImageUrl: data.image,
         campusID: data.campusID,
         visibility: visibility,
-        poll: {
-          options: [],
-          votes: {},
-          createdAt: new Date().toISOString(),
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), //expires in 24 hours
-        },
+        options: [],
+        votes: {},
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), //expires in 24 hours
       };
       poll.options.forEach((option) => {
-        postData.poll.options.push({
+        postData.options.push({
           optionID: option.optionID,
           votes: 0,
           text: pollText[option.optionID],

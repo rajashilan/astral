@@ -179,7 +179,6 @@ export default function ClubsPages({ navigation, route }) {
   //     clubName:
   //       "Engineering and Computing Club for INTI International College Penang",
   //     campusID: "1",
-  //     poll: {
   //       options: [
   //         {
   //           optionID: 0,
@@ -214,7 +213,6 @@ export default function ClubsPages({ navigation, route }) {
   //       },
   //       createdAt: "2024-11-01T11:20:18.153Z",
   //       expiresAt: "2024-11-03T11:20:18.153Z",
-  //     },
   //     visibility: "public",
   //   },
   // ];
