@@ -16,6 +16,7 @@ import {
   DELETE_CLUB_ROLE,
   DELETE_EVENT,
   DELETE_GALLERY,
+  DELETE_POST,
   GET_A_CLUB_DATA,
   GET_ORIENTATION_OVERVIEW,
   GET_ORIENTATION_PAGE,
@@ -1399,6 +1400,32 @@ export const submitAVote = (vote, userID, postID) => (dispatch) => {
     .catch((error) => {
       console.error(error);
       dispatch({ type: STOP_UI_LOADING });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};
+
+export const deletePost = (postID) => (dispatch) => {
+  dispatch({ type: SET_LOADING_DATA });
+  db.collection("posts")
+    .doc(postID)
+    .delete()
+    .then(() => {
+      Toast.show({
+        type: "success",
+        text1: "post deleted successfully.",
+      });
+      dispatch({ type: STOP_LOADING_DATA });
+      dispatch({
+        type: DELETE_POST,
+        payload: postID,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_LOADING_DATA });
       Toast.show({
         type: "error",
         text1: "Something went wrong",

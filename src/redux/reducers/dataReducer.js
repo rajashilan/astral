@@ -11,6 +11,7 @@ import {
   DELETE_CLUB_ROLE,
   DELETE_EVENT,
   DELETE_GALLERY,
+  DELETE_POST,
   GET_A_CLUB_DATA,
   GET_ORIENTATION_OVERVIEW,
   GET_ORIENTATION_PAGE,
@@ -496,6 +497,19 @@ export default function (state = initialState, action) {
         clubData: {
           ...state.clubData,
           posts: [...action.payload],
+        },
+      };
+    }
+    case DELETE_POST: {
+      let temp = [...state.clubData.posts];
+      const index = temp.findIndex((post) => post.postID === action.payload);
+      temp.splice(index, 1);
+
+      return {
+        ...state,
+        clubData: {
+          ...state.clubData,
+          posts: [...temp],
         },
       };
     }

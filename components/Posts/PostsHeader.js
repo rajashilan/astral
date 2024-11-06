@@ -7,15 +7,25 @@ import {
   pixelSizeVertical,
   widthPixel,
 } from "../../utils/responsive-font";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import PostOptions from "./PostOptions";
 
 export default function PostsHeader(props) {
   dayjs.extend(relativeTime);
 
   //context = club or feed
-  const { context, url, clubName, username, role, timestamp } = props;
+  const {
+    context,
+    url,
+    clubName,
+    username,
+    role,
+    timestamp,
+    postID,
+    createdBy,
+  } = props;
 
   return (
     <View
@@ -68,6 +78,7 @@ export default function PostsHeader(props) {
           {dayjs(timestamp.split("T")[0]).fromNow()}
         </Text>
       </View>
+      <PostOptions postID={postID} createdBy={createdBy} />
     </View>
   );
 }
