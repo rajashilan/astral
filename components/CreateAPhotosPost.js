@@ -213,7 +213,7 @@ export default function CreateAPhotosPost(props) {
       />
       <View
         style={{
-          marginTop: pixelSizeVertical(24),
+          marginVertical: pixelSizeVertical(24),
         }}
       >
         <Carousel

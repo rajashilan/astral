@@ -244,7 +244,7 @@ export default function CreateAnEventPost(props) {
       />
       <View
         style={{
-          marginTop: pixelSizeVertical(24),
+          marginVertical: pixelSizeVertical(24),
         }}
       >
         <Carousel
