@@ -1,17 +1,6 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  ScrollView,
-  Pressable,
-  Text,
-} from "react-native";
-import Carousel, { Pagination } from "react-native-snap-carousel";
-import FastImage from "react-native-fast-image";
-import * as Crypto from "expo-crypto";
+import React, { useState } from "react";
+import { View, Dimensions, Pressable, Text } from "react-native";
 import storage from "@react-native-firebase/storage";
-import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewPost } from "../src/redux/actions/dataActions";
@@ -27,6 +16,7 @@ import {
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 const { width } = Dimensions.get("window");
+
 export default function CreateAFilePost(props) {
   const { visibility } = props;
 

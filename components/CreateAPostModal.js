@@ -30,6 +30,7 @@ import EmptyView from "./EmptyView";
 import CreateAPhotosPost from "./CreateAPhotosPost";
 import CreateAFilePost from "./CreateAFilePost";
 import WarningDot from "../assets/WarningDot";
+import CreateAPollPost from "./CreateAPollPost";
 
 export default function CreateAPostModal(props) {
   const dispatch = useDispatch();
@@ -425,6 +426,9 @@ export default function CreateAPostModal(props) {
         ) : null}
         {selectedOption === "file" ? (
           <CreateAFilePost visibility={visibility} />
+        ) : null}
+        {selectedOption === "poll" ? (
+          <CreateAPollPost visibility={visibility} />
         ) : null}
 
         {!loading && (
