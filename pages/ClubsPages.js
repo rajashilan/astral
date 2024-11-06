@@ -13,12 +13,14 @@ import {
   Platform,
   ScrollView,
   FlatList,
+  RefreshControl,
 } from "react-native";
 import Modal from "react-native-modal";
 import Animated, {
   FadeIn,
   FadeOut,
   FadeInUp,
+  FadeInDown,
   FadeOutUp,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
@@ -76,6 +78,8 @@ export default function ClubsPages({ navigation, route }) {
   const [isUserFirstTime, setIsUserFirstTime] = useState(false);
   const [isClubFirstTime, setIsClubFirstTime] = useState(false);
   const [showCreateAPostModal, setShowCreateAPostModal] = useState(false);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const numberOfMembers =
     members.length === 1
@@ -238,6 +242,23 @@ export default function ClubsPages({ navigation, route }) {
     };
   }, []);
 
+  const onRefresh = async () => {
+    // Set refreshing to true before dispatch
+    setRefreshing(true);
+
+    try {
+      // Dispatch getAClub action and wait for it to resolve
+      await dispatch(getAClub(clubID, user.userId));
+
+      // Once the action resolves, set refreshing to false
+      setRefreshing(false);
+    } catch (error) {
+      // Handle error if needed
+      console.error("Error fetching club data:", error);
+      setRefreshing(false); // Optionally set refreshing to false in case of an error
+    }
+  };
+
   useEffect(() => {
     if (!isEmpty(data)) {
       setMembersRequests(data.membersRequests);
@@ -264,11 +285,8 @@ export default function ClubsPages({ navigation, route }) {
       if (data.isFirstTime && currentMember.role === "president") {
         dispatch(setClubFirstTimeToFalse(clubID));
         setIsClubFirstTime(true);
-        console.log("Setting club is first time to false");
       }
     }
-
-    console.log(currentMember);
   }, [data]);
 
   useEffect(() => {
@@ -361,58 +379,60 @@ export default function ClubsPages({ navigation, route }) {
   const UI = UIloading ? (
     <Loader />
   ) : (
-    <ScrollView
+    <Animated.ScrollView
       showsHorizontalScrollIndicator={false}
       stickyHeaderIndices={[2]}
+      entering={FadeInDown.duration(300)}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     >
-      {show && (
-        <Animated.View
-          entering={FadeInUp.duration(100)}
-          exiting={FadeOutUp.duration(70)}
+      <Animated.View
+        entering={FadeInUp.duration(100)}
+        exiting={FadeOutUp.duration(70)}
+      >
+        {data && data.image && (
+          <View>
+            <ImageBackground
+              source={{ uri: data.image }}
+              style={styles.imageHeaderContainer}
+            ></ImageBackground>
+          </View>
+        )}
+        <View
+          style={{
+            paddingHorizontal: pixelSizeHorizontal(16),
+            flexDirection: "column",
+            marginTop: pixelSizeVertical(10),
+          }}
         >
-          {data && data.image && (
-            <View>
-              <ImageBackground
-                source={{ uri: data.image }}
-                style={styles.imageHeaderContainer}
-              ></ImageBackground>
-            </View>
-          )}
-          <View
+          <Text style={styles.header}>{data.name}</Text>
+          <Text
             style={{
-              paddingHorizontal: pixelSizeHorizontal(16),
-              flexDirection: "column",
-              marginTop: pixelSizeVertical(10),
+              marginTop: pixelSizeVertical(4),
+              fontSize: fontPixel(14),
+              fontWeight: "400",
+              color: "#C6CDE2",
             }}
           >
-            <Text style={styles.header}>{data.name}</Text>
-            <Text
-              style={{
-                marginTop: pixelSizeVertical(4),
-                fontSize: fontPixel(14),
-                fontWeight: "400",
-                color: "#C6CDE2",
+            {numberOfMembers}
+          </Text>
+          {!isEmpty(currentMember) ? (
+            <PrimaryButton
+              conditionToDisable={true}
+              text="joined"
+              textStyle={{
+                color: "#DFE5F8",
               }}
-            >
-              {numberOfMembers}
-            </Text>
-            {!isEmpty(currentMember) ? (
-              <PrimaryButton
-                conditionToDisable={true}
-                text="joined"
-                textStyle={{
-                  color: "#DFE5F8",
-                }}
-                buttonStyle={{
-                  marginBottom: pixelSizeVertical(4),
-                  backgroundColor: "#232F52",
-                  opacity: 1,
-                }}
-              />
-            ) : null}
-          </View>
-        </Animated.View>
-      )}
+              buttonStyle={{
+                marginBottom: pixelSizeVertical(4),
+                backgroundColor: "#232F52",
+                opacity: 1,
+              }}
+            />
+          ) : null}
+        </View>
+      </Animated.View>
 
       <View
         style={{
@@ -520,7 +540,7 @@ export default function ClubsPages({ navigation, route }) {
         )}
       />
       <EmptyView />
-    </ScrollView>
+    </Animated.ScrollView>
   );
 
   return (

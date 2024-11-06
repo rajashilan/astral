@@ -142,44 +142,48 @@ export const getOrientationPage = (orientationPageID) => (dispatch) => {
 };
 
 export const getAClub = (clubID, userID) => (dispatch) => {
-  dispatch({ type: SET_UI_LOADING });
+  return new Promise((resolve, reject) => {
+    dispatch({ type: SET_UI_LOADING });
 
-  db.collection("clubs")
-    .doc(clubID)
-    .get()
-    .then((doc) => {
-      dispatch({ type: GET_A_CLUB_DATA, payload: { ...doc.data() } });
+    db.collection("clubs")
+      .doc(clubID)
+      .get()
+      .then((doc) => {
+        dispatch({ type: GET_A_CLUB_DATA, payload: { ...doc.data() } });
 
-      return db.collection("clubMembers").doc(clubID).get();
-    })
-    .then((doc) => {
-      dispatch({
-        type: SET_CLUB_MEMBERS_DATA,
-        payload: { members: [...doc.data().members], userID },
-      });
+        return db.collection("clubMembers").doc(clubID).get();
+      })
+      .then((doc) => {
+        dispatch({
+          type: SET_CLUB_MEMBERS_DATA,
+          payload: { members: [...doc.data().members], userID },
+        });
 
-      return db
-        .collection("posts")
-        .where("clubID", "==", clubID)
-        .orderBy("createdAt", "desc")
-        .get();
-    })
-    .then((data) => {
-      let temp = [];
-      data.forEach((doc) => {
-        temp.push({ ...doc.data() });
+        return db
+          .collection("posts")
+          .where("clubID", "==", clubID)
+          .orderBy("createdAt", "desc")
+          .get();
+      })
+      .then((data) => {
+        let temp = [];
+        data.forEach((doc) => {
+          temp.push({ ...doc.data() });
+        });
+        dispatch({ type: STOP_UI_LOADING });
+        dispatch({ type: SET_POSTS, payload: temp });
+        resolve(); // Resolve the promise after everything completes
+      })
+      .catch((error) => {
+        dispatch({ type: STOP_UI_LOADING });
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+        console.error(error);
+        reject(error); // Reject the promise on error
       });
-      dispatch({ type: STOP_UI_LOADING });
-      dispatch({ type: SET_POSTS, payload: temp });
-    })
-    .catch((error) => {
-      dispatch({ type: STOP_UI_LOADING });
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
-      console.error(error);
-    });
+  });
 };
 
 export const getClubMembers = (clubID, userID) => (dispatch) => {
