@@ -27,6 +27,7 @@ import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import dayjs from "dayjs";
+import { SET_LOADING_DATA } from "../src/redux/type";
 
 const { width } = Dimensions.get("window");
 
@@ -157,6 +158,7 @@ export default function CreateAnEventPost(props) {
   };
 
   const uploadImagesAndGetUrls = async (imageObjects) => {
+    dispatch({ type: SET_LOADING_DATA });
     const uploadPromises = imageObjects.map(async ({ uri, imageType }) => {
       const name = Crypto.randomUUID();
       const imageFileName = `${name}.${imageType}`;

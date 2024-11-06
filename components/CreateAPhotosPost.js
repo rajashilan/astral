@@ -25,6 +25,7 @@ import {
 } from "../utils/responsive-font";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../utils/toast-config";
+import { SET_LOADING_DATA } from "../src/redux/type";
 
 const { width } = Dimensions.get("window");
 
@@ -134,6 +135,7 @@ export default function CreateAPhotosPost(props) {
   };
 
   const uploadImagesAndGetUrls = async (imageObjects) => {
+    dispatch({ type: SET_LOADING_DATA });
     const uploadPromises = imageObjects.map(async ({ uri, imageType }) => {
       const name = Crypto.randomUUID();
       const imageFileName = `${name}.${imageType}`;
