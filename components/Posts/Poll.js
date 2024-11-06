@@ -12,10 +12,14 @@ import Animated, {
 } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { submitAVote } from "../../src/redux/actions/dataActions";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 export default function Poll(props) {
   const { data } = props;
   const { options, expiresAt, votes, postID } = data;
+
+  dayjs.extend(relativeTime);
 
   const [totalVotes, setTotalVotes] = useState(0);
   const [activeStatus, setActiveStatus] = useState(false);
@@ -184,6 +188,20 @@ export default function Poll(props) {
     >
       {/* inactive poll when selectedOption or expired */}
       {!activeStatus || selectedOption !== null ? inActivePoll : activePoll}
+      {activeStatus ? (
+        <Text
+          style={{
+            fontSize: fontPixel(12),
+            fontWeight: "400",
+            color: "#C6CDE2",
+            marginTop: pixelSizeVertical(10),
+            marginLeft: pixelSizeHorizontal(2),
+          }}
+        >
+          {/* {dayjs(new Date(timestamp).toString()).fromNow()} */}
+          poll ends {dayjs(expiresAt).fromNow()}
+        </Text>
+      ) : null}
     </View>
   );
 }
