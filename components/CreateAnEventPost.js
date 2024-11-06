@@ -242,54 +242,64 @@ export default function CreateAnEventPost(props) {
         editable={!loading}
         onChangeText={(text) => setContent(text)}
       />
-      <View
-        style={{
-          marginVertical: pixelSizeVertical(24),
-        }}
-      >
-        <Carousel
-          layout="default"
-          data={images}
-          disableIntervalMomentum
-          onSnapToItem={(index) => onSelect(index)}
-          sliderWidth={width - 32}
-          itemWidth={width - 32}
-          useExperimentalSnap
-          renderItem={({ item, index }) => (
-            <>
-              <FastImage
-                key={index}
-                style={{
-                  alignSelf: "center",
-                  width: "100%",
-                  height: heightPixel(300),
-                  borderRadius: 5,
-                }}
-                transition={1000}
-                resizeMode="cover"
-                source={{ uri: item.uri }}
-                progressiveRenderingEnabled={true}
-                cache={FastImage.cacheControl.immutable}
-                priority={FastImage.priority.normal}
-              />
-            </>
-          )}
-        />
-      </View>
-      <Pagination
-        inactiveDotColor="#546593"
-        dotColor="#C4FFF9"
-        activeDotIndex={indexSelected}
-        containerStyle={{
-          paddingTop: 0,
-          paddingBottom: 0,
-          alignSelf: "center",
-          marginTop: pixelSizeVertical(12),
-          marginBottom: pixelSizeVertical(24),
-        }}
-        dotsLength={images.length}
-        inactiveDotScale={1}
-      />
+      {images.length > 0 ? (
+        <>
+          <View
+            style={{
+              marginVertical: pixelSizeVertical(24),
+            }}
+          >
+            <Carousel
+              layout="default"
+              data={images}
+              disableIntervalMomentum
+              onSnapToItem={(index) => onSelect(index)}
+              sliderWidth={width - 32}
+              itemWidth={width - 32}
+              useExperimentalSnap
+              renderItem={({ item, index }) => (
+                <>
+                  <FastImage
+                    key={index}
+                    style={{
+                      alignSelf: "center",
+                      width: "100%",
+                      height: heightPixel(300),
+                      borderRadius: 5,
+                    }}
+                    transition={1000}
+                    resizeMode="cover"
+                    source={{ uri: item.uri }}
+                    progressiveRenderingEnabled={true}
+                    cache={FastImage.cacheControl.immutable}
+                    priority={FastImage.priority.normal}
+                  />
+                </>
+              )}
+            />
+          </View>
+          <Pagination
+            inactiveDotColor="#546593"
+            dotColor="#C4FFF9"
+            activeDotIndex={indexSelected}
+            containerStyle={{
+              paddingTop: 0,
+              paddingBottom: 0,
+              alignSelf: "center",
+              marginTop: pixelSizeVertical(12),
+              marginBottom: pixelSizeVertical(24),
+            }}
+            dotsLength={images.length}
+            inactiveDotScale={1}
+          />
+        </>
+      ) : (
+        <View
+          style={{
+            marginBottom: pixelSizeVertical(20),
+          }}
+        ></View>
+      )}
       <Pressable
         onPress={handleAddPhoto}
         style={{
