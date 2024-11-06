@@ -3,7 +3,7 @@ import React from "react";
 import { pixelSizeVertical } from "../utils/responsive-font";
 
 export default function Loader(props) {
-  const { style, color } = props;
+  const { style, color, size } = props;
   return (
     <View
       style={[
@@ -18,7 +18,10 @@ export default function Loader(props) {
         style,
       ]}
     >
-      <ActivityIndicator size="large" color={color ? color : "#C4FFF9"} />
+      <ActivityIndicator
+        size={size ? size : "large"}
+        color={color ? color : "#C4FFF9"}
+      />
     </View>
   );
 }
