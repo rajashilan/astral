@@ -25,7 +25,7 @@ export const data = [
   {
     id: 2,
     title: "Creating a club",
-    subtitle: `1. Submit and wait for approval.\n2. Upload the minimum required details to activate your club for others to join! (requirements will be shown on the club page after approval).`,
+    subtitle: `Submit along with the required form (if applicable) and wait for approval!`,
     background: "#CDACE5",
     highlight: "#8600E8",
     isFinal: false,
@@ -34,7 +34,7 @@ export const data = [
   {
     id: 3,
     title: "Manage your club",
-    subtitle: `Are you the president?\nHere’s some of what you can do:\n\n1. Add events and photos\n2. Update miscellaneous details\n3. Accept or reject member requests\n4. Manage and assign roles  `,
+    subtitle: `Are you a member with a role?\nCreate posts with polls, photos, and showcase events!\n\nAre you the president?\nHandle members requests, manage roles, update club details and more!`,
     background: "#FFCBA4",
     highlight: "#EB6500",
     isFinal: true,

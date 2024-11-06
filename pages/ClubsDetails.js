@@ -9,11 +9,7 @@ import {
 import Toast from "react-native-toast-message";
 import { useSelector, useDispatch } from "react-redux";
 
-import {
-  createNotification,
-  handleDeactivateClub,
-  handleUpdateClubDetails,
-} from "../src/redux/actions/dataActions";
+import { handleUpdateClubDetails } from "../src/redux/actions/dataActions";
 import {
   fontPixel,
   heightPixel,
@@ -24,7 +20,6 @@ import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 import CustomTextInput from "../components/CustomTextInput";
-import WarningContainer from "../components/WarningContainer";
 import LinksView from "../components/LinksView";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import IosHeight from "../components/IosHeight";
@@ -38,7 +33,7 @@ import Modal from "react-native-modal";
 
 const { width } = Dimensions.get("window");
 
-const ClubsDetails = React.memo(({navigation}) => {
+const ClubsDetails = React.memo(({ navigation }) => {
   const dispatch = useDispatch();
 
   const club = useSelector((state) => state.data.clubData.club);
@@ -102,33 +97,6 @@ const ClubsDetails = React.memo(({navigation}) => {
       misc: more,
     };
     dispatch(handleUpdateClubDetails(club.clubID, updateData));
-
-    if (
-      (club.status === "active" && updateData.schedule === "") ||
-      (club.status === "active" && updateData.fees === "")
-    ) {
-      dispatch(handleDeactivateClub(club.clubID, campusID, false));
-      const notification = {
-        preText: "",
-        postText: "has been deactivated due to insufficient details.",
-        sourceID: club.clubID,
-        sourceName: club.name,
-        sourceImage: club.image,
-        sourceDestination: "ClubsPages",
-        defaultText: "",
-        read: false,
-        userID: "",
-        createdAt: new Date().toISOString(),
-        notificationID: "",
-      };
-      const userIDs = [];
-      const temp = Object.values(club.roles);
-      temp.forEach((role) => {
-        if (role.userID && role.userID !== "") userIDs.push(role.userID);
-      });
-
-      dispatch(createNotification(notification, userIDs));
-    }
   };
 
   //show normal view if user is other than president
@@ -148,13 +116,6 @@ const ClubsDetails = React.memo(({navigation}) => {
 
   const editView = (
     <>
-      {(!loading && meetings === "") || (!loading && fees === "") ? (
-        <WarningContainer>
-          <Text style={styles.warningText}>
-            add meetings and fees details to be able to activate your club.
-          </Text>
-        </WarningContainer>
-      ) : null}
       <Text style={[styles.title, { paddingLeft: pixelSizeHorizontal(8) }]}>
         Meetings
       </Text>

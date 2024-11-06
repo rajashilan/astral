@@ -109,16 +109,6 @@ export default function EditClub({ navigation, route }) {
   const handleEditActiveStatus = () => {
     const errors = { ...errors };
 
-    if (
-      (!club.gallery ||
-        !club.events ||
-        club.details.schedule === "" ||
-        club.details.fees === "") &&
-      selectedActive === "activate"
-    )
-      errors.active =
-        "Please activate the club by completing your details. Wait for the details to be approved if not yet approved.";
-
     if (!errors.active) {
       if (selectedActive === "activate") {
         dispatch(handleActivateClub(club.clubID, campusID));

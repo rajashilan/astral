@@ -28,7 +28,6 @@ import {
 import { toastConfig } from "../utils/toast-config";
 import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
-import WarningContainer from "../components/WarningContainer";
 import LinksView from "../components/LinksView";
 
 const { width } = Dimensions.get("window");
@@ -143,21 +142,6 @@ const ClubsGallery = React.memo(({ navigation, onScroll }) => {
           buttonStyle={{ marginTop: 0 }}
         />
       )}
-      {!loading &&
-        data.length === 0 &&
-        !isEmpty(currentMember) &&
-        currentMember.role === "president" && (
-          <WarningContainer
-            style={{
-              marginBottom: pixelSizeVertical(16),
-              marginTop: pixelSizeVertical(-8),
-            }}
-          >
-            <Text style={styles.warningText}>
-              add a photo to be able to activate your club.
-            </Text>
-          </WarningContainer>
-        )}
       {data.length > 0 ? (
         <View
           style={{
