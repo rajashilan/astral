@@ -10,17 +10,21 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Poll(props) {
   const { data } = props;
   const { options, expiresAt, votes } = data;
 
-  //TODO: replace with actual user id
-  const currentUserID = "1234";
-
   const [totalVotes, setTotalVotes] = useState(0);
   const [activeStatus, setActiveStatus] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.credentials);
+  const campusID = useSelector((state) => state.data.campus.campusID);
+
+  const currentUserID = user.userId;
 
   useEffect(() => {
     try {
@@ -70,15 +74,11 @@ export default function Poll(props) {
     );
   });
 
-  /*
-  inactive poll:
-  - need to calculate percentage
-  - view is independent from background
-  - background color percentage: votes percentage
-  */
-
   const inActivePoll = options.map((option, index) => {
-    const percentage = Math.round((option.votes / totalVotes) * 100);
+    let percentage = Math.round((option.votes / totalVotes) * 100);
+
+    //handle the possiblity if there are no votes for the option
+    if (!percentage) percentage = 0;
     const width = useSharedValue(0);
     width.value = withTiming(percentage, { duration: 1000 });
 
