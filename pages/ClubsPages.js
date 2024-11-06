@@ -767,7 +767,7 @@ const styles = StyleSheet.create({
   },
   createAPostMenuStyle: {
     margin: 0,
-    marginTop: pixelSizeVertical(150),
+    marginTop: pixelSizeVertical(100),
   },
   hamburgerIcon: {
     height: pixelSizeVertical(20),
