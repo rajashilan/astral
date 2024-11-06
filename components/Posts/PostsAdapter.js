@@ -58,6 +58,7 @@ export default function PostsAdapter(props) {
             expiresAt: item.expiresAt,
             options: item.options,
             votes: item.votes,
+            postID: item.postID,
           }}
         />
       ) : null}

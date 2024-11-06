@@ -1368,3 +1368,40 @@ export const addNewPost = (post) => (dispatch) => {
       });
   });
 };
+
+export const submitAVote = (vote, userID, postID) => (dispatch) => {
+  db.collection("posts")
+    .doc(postID)
+    .get()
+    .then((doc) => {
+      let tempVotes = { ...doc.data().votes };
+
+      let tempOptions = [...doc.data().options];
+      let tempCount = tempOptions[vote.optionID].votes;
+      tempOptions[vote.optionID].votes = tempCount + 1;
+
+      //if an option was already chosen by the user, decrement that option's votes
+      if (tempVotes[userID] !== undefined) {
+        let prevTempCount = tempOptions[tempVotes[userID].optionID].votes;
+        tempOptions[tempVotes[userID].optionID].votes = prevTempCount - 1;
+      }
+
+      tempVotes[userID] = vote;
+
+      return db.collection("posts").doc(postID).update({
+        votes: tempVotes,
+        options: tempOptions,
+      });
+    })
+    .then(() => {
+      //do nothing, update the frontend instantly after choice is made
+    })
+    .catch((error) => {
+      console.error(error);
+      dispatch({ type: STOP_UI_LOADING });
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    });
+};

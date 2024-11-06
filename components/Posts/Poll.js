@@ -11,10 +11,11 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
+import { submitAVote } from "../../src/redux/actions/dataActions";
 
 export default function Poll(props) {
   const { data } = props;
-  const { options, expiresAt, votes } = data;
+  const { options, expiresAt, votes, postID } = data;
 
   const [totalVotes, setTotalVotes] = useState(0);
   const [activeStatus, setActiveStatus] = useState(false);
@@ -45,7 +46,6 @@ export default function Poll(props) {
 
       //need to set if user has made a selection
       if (votes[currentUserID] !== undefined) {
-        console.log(votes[currentUserID].optionID);
         setSelectedOption(votes[currentUserID].optionID);
       }
     } catch (error) {
@@ -53,18 +53,72 @@ export default function Poll(props) {
     }
   }, [options, expiresAt]);
 
-  const handlePollPress = () => {
-    //3 situations
-    //1st: user is choosing an option for the first time
-    //2nd: user has chosen an option before and is choosing a new option
-    //3rd: user choosing the same option (do nothing)
+  const handlePollPress = (optionID) => {
+    // If the user hasn't voted yet (1st situation)
+    if (votes[currentUserID] === undefined) {
+      handleFirstTimeVote(optionID);
+    }
+    // If the user is changing their vote (2nd situation)
+    else if (votes[currentUserID].optionID !== optionID) {
+      handleVoteChange(optionID);
+    }
+    // If the user is voting for the same option (3rd situation), do nothing
+  };
+
+  const handleFirstTimeVote = (optionID) => {
+    const voteData = createVoteData(optionID);
+
+    // Store the vote data for the current user
+    votes[currentUserID] = voteData;
+
+    // Increment total votes
+    updateTotalVotes(1);
+
+    // Increment the vote count for the chosen option
+    options[optionID].votes += 1;
+
+    // Update selected option in UI
+    setSelectedOption(optionID);
+
+    // Dispatch the vote
+    dispatch(submitAVote(voteData, currentUserID, postID));
+  };
+
+  const handleVoteChange = (newOptionID) => {
+    const prevOptionID = votes[currentUserID].optionID;
+    const voteData = createVoteData(newOptionID);
+
+    // Update the vote for the current user
+    votes[currentUserID] = voteData;
+
+    // Adjust the vote count for the new and previous options
+    options[newOptionID].votes += 1;
+    options[prevOptionID].votes -= 1;
+
+    // Update selected option in UI
+    setSelectedOption(newOptionID);
+
+    // Dispatch the vote change
+    dispatch(submitAVote(voteData, currentUserID, postID));
+  };
+
+  const createVoteData = (optionID) => {
+    return {
+      optionID,
+      createdAt: new Date().toISOString(),
+    };
+  };
+
+  const updateTotalVotes = (incrementBy) => {
+    let temp = totalVotes + incrementBy;
+    setTotalVotes(temp);
   };
 
   const activePoll = options.map((option, index) => {
     return (
       <Pressable
         onPress={() => {
-          if (activeStatus) handlePollPress();
+          if (activeStatus) handlePollPress(option.optionID);
         }}
         key={index}
         style={style.activePoll}
@@ -89,7 +143,7 @@ export default function Poll(props) {
     return (
       <Pressable
         onPress={() => {
-          if (activeStatus) handlePollPress();
+          if (activeStatus) handlePollPress(option.optionID);
         }}
         key={index}
         style={{
