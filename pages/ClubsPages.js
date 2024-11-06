@@ -488,44 +488,46 @@ export default function ClubsPages({ navigation, route }) {
           );
         })}
       </ScrollView>
-      <Pressable
-        style={{
-          flexDirection: "row",
-          paddingVertical: pixelSizeVertical(12),
-          borderStyle: "solid",
-          borderWidth: 1,
-          borderTopColor: "#232F52",
-          borderBottomColor: "#232F52",
-          marginTop: pixelSizeVertical(24),
-          paddingHorizontal: pixelSizeHorizontal(16),
-        }}
-        onPress={toggleCreateAPostModal}
-      >
-        <FastImage
+      {!isEmpty(currentMember) && currentMember.role !== "member" ? (
+        <Pressable
           style={{
-            width: widthPixel(40),
-            height: heightPixel(40),
-            marginTop: "auto",
-            marginBottom: "auto",
-            borderRadius: 50,
+            flexDirection: "row",
+            paddingVertical: pixelSizeVertical(12),
+            borderStyle: "solid",
+            borderWidth: 1,
+            borderTopColor: "#232F52",
+            borderBottomColor: "#232F52",
+            marginTop: pixelSizeVertical(24),
+            paddingHorizontal: pixelSizeHorizontal(16),
           }}
-          resizeMode="cover"
-          source={{ uri: currentMember.profileImage }}
-          progressiveRenderingEnabled={true}
-          cache={FastImage.cacheControl.immutable}
-          priority={FastImage.priority.normal}
-        />
-        <Text
-          style={{
-            fontSize: fontPixel(14),
-            fontWeight: "400",
-            color: "#C6CDE2",
-            marginLeft: pixelSizeHorizontal(12),
-          }}
+          onPress={toggleCreateAPostModal}
         >
-          Write something...
-        </Text>
-      </Pressable>
+          <FastImage
+            style={{
+              width: widthPixel(40),
+              height: heightPixel(40),
+              marginTop: "auto",
+              marginBottom: "auto",
+              borderRadius: 50,
+            }}
+            resizeMode="cover"
+            source={{ uri: currentMember.profileImage }}
+            progressiveRenderingEnabled={true}
+            cache={FastImage.cacheControl.immutable}
+            priority={FastImage.priority.normal}
+          />
+          <Text
+            style={{
+              fontSize: fontPixel(14),
+              fontWeight: "400",
+              color: "#C6CDE2",
+              marginLeft: pixelSizeHorizontal(12),
+            }}
+          >
+            Write something...
+          </Text>
+        </Pressable>
+      ) : null}
 
       <FlatList
         scrollEnabled={false}
