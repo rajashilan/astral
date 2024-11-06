@@ -8,7 +8,7 @@ import {
   Dimensions,
   Pressable,
   ScrollView,
-  FlatList,
+  Alert,
 } from "react-native";
 import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -21,22 +21,24 @@ import IosHeight from "../components/IosHeight";
 import SideMenu from "../components/SideMenu";
 import {
   fontPixel,
-  widthPixel,
   heightPixel,
   pixelSizeVertical,
   pixelSizeHorizontal,
 } from "../utils/responsive-font";
 import { toastConfig } from "../utils/toast-config";
+import PrimaryButton from "../components/PrimaryButton";
 import EmptyView from "../components/EmptyView";
 
 const { width } = Dimensions.get("window");
 
-export default function ClubsMembers({ navigation }) {
-  const members = useSelector((state) => state.data.clubData.members);
-  const numberOfMembers =
-    members.length === 1
-      ? `${members.length} member`
-      : `${members.length} members`;
+export default function ViewAClubMember({ navigation, route }) {
+  const { member } = route.params;
+  const currentMember = useSelector(
+    (state) => state.data.clubData.currentMember
+  );
+  const club = useSelector((state) => state.data.clubData.club);
+  const loading = useSelector((state) => state.data.loading);
+  //const loading = true;
 
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
@@ -80,7 +82,7 @@ export default function ClubsMembers({ navigation }) {
             exiting={FadeOut.duration(300)}
           >
             <Text style={styles.headerMini} numberOfLines={1}>
-              current members
+              {member.name}
             </Text>
           </Animated.View>
         ) : (
@@ -105,73 +107,31 @@ export default function ClubsMembers({ navigation }) {
         <View style={styles.paddingContainer}>
           <View style={{ width: "100%", flexDirection: "column" }}>
             <View onLayout={onLayout}>
-              <Header header="club members" />
+              <Header header={member.name} />
             </View>
-            {numberOfMembers && (
-              <Text style={styles.disclaimer}>{numberOfMembers}</Text>
-            )}
-            <FlatList
-              style={{ marginTop: pixelSizeVertical(24) }}
-              keyExtractor={(item, index) => index.toString()}
-              initialNumToRender={10}
-              maxToRenderPerBatch={10}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              scrollEnabled={false}
-              data={members}
-              renderItem={({ item, index }) =>
-                members.length > 0 && (
-                  <Pressable
-                    onPress={() =>
-                      navigation.navigate("ViewAClubMember", { member: item })
-                    }
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                      }}
-                    >
-                      <FastImage
-                        key={index}
-                        style={styles.image}
-                        resizeMode="cover"
-                        source={{ uri: item.profileImage }}
-                        progressiveRenderingEnabled={true}
-                        cache={FastImage.cacheControl.immutable}
-                        priority={FastImage.priority.normal}
-                      />
-                      <View
-                        style={{
-                          marginLeft: pixelSizeHorizontal(16),
-                          flexDirection: "column",
-                        }}
-                      >
-                        <Text
-                          numberOfLines={3}
-                          style={{
-                            fontSize: fontPixel(16),
-                            fontWeight: "500",
-                            color: "#DFE5F8",
-                            width: width - 99,
-                          }}
-                        >
-                          {item.name} - Intake {item.intake}, {item.department}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: fontPixel(14),
-                            fontWeight: "400",
-                            color: "#DFE5F8",
-                          }}
-                        >
-                          {item.role}
-                        </Text>
-                      </View>
-                    </View>
-                  </Pressable>
-                )
-              }
+            <Text style={styles.disclaimer}>{member.role}</Text>
+            <FastImage
+              style={styles.image}
+              resizeMode="cover"
+              source={{ uri: member.profileImage }}
+              progressiveRenderingEnabled={true}
+              cache={FastImage.cacheControl.immutable}
+              priority={FastImage.priority.normal}
             />
+            <Text
+              style={{
+                fontSize: fontPixel(20),
+                fontWeight: "400",
+                color: "#DFE5F8",
+                marginTop: pixelSizeVertical(12),
+              }}
+            >
+              {member.email}
+            </Text>
+            <Text style={styles.name}>
+              Intake {member.intake}, {member.department}
+            </Text>
+            <Text style={styles.quote}>{member.bio && member.bio}</Text>
           </View>
         </View>
         <EmptyView />
@@ -250,15 +210,68 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    width: widthPixel(50),
-    height: heightPixel(50),
+    width: "100%",
+    height: heightPixel(280),
+    marginTop: pixelSizeVertical(24),
     marginBottom: pixelSizeVertical(12),
-    borderRadius: 50,
+    borderRadius: 5,
   },
   disclaimer: {
     marginTop: pixelSizeVertical(-18),
     fontSize: fontPixel(20),
     fontWeight: "400",
     color: "#C6CDE2",
+  },
+  secondaryButton: {
+    fontSize: fontPixel(22),
+    fontWeight: "500",
+    color: "#A7AFC7",
+    marginTop: pixelSizeVertical(2),
+    textAlign: "center",
+  },
+  error: {
+    marginTop: pixelSizeVertical(8),
+    marginBottom: pixelSizeVertical(8),
+    fontSize: fontPixel(12),
+    fontWeight: "400",
+    color: "#ed3444",
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingRight: pixelSizeHorizontal(16),
+  },
+  withdrawMenu: {
+    height: "auto",
+    paddingRight: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(16),
+    paddingBottom: pixelSizeVertical(16),
+    backgroundColor: "#131A2E",
+    display: "flex",
+    borderRadius: 5,
+  },
+  withdrawButton: {
+    fontSize: fontPixel(18),
+    fontWeight: "400",
+    color: "#A7AFC7",
+    marginTop: pixelSizeVertical(2),
+    textAlign: "center",
+  },
+  role: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    marginBottom: pixelSizeVertical(4),
+  },
+  name: {
+    fontSize: fontPixel(16),
+    fontWeight: "400",
+    color: "#DFE5F8",
+    marginTop: pixelSizeVertical(5),
+    marginBottom: pixelSizeVertical(10),
+  },
+  quote: {
+    fontSize: fontPixel(14),
+    fontWeight: "400",
+    color: "#C6CDE2",
+    lineHeight: 26,
   },
 });
