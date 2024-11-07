@@ -199,10 +199,13 @@ const SideMenu = (props) => {
         scrollEnabled={false}
         data={[
           {
-            name: "orientation",
+            name: "home",
           },
           {
             name: "clubs",
+          },
+          {
+            name: "orientation",
           },
           {
             name: "general forms",
@@ -213,7 +216,13 @@ const SideMenu = (props) => {
         ]}
         renderItem={({ item }) => (
           <>
-            <Pressable onPress={() => handleMenuNavigation(item.name)}>
+            <Pressable
+              onPress={() => {
+                if (item.name === "home") {
+                  handleMenuNavigation("feed");
+                } else handleMenuNavigation(item.name);
+              }}
+            >
               <View
                 style={{
                   flexDirection: "row",
@@ -253,6 +262,7 @@ const SideMenu = (props) => {
         </Text>
       </Pressable>
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
+      <EmptyView backgroundColor={"#363BB1"} />
       <EmptyView backgroundColor={"#363BB1"} />
     </ScrollView>
   );

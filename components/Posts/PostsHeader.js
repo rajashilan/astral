@@ -11,9 +11,11 @@ import { Pressable, Text, View } from "react-native";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PostOptions from "./PostOptions";
+import { useNavigation } from "@react-navigation/native";
 
 export default function PostsHeader(props) {
   dayjs.extend(relativeTime);
+  const navigation = useNavigation();
 
   //context = club or feed
   const {
@@ -26,12 +28,20 @@ export default function PostsHeader(props) {
     timestamp,
     postID,
     createdBy,
+    clubID,
   } = props;
 
   return (
-    <View
+    <Pressable
       style={{
         flexDirection: "row",
+      }}
+      onPress={() => {
+        if (context === "feed") {
+          navigation.navigate("ClubsPages", {
+            clubID,
+          });
+        }
       }}
     >
       <FastImage
@@ -82,6 +92,6 @@ export default function PostsHeader(props) {
       {context !== "SuspendedPost" ? (
         <PostOptions postID={postID} createdBy={createdBy} />
       ) : null}
-    </View>
+    </Pressable>
   );
 }

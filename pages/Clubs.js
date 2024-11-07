@@ -623,19 +623,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   tabActive: {
-    fontSize: fontPixel(34),
+    fontSize: fontPixel(26),
     fontWeight: "500",
     color: "#C4FFF9",
     marginBottom: pixelSizeVertical(18),
-    marginRight: pixelSizeHorizontal(32),
+    marginRight: pixelSizeHorizontal(18),
   },
   tabInactive: {
-    fontSize: fontPixel(34),
+    fontSize: fontPixel(26),
     fontWeight: "500",
     color: "#C4FFF9",
     marginBottom: pixelSizeVertical(18),
     opacity: 0.5,
-    marginRight: pixelSizeHorizontal(32),
+    marginRight: pixelSizeHorizontal(18),
   },
   joinClubContainer: {
     display: "flex",

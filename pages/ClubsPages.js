@@ -403,8 +403,8 @@ export default function ClubsPages({ navigation, route }) {
       <FlatList
         scrollEnabled={false}
         keyExtractor={(item, index) => index.toString()}
-        initialNumToRender={3}
-        maxToRenderPerBatch={3}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
         data={posts}
         renderItem={({ item }) => (
           <PostsAdapter item={item} context={context} />

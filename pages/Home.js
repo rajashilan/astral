@@ -52,8 +52,9 @@ export default function Home({ navigation }) {
   //show user's name, intake... photo, and notifications icon
 
   const [menuItems] = useState([
-    { name: "orientation" },
+    { name: "home" },
     { name: "clubs" },
+    { name: "orientation" },
     { name: "general forms" },
     { name: "account" },
   ]);
@@ -62,6 +63,7 @@ export default function Home({ navigation }) {
     const menuItem = name.charAt(0).toUpperCase() + name.slice(1);
     if (name === "staff list") navigation.replace("Stafflist");
     else if (name === "general forms") navigation.replace("GeneralForms");
+    else if (name === "home") navigation.replace("Feed");
     else navigation.replace(menuItem.trim());
   };
 
@@ -161,7 +163,7 @@ export default function Home({ navigation }) {
     <ScrollView
       contentContainerStyle={{
         justifyContent: "center",
-        paddingTop: pixelSizeVertical(80),
+        paddingTop: pixelSizeVertical(50),
         paddingBottom: pixelSizeVertical(16),
       }}
       style={styles.container}

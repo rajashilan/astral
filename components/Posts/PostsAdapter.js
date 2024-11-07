@@ -57,6 +57,7 @@ export default function PostsAdapter(props) {
           timestamp={item.createdAt}
           createdBy={item.createdBy}
           postID={item.postID}
+          clubID={item.clubID}
         />
         {item.text ? (
           <Text
