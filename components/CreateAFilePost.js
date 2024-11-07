@@ -58,6 +58,7 @@ export default function CreateAFilePost(props) {
             createdBy: user.userId,
             createdByUsername: user.username,
             createdByRole: currentMember.role,
+            createdByImageUrl: user.profileImage,
             createdAt: new Date().toISOString(),
             clubID: data.clubID,
             clubName: data.name,

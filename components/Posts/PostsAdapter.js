@@ -48,9 +48,10 @@ export default function PostsAdapter(props) {
     >
       <PostsHeader
         context={context}
-        url={item.clubImageUrl}
+        clubImageUrl={item.clubImageUrl}
         clubName={item.clubName}
         username={item.createdByUsername}
+        userImageUrl={item.createdByImageUrl}
         role={item.createdByRole}
         timestamp={item.createdAt}
         createdBy={item.createdBy}

@@ -18,7 +18,8 @@ export default function PostsHeader(props) {
   //context = club or feed
   const {
     context,
-    url,
+    clubImageUrl,
+    userImageUrl,
     clubName,
     username,
     role,
@@ -42,7 +43,7 @@ export default function PostsHeader(props) {
           borderRadius: 50,
         }}
         resizeMode="cover"
-        source={{ uri: url }}
+        source={{ uri: context === "feed" ? clubImageUrl : userImageUrl }}
         progressiveRenderingEnabled={true}
         cache={FastImage.cacheControl.immutable}
         priority={FastImage.priority.normal}
