@@ -190,6 +190,10 @@ export default function Notifications({ navigation }) {
                       });
                     } else if (item.sourceDestination === "Clubs") {
                       navigation.navigate("Clubs");
+                    } else if (item.sourceDestination === "SuspendedPost") {
+                      navigation.navigate("SuspendedPost", {
+                        postID: item.sourceID,
+                      });
                     }
                   }
                 }}

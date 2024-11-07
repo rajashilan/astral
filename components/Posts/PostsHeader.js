@@ -79,7 +79,9 @@ export default function PostsHeader(props) {
           {dayjs(timestamp.split("T")[0]).fromNow()}
         </Text>
       </View>
-      <PostOptions postID={postID} createdBy={createdBy} />
+      {context !== "SuspendedPost" ? (
+        <PostOptions postID={postID} createdBy={createdBy} />
+      ) : null}
     </View>
   );
 }

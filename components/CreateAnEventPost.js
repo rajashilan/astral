@@ -74,6 +74,7 @@ export default function CreateAnEventPost(props) {
       uploadImagesAndGetUrls(images)
         .then(async (urls) => {
           let postData = {
+            status: "active",
             postID: "", //update after adding to collection
             title: text,
             content: content,

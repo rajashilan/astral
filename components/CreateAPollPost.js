@@ -97,6 +97,7 @@ export default function CreateAPollPost(props) {
 
     if (!tempErrors.post) {
       let postData = {
+        status: "active",
         postID: "", //update after adding to collection
         text: text,
         type: "poll", //photo, file, text, poll, ?event?

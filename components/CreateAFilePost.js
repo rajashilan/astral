@@ -52,6 +52,7 @@ export default function CreateAFilePost(props) {
       uploadFileAndGetUrl([{ ...file }])
         .then(async (url) => {
           let postData = {
+            status: "active",
             postID: "", //update after adding to collection
             text: text,
             type: "file", //photo, file, text, poll, ?event?

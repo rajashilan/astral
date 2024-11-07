@@ -73,6 +73,7 @@ export default function CreateAPostModal(props) {
       let postData;
       if (selectedOption === "text") {
         postData = {
+          status: "active",
           postID: "", //update after adding to collection
           text: text,
           type: selectedOption, //photo, file, text, poll, ?event?

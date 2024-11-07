@@ -47,6 +47,7 @@ import ClubsMembers from "./pages/ClubsMembers";
 import ClubsEvents from "./pages/ClubsEvents";
 import ClubsDetails from "./pages/ClubsDetails";
 import ViewAClubMember from "./pages/ViewAClubMember";
+import SuspendedPost from "./pages/SuspendedPost";
 
 const Stack = createStackNavigator();
 
@@ -524,6 +525,18 @@ export default function App() {
               <Stack.Screen
                 name="ViewAClubMember"
                 component={ViewAClubMember}
+                options={{
+                  transitionSpec: {
+                    open: animationConfig,
+                    close: animationConfig,
+                  }, // added
+                  headerShown: false,
+                  ...TransitionPresets.SlideFromRightIOS,
+                }}
+              />
+              <Stack.Screen
+                name="SuspendedPost"
+                component={SuspendedPost}
                 options={{
                   transitionSpec: {
                     open: animationConfig,

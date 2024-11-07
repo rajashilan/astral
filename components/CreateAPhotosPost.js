@@ -66,6 +66,7 @@ export default function CreateAPhotosPost(props) {
       uploadImagesAndGetUrls(images)
         .then(async (urls) => {
           let postData = {
+            status: "active",
             postID: "", //update after adding to collection
             text: text,
             type: "photo", //photo, file, text, poll, ?event?
