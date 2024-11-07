@@ -1408,59 +1408,67 @@ export const submitAVote = (vote, userID, postID) => (dispatch) => {
 };
 
 export const deletePost = (postID) => (dispatch) => {
-  dispatch({ type: SET_LOADING_DATA });
-  db.collection("posts")
-    .doc(postID)
-    .delete()
-    .then(() => {
-      Toast.show({
-        type: "success",
-        text1: "post deleted successfully.",
+  return new Promise((resolve, reject) => {
+    dispatch({ type: SET_LOADING_DATA });
+    db.collection("posts")
+      .doc(postID)
+      .delete()
+      .then(() => {
+        Toast.show({
+          type: "success",
+          text1: "post deleted successfully.",
+        });
+        dispatch({ type: STOP_LOADING_DATA });
+        dispatch({
+          type: DELETE_POST,
+          payload: postID,
+        });
+        resolve();
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: STOP_LOADING_DATA });
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+        reject(error);
       });
-      dispatch({ type: STOP_LOADING_DATA });
-      dispatch({
-        type: DELETE_POST,
-        payload: postID,
-      });
-    })
-    .catch((error) => {
-      console.error(error);
-      dispatch({ type: STOP_LOADING_DATA });
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
-    });
+  });
 };
 
 //1. add the entire post to reports collection
 //2. need to notify the admin
 export const reportPost = (postID, currentUserID) => (dispatch) => {
-  dispatch({ type: SET_LOADING_DATA });
-  db.collection("posts")
-    .doc(postID)
-    .get()
-    .then((doc) => {
-      let temp = { ...doc.data() };
-      temp.reportedBy = currentUserID;
+  return new Promise((resolve, reject) => {
+    dispatch({ type: SET_LOADING_DATA });
+    db.collection("posts")
+      .doc(postID)
+      .get()
+      .then((doc) => {
+        let temp = { ...doc.data() };
+        temp.reportedBy = currentUserID;
 
-      return db.collection("reports").add(temp);
-    })
-    .then(() => {
-      Toast.show({
-        type: "success",
-        text1: "post reported successfully.",
+        return db.collection("reports").add(temp);
+      })
+      .then(() => {
+        Toast.show({
+          type: "success",
+          text1: "post reported successfully.",
+        });
+        dispatch({ type: STOP_LOADING_DATA });
+        resolve();
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: STOP_LOADING_DATA });
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+        reject(error);
       });
-      dispatch({ type: STOP_LOADING_DATA });
-    })
-    .catch((error) => {
-      console.error(error);
-      dispatch({ type: STOP_LOADING_DATA });
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
-    });
+  });
 };
 
 export const getEventPosts = (clubID) => (dispatch) => {

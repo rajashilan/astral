@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Pressable, View, Alert } from "react-native";
 import {
   fontPixel,
@@ -31,7 +31,7 @@ export default function PostOptions(props) {
   const user = useSelector((state) => state.user.credentials);
   const club = useSelector((state) => state.data.clubData.club);
   const campusID = useSelector((state) => state.data.campus.campusID);
-  const loading = useSelector((state) => state.data.loading);
+  const [loading, setLoading] = useState(false);
   const currentUserID = user.userId;
 
   //for report option to be available: currentUserID !== createdBy
@@ -65,13 +65,27 @@ export default function PostOptions(props) {
     ]);
   };
 
-  const handleDeletePost = () => {
-    dispatch(deletePost(postID));
+  const handleDeletePost = async () => {
+    setLoading(true);
+    try {
+      await dispatch(deletePost(postID));
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
   };
 
-  const handleReportPost = () => {
-    dispatch(reportPost(postID, currentUserID));
+  const handleReportPost = async () => {
+    setLoading(true);
     dispatch(sendAdminNotification("report", club.name, "", "", campusID));
+    try {
+      await dispatch(reportPost(postID, currentUserID));
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
   };
 
   return (
