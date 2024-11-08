@@ -87,6 +87,8 @@ export default function CreateAPostModal(props) {
           clubImageUrl: data.image,
           campusID: data.campusID,
           visibility: visibility,
+          likesCount: 0,
+          commentsCount: 0,
         };
       }
 
@@ -140,7 +142,7 @@ export default function CreateAPostModal(props) {
         placeholder={`create a ${visibility} post...`}
         value={text}
         multiline={true}
-        numberOfLines={4}
+        numberOfLines={1}
         editable={!loading}
         onChangeText={(text) => setText(text)}
       />

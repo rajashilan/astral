@@ -66,6 +66,8 @@ export default function CreateAFilePost(props) {
             clubImageUrl: data.image,
             campusID: data.campusID,
             visibility: visibility,
+            likesCount: 0,
+            commentsCount: 0,
             file: {
               name: file.name,
               url: url[0],

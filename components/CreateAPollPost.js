@@ -115,6 +115,8 @@ export default function CreateAPollPost(props) {
         votes: {},
         createdAt: new Date().toISOString(),
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), //expires in 24 hours
+        likesCount: 0,
+        commentsCount: 0,
       };
       poll.options.forEach((option) => {
         postData.options.push({

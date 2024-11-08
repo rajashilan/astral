@@ -81,6 +81,8 @@ export default function CreateAPhotosPost(props) {
             campusID: data.campusID,
             visibility: visibility,
             photos: urls,
+            likesCount: 0,
+            commentsCount: 0,
           };
           try {
             await dispatch(addNewPost(postData));
