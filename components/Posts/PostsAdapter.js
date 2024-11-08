@@ -115,7 +115,11 @@ export default function PostsAdapter(props) {
             flexDirection: "row",
           }}
         >
-          <Likes postID={item.postID} likesCount={item.likesCount} />
+          <Likes
+            postID={item.postID}
+            likesCount={item.likesCount}
+            context={context}
+          />
           <Comments />
         </View>
       </View>

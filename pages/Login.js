@@ -44,6 +44,7 @@ export default function Login({ navigation, route }) {
   const testEmails = [
     "p20012892@student.newinti.edu.my",
     "shahmina@railways.edu.my",
+    "raja@railways.edu.my",
   ];
 
   const emailRegex =

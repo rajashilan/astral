@@ -54,6 +54,8 @@ export const SET_POSTS = "SET_POSTS";
 export const DELETE_POST = "DELETE_POST";
 export const ADD_LIKE = "ADD_LIKE";
 export const REMOVE_LIKE = "REMOVE_LIKE";
+export const ADD_LIKE_EVENT = "ADD_LIKE_EVENT";
+export const REMOVE_LIKE_EVENT = "REMOVE_LIKE_EVENT";
 
 //ui types
 export const SET_UI_LOADING = "SET_UI_LOADING";

@@ -10,7 +10,12 @@ import firestore from "@react-native-firebase/firestore";
 import likeEmpty from "../../assets/like_empty.png";
 import likeFilled from "../../assets/like_filled.png";
 import { useDispatch, useSelector } from "react-redux";
-import { ADD_LIKE, REMOVE_LIKE } from "../../src/redux/type";
+import {
+  ADD_LIKE,
+  ADD_LIKE_EVENT,
+  REMOVE_LIKE,
+  REMOVE_LIKE_EVENT,
+} from "../../src/redux/type";
 import LottieView from "lottie-react-native";
 
 const db = firestore();
@@ -18,7 +23,7 @@ const db = firestore();
 export default function Likes(props) {
   const dispatch = useDispatch();
 
-  const { postID, likesCount } = props;
+  const { postID, likesCount, context } = props;
 
   const [isLiked, setIsLiked] = useState(false);
   const [likeID, setLikeID] = useState("");
@@ -58,6 +63,9 @@ export default function Likes(props) {
       createdAt: new Date().toISOString(),
     };
     if (likeStatus) {
+      if (context === "events") {
+        dispatch({ type: ADD_LIKE_EVENT, payload: postID });
+      }
       dispatch({ type: ADD_LIKE, payload: postID });
 
       db.collection("likes")
@@ -87,6 +95,9 @@ export default function Likes(props) {
           console.error("1: ", error);
         });
     } else {
+      if (context === "events") {
+        dispatch({ type: REMOVE_LIKE_EVENT, payload: postID });
+      }
       dispatch({ type: REMOVE_LIKE, payload: postID });
       db.collection("likes")
         .doc(likeID)

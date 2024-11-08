@@ -4,6 +4,7 @@ import {
   ADD_CLUB_EVENT,
   ADD_CLUB_GALLERY,
   ADD_LIKE,
+  ADD_LIKE_EVENT,
   ADD_NEW_CLUB_ROLE,
   ADD_NEW_POST,
   ASSIGN_NEW_CLUB_ROLE,
@@ -23,6 +24,7 @@ import {
   LOGOUT,
   REJECT_NEW_CLUB_MEMBER,
   REMOVE_LIKE,
+  REMOVE_LIKE_EVENT,
   RESET_CLUB_DATA,
   RESET_ORIENTATION,
   RESET_ORIENTATION_PAGE,
@@ -542,6 +544,36 @@ export default function (state = initialState, action) {
         clubData: {
           ...state.clubData,
           posts: [...temp],
+        },
+      };
+    }
+    case ADD_LIKE_EVENT: {
+      let temp = [...state.clubData.event];
+      const index = temp.findIndex((post) => post.postID === action.payload);
+      let count = temp[index].likesCount;
+      count += 1;
+      temp[index].likesCount = count;
+
+      return {
+        ...state,
+        clubData: {
+          ...state.clubData,
+          event: [...temp],
+        },
+      };
+    }
+    case REMOVE_LIKE_EVENT: {
+      let temp = [...state.clubData.event];
+      const index = temp.findIndex((post) => post.postID === action.payload);
+      let count = temp[index].likesCount;
+      if (count !== 0) count -= 1;
+      temp[index].likesCount = count;
+
+      return {
+        ...state,
+        clubData: {
+          ...state.clubData,
+          event: [...temp],
         },
       };
     }

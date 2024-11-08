@@ -39,7 +39,7 @@ import Header from "../components/Header";
 
 const { width, height } = Dimensions.get("window");
 
-const context = "club";
+const context = "events";
 
 export default function ClubsEvents({ navigation }) {
   const dispatch = useDispatch();
@@ -71,10 +71,6 @@ export default function ClubsEvents({ navigation }) {
   useEffect(() => {
     dispatch(getEventPosts(data.clubID));
   }, []);
-
-  useEffect(() => {
-    console.log(posts);
-  }, [posts]);
 
   const toggleSideMenu = () => {
     setIsSideMenuVisible(!isSideMenuVisible);
