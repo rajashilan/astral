@@ -52,6 +52,8 @@ export const UPDATE_CLUB_IMAGE = "UPDATE_CLUB_IMAGE";
 export const ADD_NEW_POST = "ADD_NEW_POST";
 export const SET_POSTS = "SET_POSTS";
 export const DELETE_POST = "DELETE_POST";
+export const ADD_LIKE = "ADD_LIKE";
+export const REMOVE_LIKE = "REMOVE_LIKE";
 
 //ui types
 export const SET_UI_LOADING = "SET_UI_LOADING";

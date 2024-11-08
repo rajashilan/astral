@@ -34,6 +34,7 @@ import EmptyView from "../components/EmptyView";
 import CustomTextInput from "../components/CustomTextInput";
 import Loader from "../components/Loader";
 import PostsAdapter from "../components/Posts/PostsAdapter";
+import { SET_POSTS } from "../src/redux/type";
 
 const { width } = Dimensions.get("window");
 const db = firestore();
@@ -62,7 +63,7 @@ export default React.memo(function Feed({ navigation }) {
   const [userClubIDs, setUserClubIDs] = useState(null);
   const [retrivedUserClubIDs, setRetrievedUserClubIDs] = useState(false);
 
-  const [posts, setPosts] = useState([]);
+  const posts = useSelector((state) => state.data.clubData.posts);
 
   useEffect(() => {
     if (user) {
@@ -150,7 +151,7 @@ export default React.memo(function Feed({ navigation }) {
   };
 
   useEffect(() => {
-    setPosts([]);
+    dispatch({ type: SET_POSTS, payload: [] });
     setLoading(true);
     const loadData = async () => {
       if (retrivedUserClubIDs) {
@@ -159,7 +160,7 @@ export default React.memo(function Feed({ navigation }) {
         fetchedPosts.forEach((doc) => {
           temp.push(doc.data());
         });
-        setPosts([...temp]);
+        dispatch({ type: SET_POSTS, payload: temp });
         setLoading(false);
       }
     };
@@ -176,7 +177,7 @@ export default React.memo(function Feed({ navigation }) {
       fetchedPosts.forEach((doc) => {
         temp.push(doc.data());
       });
-      setPosts([...temp]);
+      dispatch({ type: SET_POSTS, payload: temp });
       setLoading(false);
       setRefreshing(false);
     }

@@ -64,6 +64,21 @@ export default React.memo(function Clubs({ navigation }) {
     if (user.isFirstTime && user.isFirstTime === true && showClubOnboarding) {
       navigation.navigate("ClubsOnboarding");
     }
+
+    // db.collection("posts")
+    //   .get()
+    //   .then((data) => {
+    //     data.forEach((doc) => {
+    //       db.collection("posts").doc(doc.data().postID).update({
+    //         likesCount: 0,
+    //         commentsCount: 0,
+    //       });
+    //     });
+    //   })
+    //   .then(() => {
+    //     console.log("ok");
+    //   })
+    //   .catch((error) => console.error(error));
   }, [user]);
 
   useEffect(() => {

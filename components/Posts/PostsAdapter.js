@@ -10,6 +10,8 @@ import Photos from "./Photos";
 import File from "./File";
 import Poll from "./Poll";
 import Event from "./Event";
+import Likes from "./Likes";
+import Comments from "./Comments";
 
 export default function PostsAdapter(props) {
   const { context, item } = props;
@@ -108,6 +110,14 @@ export default function PostsAdapter(props) {
             }}
           />
         ) : null}
+        <View
+          style={{
+            flexDirection: "row",
+          }}
+        >
+          <Likes postID={item.postID} likesCount={item.likesCount} />
+          <Comments />
+        </View>
       </View>
     ) : null;
 
