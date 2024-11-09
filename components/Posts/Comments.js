@@ -8,23 +8,21 @@ import {
 } from "../../utils/responsive-font";
 import firestore from "@react-native-firebase/firestore";
 import commentIcon from "../../assets/comment.png";
+import Modal from "react-native-modal";
+import CommentsModal from "../CommentsModal";
 
 const db = firestore();
 
 export default function Comments(props) {
-  const { postID } = props;
-  const [commentsCount, setCommentsCount] = useState(242); //shorten using npm package later TODO
-  const [comments, setComments] = useState([]);
+  const { postID, commentsCount, context } = props;
 
-  //one db query that caters to both liking and unliking function
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
 
-  // useEffect(() => {
-  //     db.collection("likes")
-  // }, [postID])
-
-  const handleCommentClick = () => {
-    //play animation if liked
+  const toggleCommentsModal = () => {
+    setShowCommentsModal(!showCommentsModal);
   };
+
+  const handleCommentClick = () => {};
 
   return (
     <View
@@ -40,7 +38,7 @@ export default function Comments(props) {
       }}
     >
       <Pressable
-        onPress={handleCommentClick}
+        onPress={toggleCommentsModal}
         hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
         style={{ flexDirection: "row", alignItems: "center" }}
       >
@@ -64,6 +62,23 @@ export default function Comments(props) {
           {commentsCount}
         </Text>
       </Pressable>
+
+      <Modal
+        isVisible={showCommentsModal}
+        onBackdropPress={toggleCommentsModal} // Android back press
+        onSwipeComplete={toggleCommentsModal} // Swipe to discard
+        animationIn="slideInUp" // Has others, we want slide in from the left
+        animationOut="slideOutDown" // When discarding the drawer
+        useNativeDriver // Faster animation
+        hideModalContentWhileAnimating // Better performance, try with/without"
+        propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+        style={{
+          margin: 0,
+          marginTop: pixelSizeVertical(100),
+        }} // Needs to contain the width, 75% of screen width in our case
+      >
+        <CommentsModal callParentScreenFunction={toggleCommentsModal} />
+      </Modal>
     </View>
   );
 }

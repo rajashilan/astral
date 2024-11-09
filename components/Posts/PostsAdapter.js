@@ -120,7 +120,11 @@ export default function PostsAdapter(props) {
             likesCount={item.likesCount}
             context={context}
           />
-          <Comments />
+          <Comments
+            postID={item.postID}
+            likesCount={item.likesCount}
+            context={context}
+          />
         </View>
       </View>
     ) : null;
