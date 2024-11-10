@@ -6,6 +6,7 @@ import {
   ADD_LIKE,
   ADD_LIKE_EVENT,
   ADD_NEW_CLUB_ROLE,
+  ADD_NEW_COMMENT,
   ADD_NEW_POST,
   ASSIGN_NEW_CLUB_ROLE,
   DEACTIVATE_CLUB,
@@ -26,6 +27,7 @@ import {
   REMOVE_LIKE,
   REMOVE_LIKE_EVENT,
   RESET_CLUB_DATA,
+  RESET_COMMENTS,
   RESET_ORIENTATION,
   RESET_ORIENTATION_PAGE,
   SET_CLUB_EVENT,
@@ -35,6 +37,8 @@ import {
   SET_CLUB_GALLERY_TO_FALSE,
   SET_CLUB_GALLERY_TO_TRUE,
   SET_CLUB_MEMBERS_DATA,
+  SET_COMMENTS,
+  SET_COMMENTS_COUNT_EVENT,
   SET_LOADING_DATA,
   SET_POSTS,
   STOP_LOADING_DATA,
@@ -56,6 +60,7 @@ const initialState = {
   clubData: {
     club: {},
     posts: [],
+    comments: [],
     members: [],
     gallery: [],
     event: [],
@@ -574,6 +579,71 @@ export default function (state = initialState, action) {
         clubData: {
           ...state.clubData,
           event: [...temp],
+        },
+      };
+    }
+    case ADD_NEW_COMMENT: {
+      let temp = [];
+      if (action.payload.replyToCommentID === "") {
+        //add new comment
+        temp = [...state.clubData.comments];
+        temp.push(action.payload);
+      } else {
+        //add new reply for a comment
+        temp = [...state.clubData.comments];
+        const index = temp.findIndex(
+          (comment) => comment.commentID === action.payload.replyToCommentID
+        );
+        temp[index].replies.push(action.payload);
+      }
+      //increment commentsCount under post
+      let tempPosts = [...state.clubData.posts];
+      const postIndex = tempPosts.findIndex(
+        (post) => post.postID === action.payload.postID
+      );
+      let count = tempPosts[postIndex].commentsCount;
+      count += 1;
+      tempPosts[postIndex].commentsCount = count;
+      return {
+        ...state,
+        clubData: {
+          ...state.clubData,
+          comments: [...temp],
+          posts: [...tempPosts],
+        },
+      };
+    }
+    case SET_COMMENTS_COUNT_EVENT: {
+      let tempPosts = [...state.clubData.event];
+      const postIndex = tempPosts.findIndex(
+        (post) => post.postID === action.payload.postID
+      );
+      let count = tempPosts[postIndex].commentsCount;
+      count += 1;
+      tempPosts[postIndex].commentsCount = count;
+      return {
+        ...state,
+        clubData: {
+          ...state.clubData,
+          event: [...tempPosts],
+        },
+      };
+    }
+    case SET_COMMENTS: {
+      return {
+        ...state,
+        clubData: {
+          ...state.clubData,
+          comments: [...action.payload],
+        },
+      };
+    }
+    case RESET_COMMENTS: {
+      return {
+        ...state,
+        clubData: {
+          ...state.clubData,
+          comments: [],
         },
       };
     }

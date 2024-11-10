@@ -56,6 +56,11 @@ export const ADD_LIKE = "ADD_LIKE";
 export const REMOVE_LIKE = "REMOVE_LIKE";
 export const ADD_LIKE_EVENT = "ADD_LIKE_EVENT";
 export const REMOVE_LIKE_EVENT = "REMOVE_LIKE_EVENT";
+export const ADD_NEW_COMMENT = "ADD_NEW_COMMENT";
+export const DELETE_COMMENT = "DELETE_COMMENT";
+export const SET_COMMENTS = "SET_COMMENTS";
+export const RESET_COMMENTS = "RESET_COMMENTS";
+export const SET_COMMENTS_COUNT_EVENT = "SET_COMMENTS_COUNT_EVENT";
 
 //ui types
 export const SET_UI_LOADING = "SET_UI_LOADING";

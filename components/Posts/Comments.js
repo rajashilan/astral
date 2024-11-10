@@ -22,8 +22,6 @@ export default function Comments(props) {
     setShowCommentsModal(!showCommentsModal);
   };
 
-  const handleCommentClick = () => {};
-
   return (
     <View
       style={{
@@ -70,14 +68,19 @@ export default function Comments(props) {
         animationIn="slideInUp" // Has others, we want slide in from the left
         animationOut="slideOutDown" // When discarding the drawer
         useNativeDriver // Faster animation
+        swipeDirection="down"
         hideModalContentWhileAnimating // Better performance, try with/without"
         propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
         style={{
           margin: 0,
-          marginTop: pixelSizeVertical(100),
+          marginTop: pixelSizeVertical(200),
         }} // Needs to contain the width, 75% of screen width in our case
       >
-        <CommentsModal callParentScreenFunction={toggleCommentsModal} />
+        <CommentsModal
+          postID={postID}
+          context={context}
+          callParentScreenFunction={toggleCommentsModal}
+        />
       </Modal>
     </View>
   );

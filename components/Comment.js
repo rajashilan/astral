@@ -34,9 +34,10 @@ import CreateAPollPost from "./CreateAPollPost";
 import CreateAnEventPost from "./CreateAnEventPost";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import CommentInput from "./CommentInput";
 
 export default function Comment(props) {
-  const { comment } = props;
+  const { comment, postID, sendCommentInputStateToParent } = props;
   dayjs.extend(relativeTime);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.credentials);
@@ -51,195 +52,221 @@ export default function Comment(props) {
 
   const [showReplies, setShowReplies] = useState(false);
 
-  const handlePost = async () => {};
-
-  //   useEffect(() => {
-  //     return () => {
-  //       setText("");
-  //     };
-  //   }, []);
+  const handleReplyClick = (comment) => {
+    const data = {
+      postID,
+      commentID: "",
+      replyTo: comment.username,
+      level: comment.level === 1 ? 2 : 3,
+      replyToCommentID: comment.commentID,
+    };
+    sendCommentInputStateToParent(data);
+  };
 
   return (
-    <View
-      key={comment.commentID}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        marginBottom: pixelSizeVertical(24),
-      }}
-    >
-      <FastImage
-        style={{
-          width: widthPixel(40),
-          height: heightPixel(40),
-          marginBottom: "auto",
-          borderRadius: 50,
-        }}
-        resizeMode="cover"
-        source={{
-          uri: comment.createdByImageUrl,
-        }}
-        progressiveRenderingEnabled={true}
-        cache={FastImage.cacheControl.immutable}
-        priority={FastImage.priority.normal}
-      />
+    <>
       <View
         style={{
-          flexDirection: "column",
-          marginLeft: pixelSizeHorizontal(5),
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: pixelSizeVertical(24),
         }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <FastImage
+          style={{
+            width: widthPixel(40),
+            height: heightPixel(40),
+            marginBottom: "auto",
+            borderRadius: 50,
+          }}
+          resizeMode="cover"
+          source={{
+            uri: comment.createdByImageUrl,
+          }}
+          progressiveRenderingEnabled={true}
+          cache={FastImage.cacheControl.immutable}
+          priority={FastImage.priority.normal}
+        />
+        <View
+          style={{
+            flexDirection: "column",
+            marginLeft: pixelSizeHorizontal(5),
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              style={{
+                fontSize: fontPixel(14),
+                fontWeight: "500",
+                color: "#DFE5F8",
+                marginBottom: pixelSizeVertical(2),
+              }}
+            >
+              {comment.username}
+            </Text>
+            <Text
+              style={{
+                fontSize: fontPixel(10),
+                fontWeight: "400",
+                color: "#C6CDE2",
+                marginLeft: pixelSizeHorizontal(4),
+              }}
+            >
+              {dayjs(comment.createdAt.split("T")[0]).fromNow()}
+            </Text>
+          </View>
           <Text
             style={{
               fontSize: fontPixel(14),
-              fontWeight: "500",
-              color: "#DFE5F8",
+              fontWeight: "400",
+              color: "#C6CDE2",
               marginBottom: pixelSizeVertical(2),
             }}
           >
-            @{comment.username}
+            {comment.text}
           </Text>
-          <Text
-            style={{
-              fontSize: fontPixel(10),
-              fontWeight: "400",
-              color: "#C6CDE2",
-              marginLeft: pixelSizeHorizontal(4),
-            }}
-          >
-            {/* {dayjs(new Date(timestamp).toString()).fromNow()} */}
-            {dayjs(comment.createdAt.split("T")[0]).fromNow()}
-          </Text>
-        </View>
-        <Text
-          style={{
-            fontSize: fontPixel(14),
-            fontWeight: "400",
-            color: "#C6CDE2",
-            marginBottom: pixelSizeVertical(2),
-          }}
-        >
-          {comment.text}
-        </Text>
-        <Pressable>
-          <Text
-            style={{
-              fontSize: fontPixel(12),
-              fontWeight: "500",
-              color: "#A7AFC7",
-              marginTop: pixelSizeVertical(2),
-            }}
-          >
-            reply
-          </Text>
-        </Pressable>
-        {comment.replies.length > 0 ? (
-          <Pressable>
+          <Pressable onPress={() => handleReplyClick(comment)}>
             <Text
               style={{
                 fontSize: fontPixel(12),
                 fontWeight: "500",
                 color: "#A7AFC7",
-                marginTop: pixelSizeVertical(10),
-                paddingLeft: pixelSizeHorizontal(24),
+                marginTop: pixelSizeVertical(2),
               }}
-              onPress={() => setShowReplies(!showReplies)}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
             >
-              {!showReplies
-                ? `view ${comment.replies.length} ${comment.replies.length === 1 ? "reply" : "replies"}`
-                : `hide ${comment.replies.length === 1 ? "reply" : "replies"}`}
+              reply
             </Text>
           </Pressable>
-        ) : null}
-        {showReplies
-          ? comment.replies.map((reply) => {
-              return (
-                <View
-                  key={reply.commentID}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginTop: pixelSizeVertical(24),
-                  }}
-                >
-                  <FastImage
-                    style={{
-                      width: widthPixel(40),
-                      height: heightPixel(40),
-                      marginBottom: "auto",
-                      borderRadius: 50,
-                    }}
-                    resizeMode="cover"
-                    source={{
-                      uri: reply.createdByImageUrl,
-                    }}
-                    progressiveRenderingEnabled={true}
-                    cache={FastImage.cacheControl.immutable}
-                    priority={FastImage.priority.normal}
-                  />
+          {comment.replies.length > 0 ? (
+            <Pressable>
+              <Text
+                style={{
+                  fontSize: fontPixel(12),
+                  fontWeight: "500",
+                  color: "#A7AFC7",
+                  marginTop: pixelSizeVertical(10),
+                  paddingLeft: pixelSizeHorizontal(24),
+                }}
+                onPress={() => setShowReplies(!showReplies)}
+              >
+                {!showReplies
+                  ? `view ${comment.replies.length} ${comment.replies.length === 1 ? "reply" : "replies"}`
+                  : `hide ${comment.replies.length === 1 ? "reply" : "replies"}`}
+              </Text>
+            </Pressable>
+          ) : null}
+          {showReplies
+            ? comment.replies.map((reply) => {
+                return (
                   <View
+                    key={reply.commentID}
                     style={{
-                      flexDirection: "column",
-                      marginLeft: pixelSizeHorizontal(5),
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: pixelSizeVertical(24),
                     }}
                   >
+                    <FastImage
+                      style={{
+                        width: widthPixel(40),
+                        height: heightPixel(40),
+                        marginBottom: "auto",
+                        borderRadius: 50,
+                      }}
+                      resizeMode="cover"
+                      source={{
+                        uri: reply.createdByImageUrl,
+                      }}
+                      progressiveRenderingEnabled={true}
+                      cache={FastImage.cacheControl.immutable}
+                      priority={FastImage.priority.normal}
+                    />
                     <View
                       style={{
-                        flexDirection: "row",
-                        alignItems: "center",
+                        flexDirection: "column",
+                        marginLeft: pixelSizeHorizontal(5),
                       }}
                     >
-                      <Text
+                      <View
                         style={{
-                          fontSize: fontPixel(14),
-                          fontWeight: "500",
-                          color: "#DFE5F8",
-                          marginBottom: pixelSizeVertical(2),
+                          flexDirection: "row",
+                          alignItems: "center",
                         }}
                       >
-                        @{reply.username}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: fontPixel(10),
-                          fontWeight: "400",
-                          color: "#C6CDE2",
-                          marginLeft: pixelSizeHorizontal(4),
-                        }}
+                        <Text
+                          style={{
+                            fontSize: fontPixel(14),
+                            fontWeight: "500",
+                            color: "#DFE5F8",
+                            marginBottom: pixelSizeVertical(2),
+                          }}
+                        >
+                          {reply.username}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: fontPixel(10),
+                            fontWeight: "400",
+                            color: "#C6CDE2",
+                            marginLeft: pixelSizeHorizontal(4),
+                          }}
+                        >
+                          {dayjs(reply.createdAt.split("T")[0]).fromNow()}
+                        </Text>
+                      </View>
+                      <View style={{ flexDirection: "row" }}>
+                        {reply.level === 3 ? (
+                          <Text
+                            style={{
+                              fontSize: fontPixel(14),
+                              fontWeight: "400",
+                              color: "#8C91FB",
+                              marginBottom: pixelSizeVertical(2),
+                            }}
+                          >
+                            @{reply.replyTo}{" "}
+                          </Text>
+                        ) : null}
+                        <Text
+                          style={{
+                            fontSize: fontPixel(14),
+                            fontWeight: "400",
+                            color: "#C6CDE2",
+                            marginBottom: pixelSizeVertical(2),
+                          }}
+                        >
+                          {reply.text}
+                        </Text>
+                      </View>
+                      <Pressable
+                        onPress={() =>
+                          handleReplyClick({
+                            username: reply.username,
+                            level: reply.level,
+                            commentID: comment.commentID, //pass in the original comment id as the reply to id as we want to push the comment under the original comment's replies and not the subcomment replies
+                          })
+                        }
                       >
-                        {/* {dayjs(new Date(timestamp).toString()).fromNow()} */}
-                        {dayjs(reply.createdAt.split("T")[0]).fromNow()}
-                      </Text>
+                        <Text
+                          style={{
+                            fontSize: fontPixel(12),
+                            fontWeight: "500",
+                            color: "#A7AFC7",
+                            marginTop: pixelSizeVertical(2),
+                          }}
+                          hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+                        >
+                          reply
+                        </Text>
+                      </Pressable>
                     </View>
-                    <Text
-                      style={{
-                        fontSize: fontPixel(14),
-                        fontWeight: "400",
-                        color: "#C6CDE2",
-                        marginBottom: pixelSizeVertical(2),
-                      }}
-                    >
-                      {reply.text}
-                    </Text>
-                    <Pressable>
-                      <Text
-                        style={{
-                          fontSize: fontPixel(12),
-                          fontWeight: "500",
-                          color: "#A7AFC7",
-                          marginTop: pixelSizeVertical(2),
-                        }}
-                      >
-                        reply
-                      </Text>
-                    </Pressable>
                   </View>
-                </View>
-              );
-            })
-          : null}
+                );
+              })
+            : null}
+        </View>
       </View>
-    </View>
+    </>
   );
 }

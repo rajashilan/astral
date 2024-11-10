@@ -68,7 +68,7 @@ export default function CreateAPostModal(props) {
     if (text.trim() === "" && selectedOption === "text") {
       tempErrors.post = "Please type something to post";
     }
-
+    console.log("askldjalsdjlajdlkajdlkajskldjaklsdjlkajdlajdlkajldjaljalj");
     if (!tempErrors.post) {
       let postData;
       if (selectedOption === "text") {
@@ -178,7 +178,6 @@ export default function CreateAPostModal(props) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
     >
-      <IosHeight />
       <View
         style={{
           height: heightPixel(2),
@@ -186,7 +185,7 @@ export default function CreateAPostModal(props) {
           borderRadius: 5,
           width: "50%",
           alignSelf: "center",
-          marginBottom: pixelSizeVertical(30),
+          marginVertical: pixelSizeVertical(20),
         }}
       />
       <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
