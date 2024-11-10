@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, StyleSheet } from "react-native";
 import FastImage from "react-native-fast-image";
-import {
-  fontPixel,
-  pixelSizeHorizontal,
-  pixelSizeVertical,
-} from "../../utils/responsive-font";
 import firestore from "@react-native-firebase/firestore";
-import likeEmpty from "../../assets/like_empty.png";
-import likeFilled from "../../assets/like_filled.png";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ADD_LIKE,
@@ -20,14 +13,11 @@ import LottieView from "lottie-react-native";
 
 const db = firestore();
 
-export default function Likes(props) {
+const Likes = React.memo((props) => {
   const dispatch = useDispatch();
-
   const { postID, likesCount, context } = props;
-
   const [isLiked, setIsLiked] = useState(false);
   const [likeID, setLikeID] = useState("");
-  const [firstTimeRender, setFirstTimeRender] = useState(true);
   const campusID = useSelector((state) => state.data.campus.campusID);
   const user = useSelector((state) => state.user.credentials);
 
@@ -41,19 +31,19 @@ export default function Likes(props) {
           const id = data.docs[0]?.data().likeID;
           setLikeID(id);
           setIsLiked(true);
+        } else {
+          setIsLiked(false);
         }
       })
       .catch((error) => {
         console.error(error);
       });
-    setFirstTimeRender(false);
-  }, [postID]);
+  }, [user.userId, postID]);
 
   const handleLike = () => {
-    let likeStatus = !isLiked;
+    const likeStatus = !isLiked;
     setIsLiked(likeStatus);
 
-    //show new ui instantly, update in redux instantly
     const likeData = {
       postID,
       likeID: "",
@@ -62,6 +52,10 @@ export default function Likes(props) {
       username: user.username,
       createdAt: new Date().toISOString(),
     };
+
+    const increment = firestore.FieldValue.increment(1);
+    const decrement = firestore.FieldValue.increment(-1);
+
     if (likeStatus) {
       if (context === "events") {
         dispatch({ type: ADD_LIKE_EVENT, payload: postID });
@@ -78,18 +72,9 @@ export default function Likes(props) {
             .update({ likeID: data.id });
         })
         .then(() => {
-          return db.collection("posts").doc(postID).get();
-        })
-        .then((doc) => {
-          let count = doc.data().likesCount;
-          count += 1;
-          return db
-            .collection("posts")
-            .doc(postID)
-            .update({ likesCount: count });
-        })
-        .then(() => {
-          //do nothing
+          return db.collection("posts").doc(postID).update({
+            likesCount: increment,
+          });
         })
         .catch((error) => {
           console.error("1: ", error);
@@ -99,24 +84,14 @@ export default function Likes(props) {
         dispatch({ type: REMOVE_LIKE_EVENT, payload: postID });
       }
       dispatch({ type: REMOVE_LIKE, payload: postID });
+
       db.collection("likes")
         .doc(likeID)
         .delete()
         .then(() => {
-          return db.collection("posts").doc(postID).get();
-        })
-        .then((doc) => {
-          let count = doc.data().likesCount;
-          if (count !== 0) {
-            count -= 1;
-            return db
-              .collection("posts")
-              .doc(postID)
-              .update({ likesCount: count });
-          }
-        })
-        .then(() => {
-          //do nothing
+          return db.collection("posts").doc(postID).update({
+            likesCount: decrement,
+          });
         })
         .catch((error) => {
           console.error("2: ", error);
@@ -125,67 +100,66 @@ export default function Likes(props) {
   };
 
   return (
-    <View
-      style={{
-        borderStyle: "solid",
-        borderRadius: 5,
-        borderColor: "#232F52",
-        borderWidth: 2,
-        paddingVertical: pixelSizeVertical(10),
-        paddingHorizontal: pixelSizeHorizontal(10),
-        marginTop: pixelSizeVertical(14),
-        position: "relative", // Make sure the parent view is positioned relative
-      }}
-    >
+    <View style={styles.container}>
       <Pressable
         onPress={handleLike}
         hitSlop={{ top: 20, bottom: 40, left: 20, right: 20 }}
-        style={{ flexDirection: "row", alignItems: "center" }}
+        style={styles.pressable}
       >
-        {firstTimeRender || !isLiked ? (
-          <FastImage
-            style={{
-              height: pixelSizeVertical(15),
-              width: pixelSizeHorizontal(18),
-            }}
-            source={isLiked ? likeFilled : likeEmpty}
-            resizeMode="contain"
-          />
-        ) : (
+        {isLiked ? (
           <LottieView
-            style={{
-              height: pixelSizeVertical(47), // Height of the animation
-              width: pixelSizeHorizontal(51), // Width of the animation
-              position: "absolute", // Position absolutely inside the parent
-              left: 0, // Position to the left of the container
-              top: "50%", // Center it vertically relative to the parent view
-              transform: [
-                {
-                  translateY: -pixelSizeVertical(23),
-                },
-                {
-                  translateX: -pixelSizeHorizontal(17),
-                },
-              ], // Adjust for perfect centering
-            }}
+            style={styles.lottie}
             source={require("../../assets/lottie/liked.json")}
             autoPlay
             loop={false}
           />
+        ) : (
+          <FastImage
+            style={styles.icon}
+            source={require("../../assets/like_empty.png")}
+            resizeMode="contain"
+          />
         )}
-        <Text
-          style={{
-            fontSize: fontPixel(14),
-            fontWeight: "600",
-            color: "#DFE5F8",
-            marginLeft: isLiked
-              ? pixelSizeHorizontal(25)
-              : pixelSizeHorizontal(5),
-          }}
-        >
+        <Text style={[styles.text, { marginLeft: isLiked ? 25 : 5 }]}>
           {likesCount}
         </Text>
       </Pressable>
     </View>
   );
-}
+});
+
+const styles = StyleSheet.create({
+  container: {
+    borderStyle: "solid",
+    borderRadius: 5,
+    borderColor: "#232F52",
+    borderWidth: 2,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    marginTop: 14,
+    position: "relative",
+  },
+  pressable: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  lottie: {
+    height: 47,
+    width: 51,
+    position: "absolute",
+    left: 0,
+    top: "50%",
+    transform: [{ translateY: -23 }, { translateX: -17 }],
+  },
+  icon: {
+    height: 15,
+    width: 18,
+  },
+  text: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#DFE5F8",
+  },
+});
+
+export default Likes;
