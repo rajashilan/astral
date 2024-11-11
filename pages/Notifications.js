@@ -238,7 +238,7 @@ export default function Notifications({ navigation }) {
                         }}
                       >
                         {" "}
-                        {dayjs(item.createdAt.split("T")[0]).fromNow()}
+                        {dayjs(new Date(item.createdAt).toString()).fromNow()}
                       </Text>
                     </Text>
                   ) : (

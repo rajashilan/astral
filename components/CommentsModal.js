@@ -125,8 +125,6 @@ export default function CommentsModal(props) {
     setCommentInputState(data);
   };
 
-  const handlePost = async () => {};
-
   //   useEffect(() => {
   //     return () => {
   //       setText("");
@@ -138,7 +136,7 @@ export default function CommentsModal(props) {
   ) : (
     <ScrollView
       scrollEnabled={true}
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={true}
       style={{
         flexDirection: "column",
       }}

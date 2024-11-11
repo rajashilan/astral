@@ -64,7 +64,7 @@ export default function Comment(props) {
   };
 
   return (
-    <>
+    <View>
       <View
         style={{
           flexDirection: "row",
@@ -112,7 +112,7 @@ export default function Comment(props) {
                 marginLeft: pixelSizeHorizontal(4),
               }}
             >
-              {dayjs(comment.createdAt.split("T")[0]).fromNow()}
+              {dayjs(new Date(comment.createdAt).toString()).fromNow()}
             </Text>
           </View>
           <Text
@@ -121,6 +121,7 @@ export default function Comment(props) {
               fontWeight: "400",
               color: "#C6CDE2",
               marginBottom: pixelSizeVertical(2),
+              maxWidth: "94%",
             }}
           >
             {comment.text}
@@ -149,6 +150,7 @@ export default function Comment(props) {
                   paddingLeft: pixelSizeHorizontal(24),
                 }}
                 onPress={() => setShowReplies(!showReplies)}
+                hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
               >
                 {!showReplies
                   ? `view ${comment.replies.length} ${comment.replies.length === 1 ? "reply" : "replies"}`
@@ -165,6 +167,7 @@ export default function Comment(props) {
                       flexDirection: "row",
                       alignItems: "center",
                       marginTop: pixelSizeVertical(24),
+                      maxWidth: "85%",
                     }}
                   >
                     <FastImage
@@ -212,33 +215,33 @@ export default function Comment(props) {
                             marginLeft: pixelSizeHorizontal(4),
                           }}
                         >
-                          {dayjs(reply.createdAt.split("T")[0]).fromNow()}
+                          {dayjs(
+                            new Date(reply.createdAt).toString()
+                          ).fromNow()}
                         </Text>
                       </View>
-                      <View style={{ flexDirection: "row" }}>
-                        {reply.level === 3 ? (
-                          <Text
-                            style={{
-                              fontSize: fontPixel(14),
-                              fontWeight: "400",
-                              color: "#8C91FB",
-                              marginBottom: pixelSizeVertical(2),
-                            }}
-                          >
-                            @{reply.replyTo}{" "}
-                          </Text>
-                        ) : null}
+                      {reply.level === 3 ? (
                         <Text
                           style={{
                             fontSize: fontPixel(14),
                             fontWeight: "400",
-                            color: "#C6CDE2",
+                            color: "#8C91FB",
                             marginBottom: pixelSizeVertical(2),
                           }}
                         >
-                          {reply.text}
+                          @{reply.replyTo}{" "}
                         </Text>
-                      </View>
+                      ) : null}
+                      <Text
+                        style={{
+                          fontSize: fontPixel(14),
+                          fontWeight: "400",
+                          color: "#C6CDE2",
+                          marginBottom: pixelSizeVertical(2),
+                        }}
+                      >
+                        {reply.text}
+                      </Text>
                       <Pressable
                         onPress={() =>
                           handleReplyClick({
@@ -247,6 +250,7 @@ export default function Comment(props) {
                             commentID: comment.commentID, //pass in the original comment id as the reply to id as we want to push the comment under the original comment's replies and not the subcomment replies
                           })
                         }
+                        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
                       >
                         <Text
                           style={{
@@ -255,7 +259,6 @@ export default function Comment(props) {
                             color: "#A7AFC7",
                             marginTop: pixelSizeVertical(2),
                           }}
-                          hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
                         >
                           reply
                         </Text>
@@ -267,6 +270,6 @@ export default function Comment(props) {
             : null}
         </View>
       </View>
-    </>
+    </View>
   );
 }

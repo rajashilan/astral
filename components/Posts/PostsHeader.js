@@ -85,8 +85,7 @@ export default function PostsHeader(props) {
             marginLeft: pixelSizeHorizontal(2),
           }}
         >
-          {/* {dayjs(new Date(timestamp).toString()).fromNow()} */}
-          {dayjs(timestamp.split("T")[0]).fromNow()}
+          {dayjs(new Date(timestamp).toString()).fromNow()}
         </Text>
       </View>
       {context !== "SuspendedPost" ? (
