@@ -17,7 +17,6 @@ export default function Comments(props) {
   const { postID, commentsCount, context } = props;
 
   const [showCommentsModal, setShowCommentsModal] = useState(false);
-
   const toggleCommentsModal = () => {
     setShowCommentsModal(!showCommentsModal);
   };
@@ -68,7 +67,6 @@ export default function Comments(props) {
         animationIn="slideInUp" // Has others, we want slide in from the left
         animationOut="slideOutDown" // When discarding the drawer
         useNativeDriver // Faster animation
-        swipeDirection="down"
         hideModalContentWhileAnimating // Better performance, try with/without"
         propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
         style={{
