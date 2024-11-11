@@ -4,7 +4,7 @@ export default {
   expo: {
     name: "astral",
     slug: "astral",
-    version: "1.0.6",
+    version: "1.1.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -19,7 +19,7 @@ export default {
       bundleIdentifier: "com.codeloomventures.astral",
       googleServicesFile:
         process.env.GOOGLE_SERVICES_PLIST ?? "./GoogleService-Info.plist",
-      buildNumber: "1.0.6",
+      buildNumber: "1.1.0",
     },
     //have to change the ios build number
     android: {
@@ -29,7 +29,7 @@ export default {
       },
       package: "com.codeloomventures.astral",
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
-      versionCode: 5,
+      versionCode: 6,
     },
     web: {
       favicon: "./assets/favicon.png",
@@ -85,6 +85,6 @@ export default {
     },
     //need to change runtime version to 1.0.4(3) to update android and 1.0.4 to update ios
     //make sure in the next build both version are the same to avoid this shit
-    runtimeVersion: "1.0.6",
+    runtimeVersion: "1.1.0",
   },
 };
