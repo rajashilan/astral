@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#363BB1",
   },
   inactiveMenuItem: {
-    fontSize: fontPixel(48),
+    fontSize: fontPixel(36),
     fontWeight: "400",
     color: "#07BEB8",
   },
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     color: "#C4FFF9",
   },
   inactiveFeedback: {
-    fontSize: fontPixel(32),
+    fontSize: fontPixel(24),
     fontWeight: "400",
     color: "#8C91FB",
     paddingRight: pixelSizeHorizontal(16),
