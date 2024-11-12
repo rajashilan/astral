@@ -178,16 +178,21 @@ export default function CreateAPostModal(props) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
     >
-      <View
-        style={{
-          height: heightPixel(2),
-          backgroundColor: "#F5ECEC",
-          borderRadius: 5,
-          width: "50%",
-          alignSelf: "center",
-          marginVertical: pixelSizeVertical(20),
-        }}
-      />
+      <Pressable
+        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+        onTouchEndCapture={props.callParentScreenFunction}
+      >
+        <View
+          style={{
+            height: heightPixel(2),
+            backgroundColor: "#F5ECEC",
+            borderRadius: 5,
+            width: "50%",
+            alignSelf: "center",
+            marginVertical: pixelSizeVertical(20),
+          }}
+        />
+      </Pressable>
       <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
         <Text
           style={{
