@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   Text,
+  Pressable,
 } from "react-native";
 import {
   fontPixel,
@@ -184,16 +185,21 @@ export default function CommentsModal(props) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={keyboardVerticalOffset}
     >
-      <View
-        style={{
-          height: heightPixel(2),
-          backgroundColor: "#F5ECEC",
-          borderRadius: 5,
-          width: "50%",
-          alignSelf: "center",
-          marginVertical: pixelSizeVertical(20),
-        }}
-      />
+      <Pressable
+        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+        onTouchEndCapture={props.callParentScreenFunction}
+      >
+        <View
+          style={{
+            height: heightPixel(2),
+            backgroundColor: "#F5ECEC",
+            borderRadius: 5,
+            width: "50%",
+            alignSelf: "center",
+            marginVertical: pixelSizeVertical(20),
+          }}
+        />
+      </Pressable>
       {UI}
       <CommentInput
         handleResetCommentInputState={handleResetCommentInputState}
