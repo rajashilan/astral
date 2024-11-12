@@ -47,6 +47,7 @@ export default React.memo(function Feed({ navigation }) {
     (state) => state.user.showClubOnboarding
   );
   const state = useSelector((state) => state.data);
+  const campusID = useSelector((state) => state.data.campus.campusID);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -82,11 +83,13 @@ export default React.memo(function Feed({ navigation }) {
       if (tab === "for you") {
         const publicQuery = db
           .collection("posts")
+          .where("campusID", "==", campusID)
           .where("visibility", "==", "public")
           .orderBy("createdAt", "desc");
 
         const privateQuery = db
           .collection("posts")
+          .where("campusID", "==", campusID)
           .where("visibility", "==", "private")
           .where("clubID", "in", userClubIDs)
           .orderBy("createdAt", "desc");
@@ -108,6 +111,7 @@ export default React.memo(function Feed({ navigation }) {
       if (tab === "following") {
         query = db
           .collection("posts")
+          .where("campusID", "==", campusID)
           .where("clubID", "in", userClubIDs)
           .orderBy("createdAt", "desc");
 
@@ -116,12 +120,14 @@ export default React.memo(function Feed({ navigation }) {
       } else if (tab === "events") {
         const publicQuery = db
           .collection("posts")
+          .where("campusID", "==", campusID)
           .where("type", "==", "event")
           .where("visibility", "==", "public")
           .orderBy("createdAt", "desc");
 
         const privateQuery = db
           .collection("posts")
+          .where("campusID", "==", campusID)
           .where("type", "==", "event")
           .where("visibility", "==", "private")
           .where("clubID", "in", userClubIDs)
