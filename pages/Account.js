@@ -389,12 +389,13 @@ export default function Account({ navigation }) {
               })}
             <Pressable onPress={signOutUser}>
               <Text
-                style={[
-                  styles.logout,
-                  {
-                    marginTop: pixelSizeVertical(20),
-                  },
-                ]}
+                style={{
+                  fontSize: fontPixel(22),
+                  fontWeight: "400",
+                  color: "#DFE5F8",
+                  opacity: 0.9,
+                  marginTop: pixelSizeVertical(20),
+                }}
               >
                 logout
               </Text>
@@ -404,7 +405,7 @@ export default function Account({ navigation }) {
                 style={[
                   styles.logout,
                   {
-                    marginTop: pixelSizeVertical(8),
+                    marginTop: pixelSizeVertical(24),
                   },
                 ]}
               >
