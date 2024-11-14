@@ -87,16 +87,24 @@ export default React.memo(function Feed({ navigation }) {
           .where("visibility", "==", "public")
           .orderBy("createdAt", "desc");
 
-        const privateQuery = db
-          .collection("posts")
-          .where("campusID", "==", campusID)
-          .where("visibility", "==", "private")
-          .where("clubID", "in", userClubIDs)
-          .orderBy("createdAt", "desc");
+        // If userClubIDs is empty, don't query for private posts
+        let privatePosts = [];
+        if (userClubIDs.length > 0) {
+          const privateQuery = db
+            .collection("posts")
+            .where("campusID", "==", campusID)
+            .where("visibility", "==", "private")
+            .where("clubID", "in", userClubIDs)
+            .orderBy("createdAt", "desc");
+
+          privatePosts = await privateQuery.get();
+        } else {
+          privatePosts = { docs: [] };
+        }
 
         const publicPosts = await publicQuery.get();
-        const privatePosts = await privateQuery.get();
 
+        // Combine public and private posts
         const allPosts = [...publicPosts.docs, ...privatePosts.docs].sort(
           (a, b) => {
             const dateA = new Date(a.data().createdAt); // Parse the string into a Date
@@ -107,16 +115,19 @@ export default React.memo(function Feed({ navigation }) {
 
         return allPosts;
       }
-
       if (tab === "following") {
-        query = db
-          .collection("posts")
-          .where("campusID", "==", campusID)
-          .where("clubID", "in", userClubIDs)
-          .orderBy("createdAt", "desc");
+        if (userClubIDs.length > 0) {
+          query = db
+            .collection("posts")
+            .where("campusID", "==", campusID)
+            .where("clubID", "in", userClubIDs)
+            .orderBy("createdAt", "desc");
 
-        const posts = await query.get();
-        return posts.docs;
+          const posts = await query.get();
+          return posts.docs;
+        } else {
+          return [];
+        }
       } else if (tab === "events") {
         const publicQuery = db
           .collection("posts")
@@ -125,17 +136,28 @@ export default React.memo(function Feed({ navigation }) {
           .where("visibility", "==", "public")
           .orderBy("createdAt", "desc");
 
-        const privateQuery = db
-          .collection("posts")
-          .where("campusID", "==", campusID)
-          .where("type", "==", "event")
-          .where("visibility", "==", "private")
-          .where("clubID", "in", userClubIDs)
-          .orderBy("createdAt", "desc");
+        // Declare a variable to hold private posts
+        let privatePosts = [];
 
+        // Only query for private posts if userClubIDs is not empty
+        if (userClubIDs.length > 0) {
+          const privateQuery = db
+            .collection("posts")
+            .where("campusID", "==", campusID)
+            .where("type", "==", "event")
+            .where("visibility", "==", "private")
+            .where("clubID", "in", userClubIDs)
+            .orderBy("createdAt", "desc");
+
+          privatePosts = await privateQuery.get();
+        } else {
+          privatePosts = { docs: [] };
+        }
+
+        // Fetch public posts
         const publicPosts = await publicQuery.get();
-        const privatePosts = await privateQuery.get();
 
+        // Combine public and private posts
         const allPosts = [...publicPosts.docs, ...privatePosts.docs].sort(
           (a, b) => {
             const dateA = new Date(a.data().createdAt); // Parse the string into a Date
