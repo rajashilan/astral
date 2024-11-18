@@ -2,7 +2,7 @@ import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   ScrollView,
   Text,
@@ -89,6 +89,23 @@ const SideMenu = (props) => {
       });
   };
 
+  const FastImageComponent = useMemo(
+    () => (
+      <FastImage
+        style={{
+          flex: 2,
+          aspectRatio: aspectRatio,
+        }}
+        resizeMode="contain"
+        source={{ uri: campusLogo }}
+        progressiveRenderingEnabled={true}
+        cache={FastImage.cacheControl.immutable}
+        priority={FastImage.priority.high}
+      />
+    ),
+    [campusLogo, aspectRatio]
+  ); // Dependency array to re-render only when needed
+
   return (
     <ScrollView stickyHeaderIndices={[0]} style={styles.safeAreaView}>
       <IosHeight />
@@ -125,17 +142,7 @@ const SideMenu = (props) => {
           paddingBottom: pixelSizeVertical(12),
         }}
       >
-        <FastImage
-          style={{
-            flex: 2,
-            aspectRatio: aspectRatio,
-          }}
-          resizeMode="contain"
-          source={{ uri: campusLogo }}
-          progressiveRenderingEnabled={true}
-          cache={FastImage.cacheControl.immutable}
-          priority={FastImage.priority.high}
-        />
+        {FastImageComponent}
       </View>
       <View style={styles.userDetailsContainer}>
         <Pressable onPress={handleNavigateToProfile}>
