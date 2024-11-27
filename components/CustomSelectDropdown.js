@@ -16,6 +16,7 @@ const CustomSelectDropdown = forwardRef((props, ref) => {
     loading,
     customDropdownButtonStyle,
     customDropDownButtonTxtStyle,
+    fixedHeight,
   } = props;
   const dropdownRef = useRef(null); // Local ref for SelectDropdown
 
@@ -63,8 +64,12 @@ const CustomSelectDropdown = forwardRef((props, ref) => {
           </Text>
         </View>
       )}
-      showsVerticalScrollIndicator={false}
-      dropdownStyle={styles.dropdownMenuStyle}
+      showsVerticalScrollIndicator={true}
+      dropdownStyle={
+        fixedHeight
+          ? styles.fixedHeightDropDownMenuStyle
+          : styles.dropdownMenuStyle
+      }
     />
   );
 });
@@ -92,6 +97,11 @@ const styles = StyleSheet.create({
   dropdownMenuStyle: {
     backgroundColor: "#1A2238",
     borderRadius: 5,
+  },
+  fixedHeightDropDownMenuStyle: {
+    backgroundColor: "#1A2238",
+    borderRadius: 5,
+    height: 200,
   },
   dropdownItemStyle: {
     width: "100%",

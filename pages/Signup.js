@@ -44,7 +44,7 @@ export default function Signup({ navigation }) {
 
   const [intakeMonths, setIntakeMonths] = useState([]);
   const [intakeYears] = useState([
-    2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024,
+    2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024,
   ]);
   const [selectedIntakeMonth, setSelectedIntakeMonth] = useState("");
   const [selectedIntakeYear, setSelectedIntakeYear] = useState(0);
@@ -208,23 +208,29 @@ export default function Signup({ navigation }) {
       keyboardVerticalOffset={Platform.OS === "ios" ? 16 : 0}
       style={styles.container}
     >
-      <IosHeight />
-      <FastImage
-        style={styles.image}
-        source={logo}
-        resizeMode="contain"
-        transition={1000}
-      />
-      <View style={styles.progressContainer}>
-        <View style={styles.progressActive} />
-        <View style={styles.progressInactive} />
-      </View>
-      <Text style={styles.title}>Let's start with your campus</Text>
       <ScrollView
         showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        style={{ width: "100%" }}
+        showsVerticalScrollIndicator={true}
+        style={{
+          width: "100%",
+          paddingRight: pixelSizeHorizontal(16),
+          paddingLeft: pixelSizeHorizontal(16),
+        }}
+        contentContainerStyle={{ alignItems: "center" }}
       >
+        <IosHeight />
+        <FastImage
+          style={styles.image}
+          source={logo}
+          resizeMode="contain"
+          transition={1000}
+        />
+        <View style={styles.progressContainer}>
+          <View style={styles.progressActive} />
+          <View style={styles.progressInactive} />
+        </View>
+        <Text style={styles.title}>Let's start with your campus</Text>
+
         <CustomSelectDropdown
           data={colleges}
           onSelect={(selectedItem, index) => {
@@ -260,6 +266,7 @@ export default function Signup({ navigation }) {
             exiting={FadeOut.duration(300)}
           >
             <CustomSelectDropdown
+              fixedHeight={true}
               data={departments}
               onSelect={(selectedItem, index) => {
                 setSelectedDepartment(selectedItem);
@@ -283,6 +290,7 @@ export default function Signup({ navigation }) {
             exiting={FadeOut.duration(300)}
           >
             <CustomSelectDropdown
+              fixedHeight={true}
               data={intakeMonths}
               onSelect={(selectedItem, index) => {
                 setSelectedIntakeMonth(selectedItem);
@@ -294,6 +302,7 @@ export default function Signup({ navigation }) {
             />
 
             <CustomSelectDropdown
+              fixedHeight={true}
               data={intakeYears}
               onSelect={(selectedItem, index) => {
                 setSelectedIntakeYear(selectedItem);
@@ -319,6 +328,7 @@ export default function Signup({ navigation }) {
           <Text style={styles.secondaryButton}>login instead</Text>
         </Pressable>
         <EmptyView />
+        <EmptyView />
       </ScrollView>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
@@ -330,9 +340,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0C111F",
-    alignItems: "center",
-    paddingRight: pixelSizeHorizontal(16),
-    paddingLeft: pixelSizeHorizontal(16),
   },
   image: {
     width: widthPixel(177),

@@ -441,6 +441,7 @@ export default function SignupDetails({ navigation, route }) {
           </Pressable>
         ) : null}
         <EmptyView />
+        <EmptyView />
       </ScrollView>
       <Toast config={toastConfig} />
       <StatusBar style="light" translucent={false} backgroundColor="#0C111F" />
@@ -510,7 +511,7 @@ const styles = StyleSheet.create({
     fontSize: fontPixel(12),
     fontWeight: "400",
     color: "#ed3444",
-    paddingLeft: pixelSizeHorizontal(16),
+    paddingLeft: pixelSizeHorizontal(14),
     paddingRight: pixelSizeHorizontal(16),
   },
   errorUnderButton: {
