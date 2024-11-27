@@ -38,7 +38,7 @@ export default function CommentsModal(props) {
   dayjs.extend(relativeTime);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.credentials);
-  const comments = useSelector((state) => state.data.clubData.comments);
+  const comments = useSelector((state) => state.data.comments);
   const [loading, setLoading] = useState(false);
 
   const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);

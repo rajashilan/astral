@@ -62,7 +62,7 @@ export default function ClubsPages({ navigation, route }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.credentials);
   const data = useSelector((state) => state.data.clubData.club);
-  const posts = useSelector((state) => state.data.clubData.posts);
+  const posts = useSelector((state) => state.data.posts);
   const campusID = useSelector((state) => state.data.campus.campusID);
   const loading = useSelector((state) => state.data.loading);
   const UIloading = useSelector((state) => state.UI.loading);

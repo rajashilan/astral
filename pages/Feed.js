@@ -1,7 +1,7 @@
 import firestore from "@react-native-firebase/firestore";
 import FastImage from "react-native-fast-image";
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -17,7 +17,7 @@ import Modal from "react-native-modal";
 import Animated, { FadeIn, FadeOut, FadeInDown } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
-
+import { useFocusEffect } from "@react-navigation/native";
 import Hamburger_Icon from "../assets/Hamburger_Icon";
 import IosHeight from "../components/IosHeight";
 // import hamburgerIcon from "../assets/hamburger_icon.png";
@@ -64,7 +64,10 @@ export default React.memo(function Feed({ navigation }) {
   const [userClubIDs, setUserClubIDs] = useState(null);
   const [retrivedUserClubIDs, setRetrievedUserClubIDs] = useState(false);
 
-  const posts = useSelector((state) => state.data.clubData.posts);
+  const [tempPosts, setTempPosts] = useState([]);
+  const [lostFocus, setLostFocus] = useState(false);
+
+  const posts = useSelector((state) => state.data.posts);
 
   useEffect(() => {
     if (user) {
@@ -181,7 +184,7 @@ export default React.memo(function Feed({ navigation }) {
   useEffect(() => {
     dispatch({ type: SET_POSTS, payload: [] });
     setLoading(true);
-    const loadData = async () => {
+    (async () => {
       if (retrivedUserClubIDs) {
         const fetchedPosts = await fetchPosts(tab, userClubIDs);
         let temp = [];
@@ -189,12 +192,23 @@ export default React.memo(function Feed({ navigation }) {
           temp.push(doc.data());
         });
         dispatch({ type: SET_POSTS, payload: temp });
+        setTempPosts(temp);
         setLoading(false);
       }
-    };
+    })();
 
-    loadData();
+    return () => {
+      setTempPosts([]);
+    };
   }, [tab, retrivedUserClubIDs]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch({ type: SET_POSTS, payload: tempPosts });
+
+      return () => {};
+    }, [dispatch, tempPosts])
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -206,6 +220,7 @@ export default React.memo(function Feed({ navigation }) {
         temp.push(doc.data());
       });
       dispatch({ type: SET_POSTS, payload: temp });
+      setTempPosts(temp);
       setLoading(false);
       setRefreshing(false);
     }

@@ -57,10 +57,10 @@ const initialState = {
   college: {},
   campus: {},
   loading: false,
+  posts: [],
+  comments: [],
   clubData: {
     club: {},
-    posts: [],
-    comments: [],
     members: [],
     gallery: [],
     event: [],
@@ -489,41 +489,32 @@ export default function (state = initialState, action) {
       };
     }
     case ADD_NEW_POST: {
-      let temp = [...state.clubData.posts];
+      let temp = [...state.posts];
       temp.unshift(action.payload);
 
       return {
         ...state,
-        clubData: {
-          ...state.clubData,
-          posts: [...temp],
-        },
+        posts: [...temp],
       };
     }
     case SET_POSTS: {
       return {
         ...state,
-        clubData: {
-          ...state.clubData,
-          posts: [...action.payload],
-        },
+        posts: [...action.payload],
       };
     }
     case DELETE_POST: {
-      let temp = [...state.clubData.posts];
+      let temp = [...state.posts];
       const index = temp.findIndex((post) => post.postID === action.payload);
       temp.splice(index, 1);
 
       return {
         ...state,
-        clubData: {
-          ...state.clubData,
-          posts: [...temp],
-        },
+        posts: [...temp],
       };
     }
     case ADD_LIKE: {
-      let temp = [...state.clubData.posts];
+      let temp = [...state.posts];
       const index = temp.findIndex((post) => post.postID === action.payload);
       let count = temp[index].likesCount;
       count += 1;
@@ -531,14 +522,11 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
-        clubData: {
-          ...state.clubData,
-          posts: [...temp],
-        },
+        posts: [...temp],
       };
     }
     case REMOVE_LIKE: {
-      let temp = [...state.clubData.posts];
+      let temp = [...state.posts];
       const index = temp.findIndex((post) => post.postID === action.payload);
       let count = temp[index].likesCount;
       if (count !== 0) count -= 1;
@@ -546,10 +534,7 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
-        clubData: {
-          ...state.clubData,
-          posts: [...temp],
-        },
+        posts: [...temp],
       };
     }
     case ADD_LIKE_EVENT: {
@@ -586,18 +571,18 @@ export default function (state = initialState, action) {
       let temp = [];
       if (action.payload.replyToCommentID === "") {
         //add new comment
-        temp = [...state.clubData.comments];
+        temp = [...state.comments];
         temp.push(action.payload);
       } else {
         //add new reply for a comment
-        temp = [...state.clubData.comments];
+        temp = [...state.comments];
         const index = temp.findIndex(
           (comment) => comment.commentID === action.payload.replyToCommentID
         );
         temp[index].replies.push(action.payload);
       }
       //increment commentsCount under post
-      let tempPosts = [...state.clubData.posts];
+      let tempPosts = [...state.posts];
       const postIndex = tempPosts.findIndex(
         (post) => post.postID === action.payload.postID
       );
@@ -606,11 +591,8 @@ export default function (state = initialState, action) {
       tempPosts[postIndex].commentsCount = count;
       return {
         ...state,
-        clubData: {
-          ...state.clubData,
-          comments: [...temp],
-          posts: [...tempPosts],
-        },
+        comments: [...temp],
+        posts: [...tempPosts],
       };
     }
     case SET_COMMENTS_COUNT_EVENT: {
@@ -632,19 +614,13 @@ export default function (state = initialState, action) {
     case SET_COMMENTS: {
       return {
         ...state,
-        clubData: {
-          ...state.clubData,
-          comments: [...action.payload],
-        },
+        comments: [...action.payload],
       };
     }
     case RESET_COMMENTS: {
       return {
         ...state,
-        clubData: {
-          ...state.clubData,
-          comments: [],
-        },
+        comments: [],
       };
     }
     case LOGOUT:
